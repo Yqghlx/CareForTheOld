@@ -1,6 +1,8 @@
 using CareForTheOld.Common.Extensions;
 using CareForTheOld.Common.Middleware;
 using CareForTheOld.Data;
+using CareForTheOld.Services.Background;
+using CareForTheOld.Services.Hubs;
 using CareForTheOld.Services.Implementations;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +33,10 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFamilyService, FamilyService>();
 builder.Services.AddScoped<IHealthService, HealthService>();
 builder.Services.AddScoped<IMedicationService, MedicationService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+
+// 注册后台服务
+builder.Services.AddHostedService<MedicationReminderService>();
 
 builder.Services.AddCors(options =>
 {
@@ -65,7 +71,7 @@ app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-// app.MapHub<NotificationHub>("/hubs/notification"); // 后续启用
+app.MapHub<NotificationHub>("/hubs/notification");
 
 app.Run();
 
