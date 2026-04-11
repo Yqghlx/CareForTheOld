@@ -1,0 +1,17 @@
+namespace CareForTheOld.Models.Entities;
+
+/// <summary>
+/// 刷新令牌实体
+/// </summary>
+public class RefreshToken
+{
+    public Guid Id { get; set; }
+    public Guid UserId { get; set; }
+    public string Token { get; set; } = string.Empty;
+    public DateTime ExpiresAt { get; set; }
+    public bool IsRevoked { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    // 导航属性
+    public User User { get; set; } = null!;
+}
