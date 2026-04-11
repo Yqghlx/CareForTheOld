@@ -55,8 +55,7 @@ if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    // 注意：迁移将在后续 Task 中创建，这里暂时注释
-    // await db.Database.MigrateAsync();
+    await db.Database.MigrateAsync();
 }
 
 // 中间件管道
