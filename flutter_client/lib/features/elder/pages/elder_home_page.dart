@@ -1,0 +1,179 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../shared/providers/auth_provider.dart';
+
+/// 老人端首页
+class ElderHomePage extends ConsumerStatefulWidget {
+  const ElderHomePage({super.key});
+
+  @override
+  ConsumerState<ElderHomePage> createState() => _ElderHomePageState();
+}
+
+class _ElderHomePageState extends ConsumerState<ElderHomePage> {
+  int _selectedIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final authState = ref.watch(authProvider);
+    final user = authState.user;
+
+    // 老人端使用大字体主题
+    final theme = Theme.of(context).copyWith(
+      textTheme: Theme.of(context).textTheme.apply(fontSizeFactor: 1.2),
+    );
+
+    return Theme(
+      data: theme,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('关爱老人'),
+          automaticallyImplyLeading: false,
+        ),
+        body: _buildBody(),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: (index) => setState(() => _selectedIndex = index),
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: '首页',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite),
+              label: '健康',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.medication),
+              label: '用药',
+            ),
+          ],
+          selectedFontSize: 18,
+          unselectedFontSize: 16,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBody() {
+    switch (_selectedIndex) {
+      case 0:
+        return _buildHomeContent();
+      case 1:
+        return context.go('/elder/health') as Widget;
+      case 2:
+        return context.go('/elder/medication') as Widget;
+      default:
+        return _buildHomeContent();
+    }
+  }
+
+  Widget _buildHomeContent() {
+    final authState = ref.watch(authProvider);
+
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 用户信息卡片
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 32,
+                    backgroundColor: const Color(0xFFE86B4A),
+                    child: const Icon(Icons.person, size: 32, color: Colors.white),
+                  ),
+                  const SizedBox(width: 16),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        authState.user?.realName ?? '用户',
+                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 4),
+                      const Text('今天感觉怎么样？', style: TextStyle(fontSize: 18, color: Colors.grey)),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // 快捷操作
+          const Text('快捷操作', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 16),
+
+          GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            childAspectRatio: 1.5,
+            children: [
+              _buildQuickCard(
+                icon: Icons.favorite,
+                title: '记录健康',
+                subtitle: '血压、血糖、心率',
+                color: Colors.red,
+                onTap: () => context.push('/elder/health'),
+              ),
+              _buildQuickCard(
+                icon: Icons.medication,
+                title: '用药提醒',
+                subtitle: '查看今日用药',
+                color: Colors.blue,
+                onTap: () => context.push('/elder/medication'),
+              ),
+              _buildQuickCard(
+                icon: Icons.people,
+                title: '家庭成员',
+                subtitle: '查看家人信息',
+                color: Colors.green,
+                onTap: () {},
+              ),
+              _buildQuickCard(
+                icon: Icons.settings,
+                title: '设置',
+                subtitle: '个人信息设置',
+                color: Colors.grey,
+                onTap: () {},
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuickCard({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return Card(
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 36, color: color),
+              const SizedBox(height: 8),
+              Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text(subtitle, style: const TextStyle(fontSize: 14, color: Colors.grey)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
