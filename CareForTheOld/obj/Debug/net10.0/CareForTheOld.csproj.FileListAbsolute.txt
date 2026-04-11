@@ -140,3 +140,7 @@
 /Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/obj/Debug/net10.0/CareForTheOld.pdb
 /Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/obj/Debug/net10.0/CareForTheOld.genruntimeconfig.cache
 /Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/obj/Debug/net10.0/ref/CareForTheOld.dll
+/Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/bin/Debug/net10.0/Swashbuckle.AspNetCore.Swagger.dll
+/Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/bin/Debug/net10.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+/Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/bin/Debug/net10.0/Swashbuckle.AspNetCore.SwaggerUI.dll
+/Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/bin/Debug/net10.0/BCrypt.Net-Next.dll

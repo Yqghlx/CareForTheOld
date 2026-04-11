@@ -1,6 +1,8 @@
 using CareForTheOld.Common.Extensions;
 using CareForTheOld.Common.Middleware;
 using CareForTheOld.Data;
+using CareForTheOld.Services.Implementations;
+using CareForTheOld.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -22,6 +24,9 @@ builder.Services.AddDatabaseServices(builder.Configuration);
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddSwaggerServices();
 builder.Services.AddSignalR();
+
+// 注册业务服务
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddCors(options =>
 {
