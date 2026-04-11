@@ -27,6 +27,8 @@ builder.Services.AddSignalR();
 
 // 注册业务服务
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IFamilyService, FamilyService>();
 
 builder.Services.AddCors(options =>
 {
