@@ -30,6 +30,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFamilyService, FamilyService>();
 builder.Services.AddScoped<IHealthService, HealthService>();
+builder.Services.AddScoped<IMedicationService, MedicationService>();
 
 builder.Services.AddCors(options =>
 {
