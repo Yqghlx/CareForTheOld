@@ -33,6 +33,12 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
         appBar: AppBar(
           title: const Text('关爱老人'),
           automaticallyImplyLeading: false,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () => _showSettingsDialog(),
+            ),
+          ],
         ),
         body: _buildBody(),
         bottomNavigationBar: BottomNavigationBar(
