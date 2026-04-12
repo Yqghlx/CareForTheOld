@@ -30,6 +30,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
     return Theme(
       data: theme,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: const Text('关爱老人'),
           automaticallyImplyLeading: false,
@@ -82,7 +83,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
   Widget _buildHomeContent() {
     final authState = ref.watch(authProvider);
 
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,6 +124,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
           GridView.count(
             crossAxisCount: 2,
             shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
             childAspectRatio: 1.6,
             children: [
               _buildQuickCard(

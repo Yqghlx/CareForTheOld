@@ -31,6 +31,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
     final familyState = ref.watch(familyProvider);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('关爱老人'),
         automaticallyImplyLeading: false,
