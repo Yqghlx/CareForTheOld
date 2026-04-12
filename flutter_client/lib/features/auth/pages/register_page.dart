@@ -42,7 +42,8 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
         'phoneNumber': _phoneController.text,
         'password': _passwordController.text,
         'realName': _nameController.text,
-        'role': _selectedRole.value,
+        'role': _selectedRole == UserRole.elder ? 0 : 1,
+        'birthDate': '2000-01-01', // 默认出生日期
       });
 
       final data = response.data['data'];
