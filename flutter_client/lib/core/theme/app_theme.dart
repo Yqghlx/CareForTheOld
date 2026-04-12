@@ -65,7 +65,7 @@ class AppTheme {
     ),
     fontFamily: 'PingFangSC',
     scaffoldBackgroundColor: backgroundColor,
-    cardTheme: const CardTheme(color: cardColor),
+    cardTheme: const CardThemeData(color: cardColor),
     appBarTheme: const AppBarTheme(
       backgroundColor: primaryColor,
       foregroundColor: Colors.white,

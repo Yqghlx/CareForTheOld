@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  # PostgreSQL 数据库
+  postgres:
+    image: postgres:16-alpine
+    container_name: carefortheold-db
+    environment:
+      POSTGRES_USER: carefortheold
+      POSTGRES_PASSWORD: carefortheold_password
+      POSTGRES_DB: carefortheold
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U carefortheold"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - carefortheold-network
+
+  # 后端 API
+  api:
+    build:
+      context: .
+      dockerfile: CareForTheOld/Dockerfile
+    container_name: carefortheold-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:5000
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=carefortheold;Username=carefortheold;Password=carefortheold_password"
+      Jwt__Key: "CareForTheOld_ProductionSecretKey_2026_MustBe32Chars!"
+      Jwt__Issuer: "CareForTheOld"
+      Jwt__Audience: "CareForTheOld"
+      Jwt__AccessTokenExpirationMinutes: "60"
+      Jwt__RefreshTokenExpirationDays: "30"
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - carefortheold-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  carefortheold-network:
+    driver: bridge

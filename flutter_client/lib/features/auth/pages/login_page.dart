@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -15,32 +16,36 @@ class LoginPage extends ConsumerStatefulWidget {
 }
 
 class _LoginPageState extends ConsumerState<LoginPage> {
-  final _phoneController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-  bool _isLoading = false;
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  bool isLoading = false;
 
   @override
   void dispose() {
-    _phoneController.dispose();
-    _passwordController.dispose();
+    phoneController.dispose();
+    passwordController.dispose();
     super.dispose();
   }
 
-  Future<void> _login() async {
-    if (!_formKey.currentState!.validate()) return;
+  Future<void> login() async {
+    if (!formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
+    setState(() => isLoading = true);
 
     try {
       final apiClient = ref.read(apiClientProvider);
+      debugPrint('开始登录请求... 手机号: ${phoneController.text}');
       final response = await apiClient.dio.post('/auth/login', data: {
-        'phoneNumber': _phoneController.text,
-        'password': _passwordController.text,
+        'phoneNumber': phoneController.text,
+        'password': passwordController.text,
       });
+      debugPrint('登录响应状态: ${response.statusCode}');
+      debugPrint('登录响应数据: ${response.data}');
 
       final data = response.data['data'];
       final user = User.fromJson(data['user']);
+      debugPrint('用户信息: ${user.realName}, 角色: ${user.role}');
 
       ref.read(authProvider.notifier).login(
         user: user,
@@ -48,18 +53,19 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         refreshToken: data['refreshToken'],
       );
 
-      // 根据角色跳转
       if (user.role.isElder) {
         context.go('/elder/home');
       } else {
         context.go('/child/home');
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      debugPrint('登录异常: $e');
+      debugPrint('堆栈: $stackTrace');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('登录失败: ${e.toString()}')),
       );
     } finally {
-      setState(() => _isLoading = false);
+      setState(() => isLoading = false);
     }
   }
 
@@ -70,7 +76,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Form(
-            key: _formKey,
+            key: formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -98,7 +104,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
                 // 手机号输入
                 TextFormField(
-                  controller: _phoneController,
+                  controller: phoneController,
                   decoration: const InputDecoration(
                     labelText: '手机号',
                     prefixIcon: Icon(Icons.phone),
@@ -118,7 +124,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
                 // 密码输入
                 TextFormField(
-                  controller: _passwordController,
+                  controller: passwordController,
                   decoration: const InputDecoration(
                     labelText: '密码',
                     prefixIcon: Icon(Icons.lock),
@@ -138,8 +144,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   width: double.infinity,
                   height: 48,
                   child: ElevatedButton(
-                    onPressed: _isLoading ? null : _login,
-                    child: _isLoading
+                    onPressed: isLoading ? null : login,
+                    child: isLoading
                         ? const CircularProgressIndicator()
                         : const Text('登录', style: TextStyle(fontSize: 18)),
                   ),

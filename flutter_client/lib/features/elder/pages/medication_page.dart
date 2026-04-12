@@ -48,52 +48,66 @@ class _MedicationPageState extends State<MedicationPage> {
                   return Card(
                     child: Padding(
                       padding: const EdgeInsets.all(16),
-                      child: Row(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // 药品图标
-                          Container(
-                            width: 48,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: isTaken ? Colors.green : Colors.orange,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: const Icon(Icons.medication, color: Colors.white),
-                          ),
-                          const SizedBox(width: 16),
-
-                          // 药品信息
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '阿司匹林',
-                                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          // 药品信息行
+                          Row(
+                            children: [
+                              // 药品图标
+                              Container(
+                                width: 48,
+                                height: 48,
+                                decoration: BoxDecoration(
+                                  color: isTaken ? Colors.green : Colors.orange,
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                                Text(
-                                  '100mg · 08:00',
-                                  style: const TextStyle(fontSize: 14, color: Colors.grey),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          // 操作按钮
-                          if (isPending)
-                            ElevatedButton(
-                              onPressed: () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('已标记为已服用')),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.green,
+                                child: const Icon(Icons.medication, color: Colors.white),
                               ),
-                              child: const Text('已服用'),
+                              const SizedBox(width: 16),
+
+                              // 药品信息
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '阿司匹林',
+                                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      '100mg · 08:00',
+                                      style: const TextStyle(fontSize: 14, color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              // 状态图标
+                              if (isTaken)
+                                const Icon(Icons.check_circle, color: Colors.green, size: 32),
+                            ],
+                          ),
+                          // 操作按钮（独立一行，避免无限宽度问题）
+                          if (isPending)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 12),
+                              child: SizedBox(
+                                width: double.infinity,
+                                height: 40,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('已标记为已服用')),
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.green,
+                                  ),
+                                  child: const Text('标记为已服用'),
+                                ),
+                              ),
                             ),
-                          if (isTaken)
-                            const Icon(Icons.check_circle, color: Colors.green, size: 32),
                         ],
                       ),
                     ),

@@ -50,13 +50,13 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// 开发环境自动迁移
-if (app.Environment.IsDevelopment())
-{
-    using var scope = app.Services.CreateScope();
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await db.Database.MigrateAsync();
-}
+// 开发环境：InMemory 数据库无需迁移
+// if (app.Environment.IsDevelopment())
+// {
+//     using var scope = app.Services.CreateScope();
+//     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+//     await db.Database.MigrateAsync();
+// }
 
 // 中间件管道
 if (app.Environment.IsDevelopment())

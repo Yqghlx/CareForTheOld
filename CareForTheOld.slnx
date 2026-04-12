@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CareForTheOld.Tests/CareForTheOld.Tests.csproj" />
+  <Project Path="CareForTheOld/CareForTheOld.csproj" />
+</Solution>
