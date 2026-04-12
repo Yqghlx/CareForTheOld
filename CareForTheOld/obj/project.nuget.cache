@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "s+gfSG4Y+dQ=",
+  "dgSpecHash": "TmFRCVb2FKI=",
   "success": true,
   "projectFilePath": "/Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/CareForTheOld.csproj",
   "expectedPackageFiles": [
@@ -22,6 +22,7 @@
     "/Users/yqgmac/.nuget/packages/microsoft.entityframeworkcore.abstractions/10.0.5/microsoft.entityframeworkcore.abstractions.10.0.5.nupkg.sha512",
     "/Users/yqgmac/.nuget/packages/microsoft.entityframeworkcore.analyzers/10.0.5/microsoft.entityframeworkcore.analyzers.10.0.5.nupkg.sha512",
     "/Users/yqgmac/.nuget/packages/microsoft.entityframeworkcore.design/10.0.5/microsoft.entityframeworkcore.design.10.0.5.nupkg.sha512",
+    "/Users/yqgmac/.nuget/packages/microsoft.entityframeworkcore.inmemory/10.0.5/microsoft.entityframeworkcore.inmemory.10.0.5.nupkg.sha512",
     "/Users/yqgmac/.nuget/packages/microsoft.entityframeworkcore.relational/10.0.5/microsoft.entityframeworkcore.relational.10.0.5.nupkg.sha512",
     "/Users/yqgmac/.nuget/packages/microsoft.extensions.apidescription.server/10.0.0/microsoft.extensions.apidescription.server.10.0.0.nupkg.sha512",
     "/Users/yqgmac/.nuget/packages/microsoft.extensions.dependencymodel/10.0.5/microsoft.extensions.dependencymodel.10.0.5.nupkg.sha512",

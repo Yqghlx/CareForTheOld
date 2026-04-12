@@ -47,7 +47,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       final user = User.fromJson(data['user']);
       debugPrint('用户信息: ${user.realName}, 角色: ${user.role}');
 
-      ref.read(authProvider.notifier).login(
+      // 等待 login 完成，确保 token 已更新后再跳转
+      await ref.read(authProvider.notifier).login(
         user: user,
         accessToken: data['accessToken'],
         refreshToken: data['refreshToken'],

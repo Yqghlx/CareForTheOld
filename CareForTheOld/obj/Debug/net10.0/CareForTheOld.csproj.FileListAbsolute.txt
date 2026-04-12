@@ -144,3 +144,4 @@
 /Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/bin/Debug/net10.0/Swashbuckle.AspNetCore.SwaggerGen.dll
 /Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/bin/Debug/net10.0/Swashbuckle.AspNetCore.SwaggerUI.dll
 /Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/bin/Debug/net10.0/BCrypt.Net-Next.dll
+/Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/bin/Debug/net10.0/Microsoft.EntityFrameworkCore.InMemory.dll
