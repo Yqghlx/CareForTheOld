@@ -5,6 +5,7 @@ namespace CareForTheOld.Services.Interfaces;
 
 public interface IFamilyService
 {
+    Task<FamilyResponse?> GetMyFamilyAsync(Guid userId);
     Task<FamilyResponse> CreateFamilyAsync(Guid creatorId, CreateFamilyRequest request);
     Task<FamilyResponse> AddMemberAsync(Guid familyId, Guid operatorId, AddFamilyMemberRequest request);
     Task<List<FamilyMemberResponse>> GetMembersAsync(Guid familyId);
