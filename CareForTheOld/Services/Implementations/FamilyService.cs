@@ -13,6 +13,20 @@ public class FamilyService : IFamilyService
 
     public FamilyService(AppDbContext context) => _context = context;
 
+    /// <summary>
+    /// 获取用户所属的家庭信息
+    /// </summary>
+    public async Task<FamilyResponse?> GetMyFamilyAsync(Guid userId)
+    {
+        var familyMember = await _context.FamilyMembers
+            .FirstOrDefaultAsync(fm => fm.UserId == userId);
+
+        if (familyMember == null)
+            return null;
+
+        return await GetFamilyResponse(familyMember.FamilyId);
+    }
+
     public async Task<FamilyResponse> CreateFamilyAsync(Guid creatorId, CreateFamilyRequest request)
     {
         var creator = await _context.Users.FindAsync(creatorId)

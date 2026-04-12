@@ -52,23 +52,17 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
 
   FamilyNotifier(this._service) : super(const FamilyState());
 
-  /// 加载家庭信息
+  /// 加载家庭信息（从 API 获取，不依赖本地缓存）
   Future<void> loadFamily() async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
-      // 从本地存储获取家庭ID
-      final prefs = await SharedPreferences.getInstance();
-      final familyId = prefs.getString('familyId');
-      if (familyId == null) {
-        state = state.copyWith(isLoading: false);
-        return;
+      final family = await _service.getMyFamily();
+      if (family != null) {
+        // 保存家庭信息到本地（用于子女端缓存）
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('familyId', family.id);
+        await prefs.setString('familyName', family.familyName);
       }
-      final members = await _service.getMembers(familyId);
-      final family = FamilyGroup(
-        id: familyId,
-        familyName: prefs.getString('familyName') ?? '我的家庭',
-        members: members,
-      );
       state = state.copyWith(family: family, isLoading: false);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());

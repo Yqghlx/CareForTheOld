@@ -19,6 +19,16 @@ public class FamilyController : ControllerBase
 
     private Guid CurrentUserId => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
+    /// <summary>
+    /// 获取当前用户所属的家庭信息
+    /// </summary>
+    [HttpGet("me")]
+    public async Task<ApiResponse<FamilyResponse?>> GetMyFamily()
+    {
+        var result = await _familyService.GetMyFamilyAsync(CurrentUserId);
+        return ApiResponse<FamilyResponse?>.Ok(result);
+    }
+
     [HttpPost]
     public async Task<ApiResponse<FamilyResponse>> Create([FromBody] CreateFamilyRequest request)
     {

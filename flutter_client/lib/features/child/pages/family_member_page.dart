@@ -3,9 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/models/family.dart';
 import '../../../shared/models/user_role.dart';
+import '../../../shared/providers/auth_provider.dart';
 import '../providers/family_provider.dart';
 
-/// 家庭成员管理页面
+/// 家庭成员管理页面（子女端可管理，老人端只可查看）
 class FamilyMemberPage extends ConsumerStatefulWidget {
   const FamilyMemberPage({super.key});
 
@@ -25,6 +26,8 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
   @override
   Widget build(BuildContext context) {
     final familyState = ref.watch(familyProvider);
+    final authState = ref.watch(authProvider);
+    final isElder = authState.user?.role.isElder ?? false;
 
     return Scaffold(
       appBar: AppBar(title: const Text('家庭成员')),
@@ -34,7 +37,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 家庭信息卡片
-            _buildFamilyCard(familyState),
+            _buildFamilyCard(familyState, isElder),
             const SizedBox(height: 24),
 
             // 成员列表标题
@@ -44,7 +47,8 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                 const Text('家庭成员',
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                if (familyState.family != null)
+                // 只有子女端可以添加成员
+                if (familyState.family != null && !isElder)
                   TextButton.icon(
                     onPressed: () => _showAddMemberDialog(),
                     icon: const Icon(Icons.add),
@@ -55,7 +59,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
             const SizedBox(height: 16),
 
             // 成员列表
-            Expanded(child: _buildContent(familyState)),
+            Expanded(child: _buildContent(familyState, isElder)),
           ],
         ),
       ),
@@ -63,9 +67,29 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
   }
 
   /// 家庭信息卡片
-  Widget _buildFamilyCard(FamilyState state) {
+  Widget _buildFamilyCard(FamilyState state, bool isElder) {
     if (state.family == null && !state.isLoading) {
-      // 没有家庭组，显示创建按钮
+      // 没有家庭组
+      if (isElder) {
+        // 老人端：显示提示信息
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                const Icon(Icons.home, size: 48, color: Colors.grey),
+                const SizedBox(height: 12),
+                const Text('您还未加入家庭组',
+                    style: TextStyle(fontSize: 16, color: Colors.grey)),
+                const SizedBox(height: 8),
+                const Text('请让子女添加您到家庭',
+                    style: TextStyle(fontSize: 14, color: Colors.grey)),
+              ],
+            ),
+          ),
+        );
+      }
+      // 子女端：显示创建按钮
       return Card(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -117,7 +141,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
   }
 
   /// 内容区域
-  Widget _buildContent(FamilyState state) {
+  Widget _buildContent(FamilyState state, bool isElder) {
     if (state.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -150,13 +174,13 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
       itemCount: state.members.length,
       itemBuilder: (context, index) {
         final member = state.members[index];
-        return _buildMemberItem(member);
+        return _buildMemberItem(member, isElder);
       },
     );
   }
 
   /// 成员列表项
-  Widget _buildMemberItem(FamilyMember member) {
+  Widget _buildMemberItem(FamilyMember member, bool isElder) {
     return Card(
       child: ListTile(
         leading: CircleAvatar(
@@ -166,7 +190,8 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
         ),
         title: Text(member.realName),
         subtitle: Text('${member.role.label} · ${member.relation}'),
-        trailing: IconButton(
+        // 老人端不显示移除按钮
+        trailing: isElder ? null : IconButton(
           icon: const Icon(Icons.remove_circle_outline, color: Colors.red),
           onPressed: () => _confirmRemove(member),
         ),

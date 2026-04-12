@@ -8,6 +8,14 @@ class FamilyService {
 
   FamilyService(this._dio);
 
+  /// 获取当前用户所属的家庭信息
+  Future<FamilyGroup?> getMyFamily() async {
+    final response = await _dio.get('/family/me');
+    final data = response.data['data'];
+    if (data == null) return null;
+    return FamilyGroup.fromJson(data);
+  }
+
   /// 创建家庭组
   Future<FamilyGroup> createFamily(String familyName) async {
     final response = await _dio.post('/family', data: {
