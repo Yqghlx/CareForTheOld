@@ -186,17 +186,37 @@ public class MedicationService : IMedicationService
                 if (!TimeOnly.TryParse(timeStr, out var time)) continue;
 
                 var scheduledAt = today.ToDateTime(time);
-                if (existingLogs.Any(l => l.ScheduledAt == scheduledAt)) continue;
+                var existingLog = existingLogs.FirstOrDefault(l => l.ScheduledAt == scheduledAt);
 
-                pendingLogs.Add(new MedicationLogResponse
+                if (existingLog != null)
                 {
-                    PlanId = plan.Id,
-                    MedicineName = plan.MedicineName,
-                    ElderId = elderId,
-                    ElderName = plan.Elder.RealName,
-                    Status = MedicationStatus.Missed, // 待服药默认标记
-                    ScheduledAt = scheduledAt
-                });
+                    // 已有记录，返回实际状态
+                    pendingLogs.Add(new MedicationLogResponse
+                    {
+                        Id = existingLog.Id,
+                        PlanId = plan.Id,
+                        MedicineName = plan.MedicineName,
+                        ElderId = elderId,
+                        ElderName = plan.Elder.RealName,
+                        Status = existingLog.Status,
+                        ScheduledAt = existingLog.ScheduledAt,
+                        TakenAt = existingLog.TakenAt,
+                        Note = existingLog.Note
+                    });
+                }
+                else
+                {
+                    // 无记录，返回待服药状态
+                    pendingLogs.Add(new MedicationLogResponse
+                    {
+                        PlanId = plan.Id,
+                        MedicineName = plan.MedicineName,
+                        ElderId = elderId,
+                        ElderName = plan.Elder.RealName,
+                        Status = MedicationStatus.Missed,
+                        ScheduledAt = scheduledAt
+                    });
+                }
             }
         }
 
