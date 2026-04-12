@@ -36,8 +36,8 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {},
+            icon: const Icon(Icons.settings),
+            onPressed: () => _showSettingsDialog(),
           ),
         ],
       ),
@@ -185,6 +185,40 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
     );
   }
 
+  /// 设置对话框（退出登录）
+  void _showSettingsDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('设置'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('用户: ${ref.read(authProvider).user?.realName ?? "未知"}'),
+            const SizedBox(height: 8),
+            Text('角色: ${ref.read(authProvider).user?.role.label ?? "未知"}'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('关闭'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              ref.read(authProvider.notifier).logout();
+              context.go('/login');
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('退出登录'),
+          ),
+        ],
+      ),
+    );
+  }
+
   /// 显示添加用药计划对话框
   void _showAddPlanDialog(BuildContext context) {
     final elders = ref.read(familyProvider).elders;
@@ -256,11 +290,54 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                       return Row(
                         children: [
                           Expanded(
-                            child: TextField(
-                              controller: entry.value,
-                              decoration: InputDecoration(
-                                labelText: '提醒时间 ${entry.key + 1}',
-                                hintText: 'HH:mm',
+                            child: InkWell(
+                              onTap: () async {
+                                // 解析当前时间值
+                                final parts = entry.value.text.split(':');
+                                final initial = TimeOfDay(
+                                  hour: parts.length == 2
+                                      ? (int.tryParse(parts[0]) ?? 8)
+                                      : 8,
+                                  minute: parts.length == 2
+                                      ? (int.tryParse(parts[1]) ?? 0)
+                                      : 0,
+                                );
+                                final picked = await showTimePicker(
+                                  context: ctx,
+                                  initialTime: initial,
+                                  builder: (context, child) {
+                                    return MediaQuery(
+                                      data: MediaQuery.of(context).copyWith(
+                                        alwaysUse24HourFormat: true,
+                                      ),
+                                      child: child!,
+                                    );
+                                  },
+                                );
+                                if (picked != null) {
+                                  final timeStr =
+                                      '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}';
+                                  setDialogState(() {
+                                    entry.value.text = timeStr;
+                                  });
+                                }
+                              },
+                              child: InputDecorator(
+                                decoration: InputDecoration(
+                                  labelText: '提醒时间 ${entry.key + 1}',
+                                  suffixIcon: const Icon(Icons.access_time),
+                                ),
+                                child: Text(
+                                  entry.value.text.isEmpty
+                                      ? '点击选择时间'
+                                      : entry.value.text,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: entry.value.text.isEmpty
+                                        ? Colors.grey
+                                        : Colors.black,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
