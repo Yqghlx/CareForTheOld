@@ -29,7 +29,15 @@ final elderHealthRecordsProvider =
       familyId: familyId, memberId: elderId, limit: 20);
 });
 
-final elderMedicationProvider =
+/// 老人用药计划 Provider
+final elderMedicationPlansProvider =
+    FutureProvider.family<List<MedicationPlan>, String>((ref, elderId) async {
+  final service = MedicationService(ref.read(apiClientProvider).dio);
+  return service.getElderPlans(elderId);
+});
+
+/// 老人用药记录 Provider
+final elderMedicationLogsProvider =
     FutureProvider.family<List<MedicationLog>, String>((ref, elderId) async {
   final service = MedicationService(ref.read(apiClientProvider).dio);
   return service.getElderLogs(elderId, limit: 10);
@@ -58,8 +66,10 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         ref.watch(elderHealthStatsProvider(widget.elderId));
     final recordsAsync =
         ref.watch(elderHealthRecordsProvider(widget.elderId));
-    final medsAsync =
-        ref.watch(elderMedicationProvider(widget.elderId));
+    final plansAsync =
+        ref.watch(elderMedicationPlansProvider(widget.elderId));
+    final logsAsync =
+        ref.watch(elderMedicationLogsProvider(widget.elderId));
 
     return Scaffold(
       appBar: AppBar(title: Text('$elderName - 健康数据')),
@@ -67,7 +77,8 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         onRefresh: () async {
           ref.invalidate(elderHealthStatsProvider(widget.elderId));
           ref.invalidate(elderHealthRecordsProvider(widget.elderId));
-          ref.invalidate(elderMedicationProvider(widget.elderId));
+          ref.invalidate(elderMedicationPlansProvider(widget.elderId));
+          ref.invalidate(elderMedicationLogsProvider(widget.elderId));
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -99,12 +110,26 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               ),
               const SizedBox(height: 24),
 
-              // 今日用药情况
+              // 用药计划
+              const Text('用药计划',
+                  style:
+                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 12),
+              plansAsync.when(
+                data: (plans) => _buildPlansList(plans),
+                loading: () =>
+                    const Center(child: CircularProgressIndicator()),
+                error: (e, _) => Text('加载计划失败: $e',
+                    style: const TextStyle(color: Colors.red)),
+              ),
+              const SizedBox(height: 24),
+
+              // 最近用药记录
               const Text('最近用药记录',
                   style:
                       TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 12),
-              medsAsync.when(
+              logsAsync.when(
                 data: (logs) => _buildMedicationList(logs),
                 loading: () =>
                     const Center(child: CircularProgressIndicator()),
@@ -198,6 +223,87 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
           ],
         ),
       ),
+    );
+  }
+
+  /// 用药计划列表
+  Widget _buildPlansList(List<MedicationPlan> plans) {
+    if (plans.isEmpty) {
+      return const Card(
+        child: Padding(
+          padding: EdgeInsets.all(20),
+          child: Center(child: Text('暂无用药计划')),
+        ),
+      );
+    }
+
+    return Column(
+      children: plans.map((plan) {
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade100,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(Icons.medication, color: Colors.blue),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            plan.medicineName,
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            '剂量: ${plan.dosage}',
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: plan.isActive
+                            ? Colors.green.withOpacity(0.1)
+                            : Colors.grey.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        plan.isActive ? '启用' : '停用',
+                        style: TextStyle(
+                            color: plan.isActive ? Colors.green : Colors.grey),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '频率: ${plan.frequency.label}',
+                  style: const TextStyle(fontSize: 14),
+                ),
+                Text(
+                  '提醒时间: ${plan.reminderTimesText}',
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 
