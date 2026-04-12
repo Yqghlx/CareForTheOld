@@ -14,9 +14,16 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddDatabaseServices(
         this IServiceCollection services, IConfiguration configuration)
     {
-        // 开发环境使用 InMemory 数据库进行快速测试
+        // 使用 SQLite 数据库（数据持久化到本地文件）
+        var connectionString = configuration.GetConnectionString("DefaultConnection")
+            ?? "Data Source=carefortheold.db";
+
         services.AddDbContext<AppDbContext>(options =>
-            options.UseInMemoryDatabase("CareForTheOldDb"));
+            options.UseSqlite(connectionString));
+
+        // 启动时自动创建数据库和表
+        services.BuildServiceProvider().GetRequiredService<AppDbContext>()
+            .Database.EnsureCreated();
 
         return services;
     }
