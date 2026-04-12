@@ -60,4 +60,33 @@ class HealthService {
   Future<void> deleteRecord(String id) async {
     await _dio.delete('/health/$id');
   }
+
+  /// 获取家庭成员的健康记录（子女查看老人数据）
+  Future<List<HealthRecord>> getFamilyMemberRecords({
+    required String familyId,
+    required String memberId,
+    HealthType? type,
+    int limit = 50,
+  }) async {
+    final queryParams = <String, dynamic>{'limit': limit};
+    if (type != null) queryParams['type'] = type.value;
+    final response = await _dio.get(
+      '/health/family/$familyId/member/$memberId',
+      queryParameters: queryParams,
+    );
+    final List<dynamic> dataList = response.data['data'];
+    return dataList.map((json) => HealthRecord.fromJson(json)).toList();
+  }
+
+  /// 获取家庭成员的健康统计（子女查看老人数据）
+  Future<List<HealthStats>> getFamilyMemberStats({
+    required String familyId,
+    required String memberId,
+  }) async {
+    final response = await _dio.get(
+      '/health/family/$familyId/member/$memberId/stats',
+    );
+    final List<dynamic> dataList = response.data['data'];
+    return dataList.map((json) => HealthStats.fromJson(json)).toList();
+  }
 }
