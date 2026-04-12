@@ -287,68 +287,71 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     const SizedBox(height: 12),
                     // 提醒时间
                     ...timeControllers.asMap().entries.map((entry) {
-                      return Row(
-                        children: [
-                          Expanded(
-                            child: InkWell(
-                              onTap: () async {
-                                // 解析当前时间值
-                                final parts = entry.value.text.split(':');
-                                final initial = TimeOfDay(
-                                  hour: parts.length == 2
-                                      ? (int.tryParse(parts[0]) ?? 8)
-                                      : 8,
-                                  minute: parts.length == 2
-                                      ? (int.tryParse(parts[1]) ?? 0)
-                                      : 0,
-                                );
-                                final picked = await showTimePicker(
-                                  context: ctx,
-                                  initialTime: initial,
-                                  builder: (context, child) {
-                                    return MediaQuery(
-                                      data: MediaQuery.of(context).copyWith(
-                                        alwaysUse24HourFormat: true,
-                                      ),
-                                      child: child!,
-                                    );
-                                  },
-                                );
-                                if (picked != null) {
-                                  final timeStr =
-                                      '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}';
-                                  setDialogState(() {
-                                    entry.value.text = timeStr;
-                                  });
-                                }
-                              },
-                              child: InputDecorator(
-                                decoration: InputDecoration(
-                                  labelText: '提醒时间 ${entry.key + 1}',
-                                  suffixIcon: const Icon(Icons.access_time),
-                                ),
-                                child: Text(
-                                  entry.value.text.isEmpty
-                                      ? '点击选择时间'
-                                      : entry.value.text,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: entry.value.text.isEmpty
-                                        ? Colors.grey
-                                        : Colors.black,
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                onTap: () async {
+                                  // 解析当前时间值
+                                  final parts = entry.value.text.split(':');
+                                  final initial = TimeOfDay(
+                                    hour: parts.length == 2
+                                        ? (int.tryParse(parts[0]) ?? 8)
+                                        : 8,
+                                    minute: parts.length == 2
+                                        ? (int.tryParse(parts[1]) ?? 0)
+                                        : 0,
+                                  );
+                                  final picked = await showTimePicker(
+                                    context: ctx,
+                                    initialTime: initial,
+                                    builder: (context, child) {
+                                      return MediaQuery(
+                                        data: MediaQuery.of(context).copyWith(
+                                          alwaysUse24HourFormat: true,
+                                        ),
+                                        child: child!,
+                                      );
+                                    },
+                                  );
+                                  if (picked != null) {
+                                    final timeStr =
+                                        '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}';
+                                    setDialogState(() {
+                                      entry.value.text = timeStr;
+                                    });
+                                  }
+                                },
+                                child: InputDecorator(
+                                  decoration: InputDecoration(
+                                    labelText: '提醒时间 ${entry.key + 1}',
+                                    suffixIcon: const Icon(Icons.access_time),
+                                  ),
+                                  child: Text(
+                                    entry.value.text.isEmpty
+                                        ? '点击选择时间'
+                                        : entry.value.text,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: entry.value.text.isEmpty
+                                          ? Colors.grey
+                                          : Colors.black,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          if (timeControllers.length > 1)
-                            IconButton(
-                              icon: const Icon(Icons.remove_circle,
-                                  color: Colors.red),
-                              onPressed: () => setDialogState(
-                                  () => timeControllers.removeAt(entry.key)),
-                            ),
-                        ],
+                            if (timeControllers.length > 1)
+                              IconButton(
+                                icon: const Icon(Icons.remove_circle,
+                                    color: Colors.red),
+                                onPressed: () => setDialogState(
+                                    () => timeControllers.removeAt(entry.key)),
+                              ),
+                          ],
+                        ),
                       );
                     }),
                     TextButton.icon(
