@@ -125,7 +125,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
             crossAxisCount: 2,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            childAspectRatio: 1.6,
+            childAspectRatio: 1.2,
             children: [
               _buildQuickCard(
                 icon: Icons.favorite,
