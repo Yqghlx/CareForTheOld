@@ -4,8 +4,8 @@ import '../../shared/providers/auth_provider.dart';
 
 /// API 客户端配置
 class ApiClient {
-  // Android 模拟器使用 10.0.2.2 访问主机服务
-  static const String baseUrl = 'http://10.0.2.2:5136/api';
+  // 局域网 IP，真机和模拟器都可访问（模拟器也能访问局域网）
+  static const String baseUrl = 'http://192.168.100.199:5136/api';
 
   late final Dio _dio;
 
