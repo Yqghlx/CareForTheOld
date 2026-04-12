@@ -138,14 +138,14 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                 title: '家庭成员',
                 subtitle: '查看家人信息',
                 color: Colors.green,
-                onTap: () {},
+                onTap: () => context.push('/elder/family'),
               ),
               _buildQuickCard(
                 icon: Icons.settings,
                 title: '设置',
                 subtitle: '个人信息设置',
                 color: Colors.grey,
-                onTap: () {},
+                onTap: () => _showSettingsDialog(),
               ),
             ],
           ),
@@ -176,6 +176,40 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  /// 设置对话框（登出）
+  void _showSettingsDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('设置'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('用户: ${ref.read(authProvider).user?.realName ?? "未知"}'),
+            const SizedBox(height: 8),
+            Text('角色: ${ref.read(authProvider).user?.role.label ?? "未知"}'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('关闭'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              ref.read(authProvider.notifier).logout();
+              context.go('/login');
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('退出登录'),
+          ),
+        ],
       ),
     );
   }

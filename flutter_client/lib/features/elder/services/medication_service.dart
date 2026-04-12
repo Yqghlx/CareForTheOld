@@ -50,4 +50,45 @@ class MedicationService {
     final List<dynamic> dataList = response.data['data'];
     return dataList.map((json) => MedicationLog.fromJson(json)).toList();
   }
+
+  /// 获取老人的用药计划（子女查看）
+  Future<List<MedicationPlan>> getElderPlans(String elderId) async {
+    final response = await _dio.get('/medication/plans/elder/$elderId');
+    final List<dynamic> dataList = response.data['data'];
+    return dataList.map((json) => MedicationPlan.fromJson(json)).toList();
+  }
+
+  /// 获取老人的用药日志（子女查看）
+  Future<List<MedicationLog>> getElderLogs(String elderId,
+      {int limit = 50}) async {
+    final response = await _dio.get(
+      '/medication/logs/elder/$elderId',
+      queryParameters: {'limit': limit},
+    );
+    final List<dynamic> dataList = response.data['data'];
+    return dataList.map((json) => MedicationLog.fromJson(json)).toList();
+  }
+
+  /// 创建用药计划（子女为老人创建）
+  Future<MedicationPlan> createPlan({
+    required String elderId,
+    required String medicineName,
+    required String dosage,
+    required int frequency,
+    required List<String> reminderTimes,
+    required String startDate,
+    String? endDate,
+  }) async {
+    final response = await _dio.post('/medication/plans', data: {
+      'elderId': elderId,
+      'medicineName': medicineName,
+      'dosage': dosage,
+      'frequency': frequency,
+      'reminderTimes': reminderTimes,
+      'startDate': startDate,
+      if (endDate != null) 'endDate': endDate,
+    });
+    final data = response.data['data'];
+    return MedicationPlan.fromJson(data);
+  }
 }

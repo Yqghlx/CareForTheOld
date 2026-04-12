@@ -37,6 +37,10 @@ final appRouter = GoRouter(
       path: '/elder/medication',
       builder: (context, state) => const MedicationPage(),
     ),
+    GoRoute(
+      path: '/elder/family',
+      builder: (context, state) => const FamilyMemberPage(),
+    ),
 
     // 子女端路由
     GoRoute(
