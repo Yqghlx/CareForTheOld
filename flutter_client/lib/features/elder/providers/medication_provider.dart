@@ -73,6 +73,21 @@ class MedicationNotifier extends StateNotifier<MedicationState> {
     }
   }
 
+  /// 替换列表中匹配 planId + scheduledAt 的记录
+  List<MedicationLog> _replaceByPlanAndTime(
+    List<MedicationLog> list,
+    MedicationLog updated,
+  ) {
+    return list.map((l) {
+      // today-pending 返回的项没有 id（后端 Guid.Empty），
+      // 因此用 planId + scheduledAt 匹配
+      final samePlan = l.planId == updated.planId;
+      final sameTime =
+          (l.scheduledAt.difference(updated.scheduledAt).inMinutes).abs() <= 1;
+      return (samePlan && sameTime) ? updated : l;
+    }).toList();
+  }
+
   /// 标记已服用
   Future<bool> markAsTaken(MedicationLog log) async {
     try {
@@ -81,10 +96,7 @@ class MedicationNotifier extends StateNotifier<MedicationState> {
         status: MedicationStatus.taken,
         scheduledAt: log.scheduledAt,
       );
-      // 替换列表中对应项
-      final newList = state.todayPending.map((l) {
-        return l.id == updated.id ? updated : l;
-      }).toList();
+      final newList = _replaceByPlanAndTime(state.todayPending, updated);
       state = state.copyWith(todayPending: newList);
       return true;
     } catch (e) {
@@ -101,9 +113,7 @@ class MedicationNotifier extends StateNotifier<MedicationState> {
         status: MedicationStatus.skipped,
         scheduledAt: log.scheduledAt,
       );
-      final newList = state.todayPending.map((l) {
-        return l.id == updated.id ? updated : l;
-      }).toList();
+      final newList = _replaceByPlanAndTime(state.todayPending, updated);
       state = state.copyWith(todayPending: newList);
       return true;
     } catch (e) {
