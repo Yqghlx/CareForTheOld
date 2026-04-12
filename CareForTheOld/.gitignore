@@ -1,0 +1,18 @@
+# 数据库文件
+*.db
+*.db-shm
+*.db-wal
+
+# 日志文件
+logs/
+*.log
+
+# 编译输出
+bin/
+obj/
+
+# IDE
+.vs/
+.idea/
+*.user
+*.suo
