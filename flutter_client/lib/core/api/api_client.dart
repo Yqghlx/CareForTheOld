@@ -9,7 +9,15 @@ class ApiClient {
 
   late final Dio _dio;
 
-  ApiClient() {
+  /// Token 获取回调，由 Provider 注入
+  final String? Function()? _tokenGetter;
+
+  /// 登出回调，401 时触发
+  final void Function()? _onUnauthorized;
+
+  ApiClient({String? Function()? tokenGetter, void Function()? onUnauthorized})
+      : _tokenGetter = tokenGetter,
+        _onUnauthorized = onUnauthorized {
     _dio = Dio(BaseOptions(
       baseUrl: baseUrl,
       connectTimeout: const Duration(seconds: 10),
@@ -23,15 +31,16 @@ class ApiClient {
     // 请求拦截器 - 添加认证令牌
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) {
-        // 从全局状态获取令牌（需要通过 ProviderContainer 获取）
-        // 注意：这里使用的是全局 container，在实际应用中应该通过 Provider 传递
+        final token = _tokenGetter?.call();
+        if (token != null && token.isNotEmpty) {
+          options.headers['Authorization'] = 'Bearer $token';
+        }
         return handler.next(options);
       },
       onError: (error, handler) async {
-        // 401 错误时尝试刷新令牌
+        // 401 错误时清除认证状态，跳转登录页
         if (error.response?.statusCode == 401) {
-          // 刷新令牌逻辑需要在 Service 层处理
-          // 这里简单地将错误传递下去
+          _onUnauthorized?.call();
         }
         return handler.next(error);
       },
@@ -43,5 +52,8 @@ class ApiClient {
 
 /// API 客户端 Provider
 final apiClientProvider = Provider<ApiClient>((ref) {
-  return ApiClient();
+  return ApiClient(
+    tokenGetter: () => ref.read(authProvider).accessToken,
+    onUnauthorized: () => ref.read(authProvider.notifier).logout(),
+  );
 });
