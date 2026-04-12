@@ -1,16 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../shared/models/family.dart';
+import '../../../shared/models/user_role.dart';
+import '../providers/family_provider.dart';
 
 /// 家庭成员管理页面
-class FamilyMemberPage extends StatefulWidget {
+class FamilyMemberPage extends ConsumerStatefulWidget {
   const FamilyMemberPage({super.key});
 
   @override
-  State<FamilyMemberPage> createState() => _FamilyMemberPageState();
+  ConsumerState<FamilyMemberPage> createState() => _FamilyMemberPageState();
 }
 
-class _FamilyMemberPageState extends State<FamilyMemberPage> {
+class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(familyProvider.notifier).loadFamily();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final familyState = ref.watch(familyProvider);
+
     return Scaffold(
       appBar: AppBar(title: const Text('家庭成员')),
       body: Padding(
@@ -18,69 +33,81 @@ class _FamilyMemberPageState extends State<FamilyMemberPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Row(
-                  children: [
-                    const Icon(Icons.home, size: 32, color: Color(0xFFE86B4A)),
-                    const SizedBox(width: 16),
-                    const Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('张家', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                          Text('创建于 2026-01-01', style: TextStyle(color: Colors.grey)),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            // 家庭信息卡片
+            _buildFamilyCard(familyState),
             const SizedBox(height: 24),
 
-            const Text('家庭成员', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
-
-            Expanded(
-              child: ListView.builder(
-                itemCount: 4,
-                itemBuilder: (context, index) {
-                  final roles = ['老人', '子女', '子女', '子女'];
-                  final names = ['张奶奶', '小张', '小张妹妹', '小张弟弟'];
-
-                  return Card(
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: index == 0 ? Colors.orange : Colors.blue,
-                        child: const Icon(Icons.person, color: Colors.white),
-                      ),
-                      title: Text(names[index]),
-                      subtitle: Text(roles[index]),
-                      trailing: index > 0
-                          ? IconButton(
-                              icon: const Icon(Icons.remove_circle_outline, color: Colors.red),
-                              onPressed: () {
-                                _showRemoveDialog(names[index]);
-                              },
-                            )
-                          : null,
-                    ),
-                  );
-                },
-              ),
+            // 成员列表标题
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('家庭成员',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                if (familyState.family != null)
+                  TextButton.icon(
+                    onPressed: () => _showAddMemberDialog(),
+                    icon: const Icon(Icons.add),
+                    label: const Text('添加成员'),
+                  ),
+              ],
             ),
-
             const SizedBox(height: 16),
 
-            // 添加成员按钮
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () => _showAddMemberDialog(),
+            // 成员列表
+            Expanded(child: _buildContent(familyState)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 家庭信息卡片
+  Widget _buildFamilyCard(FamilyState state) {
+    if (state.family == null && !state.isLoading) {
+      // 没有家庭组，显示创建按钮
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              const Icon(Icons.home, size: 48, color: Color(0xFFE86B4A)),
+              const SizedBox(height: 12),
+              const Text('您还没有加入家庭组',
+                  style: TextStyle(fontSize: 16, color: Colors.grey)),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: () => _showCreateFamilyDialog(),
                 icon: const Icon(Icons.add),
-                label: const Text('添加家庭成员'),
+                label: const Text('创建家庭组'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Row(
+          children: [
+            const Icon(Icons.home, size: 32, color: Color(0xFFE86B4A)),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    state.family?.familyName ?? '加载中...',
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    '共 ${state.members.length} 位成员',
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                ],
               ),
             ),
           ],
@@ -89,83 +116,212 @@ class _FamilyMemberPageState extends State<FamilyMemberPage> {
     );
   }
 
-  void _showAddMemberDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('添加家庭成员'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: '手机号',
-                  prefixIcon: Icon(Icons.phone),
-                ),
-                keyboardType: TextInputType.phone,
-              ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                value: '子女',
-                decoration: const InputDecoration(labelText: '角色'),
-                items: const [
-                  DropdownMenuItem(value: 'elder', child: Text('老人')),
-                  DropdownMenuItem(value: 'child', child: Text('子女')),
-                ],
-                onChanged: (value) {},
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                decoration: const InputDecoration(labelText: '称呼（如：妈妈、爸爸）'),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('取消'),
-            ),
+  /// 内容区域
+  Widget _buildContent(FamilyState state) {
+    if (state.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (state.error != null && state.family == null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('加载失败: ${state.error}',
+                style: const TextStyle(color: Colors.red)),
+            const SizedBox(height: 12),
             ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('邀请已发送')),
-                );
-              },
-              child: const Text('发送邀请'),
+              onPressed: () =>
+                  ref.read(familyProvider.notifier).loadFamily(),
+              child: const Text('重试'),
             ),
           ],
+        ),
+      );
+    }
+
+    if (state.members.isEmpty) {
+      return const Center(
+        child: Text('暂无家庭成员', style: TextStyle(color: Colors.grey)),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: state.members.length,
+      itemBuilder: (context, index) {
+        final member = state.members[index];
+        return _buildMemberItem(member);
+      },
+    );
+  }
+
+  /// 成员列表项
+  Widget _buildMemberItem(FamilyMember member) {
+    return Card(
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor:
+              member.role.isElder ? Colors.orange : Colors.blue,
+          child: const Icon(Icons.person, color: Colors.white),
+        ),
+        title: Text(member.realName),
+        subtitle: Text('${member.role.label} · ${member.relation}'),
+        trailing: IconButton(
+          icon: const Icon(Icons.remove_circle_outline, color: Colors.red),
+          onPressed: () => _confirmRemove(member),
+        ),
+      ),
+    );
+  }
+
+  /// 创建家庭组对话框
+  void _showCreateFamilyDialog() {
+    final nameController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('创建家庭组'),
+        content: TextField(
+          controller: nameController,
+          decoration: const InputDecoration(
+            labelText: '家庭组名称',
+            hintText: '如：张家',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('取消'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final name = nameController.text.trim();
+              if (name.isEmpty) return;
+              Navigator.pop(ctx);
+              final success = await ref
+                  .read(familyProvider.notifier)
+                  .createFamily(name);
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(success ? '创建成功' : '创建失败')),
+                );
+              }
+            },
+            child: const Text('创建'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 添加成员对话框
+  void _showAddMemberDialog() {
+    final phoneController = TextEditingController();
+    final relationController = TextEditingController();
+    String selectedRole = 'child';
+
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (ctx, setDialogState) {
+            return AlertDialog(
+              title: const Text('添加家庭成员'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: phoneController,
+                    decoration: const InputDecoration(
+                      labelText: '手机号',
+                      prefixIcon: Icon(Icons.phone),
+                    ),
+                    keyboardType: TextInputType.phone,
+                  ),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<String>(
+                    value: selectedRole,
+                    decoration: const InputDecoration(labelText: '角色'),
+                    items: const [
+                      DropdownMenuItem(value: 'child', child: Text('子女')),
+                      DropdownMenuItem(value: 'elder', child: Text('老人')),
+                    ],
+                    onChanged: (v) => setDialogState(() => selectedRole = v!),
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: relationController,
+                    decoration: const InputDecoration(
+                      labelText: '称呼（如：妈妈、爸爸）',
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text('取消'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    final phone = phoneController.text.trim();
+                    final relation = relationController.text.trim();
+                    if (phone.isEmpty || relation.isEmpty) return;
+                    Navigator.pop(ctx);
+                    final success = await ref
+                        .read(familyProvider.notifier)
+                        .addMember(
+                          phoneNumber: phone,
+                          role: selectedRole == 'elder'
+                              ? UserRole.elder
+                              : UserRole.child,
+                          relation: relation,
+                        );
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(success ? '添加成功' : '添加失败')),
+                      );
+                    }
+                  },
+                  child: const Text('添加'),
+                ),
+              ],
+            );
+          },
         );
       },
     );
   }
 
-  void _showRemoveDialog(String name) {
+  /// 确认移除成员
+  void _confirmRemove(FamilyMember member) {
     showDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('移除成员'),
-          content: Text('确定要移除 $name 吗？'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('取消'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
+      builder: (ctx) => AlertDialog(
+        title: const Text('移除成员'),
+        content: Text('确定要移除 ${member.realName} 吗？'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('取消'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              final success = await ref
+                  .read(familyProvider.notifier)
+                  .removeMember(member.userId);
+              if (mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('成员已移除')),
+                  SnackBar(content: Text(success ? '已移除' : '移除失败')),
                 );
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              child: const Text('移除'),
-            ),
-          ],
-        );
-      },
+              }
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('移除'),
+          ),
+        ],
+      ),
     );
   }
 }
