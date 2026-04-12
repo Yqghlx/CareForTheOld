@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../shared/providers/auth_provider.dart';
+import 'health_record_page.dart';
+import 'medication_page.dart';
 
 /// 老人端首页
 class ElderHomePage extends ConsumerStatefulWidget {
@@ -58,13 +60,14 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
   }
 
   Widget _buildBody() {
+    // 底部导航栏切换页面内容，不使用路由导航（避免 build 期间调用 setState）
     switch (_selectedIndex) {
       case 0:
         return _buildHomeContent();
       case 1:
-        return context.go('/elder/health') as Widget;
+        return const HealthRecordPage();
       case 2:
-        return context.go('/elder/medication') as Widget;
+        return const MedicationPage();
       default:
         return _buildHomeContent();
     }
@@ -114,7 +117,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
           GridView.count(
             crossAxisCount: 2,
             shrinkWrap: true,
-            childAspectRatio: 1.5,
+            childAspectRatio: 1.6,
             children: [
               _buildQuickCard(
                 icon: Icons.favorite,
@@ -162,12 +165,12 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 36, color: color),
-              const SizedBox(height: 8),
+              Icon(icon, size: 32, color: color),
+              const SizedBox(height: 6),
               Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               Text(subtitle, style: const TextStyle(fontSize: 14, color: Colors.grey)),
             ],

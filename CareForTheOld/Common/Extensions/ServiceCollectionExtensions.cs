@@ -14,8 +14,9 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddDatabaseServices(
         this IServiceCollection services, IConfiguration configuration)
     {
+        // 开发环境使用 InMemory 数据库进行快速测试
         services.AddDbContext<AppDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+            options.UseInMemoryDatabase("CareForTheOldDb"));
 
         return services;
     }

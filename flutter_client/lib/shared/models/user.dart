@@ -26,7 +26,7 @@ class User {
       birthDate: json['birthDate'] != null
           ? DateTime.parse(json['birthDate'] as String)
           : null,
-      role: UserRole.fromString(json['role'] as String),
+      role: UserRole.fromString(json['role']),
       avatarUrl: json['avatarUrl'] as String?,
     );
   }
