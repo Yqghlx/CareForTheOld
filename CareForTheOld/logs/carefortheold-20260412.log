@@ -931,3 +931,446 @@ DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
 2026-04-12 16:04:46.702 +08:00 [INF] Executed action CareForTheOld.Controllers.FamilyController.AddMember (CareForTheOld) in 3.4647ms
 2026-04-12 16:04:46.702 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.FamilyController.AddMember (CareForTheOld)'
 2026-04-12 16:04:46.702 +08:00 [INF] Request finished HTTP/1.1 POST http://localhost:5136/api/family/cc5afdf0-9648-4808-8fa2-883c2be76bd1/members - 200 null application/json; charset=utf-8 3.8594ms
+2026-04-12 16:39:21.202 +08:00 [INF] Request starting HTTP/1.1 POST http://10.0.2.2:5136/api/auth/login - application/json 49
+2026-04-12 16:39:21.203 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.AuthController.Login (CareForTheOld)'
+2026-04-12 16:39:21.204 +08:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[CareForTheOld.Models.DTOs.Responses.AuthResponse]] Login(CareForTheOld.Models.DTOs.Requests.Auth.LoginRequest) on controller CareForTheOld.Controllers.AuthController (CareForTheOld).
+2026-04-12 16:39:21.310 +08:00 [INF] Saved 1 entities to in-memory store.
+2026-04-12 16:39:21.310 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[CareForTheOld.Models.DTOs.Responses.AuthResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-12 16:39:21.310 +08:00 [INF] Executed action CareForTheOld.Controllers.AuthController.Login (CareForTheOld) in 106.5709ms
+2026-04-12 16:39:21.310 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.AuthController.Login (CareForTheOld)'
+2026-04-12 16:39:21.310 +08:00 [INF] Request finished HTTP/1.1 POST http://10.0.2.2:5136/api/auth/login - 200 null application/json; charset=utf-8 108.8798ms
+2026-04-12 16:39:21.402 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - application/json null
+2026-04-12 16:39:21.403 +08:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-04-12 16:39:21.403 +08:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-04-12 16:39:21.403 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - 401 0 null 0.4629ms
+2026-04-12 16:39:22.999 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - application/json null
+2026-04-12 16:39:22.999 +08:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-04-12 16:39:23.000 +08:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-04-12 16:39:23.000 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - 401 0 null 0.2801ms
+2026-04-12 16:39:25.753 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - application/json null
+2026-04-12 16:39:25.754 +08:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-04-12 16:39:25.754 +08:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-04-12 16:39:25.754 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - 401 0 null 0.3525ms
+2026-04-12 16:39:26.483 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - application/json null
+2026-04-12 16:39:26.483 +08:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-04-12 16:39:26.483 +08:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-04-12 16:39:26.483 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - 401 0 null 0.3225ms
+2026-04-12 16:39:26.677 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - application/json null
+2026-04-12 16:39:26.677 +08:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-04-12 16:39:26.677 +08:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-04-12 16:39:26.677 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - 401 0 null 0.3381ms
+2026-04-12 16:39:26.870 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - application/json null
+2026-04-12 16:39:26.870 +08:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-04-12 16:39:26.870 +08:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-04-12 16:39:26.870 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - 401 0 null 0.356ms
+2026-04-12 16:39:34.857 +08:00 [INF] Request starting HTTP/1.1 POST http://10.0.2.2:5136/api/family - application/json 26
+2026-04-12 16:39:34.857 +08:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-04-12 16:39:34.857 +08:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-04-12 16:39:34.857 +08:00 [INF] Request finished HTTP/1.1 POST http://10.0.2.2:5136/api/family - 401 0 null 0.2904ms
+2026-04-12 16:39:54.283 +08:00 [INF] Request starting HTTP/1.1 POST http://10.0.2.2:5136/api/auth/login - application/json 49
+2026-04-12 16:39:54.283 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.AuthController.Login (CareForTheOld)'
+2026-04-12 16:39:54.283 +08:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[CareForTheOld.Models.DTOs.Responses.AuthResponse]] Login(CareForTheOld.Models.DTOs.Requests.Auth.LoginRequest) on controller CareForTheOld.Controllers.AuthController (CareForTheOld).
+2026-04-12 16:39:54.395 +08:00 [INF] Saved 1 entities to in-memory store.
+2026-04-12 16:39:54.395 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[CareForTheOld.Models.DTOs.Responses.AuthResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-12 16:39:54.395 +08:00 [INF] Executed action CareForTheOld.Controllers.AuthController.Login (CareForTheOld) in 111.6457ms
+2026-04-12 16:39:54.395 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.AuthController.Login (CareForTheOld)'
+2026-04-12 16:39:54.395 +08:00 [INF] Request finished HTTP/1.1 POST http://10.0.2.2:5136/api/auth/login - 200 null application/json; charset=utf-8 111.9494ms
+2026-04-12 16:39:55.939 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/medication/plans/me - application/json null
+2026-04-12 16:39:55.940 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld)'
+2026-04-12 16:39:55.940 +08:00 [INF] Route matched with {action = "GetMyPlans", controller = "Medication"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.MedicationPlanResponse]]] GetMyPlans() on controller CareForTheOld.Controllers.MedicationController (CareForTheOld).
+2026-04-12 16:39:55.941 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.MedicationPlanResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:39:55.941 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/medication/today-pending - application/json null
+2026-04-12 16:39:55.941 +08:00 [INF] Executed action CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld) in 0.8692ms
+2026-04-12 16:39:55.941 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld)'
+2026-04-12 16:39:55.941 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/medication/plans/me - 200 null application/json; charset=utf-8 2.0651ms
+2026-04-12 16:39:55.941 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld)'
+2026-04-12 16:39:55.941 +08:00 [INF] Route matched with {action = "GetTodayPending", controller = "Medication"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse]]] GetTodayPending() on controller CareForTheOld.Controllers.MedicationController (CareForTheOld).
+2026-04-12 16:39:55.941 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:39:55.941 +08:00 [INF] Executed action CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld) in 0.2135ms
+2026-04-12 16:39:55.941 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld)'
+2026-04-12 16:39:55.941 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/medication/today-pending - 200 null application/json; charset=utf-8 0.4693ms
+2026-04-12 16:39:57.406 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/health/me/stats - application/json null
+2026-04-12 16:39:57.407 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/health/me?limit=50 - application/json null
+2026-04-12 16:39:57.407 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.HealthController.GetMyStats (CareForTheOld)'
+2026-04-12 16:39:57.407 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.HealthController.GetMyRecords (CareForTheOld)'
+2026-04-12 16:39:57.407 +08:00 [INF] Route matched with {action = "GetMyRecords", controller = "Health"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.HealthRecordResponse]]] GetMyRecords(System.Nullable`1[CareForTheOld.Models.Enums.HealthType], Int32) on controller CareForTheOld.Controllers.HealthController (CareForTheOld).
+2026-04-12 16:39:57.408 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.HealthRecordResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:39:57.408 +08:00 [INF] Executed action CareForTheOld.Controllers.HealthController.GetMyRecords (CareForTheOld) in 0.9246ms
+2026-04-12 16:39:57.408 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.HealthController.GetMyRecords (CareForTheOld)'
+2026-04-12 16:39:57.408 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/health/me?limit=50 - 200 null application/json; charset=utf-8 1.2172ms
+2026-04-12 16:39:57.410 +08:00 [INF] Route matched with {action = "GetMyStats", controller = "Health"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.HealthStatsResponse]]] GetMyStats() on controller CareForTheOld.Controllers.HealthController (CareForTheOld).
+2026-04-12 16:39:57.416 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.HealthStatsResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:39:57.416 +08:00 [INF] Executed action CareForTheOld.Controllers.HealthController.GetMyStats (CareForTheOld) in 6.2768ms
+2026-04-12 16:39:57.416 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.HealthController.GetMyStats (CareForTheOld)'
+2026-04-12 16:39:57.417 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/health/me/stats - 200 null application/json; charset=utf-8 10.1465ms
+2026-04-12 16:39:58.763 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/health/me?limit=50 - application/json null
+2026-04-12 16:39:58.763 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.HealthController.GetMyRecords (CareForTheOld)'
+2026-04-12 16:39:58.763 +08:00 [INF] Route matched with {action = "GetMyRecords", controller = "Health"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.HealthRecordResponse]]] GetMyRecords(System.Nullable`1[CareForTheOld.Models.Enums.HealthType], Int32) on controller CareForTheOld.Controllers.HealthController (CareForTheOld).
+2026-04-12 16:39:58.764 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.HealthRecordResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:39:58.764 +08:00 [INF] Executed action CareForTheOld.Controllers.HealthController.GetMyRecords (CareForTheOld) in 0.4075ms
+2026-04-12 16:39:58.764 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.HealthController.GetMyRecords (CareForTheOld)'
+2026-04-12 16:39:58.764 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/health/me?limit=50 - 200 null application/json; charset=utf-8 0.8722ms
+2026-04-12 16:39:59.155 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/medication/plans/me - application/json null
+2026-04-12 16:39:59.155 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/medication/today-pending - application/json null
+2026-04-12 16:39:59.155 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld)'
+2026-04-12 16:39:59.155 +08:00 [INF] Route matched with {action = "GetMyPlans", controller = "Medication"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.MedicationPlanResponse]]] GetMyPlans() on controller CareForTheOld.Controllers.MedicationController (CareForTheOld).
+2026-04-12 16:39:59.155 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld)'
+2026-04-12 16:39:59.155 +08:00 [INF] Route matched with {action = "GetTodayPending", controller = "Medication"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse]]] GetTodayPending() on controller CareForTheOld.Controllers.MedicationController (CareForTheOld).
+2026-04-12 16:39:59.156 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:39:59.156 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.MedicationPlanResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:39:59.156 +08:00 [INF] Executed action CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld) in 0.2881ms
+2026-04-12 16:39:59.156 +08:00 [INF] Executed action CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld) in 0.3536ms
+2026-04-12 16:39:59.156 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld)'
+2026-04-12 16:39:59.156 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld)'
+2026-04-12 16:39:59.156 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/medication/today-pending - 200 null application/json; charset=utf-8 0.5192ms
+2026-04-12 16:39:59.156 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/medication/plans/me - 200 null application/json; charset=utf-8 0.8582ms
+2026-04-12 16:40:10.217 +08:00 [INF] Request starting HTTP/1.1 POST http://10.0.2.2:5136/api/auth/login - application/json 49
+2026-04-12 16:40:10.217 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.AuthController.Login (CareForTheOld)'
+2026-04-12 16:40:10.217 +08:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[CareForTheOld.Models.DTOs.Responses.AuthResponse]] Login(CareForTheOld.Models.DTOs.Requests.Auth.LoginRequest) on controller CareForTheOld.Controllers.AuthController (CareForTheOld).
+2026-04-12 16:40:10.335 +08:00 [INF] Saved 1 entities to in-memory store.
+2026-04-12 16:40:10.335 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[CareForTheOld.Models.DTOs.Responses.AuthResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-12 16:40:10.335 +08:00 [INF] Executed action CareForTheOld.Controllers.AuthController.Login (CareForTheOld) in 117.9987ms
+2026-04-12 16:40:10.335 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.AuthController.Login (CareForTheOld)'
+2026-04-12 16:40:10.335 +08:00 [INF] Request finished HTTP/1.1 POST http://10.0.2.2:5136/api/auth/login - 200 null application/json; charset=utf-8 118.3253ms
+2026-04-12 16:40:10.374 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - application/json null
+2026-04-12 16:40:10.374 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.FamilyController.GetMembers (CareForTheOld)'
+2026-04-12 16:40:10.374 +08:00 [INF] Route matched with {action = "GetMembers", controller = "Family"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.FamilyMemberResponse]]] GetMembers(System.Guid) on controller CareForTheOld.Controllers.FamilyController (CareForTheOld).
+2026-04-12 16:40:10.375 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.FamilyMemberResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:40:10.375 +08:00 [INF] Executed action CareForTheOld.Controllers.FamilyController.GetMembers (CareForTheOld) in 0.4478ms
+2026-04-12 16:40:10.375 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.FamilyController.GetMembers (CareForTheOld)'
+2026-04-12 16:40:10.375 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - 200 null application/json; charset=utf-8 0.9063ms
+2026-04-12 16:40:14.289 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - application/json null
+2026-04-12 16:40:14.289 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.FamilyController.GetMembers (CareForTheOld)'
+2026-04-12 16:40:14.289 +08:00 [INF] Route matched with {action = "GetMembers", controller = "Family"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.FamilyMemberResponse]]] GetMembers(System.Guid) on controller CareForTheOld.Controllers.FamilyController (CareForTheOld).
+2026-04-12 16:40:14.290 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.FamilyMemberResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:40:14.290 +08:00 [INF] Executed action CareForTheOld.Controllers.FamilyController.GetMembers (CareForTheOld) in 0.409ms
+2026-04-12 16:40:14.290 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.FamilyController.GetMembers (CareForTheOld)'
+2026-04-12 16:40:14.290 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - 200 null application/json; charset=utf-8 0.868ms
+2026-04-12 16:40:27.198 +08:00 [INF] Request starting HTTP/1.1 POST http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - application/json 58
+2026-04-12 16:40:27.199 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.FamilyController.AddMember (CareForTheOld)'
+2026-04-12 16:40:27.199 +08:00 [INF] Route matched with {action = "AddMember", controller = "Family"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[CareForTheOld.Models.DTOs.Responses.FamilyResponse]] AddMember(System.Guid, CareForTheOld.Models.DTOs.Requests.Families.AddFamilyMemberRequest) on controller CareForTheOld.Controllers.FamilyController (CareForTheOld).
+2026-04-12 16:40:27.199 +08:00 [INF] Executed action CareForTheOld.Controllers.FamilyController.AddMember (CareForTheOld) in 0.6353ms
+2026-04-12 16:40:27.200 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.FamilyController.AddMember (CareForTheOld)'
+2026-04-12 16:40:27.200 +08:00 [ERR] 未处理的异常: 您不是该家庭成员
+System.UnauthorizedAccessException: 您不是该家庭成员
+   at CareForTheOld.Services.Implementations.FamilyService.EnsureMemberAsync(Guid familyId, Guid userId) in /Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/Services/Implementations/FamilyService.cs:line 98
+   at CareForTheOld.Services.Implementations.FamilyService.AddMemberAsync(Guid familyId, Guid operatorId, AddFamilyMemberRequest request) in /Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/Services/Implementations/FamilyService.cs:line 46
+   at CareForTheOld.Controllers.FamilyController.AddMember(Guid id, AddFamilyMemberRequest request) in /Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/Controllers/FamilyController.cs:line 32
+   at lambda_method335(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at CareForTheOld.Common.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in /Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/Common/Middleware/ExceptionHandlingMiddleware.cs:line 21
+2026-04-12 16:40:27.201 +08:00 [INF] Request finished HTTP/1.1 POST http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - 401 null application/json 2.1831ms
+2026-04-12 16:44:34.541 +08:00 [INF] Request starting HTTP/1.1 POST http://10.0.2.2:5136/api/auth/login - application/json 49
+2026-04-12 16:44:34.541 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.AuthController.Login (CareForTheOld)'
+2026-04-12 16:44:34.541 +08:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[CareForTheOld.Models.DTOs.Responses.AuthResponse]] Login(CareForTheOld.Models.DTOs.Requests.Auth.LoginRequest) on controller CareForTheOld.Controllers.AuthController (CareForTheOld).
+2026-04-12 16:44:34.647 +08:00 [INF] Saved 1 entities to in-memory store.
+2026-04-12 16:44:34.647 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[CareForTheOld.Models.DTOs.Responses.AuthResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-12 16:44:34.647 +08:00 [INF] Executed action CareForTheOld.Controllers.AuthController.Login (CareForTheOld) in 105.7626ms
+2026-04-12 16:44:34.647 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.AuthController.Login (CareForTheOld)'
+2026-04-12 16:44:34.647 +08:00 [INF] Request finished HTTP/1.1 POST http://10.0.2.2:5136/api/auth/login - 200 null application/json; charset=utf-8 106.6456ms
+2026-04-12 16:44:34.762 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - application/json null
+2026-04-12 16:44:34.763 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.FamilyController.GetMembers (CareForTheOld)'
+2026-04-12 16:44:34.763 +08:00 [INF] Route matched with {action = "GetMembers", controller = "Family"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.FamilyMemberResponse]]] GetMembers(System.Guid) on controller CareForTheOld.Controllers.FamilyController (CareForTheOld).
+2026-04-12 16:44:34.763 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.FamilyMemberResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:44:34.763 +08:00 [INF] Executed action CareForTheOld.Controllers.FamilyController.GetMembers (CareForTheOld) in 0.5254ms
+2026-04-12 16:44:34.763 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.FamilyController.GetMembers (CareForTheOld)'
+2026-04-12 16:44:34.763 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - 200 null application/json; charset=utf-8 1.0068ms
+2026-04-12 16:44:37.412 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - application/json null
+2026-04-12 16:44:37.413 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.FamilyController.GetMembers (CareForTheOld)'
+2026-04-12 16:44:37.413 +08:00 [INF] Route matched with {action = "GetMembers", controller = "Family"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.FamilyMemberResponse]]] GetMembers(System.Guid) on controller CareForTheOld.Controllers.FamilyController (CareForTheOld).
+2026-04-12 16:44:37.413 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.FamilyMemberResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:44:37.413 +08:00 [INF] Executed action CareForTheOld.Controllers.FamilyController.GetMembers (CareForTheOld) in 0.4034ms
+2026-04-12 16:44:37.413 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.FamilyController.GetMembers (CareForTheOld)'
+2026-04-12 16:44:37.413 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - 200 null application/json; charset=utf-8 0.8703ms
+2026-04-12 16:44:49.899 +08:00 [INF] Request starting HTTP/1.1 POST http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - application/json 58
+2026-04-12 16:44:49.899 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.FamilyController.AddMember (CareForTheOld)'
+2026-04-12 16:44:49.899 +08:00 [INF] Route matched with {action = "AddMember", controller = "Family"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[CareForTheOld.Models.DTOs.Responses.FamilyResponse]] AddMember(System.Guid, CareForTheOld.Models.DTOs.Requests.Families.AddFamilyMemberRequest) on controller CareForTheOld.Controllers.FamilyController (CareForTheOld).
+2026-04-12 16:44:49.900 +08:00 [INF] Executed action CareForTheOld.Controllers.FamilyController.AddMember (CareForTheOld) in 0.5021ms
+2026-04-12 16:44:49.900 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.FamilyController.AddMember (CareForTheOld)'
+2026-04-12 16:44:49.900 +08:00 [ERR] 未处理的异常: 您不是该家庭成员
+System.UnauthorizedAccessException: 您不是该家庭成员
+   at CareForTheOld.Services.Implementations.FamilyService.EnsureMemberAsync(Guid familyId, Guid userId) in /Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/Services/Implementations/FamilyService.cs:line 98
+   at CareForTheOld.Services.Implementations.FamilyService.AddMemberAsync(Guid familyId, Guid operatorId, AddFamilyMemberRequest request) in /Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/Services/Implementations/FamilyService.cs:line 46
+   at CareForTheOld.Controllers.FamilyController.AddMember(Guid id, AddFamilyMemberRequest request) in /Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/Controllers/FamilyController.cs:line 32
+   at lambda_method335(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at CareForTheOld.Common.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in /Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/Common/Middleware/ExceptionHandlingMiddleware.cs:line 21
+2026-04-12 16:44:49.900 +08:00 [INF] Request finished HTTP/1.1 POST http://10.0.2.2:5136/api/family/a10b9809-f09b-46c8-941e-10b67fc993bb/members - 401 null application/json 1.8041ms
+2026-04-12 16:48:54.574 +08:00 [INF] Request starting HTTP/1.1 POST http://10.0.2.2:5136/api/auth/login - application/json 49
+2026-04-12 16:48:54.575 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.AuthController.Login (CareForTheOld)'
+2026-04-12 16:48:54.575 +08:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[CareForTheOld.Models.DTOs.Responses.AuthResponse]] Login(CareForTheOld.Models.DTOs.Requests.Auth.LoginRequest) on controller CareForTheOld.Controllers.AuthController (CareForTheOld).
+2026-04-12 16:48:54.681 +08:00 [INF] Saved 1 entities to in-memory store.
+2026-04-12 16:48:54.682 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[CareForTheOld.Models.DTOs.Responses.AuthResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-12 16:48:54.682 +08:00 [INF] Executed action CareForTheOld.Controllers.AuthController.Login (CareForTheOld) in 106.3886ms
+2026-04-12 16:48:54.682 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.AuthController.Login (CareForTheOld)'
+2026-04-12 16:48:54.682 +08:00 [INF] Request finished HTTP/1.1 POST http://10.0.2.2:5136/api/auth/login - 200 null application/json; charset=utf-8 107.5582ms
+2026-04-12 16:49:05.903 +08:00 [INF] Request starting HTTP/1.1 POST http://10.0.2.2:5136/api/family - application/json 26
+2026-04-12 16:49:05.903 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.FamilyController.Create (CareForTheOld)'
+2026-04-12 16:49:05.903 +08:00 [INF] Route matched with {action = "Create", controller = "Family"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[CareForTheOld.Models.DTOs.Responses.FamilyResponse]] Create(CareForTheOld.Models.DTOs.Requests.Families.CreateFamilyRequest) on controller CareForTheOld.Controllers.FamilyController (CareForTheOld).
+2026-04-12 16:49:05.907 +08:00 [INF] Saved 2 entities to in-memory store.
+2026-04-12 16:49:05.907 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[CareForTheOld.Models.DTOs.Responses.FamilyResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-12 16:49:05.907 +08:00 [INF] Executed action CareForTheOld.Controllers.FamilyController.Create (CareForTheOld) in 3.9945ms
+2026-04-12 16:49:05.908 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.FamilyController.Create (CareForTheOld)'
+2026-04-12 16:49:05.908 +08:00 [INF] Request finished HTTP/1.1 POST http://10.0.2.2:5136/api/family - 200 null application/json; charset=utf-8 4.9325ms
+2026-04-12 16:49:21.097 +08:00 [INF] Request starting HTTP/1.1 POST http://10.0.2.2:5136/api/family/fda07d2e-a65c-41d9-836a-809982974a9e/members - application/json 58
+2026-04-12 16:49:21.099 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.FamilyController.AddMember (CareForTheOld)'
+2026-04-12 16:49:21.099 +08:00 [INF] Route matched with {action = "AddMember", controller = "Family"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[CareForTheOld.Models.DTOs.Responses.FamilyResponse]] AddMember(System.Guid, CareForTheOld.Models.DTOs.Requests.Families.AddFamilyMemberRequest) on controller CareForTheOld.Controllers.FamilyController (CareForTheOld).
+2026-04-12 16:49:21.100 +08:00 [INF] Saved 1 entities to in-memory store.
+2026-04-12 16:49:21.100 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[CareForTheOld.Models.DTOs.Responses.FamilyResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-12 16:49:21.100 +08:00 [INF] Executed action CareForTheOld.Controllers.FamilyController.AddMember (CareForTheOld) in 1.1493ms
+2026-04-12 16:49:21.100 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.FamilyController.AddMember (CareForTheOld)'
+2026-04-12 16:49:21.100 +08:00 [INF] Request finished HTTP/1.1 POST http://10.0.2.2:5136/api/family/fda07d2e-a65c-41d9-836a-809982974a9e/members - 200 null application/json; charset=utf-8 2.569ms
+2026-04-12 16:50:06.812 +08:00 [INF] Request starting HTTP/1.1 POST http://10.0.2.2:5136/api/medication/plans - application/json 167
+2026-04-12 16:50:06.813 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.MedicationController.CreatePlan (CareForTheOld)'
+2026-04-12 16:50:06.816 +08:00 [INF] Route matched with {action = "CreatePlan", controller = "Medication"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[CareForTheOld.Models.DTOs.Responses.MedicationPlanResponse]] CreatePlan(CareForTheOld.Models.DTOs.Requests.Medication.CreateMedicationPlanRequest) on controller CareForTheOld.Controllers.MedicationController (CareForTheOld).
+2026-04-12 16:50:06.835 +08:00 [INF] Saved 1 entities to in-memory store.
+2026-04-12 16:50:06.835 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[CareForTheOld.Models.DTOs.Responses.MedicationPlanResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-12 16:50:06.837 +08:00 [INF] Executed action CareForTheOld.Controllers.MedicationController.CreatePlan (CareForTheOld) in 20.3271ms
+2026-04-12 16:50:06.837 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.MedicationController.CreatePlan (CareForTheOld)'
+2026-04-12 16:50:06.837 +08:00 [INF] Request finished HTTP/1.1 POST http://10.0.2.2:5136/api/medication/plans - 200 null application/json; charset=utf-8 24.6603ms
+2026-04-12 16:50:22.103 +08:00 [INF] Request starting HTTP/1.1 POST http://10.0.2.2:5136/api/auth/login - application/json 49
+2026-04-12 16:50:22.103 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.AuthController.Login (CareForTheOld)'
+2026-04-12 16:50:22.103 +08:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[CareForTheOld.Models.DTOs.Responses.AuthResponse]] Login(CareForTheOld.Models.DTOs.Requests.Auth.LoginRequest) on controller CareForTheOld.Controllers.AuthController (CareForTheOld).
+2026-04-12 16:50:22.214 +08:00 [INF] Saved 1 entities to in-memory store.
+2026-04-12 16:50:22.214 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[CareForTheOld.Models.DTOs.Responses.AuthResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-12 16:50:22.214 +08:00 [INF] Executed action CareForTheOld.Controllers.AuthController.Login (CareForTheOld) in 111.4695ms
+2026-04-12 16:50:22.214 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.AuthController.Login (CareForTheOld)'
+2026-04-12 16:50:22.214 +08:00 [INF] Request finished HTTP/1.1 POST http://10.0.2.2:5136/api/auth/login - 200 null application/json; charset=utf-8 111.8184ms
+2026-04-12 16:50:23.801 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/medication/plans/me - application/json null
+2026-04-12 16:50:23.801 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld)'
+2026-04-12 16:50:23.801 +08:00 [INF] Route matched with {action = "GetMyPlans", controller = "Medication"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.MedicationPlanResponse]]] GetMyPlans() on controller CareForTheOld.Controllers.MedicationController (CareForTheOld).
+2026-04-12 16:50:23.803 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.MedicationPlanResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:50:23.803 +08:00 [INF] Executed action CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld) in 2.0925ms
+2026-04-12 16:50:23.803 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld)'
+2026-04-12 16:50:23.803 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/medication/plans/me - 200 null application/json; charset=utf-8 2.6377ms
+2026-04-12 16:50:23.814 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/medication/today-pending - application/json null
+2026-04-12 16:50:23.814 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld)'
+2026-04-12 16:50:23.814 +08:00 [INF] Route matched with {action = "GetTodayPending", controller = "Medication"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse]]] GetTodayPending() on controller CareForTheOld.Controllers.MedicationController (CareForTheOld).
+2026-04-12 16:50:23.819 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:50:23.820 +08:00 [INF] Executed action CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld) in 5.7336ms
+2026-04-12 16:50:23.820 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld)'
+2026-04-12 16:50:23.820 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/medication/today-pending - 200 null application/json; charset=utf-8 6.165ms
+2026-04-12 16:50:28.333 +08:00 [INF] Request starting HTTP/1.1 POST http://10.0.2.2:5136/api/medication/logs - application/json 140
+2026-04-12 16:50:28.334 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.MedicationController.RecordLog (CareForTheOld)'
+2026-04-12 16:50:28.338 +08:00 [INF] Route matched with {action = "RecordLog", controller = "Medication"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse]] RecordLog(CareForTheOld.Models.DTOs.Requests.Medication.RecordMedicationLogRequest) on controller CareForTheOld.Controllers.MedicationController (CareForTheOld).
+2026-04-12 16:50:28.367 +08:00 [INF] Saved 1 entities to in-memory store.
+2026-04-12 16:50:28.368 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-12 16:50:28.368 +08:00 [INF] Executed action CareForTheOld.Controllers.MedicationController.RecordLog (CareForTheOld) in 30.4575ms
+2026-04-12 16:50:28.368 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.MedicationController.RecordLog (CareForTheOld)'
+2026-04-12 16:50:28.368 +08:00 [INF] Request finished HTTP/1.1 POST http://10.0.2.2:5136/api/medication/logs - 200 null application/json; charset=utf-8 34.9075ms
+2026-04-12 16:50:31.902 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/medication/plans/me - application/json null
+2026-04-12 16:50:31.902 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld)'
+2026-04-12 16:50:31.902 +08:00 [INF] Route matched with {action = "GetMyPlans", controller = "Medication"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.MedicationPlanResponse]]] GetMyPlans() on controller CareForTheOld.Controllers.MedicationController (CareForTheOld).
+2026-04-12 16:50:31.902 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.MedicationPlanResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:50:31.902 +08:00 [INF] Executed action CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld) in 0.5233ms
+2026-04-12 16:50:31.902 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld)'
+2026-04-12 16:50:31.902 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/medication/plans/me - 200 null application/json; charset=utf-8 0.922ms
+2026-04-12 16:50:31.905 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/medication/today-pending - application/json null
+2026-04-12 16:50:31.906 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld)'
+2026-04-12 16:50:31.906 +08:00 [INF] Route matched with {action = "GetTodayPending", controller = "Medication"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse]]] GetTodayPending() on controller CareForTheOld.Controllers.MedicationController (CareForTheOld).
+2026-04-12 16:50:31.907 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:50:31.907 +08:00 [INF] Executed action CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld) in 1.1444ms
+2026-04-12 16:50:31.907 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld)'
+2026-04-12 16:50:31.907 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/medication/today-pending - 200 null application/json; charset=utf-8 1.4698ms
+2026-04-12 16:50:39.556 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/medication/plans/me - application/json null
+2026-04-12 16:50:39.556 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld)'
+2026-04-12 16:50:39.556 +08:00 [INF] Route matched with {action = "GetMyPlans", controller = "Medication"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.MedicationPlanResponse]]] GetMyPlans() on controller CareForTheOld.Controllers.MedicationController (CareForTheOld).
+2026-04-12 16:50:39.557 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.MedicationPlanResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:50:39.557 +08:00 [INF] Executed action CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld) in 0.5204ms
+2026-04-12 16:50:39.557 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld)'
+2026-04-12 16:50:39.557 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/medication/plans/me - 200 null application/json; charset=utf-8 1.0743ms
+2026-04-12 16:50:39.565 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/medication/today-pending - application/json null
+2026-04-12 16:50:39.565 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld)'
+2026-04-12 16:50:39.566 +08:00 [INF] Route matched with {action = "GetTodayPending", controller = "Medication"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse]]] GetTodayPending() on controller CareForTheOld.Controllers.MedicationController (CareForTheOld).
+2026-04-12 16:50:39.566 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:50:39.566 +08:00 [INF] Executed action CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld) in 0.5775ms
+2026-04-12 16:50:39.566 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld)'
+2026-04-12 16:50:39.566 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/medication/today-pending - 200 null application/json; charset=utf-8 0.9921ms
+2026-04-12 16:50:50.909 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/family/fda07d2e-a65c-41d9-836a-809982974a9e/members - application/json null
+2026-04-12 16:50:50.909 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.FamilyController.GetMembers (CareForTheOld)'
+2026-04-12 16:50:50.909 +08:00 [INF] Route matched with {action = "GetMembers", controller = "Family"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.FamilyMemberResponse]]] GetMembers(System.Guid) on controller CareForTheOld.Controllers.FamilyController (CareForTheOld).
+2026-04-12 16:50:50.910 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.FamilyMemberResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:50:50.910 +08:00 [INF] Executed action CareForTheOld.Controllers.FamilyController.GetMembers (CareForTheOld) in 0.4814ms
+2026-04-12 16:50:50.910 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.FamilyController.GetMembers (CareForTheOld)'
+2026-04-12 16:50:50.910 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/family/fda07d2e-a65c-41d9-836a-809982974a9e/members - 200 null application/json; charset=utf-8 1.0647ms
+2026-04-12 16:50:53.706 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/health/me/stats - application/json null
+2026-04-12 16:50:53.706 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.HealthController.GetMyStats (CareForTheOld)'
+2026-04-12 16:50:53.706 +08:00 [INF] Route matched with {action = "GetMyStats", controller = "Health"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.HealthStatsResponse]]] GetMyStats() on controller CareForTheOld.Controllers.HealthController (CareForTheOld).
+2026-04-12 16:50:53.707 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.HealthStatsResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:50:53.707 +08:00 [INF] Executed action CareForTheOld.Controllers.HealthController.GetMyStats (CareForTheOld) in 0.3774ms
+2026-04-12 16:50:53.707 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.HealthController.GetMyStats (CareForTheOld)'
+2026-04-12 16:50:53.707 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/health/me/stats - 200 null application/json; charset=utf-8 0.8278ms
+2026-04-12 16:50:53.710 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/health/me?limit=50 - application/json null
+2026-04-12 16:50:53.710 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.HealthController.GetMyRecords (CareForTheOld)'
+2026-04-12 16:50:53.710 +08:00 [INF] Route matched with {action = "GetMyRecords", controller = "Health"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.HealthRecordResponse]]] GetMyRecords(System.Nullable`1[CareForTheOld.Models.Enums.HealthType], Int32) on controller CareForTheOld.Controllers.HealthController (CareForTheOld).
+2026-04-12 16:50:53.711 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.HealthRecordResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:50:53.711 +08:00 [INF] Executed action CareForTheOld.Controllers.HealthController.GetMyRecords (CareForTheOld) in 0.423ms
+2026-04-12 16:50:53.711 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.HealthController.GetMyRecords (CareForTheOld)'
+2026-04-12 16:50:53.711 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/health/me?limit=50 - 200 null application/json; charset=utf-8 0.6803ms
+2026-04-12 16:50:57.164 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/medication/plans/me - application/json null
+2026-04-12 16:50:57.164 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld)'
+2026-04-12 16:50:57.164 +08:00 [INF] Route matched with {action = "GetMyPlans", controller = "Medication"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.MedicationPlanResponse]]] GetMyPlans() on controller CareForTheOld.Controllers.MedicationController (CareForTheOld).
+2026-04-12 16:50:57.164 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.MedicationPlanResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:50:57.165 +08:00 [INF] Executed action CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld) in 0.5227ms
+2026-04-12 16:50:57.165 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld)'
+2026-04-12 16:50:57.165 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/medication/plans/me - 200 null application/json; charset=utf-8 0.9064ms
+2026-04-12 16:50:57.167 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/medication/today-pending - application/json null
+2026-04-12 16:50:57.167 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld)'
+2026-04-12 16:50:57.167 +08:00 [INF] Route matched with {action = "GetTodayPending", controller = "Medication"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse]]] GetTodayPending() on controller CareForTheOld.Controllers.MedicationController (CareForTheOld).
+2026-04-12 16:50:57.168 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:50:57.168 +08:00 [INF] Executed action CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld) in 0.4735ms
+2026-04-12 16:50:57.168 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld)'
+2026-04-12 16:50:57.168 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/medication/today-pending - 200 null application/json; charset=utf-8 0.7416ms
+2026-04-12 16:51:01.141 +08:00 [INF] Request starting HTTP/1.1 POST http://10.0.2.2:5136/api/medication/logs - application/json 100
+2026-04-12 16:51:01.142 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.MedicationController.RecordLog (CareForTheOld)'
+2026-04-12 16:51:01.142 +08:00 [INF] Route matched with {action = "RecordLog", controller = "Medication"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse]] RecordLog(CareForTheOld.Models.DTOs.Requests.Medication.RecordMedicationLogRequest) on controller CareForTheOld.Controllers.MedicationController (CareForTheOld).
+2026-04-12 16:51:01.143 +08:00 [INF] Saved 1 entities to in-memory store.
+2026-04-12 16:51:01.143 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-12 16:51:01.143 +08:00 [INF] Executed action CareForTheOld.Controllers.MedicationController.RecordLog (CareForTheOld) in 1.5426ms
+2026-04-12 16:51:01.143 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.MedicationController.RecordLog (CareForTheOld)'
+2026-04-12 16:51:01.143 +08:00 [INF] Request finished HTTP/1.1 POST http://10.0.2.2:5136/api/medication/logs - 200 null application/json; charset=utf-8 2.0938ms
+2026-04-12 16:51:03.733 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/medication/plans/me - application/json null
+2026-04-12 16:51:03.734 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld)'
+2026-04-12 16:51:03.734 +08:00 [INF] Route matched with {action = "GetMyPlans", controller = "Medication"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.MedicationPlanResponse]]] GetMyPlans() on controller CareForTheOld.Controllers.MedicationController (CareForTheOld).
+2026-04-12 16:51:03.734 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.MedicationPlanResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:51:03.734 +08:00 [INF] Executed action CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld) in 0.6001ms
+2026-04-12 16:51:03.734 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld)'
+2026-04-12 16:51:03.734 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/medication/plans/me - 200 null application/json; charset=utf-8 1.1953ms
+2026-04-12 16:51:03.740 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/medication/today-pending - application/json null
+2026-04-12 16:51:03.740 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld)'
+2026-04-12 16:51:03.740 +08:00 [INF] Route matched with {action = "GetTodayPending", controller = "Medication"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse]]] GetTodayPending() on controller CareForTheOld.Controllers.MedicationController (CareForTheOld).
+2026-04-12 16:51:03.741 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:51:03.741 +08:00 [INF] Executed action CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld) in 0.5675ms
+2026-04-12 16:51:03.741 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld)'
+2026-04-12 16:51:03.741 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/medication/today-pending - 200 null application/json; charset=utf-8 1.0062ms
+2026-04-12 16:51:07.830 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/health/me?limit=50 - application/json null
+2026-04-12 16:51:07.830 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.HealthController.GetMyRecords (CareForTheOld)'
+2026-04-12 16:51:07.830 +08:00 [INF] Route matched with {action = "GetMyRecords", controller = "Health"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.HealthRecordResponse]]] GetMyRecords(System.Nullable`1[CareForTheOld.Models.Enums.HealthType], Int32) on controller CareForTheOld.Controllers.HealthController (CareForTheOld).
+2026-04-12 16:51:07.830 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.HealthRecordResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:51:07.830 +08:00 [INF] Executed action CareForTheOld.Controllers.HealthController.GetMyRecords (CareForTheOld) in 0.4449ms
+2026-04-12 16:51:07.830 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.HealthController.GetMyRecords (CareForTheOld)'
+2026-04-12 16:51:07.830 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/health/me?limit=50 - 200 null application/json; charset=utf-8 0.8054ms
+2026-04-12 16:51:16.495 +08:00 [INF] Request starting HTTP/1.1 POST http://10.0.2.2:5136/api/health - application/json 40
+2026-04-12 16:51:16.495 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.HealthController.CreateRecord (CareForTheOld)'
+2026-04-12 16:51:16.498 +08:00 [INF] Route matched with {action = "CreateRecord", controller = "Health"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[CareForTheOld.Models.DTOs.Responses.HealthRecordResponse]] CreateRecord(CareForTheOld.Models.DTOs.Requests.Health.CreateHealthRecordRequest) on controller CareForTheOld.Controllers.HealthController (CareForTheOld).
+2026-04-12 16:51:16.513 +08:00 [INF] Saved 1 entities to in-memory store.
+2026-04-12 16:51:16.521 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[CareForTheOld.Models.DTOs.Responses.HealthRecordResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-12 16:51:16.523 +08:00 [INF] Executed action CareForTheOld.Controllers.HealthController.CreateRecord (CareForTheOld) in 25.2922ms
+2026-04-12 16:51:16.523 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.HealthController.CreateRecord (CareForTheOld)'
+2026-04-12 16:51:16.523 +08:00 [INF] Request finished HTTP/1.1 POST http://10.0.2.2:5136/api/health - 200 null application/json; charset=utf-8 28.6837ms
+2026-04-12 16:51:16.559 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/health/me/stats - application/json null
+2026-04-12 16:51:16.559 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.HealthController.GetMyStats (CareForTheOld)'
+2026-04-12 16:51:16.559 +08:00 [INF] Route matched with {action = "GetMyStats", controller = "Health"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.HealthStatsResponse]]] GetMyStats() on controller CareForTheOld.Controllers.HealthController (CareForTheOld).
+2026-04-12 16:51:16.561 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.HealthStatsResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:51:16.561 +08:00 [INF] Executed action CareForTheOld.Controllers.HealthController.GetMyStats (CareForTheOld) in 1.9771ms
+2026-04-12 16:51:16.561 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.HealthController.GetMyStats (CareForTheOld)'
+2026-04-12 16:51:16.561 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/health/me/stats - 200 null application/json; charset=utf-8 2.2966ms
+2026-04-12 16:51:20.259 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/medication/plans/me - application/json null
+2026-04-12 16:51:20.259 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/medication/today-pending - application/json null
+2026-04-12 16:51:20.259 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld)'
+2026-04-12 16:51:20.259 +08:00 [INF] Route matched with {action = "GetMyPlans", controller = "Medication"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.MedicationPlanResponse]]] GetMyPlans() on controller CareForTheOld.Controllers.MedicationController (CareForTheOld).
+2026-04-12 16:51:20.259 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld)'
+2026-04-12 16:51:20.259 +08:00 [INF] Route matched with {action = "GetTodayPending", controller = "Medication"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse]]] GetTodayPending() on controller CareForTheOld.Controllers.MedicationController (CareForTheOld).
+2026-04-12 16:51:20.260 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.MedicationPlanResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:51:20.260 +08:00 [INF] Executed action CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld) in 0.4117ms
+2026-04-12 16:51:20.260 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld)'
+2026-04-12 16:51:20.260 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/medication/plans/me - 200 null application/json; charset=utf-8 0.7529ms
+2026-04-12 16:51:20.260 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:51:20.260 +08:00 [INF] Executed action CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld) in 0.4022ms
+2026-04-12 16:51:20.260 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld)'
+2026-04-12 16:51:20.260 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/medication/today-pending - 200 null application/json; charset=utf-8 0.687ms
+2026-04-12 16:51:21.428 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/health/me?limit=50 - application/json null
+2026-04-12 16:51:21.428 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.HealthController.GetMyRecords (CareForTheOld)'
+2026-04-12 16:51:21.428 +08:00 [INF] Route matched with {action = "GetMyRecords", controller = "Health"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.HealthRecordResponse]]] GetMyRecords(System.Nullable`1[CareForTheOld.Models.Enums.HealthType], Int32) on controller CareForTheOld.Controllers.HealthController (CareForTheOld).
+2026-04-12 16:51:21.429 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.HealthRecordResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:51:21.429 +08:00 [INF] Executed action CareForTheOld.Controllers.HealthController.GetMyRecords (CareForTheOld) in 0.7141ms
+2026-04-12 16:51:21.429 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.HealthController.GetMyRecords (CareForTheOld)'
+2026-04-12 16:51:21.429 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/health/me?limit=50 - 200 null application/json; charset=utf-8 1.0391ms
+2026-04-12 16:51:23.084 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/medication/plans/me - application/json null
+2026-04-12 16:51:23.084 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld)'
+2026-04-12 16:51:23.084 +08:00 [INF] Route matched with {action = "GetMyPlans", controller = "Medication"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.MedicationPlanResponse]]] GetMyPlans() on controller CareForTheOld.Controllers.MedicationController (CareForTheOld).
+2026-04-12 16:51:23.084 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.MedicationPlanResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:51:23.084 +08:00 [INF] Executed action CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld) in 0.4472ms
+2026-04-12 16:51:23.084 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.MedicationController.GetMyPlans (CareForTheOld)'
+2026-04-12 16:51:23.084 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/medication/plans/me - 200 null application/json; charset=utf-8 0.7801ms
+2026-04-12 16:51:23.084 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/medication/today-pending - application/json null
+2026-04-12 16:51:23.084 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld)'
+2026-04-12 16:51:23.085 +08:00 [INF] Route matched with {action = "GetTodayPending", controller = "Medication"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse]]] GetTodayPending() on controller CareForTheOld.Controllers.MedicationController (CareForTheOld).
+2026-04-12 16:51:23.085 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:51:23.085 +08:00 [INF] Executed action CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld) in 0.3335ms
+2026-04-12 16:51:23.085 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.MedicationController.GetTodayPending (CareForTheOld)'
+2026-04-12 16:51:23.085 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/medication/today-pending - 200 null application/json; charset=utf-8 0.5477ms
+2026-04-12 16:51:33.706 +08:00 [INF] Request starting HTTP/1.1 POST http://10.0.2.2:5136/api/auth/login - application/json 49
+2026-04-12 16:51:33.707 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.AuthController.Login (CareForTheOld)'
+2026-04-12 16:51:33.707 +08:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[CareForTheOld.Models.DTOs.Responses.AuthResponse]] Login(CareForTheOld.Models.DTOs.Requests.Auth.LoginRequest) on controller CareForTheOld.Controllers.AuthController (CareForTheOld).
+2026-04-12 16:51:33.822 +08:00 [INF] Saved 1 entities to in-memory store.
+2026-04-12 16:51:33.822 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[CareForTheOld.Models.DTOs.Responses.AuthResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-12 16:51:33.822 +08:00 [INF] Executed action CareForTheOld.Controllers.AuthController.Login (CareForTheOld) in 115.5922ms
+2026-04-12 16:51:33.822 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.AuthController.Login (CareForTheOld)'
+2026-04-12 16:51:33.822 +08:00 [INF] Request finished HTTP/1.1 POST http://10.0.2.2:5136/api/auth/login - 200 null application/json; charset=utf-8 115.9803ms
+2026-04-12 16:51:33.856 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/family/fda07d2e-a65c-41d9-836a-809982974a9e/members - application/json null
+2026-04-12 16:51:33.856 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.FamilyController.GetMembers (CareForTheOld)'
+2026-04-12 16:51:33.857 +08:00 [INF] Route matched with {action = "GetMembers", controller = "Family"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.FamilyMemberResponse]]] GetMembers(System.Guid) on controller CareForTheOld.Controllers.FamilyController (CareForTheOld).
+2026-04-12 16:51:33.857 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.FamilyMemberResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:51:33.857 +08:00 [INF] Executed action CareForTheOld.Controllers.FamilyController.GetMembers (CareForTheOld) in 0.4228ms
+2026-04-12 16:51:33.857 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.FamilyController.GetMembers (CareForTheOld)'
+2026-04-12 16:51:33.857 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/family/fda07d2e-a65c-41d9-836a-809982974a9e/members - 200 null application/json; charset=utf-8 0.7925ms
+2026-04-12 16:51:36.646 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/family/fda07d2e-a65c-41d9-836a-809982974a9e/members - application/json null
+2026-04-12 16:51:36.647 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.FamilyController.GetMembers (CareForTheOld)'
+2026-04-12 16:51:36.647 +08:00 [INF] Route matched with {action = "GetMembers", controller = "Family"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.FamilyMemberResponse]]] GetMembers(System.Guid) on controller CareForTheOld.Controllers.FamilyController (CareForTheOld).
+2026-04-12 16:51:36.647 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.FamilyMemberResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:51:36.647 +08:00 [INF] Executed action CareForTheOld.Controllers.FamilyController.GetMembers (CareForTheOld) in 0.4225ms
+2026-04-12 16:51:36.647 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.FamilyController.GetMembers (CareForTheOld)'
+2026-04-12 16:51:36.647 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/family/fda07d2e-a65c-41d9-836a-809982974a9e/members - 200 null application/json; charset=utf-8 0.7741ms
+2026-04-12 16:51:39.833 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/health/family/fda07d2e-a65c-41d9-836a-809982974a9e/member/2e3ea086-2b90-4751-8114-1b6e885f2bb2/stats - application/json null
+2026-04-12 16:51:39.833 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.HealthController.GetFamilyMemberStats (CareForTheOld)'
+2026-04-12 16:51:39.834 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/health/family/fda07d2e-a65c-41d9-836a-809982974a9e/member/2e3ea086-2b90-4751-8114-1b6e885f2bb2?limit=20 - application/json null
+2026-04-12 16:51:39.834 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.HealthController.GetFamilyMemberRecords (CareForTheOld)'
+2026-04-12 16:51:39.834 +08:00 [INF] Request starting HTTP/1.1 GET http://10.0.2.2:5136/api/medication/logs/elder/2e3ea086-2b90-4751-8114-1b6e885f2bb2?limit=10 - application/json null
+2026-04-12 16:51:39.835 +08:00 [INF] Executing endpoint 'CareForTheOld.Controllers.MedicationController.GetLogs (CareForTheOld)'
+2026-04-12 16:51:39.836 +08:00 [INF] Route matched with {action = "GetFamilyMemberStats", controller = "Health"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.HealthStatsResponse]]] GetFamilyMemberStats(System.Guid, System.Guid) on controller CareForTheOld.Controllers.HealthController (CareForTheOld).
+2026-04-12 16:51:39.837 +08:00 [INF] Route matched with {action = "GetFamilyMemberRecords", controller = "Health"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.HealthRecordResponse]]] GetFamilyMemberRecords(System.Guid, System.Guid, System.Nullable`1[CareForTheOld.Models.Enums.HealthType], Int32) on controller CareForTheOld.Controllers.HealthController (CareForTheOld).
+2026-04-12 16:51:39.837 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.HealthStatsResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:51:39.837 +08:00 [INF] Executed action CareForTheOld.Controllers.HealthController.GetFamilyMemberStats (CareForTheOld) in 0.8971ms
+2026-04-12 16:51:39.837 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.HealthController.GetFamilyMemberStats (CareForTheOld)'
+2026-04-12 16:51:39.837 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/health/family/fda07d2e-a65c-41d9-836a-809982974a9e/member/2e3ea086-2b90-4751-8114-1b6e885f2bb2/stats - 200 null application/json; charset=utf-8 4.2573ms
+2026-04-12 16:51:39.837 +08:00 [INF] Route matched with {action = "GetLogs", controller = "Medication"}. Executing controller action with signature System.Threading.Tasks.Task`1[CareForTheOld.Common.Helpers.ApiResponse`1[System.Collections.Generic.List`1[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse]]] GetLogs(System.Guid, System.Nullable`1[System.DateOnly], Int32) on controller CareForTheOld.Controllers.MedicationController (CareForTheOld).
+2026-04-12 16:51:39.839 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.HealthRecordResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:51:39.839 +08:00 [INF] Executed action CareForTheOld.Controllers.HealthController.GetFamilyMemberRecords (CareForTheOld) in 2.705ms
+2026-04-12 16:51:39.839 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.HealthController.GetFamilyMemberRecords (CareForTheOld)'
+2026-04-12 16:51:39.840 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/health/family/fda07d2e-a65c-41d9-836a-809982974a9e/member/2e3ea086-2b90-4751-8114-1b6e885f2bb2?limit=20 - 200 null application/json; charset=utf-8 5.8586ms
+2026-04-12 16:51:39.851 +08:00 [INF] Executing ObjectResult, writing value of type 'CareForTheOld.Common.Helpers.ApiResponse`1[[System.Collections.Generic.List`1[[CareForTheOld.Models.DTOs.Responses.MedicationLogResponse, CareForTheOld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-12 16:51:39.851 +08:00 [INF] Executed action CareForTheOld.Controllers.MedicationController.GetLogs (CareForTheOld) in 13.6166ms
+2026-04-12 16:51:39.851 +08:00 [INF] Executed endpoint 'CareForTheOld.Controllers.MedicationController.GetLogs (CareForTheOld)'
+2026-04-12 16:51:39.851 +08:00 [INF] Request finished HTTP/1.1 GET http://10.0.2.2:5136/api/medication/logs/elder/2e3ea086-2b90-4751-8114-1b6e885f2bb2?limit=10 - 200 null application/json; charset=utf-8 16.5862ms
