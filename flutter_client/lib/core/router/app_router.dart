@@ -8,6 +8,7 @@ import '../../features/elder/pages/medication_page.dart';
 import '../../features/child/pages/child_home_page.dart';
 import '../../features/child/pages/family_member_page.dart';
 import '../../features/child/pages/elder_health_page.dart';
+import '../../features/child/pages/emergency_page.dart';
 
 /// 应用路由配置
 final appRouter = GoRouter(
@@ -56,6 +57,10 @@ final appRouter = GoRouter(
         final elderId = state.pathParameters['elderId']!;
         return ElderHealthPage(elderId: elderId);
       },
+    ),
+    GoRoute(
+      path: '/child/emergency',
+      builder: (context, state) => const EmergencyPage(),
     ),
   ],
 );

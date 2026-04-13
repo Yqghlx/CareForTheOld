@@ -10,6 +10,7 @@ import '../providers/family_provider.dart';
 import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../shared/providers/emergency_provider.dart';
 
 /// 子女端首页
 class ChildHomePage extends ConsumerStatefulWidget {
@@ -25,6 +26,8 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(familyProvider.notifier).loadFamily();
+      // 加载紧急呼叫状态
+      ref.read(emergencyProvider.notifier).loadUnreadCalls();
     });
   }
 
@@ -32,6 +35,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
     final familyState = ref.watch(familyProvider);
+    final emergencyState = ref.watch(emergencyProvider);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -39,6 +43,29 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
         title: const Text('关爱老人'),
         automaticallyImplyLeading: false,
         actions: [
+          // 紧急呼叫按钮（带红点提示）
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.emergency),
+                onPressed: () => context.push('/child/emergency'),
+                tooltip: '紧急呼叫',
+              ),
+              if (emergencyState.hasUnreadCalls)
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+            ],
+          ),
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () => _showSettingsDialog(),
@@ -50,6 +77,51 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // 紧急呼叫提示（如果有未处理呼叫）
+            if (emergencyState.hasUnreadCalls)
+              Container(
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Colors.red, Colors.redAccent],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: InkWell(
+                  onTap: () => context.push('/child/emergency'),
+                  borderRadius: BorderRadius.circular(16),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.warning_amber_rounded, color: Colors.white, size: 32),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                '有紧急呼叫待处理！',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                '${emergencyState.unreadCount} 条待处理',
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Icon(Icons.chevron_right, color: Colors.white),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
             // 用户信息 - 渐变卡片
             GradientCard(
               gradient: AppTheme.warmGradient,

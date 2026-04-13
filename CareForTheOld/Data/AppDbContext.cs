@@ -14,6 +14,7 @@ public class AppDbContext : DbContext
     public DbSet<MedicationPlan> MedicationPlans => Set<MedicationPlan>();
     public DbSet<MedicationLog> MedicationLogs => Set<MedicationLog>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<EmergencyCall> EmergencyCalls => Set<EmergencyCall>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
