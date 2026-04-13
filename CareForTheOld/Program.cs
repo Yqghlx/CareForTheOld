@@ -35,6 +35,7 @@ builder.Services.AddScoped<IHealthService, HealthService>();
 builder.Services.AddScoped<IMedicationService, MedicationService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IEmergencyService, EmergencyService>();
+builder.Services.AddScoped<ILocationService, LocationService>();
 
 // 注册后台服务
 builder.Services.AddHostedService<MedicationReminderService>();
