@@ -19,9 +19,6 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authProvider);
-    final user = authState.user;
-
     // 老人端使用大字体主题
     final theme = Theme.of(context).copyWith(
       textTheme: Theme.of(context).textTheme.apply(fontSizeFactor: 1.2),
