@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../shared/providers/auth_provider.dart';
 
@@ -33,7 +34,7 @@ class ApiClient {
       onRequest: (options, handler) {
         final token = _tokenGetter?.call();
         // 调试日志
-        print('API请求: ${options.path}, Token: ${token != null ? "${token.substring(0, 20)}..." : "null"}');
+        debugPrint('API请求: ${options.path}, Token: ${token != null ? "${token.substring(0, 20)}..." : "null"}');
         if (token != null && token.isNotEmpty) {
           options.headers['Authorization'] = 'Bearer $token';
         }
