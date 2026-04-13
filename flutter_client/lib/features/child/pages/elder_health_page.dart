@@ -9,6 +9,8 @@ import '../../elder/services/health_service.dart';
 import '../../elder/services/medication_service.dart';
 import '../../../core/api/api_client.dart';
 import '../providers/family_provider.dart';
+import '../../../shared/widgets/common_cards.dart';
+import '../../../core/theme/app_theme.dart';
 
 /// 老人健康数据 Provider（按 elderId 区分）
 final elderHealthStatsProvider =
@@ -89,52 +91,67 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               // 健康概览卡片
               statsAsync.when(
                 data: (stats) => _buildStatsGrid(stats),
-                loading: () =>
-                    const Center(child: CircularProgressIndicator()),
-                error: (e, _) => Text('加载统计失败: $e',
-                    style: const TextStyle(color: Colors.red)),
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (e, _) => Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppTheme.errorColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text('加载统计失败: $e',
+                      style: const TextStyle(color: AppTheme.errorColor)),
+                ),
               ),
               const SizedBox(height: 24),
 
               // 最近健康记录
-              const Text('最近健康记录',
-                  style:
-                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const Text(
+                '最近健康记录',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 12),
               recordsAsync.when(
                 data: (records) => _buildRecordsList(records),
-                loading: () =>
-                    const Center(child: CircularProgressIndicator()),
+                loading: () => const Center(child: CircularProgressIndicator()),
                 error: (e, _) => Text('加载记录失败: $e',
-                    style: const TextStyle(color: Colors.red)),
+                    style: const TextStyle(color: AppTheme.errorColor)),
               ),
               const SizedBox(height: 24),
 
               // 用药计划
-              const Text('用药计划',
-                  style:
-                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const Text(
+                '用药计划',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 12),
               plansAsync.when(
                 data: (plans) => _buildPlansList(plans),
-                loading: () =>
-                    const Center(child: CircularProgressIndicator()),
+                loading: () => const Center(child: CircularProgressIndicator()),
                 error: (e, _) => Text('加载计划失败: $e',
-                    style: const TextStyle(color: Colors.red)),
+                    style: const TextStyle(color: AppTheme.errorColor)),
               ),
               const SizedBox(height: 24),
 
               // 最近用药记录
-              const Text('最近用药记录',
-                  style:
-                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const Text(
+                '最近用药记录',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 12),
               logsAsync.when(
                 data: (logs) => _buildMedicationList(logs),
-                loading: () =>
-                    const Center(child: CircularProgressIndicator()),
+                loading: () => const Center(child: CircularProgressIndicator()),
                 error: (e, _) => Text('加载用药记录失败: $e',
-                    style: const TextStyle(color: Colors.red)),
+                    style: const TextStyle(color: AppTheme.errorColor)),
               ),
             ],
           ),
@@ -143,13 +160,17 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     );
   }
 
-  /// 健康统计概览
+  /// 健康统计概览 - 使用 StatCard
   Widget _buildStatsGrid(List<HealthStats> stats) {
     if (stats.isEmpty) {
-      return const Card(
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Center(child: Text('暂无健康统计数据')),
+      return Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade100,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: const Center(
+          child: Text('暂无健康统计数据', style: TextStyle(color: Colors.grey)),
         ),
       );
     }
@@ -164,27 +185,29 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       crossAxisCount: 2,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      childAspectRatio: 1.3,
+      childAspectRatio: 1.2,
+      mainAxisSpacing: 12,
+      crossAxisSpacing: 12,
       children: [
-        _buildStatCard(
+        StatCard(
           icon: Icons.favorite,
           title: '血压',
           value: _getStatsValue(typeMap, '血压'),
           color: Colors.red,
         ),
-        _buildStatCard(
+        StatCard(
           icon: Icons.water_drop,
           title: '血糖',
           value: _getStatsValue(typeMap, '血糖'),
           color: Colors.blue,
         ),
-        _buildStatCard(
+        StatCard(
           icon: Icons.monitor_heart,
           title: '心率',
           value: _getStatsValue(typeMap, '心率'),
           color: Colors.purple,
         ),
-        _buildStatCard(
+        StatCard(
           icon: Icons.thermostat,
           title: '体温',
           value: _getStatsValue(typeMap, '体温'),
@@ -200,39 +223,17 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     return stat.latestValue!.toStringAsFixed(1);
   }
 
-  Widget _buildStatCard({
-    required IconData icon,
-    required String title,
-    required String value,
-    required Color color,
-  }) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 32, color: color),
-            const SizedBox(height: 8),
-            Text(title,
-                style: const TextStyle(fontSize: 14, color: Colors.grey)),
-            const SizedBox(height: 4),
-            Text(value,
-                style: const TextStyle(
-                    fontSize: 18, fontWeight: FontWeight.bold)),
-          ],
-        ),
-      ),
-    );
-  }
-
   /// 用药计划列表
   Widget _buildPlansList(List<MedicationPlan> plans) {
     if (plans.isEmpty) {
-      return const Card(
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Center(child: Text('暂无用药计划')),
+      return Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade100,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: const Center(
+          child: Text('暂无用药计划', style: TextStyle(color: Colors.grey)),
         ),
       );
     }
@@ -240,6 +241,11 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     return Column(
       children: plans.map((plan) {
         return Card(
+          elevation: 4,
+          margin: const EdgeInsets.only(bottom: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -248,13 +254,13 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 Row(
                   children: [
                     Container(
-                      width: 40,
-                      height: 40,
+                      width: 48,
+                      height: 48,
                       decoration: BoxDecoration(
-                        color: Colors.blue.shade100,
-                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.blue.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Icon(Icons.medication, color: Colors.blue),
+                      child: const Icon(Icons.medication, color: Colors.blue, size: 28),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -268,36 +274,37 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                           ),
                           Text(
                             '剂量: ${plan.dosage}',
-                            style: const TextStyle(color: Colors.grey),
+                            style: TextStyle(color: Colors.grey.shade600),
                           ),
                         ],
                       ),
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: plan.isActive
-                            ? Colors.green.withOpacity(0.1)
-                            : Colors.grey.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        plan.isActive ? '启用' : '停用',
-                        style: TextStyle(
-                            color: plan.isActive ? Colors.green : Colors.grey),
-                      ),
+                    StatusChip(
+                      label: plan.isActive ? '启用' : '停用',
+                      color: plan.isActive ? Colors.green : Colors.grey,
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  '频率: ${plan.frequency.label}',
-                  style: const TextStyle(fontSize: 14),
-                ),
-                Text(
-                  '提醒时间: ${plan.reminderTimesText}',
-                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade50,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '频率: ${plan.frequency.label}',
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                      Text(
+                        '提醒时间: ${plan.reminderTimesText}',
+                        style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -310,10 +317,14 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
   /// 健康记录列表
   Widget _buildRecordsList(List<HealthRecord> records) {
     if (records.isEmpty) {
-      return const Card(
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Center(child: Text('暂无健康记录')),
+      return Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade100,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: const Center(
+          child: Text('暂无健康记录', style: TextStyle(color: Colors.grey)),
         ),
       );
     }
@@ -324,15 +335,43 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         final timeStr =
             '${time.month}/${time.day} ${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
         return Card(
-          child: ListTile(
-            leading:
-                Icon(record.type.icon, color: record.type.color, size: 28),
-            title: Text(
-              '${record.type.label}: ${record.displayValue} ${record.type.unit}',
-              style:
-                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          elevation: 4,
+          margin: const EdgeInsets.only(bottom: 8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: record.type.color.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(record.type.icon, color: record.type.color, size: 22),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${record.type.label}: ${record.displayValue} ${record.type.unit}',
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        timeStr,
+                        style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            subtitle: Text(timeStr),
           ),
         );
       }).toList(),
@@ -342,15 +381,23 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
   /// 用药记录列表
   Widget _buildMedicationList(List<MedicationLog> logs) {
     if (logs.isEmpty) {
-      return const Card(
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Center(child: Text('暂无用药记录')),
+      return Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade100,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: const Center(
+          child: Text('暂无用药记录', style: TextStyle(color: Colors.grey)),
         ),
       );
     }
 
     return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -361,20 +408,32 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(log.medicineName),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: log.status.color.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(log.status.label,
-                          style: TextStyle(color: log.status.color)),
+                    Row(
+                      children: [
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: log.status.color.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            Icons.medication,
+                            color: log.status.color,
+                            size: 18,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(log.medicineName),
+                      ],
+                    ),
+                    StatusChip(
+                      label: log.status.label,
+                      color: log.status.color,
                     ),
                   ],
                 ),
-                if (!isLast) const Divider(),
+                if (!isLast) const Divider(height: 16),
               ],
             );
           }).toList(),

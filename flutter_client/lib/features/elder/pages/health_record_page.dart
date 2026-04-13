@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../shared/models/health_record.dart';
 import '../../../shared/models/health_stats.dart';
 import '../providers/health_provider.dart';
+import '../../../shared/widgets/common_cards.dart';
+import '../../../shared/widgets/common_buttons.dart';
+import '../../../core/theme/app_theme.dart';
 
 /// 健康记录页面
 class HealthRecordPage extends ConsumerStatefulWidget {
@@ -45,11 +48,14 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 健康类型选择
+              // 健康类型选择 - 使用带动画的卡片
               GridView.count(
                 crossAxisCount: 2,
                 shrinkWrap: true,
-                childAspectRatio: 1.6,
+                physics: const NeverScrollableScrollPhysics(),
+                childAspectRatio: 1.4,
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
                 children: HealthType.values
                     .map((type) => _buildHealthTypeCard(type))
                     .toList(),
@@ -59,18 +65,27 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
               // 统计概览
               statsAsync.when(
                 data: (stats) => _buildStatsBar(stats),
-                loading: () => const SizedBox(
+                loading: () => Container(
                   height: 48,
-                  child: Center(child: Text('加载统计中...', style: TextStyle(color: Colors.grey))),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Center(
+                    child: Text('加载统计中...', style: TextStyle(color: Colors.grey)),
+                  ),
                 ),
                 error: (_, __) => const SizedBox.shrink(),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
 
               // 记录列表标题
               const Text(
                 '最近记录',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 12),
 
@@ -85,23 +100,14 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
     );
   }
 
-  /// 健康类型选择卡片
+  /// 健康类型选择卡片 - 使用动画卡片
   Widget _buildHealthTypeCard(HealthType type) {
-    return Card(
-      child: InkWell(
-        onTap: () => _showRecordDialog(type),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(type.icon, size: 40, color: type.color),
-            const SizedBox(height: 6),
-            Text(
-              '记录${type.label}',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      ),
+    return AnimatedQuickCard(
+      icon: type.icon,
+      title: '记录${type.label}',
+      subtitle: type.unit,
+      color: type.color,
+      onTap: () => _showRecordDialog(type),
     );
   }
 
@@ -109,19 +115,50 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
   Widget _buildStatsBar(List<HealthStats> stats) {
     if (stats.isEmpty) return const SizedBox.shrink();
 
-    return SizedBox(
-      height: 48,
+    return Container(
+      height: 56,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppTheme.primaryColor.withValues(alpha: 0.08),
+            AppTheme.primaryLight.withValues(alpha: 0.04),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(14),
+      ),
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         itemCount: stats.length,
         separatorBuilder: (_, __) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
           final stat = stats[index];
           final avg7 = stat.average7Days?.toStringAsFixed(1) ?? '--';
-          return Chip(
-            label: Text(
-              '${stat.typeName}: ${avg7}（7日均值）',
-              style: const TextStyle(fontSize: 14),
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.8),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  stat.typeName,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+                Text(
+                  avg7,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.primaryColor,
+                  ),
+                ),
+              ],
             ),
           );
         },
@@ -140,11 +177,16 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('加载失败: ${state.error}', style: const TextStyle(color: Colors.red)),
+            Icon(Icons.error_outline, size: 48, color: AppTheme.errorColor),
             const SizedBox(height: 12),
-            ElevatedButton(
+            Text(
+              '加载失败: ${state.error}',
+              style: const TextStyle(color: AppTheme.errorColor),
+            ),
+            const SizedBox(height: 12),
+            PrimaryButton(
+              text: '重试',
               onPressed: () => ref.read(healthRecordsProvider.notifier).loadRecords(),
-              child: const Text('重试'),
             ),
           ],
         ),
@@ -152,11 +194,22 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
     }
 
     if (state.records.isEmpty) {
-      return const Center(
-        child: Text(
-          '暂无健康记录\n点击上方卡片开始记录',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 16, color: Colors.grey),
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.note_add_outlined,
+              size: 64,
+              color: Colors.grey.shade400,
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              '暂无健康记录\n点击上方卡片开始记录',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+          ],
         ),
       );
     }
@@ -179,16 +232,55 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
         '${localTime.hour.toString().padLeft(2, '0')}:${localTime.minute.toString().padLeft(2, '0')}';
 
     return Card(
-      child: ListTile(
-        leading: Icon(record.type.icon, color: record.type.color, size: 32),
-        title: Text(
-          '${record.type.label}: ${record.displayValue} ${record.type.unit}',
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        subtitle: Text(timeStr, style: const TextStyle(fontSize: 14)),
-        trailing: IconButton(
-          icon: const Icon(Icons.delete_outline, color: Colors.grey),
-          onPressed: () => _confirmDelete(record),
+      elevation: 4,
+      margin: const EdgeInsets.only(bottom: 12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Container(
+              width: 52,
+              height: 52,
+              decoration: BoxDecoration(
+                color: record.type.color.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(record.type.icon, color: record.type.color, size: 28),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${record.type.label}: ${record.displayValue} ${record.type.unit}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    timeStr,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.delete_outline,
+                color: Colors.grey.shade500,
+              ),
+              onPressed: () => _confirmDelete(record),
+            ),
+          ],
         ),
       ),
     );
@@ -199,6 +291,9 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
         title: const Text('确认删除'),
         content: Text('确定要删除 ${record.type.label}: ${record.displayValue} 这条记录吗？'),
         actions: [
@@ -206,20 +301,34 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
             onPressed: () => Navigator.pop(ctx),
             child: const Text('取消'),
           ),
-          ElevatedButton(
-            onPressed: () async {
-              Navigator.pop(ctx);
-              final success = await ref
-                  .read(healthRecordsProvider.notifier)
-                  .deleteRecord(record.id);
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(success ? '已删除' : '删除失败')),
-                );
-              }
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('删除'),
+          Container(
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Colors.red, Colors.redAccent],
+              ),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: ElevatedButton(
+              onPressed: () async {
+                Navigator.pop(ctx);
+                final success = await ref
+                    .read(healthRecordsProvider.notifier)
+                    .deleteRecord(record.id);
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(success ? '已删除' : '删除失败'),
+                      backgroundColor: success ? AppTheme.successColor : AppTheme.errorColor,
+                    ),
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+              ),
+              child: const Text('删除'),
+            ),
           ),
         ],
       ),
@@ -236,63 +345,136 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          title: Text('记录${type.label}'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: type.color.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(type.icon, color: type.color),
+              ),
+              const SizedBox(width: 12),
+              Text('记录${type.label}'),
+            ],
+          ),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 // 根据类型显示不同输入字段
                 if (type == HealthType.bloodPressure) ...[
-                  TextField(
-                    controller: valueController,
-                    decoration: const InputDecoration(
-                      labelText: '收缩压（mmHg）',
-                      hintText: '60-250',
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade50,
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    keyboardType: TextInputType.number,
+                    child: TextField(
+                      controller: valueController,
+                      decoration: const InputDecoration(
+                        labelText: '收缩压（mmHg）',
+                        hintText: '60-250',
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      ),
+                      keyboardType: TextInputType.number,
+                      style: const TextStyle(fontSize: 18),
+                    ),
                   ),
                   const SizedBox(height: 12),
-                  TextField(
-                    controller: valueController2,
-                    decoration: const InputDecoration(
-                      labelText: '舒张压（mmHg）',
-                      hintText: '40-150',
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade50,
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    keyboardType: TextInputType.number,
+                    child: TextField(
+                      controller: valueController2,
+                      decoration: const InputDecoration(
+                        labelText: '舒张压（mmHg）',
+                        hintText: '40-150',
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      ),
+                      keyboardType: TextInputType.number,
+                      style: const TextStyle(fontSize: 18),
+                    ),
                   ),
                 ],
                 if (type == HealthType.bloodSugar)
-                  TextField(
-                    controller: valueController,
-                    decoration: const InputDecoration(
-                      labelText: '血糖值（mmol/L）',
-                      hintText: '1.0-35.0',
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade50,
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    child: TextField(
+                      controller: valueController,
+                      decoration: const InputDecoration(
+                        labelText: '血糖值（mmol/L）',
+                        hintText: '1.0-35.0',
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      ),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      style: const TextStyle(fontSize: 18),
+                    ),
                   ),
                 if (type == HealthType.heartRate)
-                  TextField(
-                    controller: valueController,
-                    decoration: const InputDecoration(
-                      labelText: '心率（次/分）',
-                      hintText: '30-200',
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade50,
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    keyboardType: TextInputType.number,
+                    child: TextField(
+                      controller: valueController,
+                      decoration: const InputDecoration(
+                        labelText: '心率（次/分）',
+                        hintText: '30-200',
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      ),
+                      keyboardType: TextInputType.number,
+                      style: const TextStyle(fontSize: 18),
+                    ),
                   ),
                 if (type == HealthType.temperature)
-                  TextField(
-                    controller: valueController,
-                    decoration: const InputDecoration(
-                      labelText: '体温（°C）',
-                      hintText: '35.0-42.0',
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade50,
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    child: TextField(
+                      controller: valueController,
+                      decoration: const InputDecoration(
+                        labelText: '体温（°C）',
+                        hintText: '35.0-42.0',
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      ),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      style: const TextStyle(fontSize: 18),
+                    ),
                   ),
                 const SizedBox(height: 12),
-                TextField(
-                  controller: noteController,
-                  decoration: const InputDecoration(labelText: '备注（可选）'),
-                  maxLines: 2,
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade50,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: TextField(
+                    controller: noteController,
+                    decoration: const InputDecoration(
+                      labelText: '备注（可选）',
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    ),
+                    maxLines: 2,
+                    style: const TextStyle(fontSize: 16),
+                  ),
                 ),
               ],
             ),
@@ -302,7 +484,8 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
               onPressed: () => Navigator.pop(ctx),
               child: const Text('取消'),
             ),
-            ElevatedButton(
+            PrimaryButton(
+              text: '保存',
               onPressed: () => _submitRecord(
                 ctx,
                 type,
@@ -310,7 +493,9 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                 valueController2.text,
                 noteController.text,
               ),
-              child: const Text('保存'),
+              gradient: LinearGradient(
+                colors: [type.color, type.color.withValues(alpha: 0.7)],
+              ),
             ),
           ],
         );
@@ -356,12 +541,18 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
       }
     } on FormatException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message)),
+        SnackBar(
+          content: Text(e.message),
+          backgroundColor: AppTheme.errorColor,
+        ),
       );
       return;
     } catch (_) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('请输入有效的数值')),
+        SnackBar(
+          content: const Text('请输入有效的数值'),
+          backgroundColor: AppTheme.errorColor,
+        ),
       );
       return;
     }
@@ -380,7 +571,10 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(success ? '${type.label}记录已保存' : '保存失败')),
+        SnackBar(
+          content: Text(success ? '${type.label}记录已保存' : '保存失败'),
+          backgroundColor: success ? AppTheme.successColor : AppTheme.errorColor,
+        ),
       );
       // 保存成功后刷新统计
       if (success) {

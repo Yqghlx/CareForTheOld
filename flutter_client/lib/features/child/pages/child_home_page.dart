@@ -7,6 +7,9 @@ import '../../../shared/models/medication_plan.dart';
 import '../../elder/services/medication_service.dart';
 import '../../../core/api/api_client.dart';
 import '../providers/family_provider.dart';
+import '../../../shared/widgets/common_cards.dart';
+import '../../../shared/widgets/common_buttons.dart';
+import '../../../core/theme/app_theme.dart';
 
 /// 子女端首页
 class ChildHomePage extends ConsumerStatefulWidget {
@@ -47,17 +50,21 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 用户信息
-            Card(
+            // 用户信息 - 渐变卡片
+            GradientCard(
+              gradient: AppTheme.warmGradient,
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Row(
                   children: [
-                    CircleAvatar(
-                      radius: 28,
-                      backgroundColor: const Color(0xFFE86B4A),
-                      child: const Icon(Icons.person,
-                          size: 28, color: Colors.white),
+                    Container(
+                      width: 56,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: const Icon(Icons.person, size: 32, color: Colors.white),
                     ),
                     const SizedBox(width: 16),
                     Column(
@@ -66,11 +73,18 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         Text(
                           authState.user?.realName ?? '子女',
                           style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                         const SizedBox(height: 4),
-                        const Text('关注家人的健康状况',
-                            style: TextStyle(color: Colors.grey)),
+                        Text(
+                          '关注家人的健康状况',
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.9),
+                          ),
+                        ),
                       ],
                     ),
                   ],
@@ -79,8 +93,10 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
             ),
             const SizedBox(height: 24),
 
-            const Text('关注的老人',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const Text(
+              '关注的老人',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 16),
 
             // 老人列表
@@ -88,22 +104,25 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
 
             const SizedBox(height: 16),
 
-            // 快捷操作
+            // 快捷操作 - 使用渐变按钮
             Row(
               children: [
                 Expanded(
-                  child: ElevatedButton.icon(
+                  child: PrimaryIconButton(
+                    text: '管理家庭成员',
+                    icon: Icons.people,
                     onPressed: () => context.push('/child/family'),
-                    icon: const Icon(Icons.people),
-                    label: const Text('管理家庭成员'),
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: ElevatedButton.icon(
+                  child: PrimaryIconButton(
+                    text: '添加用药计划',
+                    icon: Icons.add,
                     onPressed: () => _showAddPlanDialog(context),
-                    icon: const Icon(Icons.add),
-                    label: const Text('添加用药计划'),
+                    gradient: const LinearGradient(
+                      colors: [Colors.blue, Colors.lightBlue],
+                    ),
                   ),
                 ),
               ],
@@ -127,12 +146,20 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('暂无关注的老人',
-                style: TextStyle(color: Colors.grey)),
+            Icon(
+              Icons.people_outline,
+              size: 64,
+              color: Colors.grey.shade400,
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              '暂无关注的老人',
+              style: TextStyle(color: Colors.grey, fontSize: 16),
+            ),
             const SizedBox(height: 12),
-            ElevatedButton(
+            PrimaryButton(
+              text: '添加家庭成员',
               onPressed: () => context.push('/child/family'),
-              child: const Text('添加家庭成员'),
             ),
           ],
         ),
@@ -144,18 +171,26 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
       itemBuilder: (context, index) {
         final elder = elders[index];
         return Card(
+          elevation: 4,
+          margin: const EdgeInsets.only(bottom: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           child: InkWell(
-            onTap: () =>
-                context.push('/child/elder/${elder.userId}/health'),
+            onTap: () => context.push('/child/elder/${elder.userId}/health'),
+            borderRadius: BorderRadius.circular(16),
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  CircleAvatar(
-                    radius: 32,
-                    backgroundColor: Colors.blue.shade100,
-                    child: const Icon(Icons.person,
-                        size: 32, color: Colors.blue),
+                  Container(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: const Icon(Icons.person, size: 32, color: Colors.blue),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
@@ -165,18 +200,33 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         Text(
                           elder.realName,
                           style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           elder.relation,
-                          style: const TextStyle(
-                              fontSize: 14, color: Colors.grey),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey.shade600,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  const Icon(Icons.chevron_right, color: Colors.grey),
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryColor.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      Icons.chevron_right,
+                      color: AppTheme.primaryColor,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -191,6 +241,9 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
         title: const Text('设置'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -206,14 +259,25 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
             onPressed: () => Navigator.pop(ctx),
             child: const Text('关闭'),
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              ref.read(authProvider.notifier).logout();
-              context.go('/login');
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('退出登录'),
+          Container(
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Colors.red, Colors.redAccent],
+              ),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                ref.read(authProvider.notifier).logout();
+                context.go('/login');
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+              ),
+              child: const Text('退出登录'),
+            ),
           ),
         ],
       ),
@@ -225,7 +289,10 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
     final elders = ref.read(familyProvider).elders;
     if (elders.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('请先添加老人到家庭成员')),
+        SnackBar(
+          content: const Text('请先添加老人到家庭成员'),
+          backgroundColor: AppTheme.warningColor,
+        ),
       );
       return;
     }
@@ -244,46 +311,103 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
         return StatefulBuilder(
           builder: (ctx, setDialogState) {
             return AlertDialog(
-              title: const Text('添加用药计划'),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              title: Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(Icons.medication, color: Colors.blue),
+                  ),
+                  const SizedBox(width: 12),
+                  const Text('添加用药计划'),
+                ],
+              ),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     // 选择老人
-                    DropdownButtonFormField<String>(
-                      value: selectedElderId,
-                      decoration: const InputDecoration(labelText: '选择老人'),
-                      items: elders
-                          .map((e) => DropdownMenuItem(
-                                value: e.userId,
-                                child: Text(e.realName),
-                              ))
-                          .toList(),
-                      onChanged: (v) =>
-                          setDialogState(() => selectedElderId = v!),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: DropdownButtonFormField<String>(
+                        value: selectedElderId,
+                        decoration: const InputDecoration(
+                          labelText: '选择老人',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        ),
+                        items: elders
+                            .map((e) => DropdownMenuItem(
+                                  value: e.userId,
+                                  child: Text(e.realName),
+                                ))
+                            .toList(),
+                        onChanged: (v) => setDialogState(() => selectedElderId = v!),
+                      ),
                     ),
                     const SizedBox(height: 12),
-                    TextField(
-                      controller: nameCtl,
-                      decoration: const InputDecoration(labelText: '药品名称'),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: TextField(
+                        controller: nameCtl,
+                        decoration: const InputDecoration(
+                          labelText: '药品名称',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        ),
+                        style: const TextStyle(fontSize: 16),
+                      ),
                     ),
                     const SizedBox(height: 12),
-                    TextField(
-                      controller: dosageCtl,
-                      decoration: const InputDecoration(labelText: '剂量（如：100mg）'),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: TextField(
+                        controller: dosageCtl,
+                        decoration: const InputDecoration(
+                          labelText: '剂量（如：100mg）',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        ),
+                        style: const TextStyle(fontSize: 16),
+                      ),
                     ),
                     const SizedBox(height: 12),
-                    DropdownButtonFormField<int>(
-                      value: selectedFrequency,
-                      decoration: const InputDecoration(labelText: '用药频率'),
-                      items: Frequency.values
-                          .map((f) => DropdownMenuItem(
-                                value: f.value,
-                                child: Text(f.label),
-                              ))
-                          .toList(),
-                      onChanged: (v) =>
-                          setDialogState(() => selectedFrequency = v!),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: DropdownButtonFormField<int>(
+                        value: selectedFrequency,
+                        decoration: const InputDecoration(
+                          labelText: '用药频率',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        ),
+                        items: Frequency.values
+                            .map((f) => DropdownMenuItem(
+                                  value: f.value,
+                                  child: Text(f.label),
+                                ))
+                            .toList(),
+                        onChanged: (v) => setDialogState(() => selectedFrequency = v!),
+                      ),
                     ),
                     const SizedBox(height: 12),
                     // 提醒时间
@@ -325,29 +449,35 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                                     });
                                   }
                                 },
-                                child: InputDecorator(
-                                  decoration: InputDecoration(
-                                    labelText: '提醒时间 ${entry.key + 1}',
-                                    suffixIcon: const Icon(Icons.access_time),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade50,
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                                  child: Text(
-                                    entry.value.text.isEmpty
-                                        ? '点击选择时间'
-                                        : entry.value.text,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: entry.value.text.isEmpty
-                                          ? Colors.grey
-                                          : Colors.black,
-                                    ),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.access_time, color: AppTheme.primaryColor),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        entry.value.text.isEmpty
+                                            ? '点击选择时间'
+                                            : '提醒时间 ${entry.key + 1}: ${entry.value.text}',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: entry.value.text.isEmpty
+                                              ? Colors.grey
+                                              : Colors.black,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
                             ),
                             if (timeControllers.length > 1)
                               IconButton(
-                                icon: const Icon(Icons.remove_circle,
-                                    color: Colors.red),
+                                icon: const Icon(Icons.remove_circle, color: Colors.red),
                                 onPressed: () => setDialogState(
                                     () => timeControllers.removeAt(entry.key)),
                               ),
@@ -369,10 +499,12 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                   onPressed: () => Navigator.pop(ctx),
                   child: const Text('取消'),
                 ),
-                ElevatedButton(
+                PrimaryButton(
+                  text: '创建',
                   onPressed: () async {
-                    if (nameCtl.text.trim().isEmpty ||
-                        dosageCtl.text.trim().isEmpty) return;
+                    if (nameCtl.text.trim().isEmpty || dosageCtl.text.trim().isEmpty) {
+                      return;
+                    }
                     Navigator.pop(ctx);
                     try {
                       final service =
@@ -392,18 +524,23 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                       );
                       if (mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('用药计划创建成功')),
+                          const SnackBar(
+                            content: Text('用药计划创建成功'),
+                            backgroundColor: AppTheme.successColor,
+                          ),
                         );
                       }
                     } catch (e) {
                       if (mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('创建失败: $e')),
+                          SnackBar(
+                            content: Text('创建失败: $e'),
+                            backgroundColor: AppTheme.errorColor,
+                          ),
                         );
                       }
                     }
                   },
-                  child: const Text('创建'),
                 ),
               ],
             );
