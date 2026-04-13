@@ -1,0 +1,355 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../shared/models/emergency_call.dart';
+import '../../shared/providers/emergency_provider.dart';
+import '../../../shared/widgets/common_cards.dart';
+import '../../../shared/widgets/common_buttons.dart';
+import '../../../core/theme/app_theme.dart';
+
+/// 子女端紧急呼叫页面
+class EmergencyPage extends ConsumerStatefulWidget {
+  const EmergencyPage({super.key});
+
+  @override
+  ConsumerState<EmergencyPage> createState() => _EmergencyPageState();
+}
+
+class _EmergencyPageState extends ConsumerState<EmergencyPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(emergencyProvider.notifier).loadAll();
+    });
+  }
+
+  Future<void> _refresh() async {
+    await ref.read(emergencyProvider.notifier).loadAll();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final emergencyState = ref.watch(emergencyProvider);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('紧急呼叫'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.history),
+            onPressed: () => _showHistoryDialog(),
+            tooltip: '历史记录',
+          ),
+        ],
+      ),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: emergencyState.isLoading && emergencyState.unreadCalls.isEmpty
+            ? const Center(child: CircularProgressIndicator())
+            : _buildContent(emergencyState),
+      ),
+    );
+  }
+
+  Widget _buildContent(EmergencyState state) {
+    if (state.error != null && state.unreadCalls.isEmpty && state.historyCalls.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, size: 48, color: AppTheme.errorColor),
+            const SizedBox(height: 12),
+            Text('加载失败: ${state.error}', style: const TextStyle(color: AppTheme.errorColor)),
+            const SizedBox(height: 12),
+            PrimaryButton(
+              text: '重试',
+              onPressed: () => ref.read(emergencyProvider.notifier).loadAll(),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 未处理的紧急呼叫
+          if (state.unreadCalls.isNotEmpty) ...[
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: AppTheme.errorColor.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.warning_amber_rounded, color: AppTheme.errorColor),
+                  const SizedBox(width: 8),
+                  Text(
+                    '有 ${state.unreadCount} 条待处理的紧急呼叫',
+                    style: TextStyle(
+                      color: AppTheme.errorColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            ...state.unreadCalls.map((call) => _buildUnreadCallCard(call)),
+          ] else ...[
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.green.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.check_circle_outline, color: Colors.green),
+                  const SizedBox(width: 8),
+                  const Text(
+                    '暂无待处理的紧急呼叫',
+                    style: TextStyle(color: Colors.green),
+                  ),
+                ],
+              ),
+            ),
+          ],
+
+          const SizedBox(height: 24),
+
+          // 最近历史
+          const Text(
+            '最近呼叫记录',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 12),
+
+          if (state.historyCalls.isEmpty)
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const Center(
+                child: Text('暂无呼叫记录', style: TextStyle(color: Colors.grey)),
+              ),
+            )
+          else
+            ...state.historyCalls.take(5).map((call) => _buildHistoryCard(call)),
+        ],
+      ),
+    );
+  }
+
+  /// 未处理呼叫卡片（高亮显示）
+  Widget _buildUnreadCallCard(EmergencyCall call) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: AppTheme.errorColor.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppTheme.errorColor.withValues(alpha: 0.3), width: 2),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: AppTheme.errorColor.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: const Icon(
+                    Icons.emergency,
+                    color: AppTheme.errorColor,
+                    size: 32,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${call.elderName} 发起紧急呼叫',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        call.relativeTime,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                StatusChip(
+                  label: '待处理',
+                  color: AppTheme.errorColor,
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            PrimaryIconButton(
+              text: '已处理',
+              icon: Icons.check,
+              onPressed: () => _respondCall(call),
+              gradient: const LinearGradient(
+                colors: [Colors.green, Colors.lightGreen],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 历史记录卡片
+  Widget _buildHistoryCard(EmergencyCall call) {
+    return Card(
+      elevation: 2,
+      margin: const EdgeInsets.only(bottom: 8),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: call.status.color.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(
+                call.isPending ? Icons.warning_amber : Icons.check_circle,
+                color: call.status.color,
+                size: 22,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    call.elderName,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    call.relativeTime,
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  ),
+                ],
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                StatusChip(
+                  label: call.status.label,
+                  color: call.status.color,
+                ),
+                if (call.respondedByRealName != null)
+                  Text(
+                    '处理人: ${call.respondedByRealName}',
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 处理呼叫
+  Future<void> _respondCall(EmergencyCall call) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: const Text('确认处理'),
+        content: Text('确定要标记 ${call.elderName} 的紧急呼叫为已处理吗？'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('取消'),
+          ),
+          PrimaryButton(
+            text: '确认',
+            onPressed: () => Navigator.pop(ctx, true),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      final success = await ref.read(emergencyProvider.notifier).respondCall(call.id);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(success ? '已标记为处理' : '操作失败'),
+            backgroundColor: success ? AppTheme.successColor : AppTheme.errorColor,
+          ),
+        );
+      }
+    }
+  }
+
+  /// 显示历史记录对话框
+  void _showHistoryDialog() {
+    final historyCalls = ref.read(emergencyProvider).historyCalls;
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: const Text('历史呼叫记录'),
+        content: SizedBox(
+          width: double.maxFinite,
+          height: 400,
+          child: historyCalls.isEmpty
+              ? const Center(child: Text('暂无历史记录'))
+              : ListView.builder(
+                  itemCount: historyCalls.length,
+                  itemBuilder: (context, index) {
+                    final call = historyCalls[index];
+                    return _buildHistoryCard(call);
+                  },
+                ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('关闭'),
+          ),
+        ],
+      ),
+    );
+  }
+}
