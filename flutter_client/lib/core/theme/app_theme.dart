@@ -22,7 +22,27 @@ class AppTheme {
   static const Color textSecondary = Color(0xFF666666);
   static const Color textHint = Color(0xFF999999);
 
-  /// 老人端特殊配置 - 大字体、大按钮
+  /// 渐变配置
+  static const LinearGradient primaryGradient = LinearGradient(
+    colors: [primaryColor, primaryLight],
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+  );
+
+  static const LinearGradient warmGradient = LinearGradient(
+    colors: [Color(0xFFE86B4A), Color(0xFFFF9A6B)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  /// 卡片圆角
+  static const double cardRadius = 16.0;
+  static const double cardRadiusLarge = 20.0;
+
+  /// 按钮圆角
+  static const double buttonRadius = 12.0;
+
+  /// 老人端特殊配置 - 大字体、大按钮、更大圆角
   static ThemeData get elderTheme => ThemeData(
     useMaterial3: true,
     colorScheme: ColorScheme.fromSeed(
@@ -30,6 +50,20 @@ class AppTheme {
       brightness: Brightness.light,
     ),
     fontFamily: 'PingFangSC',
+    scaffoldBackgroundColor: backgroundColor,
+    cardTheme: CardThemeData(
+      color: cardColor,
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(cardRadiusLarge),
+      ),
+    ),
+    appBarTheme: AppBarTheme(
+      backgroundColor: primaryColor,
+      foregroundColor: Colors.white,
+      centerTitle: true,
+      elevation: 0,
+    ),
     textTheme: const TextTheme(
       // 老人端使用更大的字体
       displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
@@ -50,9 +84,22 @@ class AppTheme {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
+        backgroundColor: primaryColor,
+        foregroundColor: Colors.white,
         minimumSize: const Size(double.infinity, 56), // 大按钮
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(buttonRadius),
+        ),
         textStyle: const TextStyle(fontSize: 18),
       ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(buttonRadius),
+      ),
+      filled: true,
+      fillColor: Colors.white,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
     ),
   );
 
@@ -65,23 +112,35 @@ class AppTheme {
     ),
     fontFamily: 'PingFangSC',
     scaffoldBackgroundColor: backgroundColor,
-    cardTheme: const CardThemeData(color: cardColor),
+    cardTheme: CardThemeData(
+      color: cardColor,
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(cardRadius),
+      ),
+    ),
     appBarTheme: const AppBarTheme(
       backgroundColor: primaryColor,
       foregroundColor: Colors.white,
       centerTitle: true,
+      elevation: 0,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
         minimumSize: const Size(double.infinity, 48),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(buttonRadius),
+        ),
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(buttonRadius),
       ),
+      filled: true,
+      fillColor: Colors.white,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     ),
   );

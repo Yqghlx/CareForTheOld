@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../shared/models/medication_plan.dart';
 import '../../../shared/models/medication_log.dart';
 import '../providers/medication_provider.dart';
+import '../../../shared/widgets/common_cards.dart';
+import '../../../shared/widgets/common_buttons.dart';
+import '../../../core/theme/app_theme.dart';
 
 /// 用药提醒页面
 class MedicationPage extends ConsumerStatefulWidget {
@@ -39,14 +42,17 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 今日用药概览
+              // 今日用药概览 - 渐变卡片
               _buildOverviewCard(medState),
               const SizedBox(height: 24),
 
               // 今日待服药
               const Text(
                 '今日用药计划',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 16),
 
@@ -60,12 +66,26 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
     );
   }
 
-  /// 概览卡片
+  /// 概览卡片 - 渐变背景
   Widget _buildOverviewCard(MedicationState state) {
-    return Card(
-      color: const Color(0xFFE86B4A).withOpacity(0.1),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppTheme.primaryColor.withValues(alpha: 0.1),
+            AppTheme.primaryLight.withValues(alpha: 0.05),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: AppTheme.primaryColor.withValues(alpha: 0.2),
+          width: 1,
+        ),
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(24),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -81,10 +101,32 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
   Widget _buildStatItem(String label, String value, Color color) {
     return Column(
       children: [
-        Text(value,
-            style: TextStyle(
-                fontSize: 32, fontWeight: FontWeight.bold, color: color)),
-        Text(label, style: const TextStyle(fontSize: 16)),
+        Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Center(
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.grey.shade700,
+          ),
+        ),
       ],
     );
   }
@@ -100,12 +142,16 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('加载失败: ${state.error}',
-                style: const TextStyle(color: Colors.red)),
+            Icon(Icons.error_outline, size: 48, color: AppTheme.errorColor),
             const SizedBox(height: 12),
-            ElevatedButton(
+            Text(
+              '加载失败: ${state.error}',
+              style: const TextStyle(color: AppTheme.errorColor),
+            ),
+            const SizedBox(height: 12),
+            PrimaryButton(
+              text: '重试',
               onPressed: () => ref.read(medicationProvider.notifier).loadAll(),
-              child: const Text('重试'),
             ),
           ],
         ),
@@ -113,11 +159,22 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
     }
 
     if (state.todayPending.isEmpty) {
-      return const Center(
-        child: Text(
-          '今日暂无用药计划',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 16, color: Colors.grey),
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.check_circle_outline,
+              size: 64,
+              color: Colors.grey.shade400,
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              '今日暂无用药计划',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 18, color: Colors.grey),
+            ),
+          ],
         ),
       );
     }
@@ -138,8 +195,13 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
         '${scheduledTime.hour.toString().padLeft(2, '0')}:${scheduledTime.minute.toString().padLeft(2, '0')}';
 
     return Card(
+      elevation: 4,
+      margin: const EdgeInsets.only(bottom: 12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -147,17 +209,25 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
             Row(
               children: [
                 Container(
-                  width: 48,
-                  height: 48,
+                  width: 56,
+                  height: 56,
                   decoration: BoxDecoration(
+                    color: log.status == MedicationStatus.taken
+                        ? Colors.green.withValues(alpha: 0.15)
+                        : log.isPending
+                            ? Colors.orange.withValues(alpha: 0.15)
+                            : Colors.grey.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Icon(
+                    Icons.medication,
                     color: log.status == MedicationStatus.taken
                         ? Colors.green
                         : log.isPending
                             ? Colors.orange
                             : Colors.grey,
-                    borderRadius: BorderRadius.circular(8),
+                    size: 28,
                   ),
-                  child: const Icon(Icons.medication, color: Colors.white),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -167,44 +237,52 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
                       Text(
                         log.medicineName,
                         style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
+                      const SizedBox(height: 4),
                       Text(
                         '计划时间: $timeStr',
-                        style:
-                            const TextStyle(fontSize: 14, color: Colors.grey),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey.shade600,
+                        ),
                       ),
                     ],
                   ),
                 ),
                 // 状态标签
-                _buildStatusChip(log.status),
+                StatusChip(
+                  label: log.status.label,
+                  color: log.status.color,
+                ),
               ],
             ),
             // 待服用时显示操作按钮
             if (log.isPending)
               Padding(
-                padding: const EdgeInsets.only(top: 12),
+                padding: const EdgeInsets.only(top: 16),
                 child: Row(
                   children: [
                     Expanded(
-                      child: SizedBox(
-                        height: 40,
-                        child: ElevatedButton(
-                          onPressed: () => _markTaken(log),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                          ),
-                          child: const Text('标记为已服用'),
+                      child: PrimaryIconButton(
+                        text: '已服用',
+                        icon: Icons.check,
+                        onPressed: () => _markTaken(log),
+                        gradient: const LinearGradient(
+                          colors: [Colors.green, Colors.lightGreen],
                         ),
                       ),
                     ),
                     const SizedBox(width: 12),
                     SizedBox(
-                      height: 40,
-                      child: OutlinedButton(
+                      width: 100,
+                      child: SecondaryButton(
+                        text: '跳过',
                         onPressed: () => _markSkipped(log),
-                        child: const Text('跳过'),
+                        borderColor: Colors.grey,
+                        textColor: Colors.grey.shade700,
                       ),
                     ),
                   ],
@@ -216,25 +294,16 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
     );
   }
 
-  /// 状态标签
-  Widget _buildStatusChip(MedicationStatus status) {
-    return Chip(
-      label: Text(
-        status.label,
-        style: TextStyle(color: status.color, fontSize: 14),
-      ),
-      backgroundColor: status.color.withOpacity(0.1),
-      side: BorderSide.none,
-    );
-  }
-
   /// 标记已服用
   Future<void> _markTaken(MedicationLog log) async {
     final success =
         await ref.read(medicationProvider.notifier).markAsTaken(log);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(success ? '已标记为已服用' : '操作失败')),
+        SnackBar(
+          content: Text(success ? '已标记为已服用' : '操作失败'),
+          backgroundColor: success ? AppTheme.successColor : AppTheme.errorColor,
+        ),
       );
     }
   }
@@ -245,7 +314,10 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
         await ref.read(medicationProvider.notifier).markAsSkipped(log);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(success ? '已跳过本次用药' : '操作失败')),
+        SnackBar(
+          content: Text(success ? '已跳过本次用药' : '操作失败'),
+          backgroundColor: Colors.grey.shade700,
+        ),
       );
     }
   }
