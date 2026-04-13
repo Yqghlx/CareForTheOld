@@ -4,6 +4,7 @@ import '../../features/auth/pages/login_page.dart';
 import '../../features/auth/pages/register_page.dart';
 import '../../features/elder/pages/elder_home_page.dart';
 import '../../features/elder/pages/health_record_page.dart';
+import '../../features/elder/pages/health_trend_page.dart';
 import '../../features/elder/pages/medication_page.dart';
 import '../../features/child/pages/child_home_page.dart';
 import '../../features/child/pages/family_member_page.dart';
@@ -32,6 +33,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/elder/health',
       builder: (context, state) => const HealthRecordPage(),
+    ),
+    GoRoute(
+      path: '/elder/health/trend',
+      builder: (context, state) => const HealthTrendPage(),
     ),
     GoRoute(
       path: '/elder/medication',
