@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../shared/models/health_record.dart';
 import '../../../shared/models/health_stats.dart';
@@ -40,7 +41,16 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
     final statsAsync = ref.watch(healthStatsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('健康记录')),
+      appBar: AppBar(
+        title: const Text('健康记录'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.show_chart),
+            onPressed: () => context.push('/elder/health/trend'),
+            tooltip: '查看趋势',
+          ),
+        ],
+      ),
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: Padding(
