@@ -40,6 +40,10 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
           automaticallyImplyLeading: false,
           actions: [
             IconButton(
+              icon: const Icon(Icons.notifications),
+              onPressed: () => context.push('/notifications'),
+            ),
+            IconButton(
               icon: const Icon(Icons.settings),
               onPressed: () => context.push('/settings'),
             ),

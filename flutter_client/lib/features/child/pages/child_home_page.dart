@@ -67,6 +67,10 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
             ],
           ),
           IconButton(
+            icon: const Icon(Icons.notifications),
+            onPressed: () => context.push('/notifications'),
+          ),
+          IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () => context.push('/settings'),
           ),

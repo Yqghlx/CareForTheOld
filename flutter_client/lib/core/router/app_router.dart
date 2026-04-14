@@ -12,6 +12,7 @@ import '../../features/child/pages/elder_health_page.dart';
 import '../../features/child/pages/elder_location_page.dart';
 import '../../features/child/pages/emergency_page.dart';
 import '../../features/shared/pages/settings_page.dart';
+import '../../features/shared/pages/notification_page.dart';
 
 /// 应用路由配置
 final appRouter = GoRouter(
@@ -81,6 +82,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/settings',
       builder: (context, state) => const SettingsPage(),
+    ),
+    GoRoute(
+      path: '/notifications',
+      builder: (context, state) => const NotificationPage(),
     ),
   ],
 );
