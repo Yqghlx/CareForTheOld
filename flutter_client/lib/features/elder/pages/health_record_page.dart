@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../../shared/models/health_record.dart';
 import '../../../shared/models/health_stats.dart';
 import '../providers/health_provider.dart';
+import '../services/voice_input_service.dart';
 import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../core/theme/app_theme.dart';
@@ -351,164 +354,347 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
     final valueController2 = TextEditingController(); // 血压舒张压
     final noteController = TextEditingController();
 
+    // 语音输入相关状态
+    final voiceService = VoiceInputService();
+    bool isListening = false;
+    String voiceText = '';
+    double soundLevel = 0;
+
     showDialog(
       context: context,
       builder: (ctx) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          title: Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: type.color.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(type.icon, color: type.color),
+        return StatefulBuilder(
+          builder: (ctx, setDialogState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
               ),
-              const SizedBox(width: 12),
-              Text('记录${type.label}'),
-            ],
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // 根据类型显示不同输入字段
-                if (type == HealthType.bloodPressure) ...[
+              title: Row(
+                children: [
                   Container(
+                    width: 40,
+                    height: 40,
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade50,
-                      borderRadius: BorderRadius.circular(12),
+                      color: type.color.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    child: TextField(
-                      controller: valueController,
-                      decoration: const InputDecoration(
-                        labelText: '收缩压（mmHg）',
-                        hintText: '60-250',
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      ),
-                      keyboardType: TextInputType.number,
-                      style: const TextStyle(fontSize: 18),
-                    ),
+                    child: Icon(type.icon, color: type.color),
                   ),
-                  const SizedBox(height: 12),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade50,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: TextField(
-                      controller: valueController2,
-                      decoration: const InputDecoration(
-                        labelText: '舒张压（mmHg）',
-                        hintText: '40-150',
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      ),
-                      keyboardType: TextInputType.number,
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                  ),
+                  const SizedBox(width: 12),
+                  Text('记录${type.label}'),
                 ],
-                if (type == HealthType.bloodSugar)
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade50,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: TextField(
-                      controller: valueController,
-                      decoration: const InputDecoration(
-                        labelText: '血糖值（mmol/L）',
-                        hintText: '1.0-35.0',
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // 语音输入区域
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        gradient: isListening
+                            ? LinearGradient(
+                                colors: [
+                                  AppTheme.primaryColor.withValues(alpha: 0.1),
+                                  AppTheme.primaryLight.withValues(alpha: 0.05),
+                                ],
+                              )
+                            : null,
+                        color: isListening ? null : Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(16),
+                        border: isListening
+                            ? Border.all(
+                                color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                                width: 2,
+                              )
+                            : null,
                       ),
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                  ),
-                if (type == HealthType.heartRate)
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade50,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: TextField(
-                      controller: valueController,
-                      decoration: const InputDecoration(
-                        labelText: '心率（次/分）',
-                        hintText: '30-200',
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      child: Column(
+                        children: [
+                          // 语音按钮
+                          GestureDetector(
+                            onTap: () async {
+                              if (isListening) {
+                                // 停止录音
+                                await voiceService.stopListening();
+                                setDialogState(() => isListening = false);
+                                // 解析已识别的文本并填入
+                                if (voiceText.isNotEmpty) {
+                                  _fillFromVoice(
+                                    type,
+                                    voiceText,
+                                    valueController,
+                                    valueController2,
+                                  );
+                                  setDialogState(() {});
+                                }
+                              } else {
+                                // 初始化并开始录音
+                                final available = await voiceService.initialize();
+                                if (!available) {
+                                  if (ctx.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('语音识别不可用，请检查设备设置'),
+                                        backgroundColor: AppTheme.warningColor,
+                                      ),
+                                    );
+                                  }
+                                  return;
+                                }
+                                setDialogState(() {
+                                  isListening = true;
+                                  voiceText = '';
+                                });
+                                await voiceService.startListening(
+                                  onResult: (text, isFinal) {
+                                    setDialogState(() => voiceText = text);
+                                    if (isFinal && text.isNotEmpty) {
+                                      // 最终结果自动停止并填入
+                                      voiceService.stopListening();
+                                      _fillFromVoice(
+                                        type,
+                                        text,
+                                        valueController,
+                                        valueController2,
+                                      );
+                                      setDialogState(() => isListening = false);
+                                    }
+                                  },
+                                  onSoundLevelChange: (level) {
+                                    setDialogState(() => soundLevel = level);
+                                  },
+                                );
+                                // listen 结束后更新状态
+                                setDialogState(() => isListening = voiceService.isListening);
+                              }
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              width: isListening ? 72 : 64,
+                              height: isListening ? 72 : 64,
+                              decoration: BoxDecoration(
+                                gradient: isListening
+                                    ? const LinearGradient(
+                                        colors: [Colors.red, Colors.redAccent],
+                                      )
+                                    : LinearGradient(
+                                        colors: [
+                                          AppTheme.primaryColor,
+                                          AppTheme.primaryColor.withValues(alpha: 0.7),
+                                        ],
+                                      ),
+                                shape: BoxShape.circle,
+                                boxShadow: isListening
+                                    ? [
+                                        BoxShadow(
+                                          color: Colors.red.withValues(alpha: 0.4),
+                                          blurRadius: 16 + soundLevel.abs(),
+                                          spreadRadius: 4,
+                                        ),
+                                      ]
+                                    : [
+                                        BoxShadow(
+                                          color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                                          blurRadius: 8,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ],
+                              ),
+                              child: Icon(
+                                isListening ? Icons.stop : Icons.mic,
+                                color: Colors.white,
+                                size: isListening ? 36 : 32,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          // 提示文本
+                          Text(
+                            isListening
+                                ? (voiceText.isEmpty ? '请说出数值...' : voiceText)
+                                : '点击麦克风，语音输入${type.label}数值',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: isListening ? AppTheme.primaryColor : Colors.grey.shade600,
+                              fontWeight: isListening ? FontWeight.bold : FontWeight.normal,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
                       ),
-                      keyboardType: TextInputType.number,
-                      style: const TextStyle(fontSize: 18),
                     ),
-                  ),
-                if (type == HealthType.temperature)
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade50,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: TextField(
-                      controller: valueController,
-                      decoration: const InputDecoration(
-                        labelText: '体温（°C）',
-                        hintText: '35.0-42.0',
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    const SizedBox(height: 16),
+
+                    // 根据类型显示不同输入字段
+                    if (type == HealthType.bloodPressure) ...[
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade50,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: TextField(
+                          controller: valueController,
+                          decoration: const InputDecoration(
+                            labelText: '收缩压（mmHg）',
+                            hintText: '60-250',
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          ),
+                          keyboardType: TextInputType.number,
+                          style: const TextStyle(fontSize: 18),
+                        ),
                       ),
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      style: const TextStyle(fontSize: 18),
+                      const SizedBox(height: 12),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade50,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: TextField(
+                          controller: valueController2,
+                          decoration: const InputDecoration(
+                            labelText: '舒张压（mmHg）',
+                            hintText: '40-150',
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          ),
+                          keyboardType: TextInputType.number,
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                      ),
+                    ],
+                    if (type == HealthType.bloodSugar)
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade50,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: TextField(
+                          controller: valueController,
+                          decoration: const InputDecoration(
+                            labelText: '血糖值（mmol/L）',
+                            hintText: '1.0-35.0',
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          ),
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                      ),
+                    if (type == HealthType.heartRate)
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade50,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: TextField(
+                          controller: valueController,
+                          decoration: const InputDecoration(
+                            labelText: '心率（次/分）',
+                            hintText: '30-200',
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          ),
+                          keyboardType: TextInputType.number,
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                      ),
+                    if (type == HealthType.temperature)
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade50,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: TextField(
+                          controller: valueController,
+                          decoration: const InputDecoration(
+                            labelText: '体温（°C）',
+                            hintText: '35.0-42.0',
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          ),
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                      ),
+                    const SizedBox(height: 12),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: TextField(
+                        controller: noteController,
+                        decoration: const InputDecoration(
+                          labelText: '备注（可选）',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        ),
+                        maxLines: 2,
+                        style: const TextStyle(fontSize: 16),
+                      ),
                     ),
-                  ),
-                const SizedBox(height: 12),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade50,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: TextField(
-                    controller: noteController,
-                    decoration: const InputDecoration(
-                      labelText: '备注（可选）',
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    ),
-                    maxLines: 2,
-                    style: const TextStyle(fontSize: 16),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    voiceService.dispose();
+                    Navigator.pop(ctx);
+                  },
+                  child: const Text('取消'),
+                ),
+                PrimaryButton(
+                  text: '保存',
+                  onPressed: () async {
+                    await voiceService.dispose();
+                    _submitRecord(
+                      ctx,
+                      type,
+                      valueController.text,
+                      valueController2.text,
+                      noteController.text,
+                    );
+                  },
+                  gradient: LinearGradient(
+                    colors: [type.color, type.color.withValues(alpha: 0.7)],
                   ),
                 ),
               ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('取消'),
-            ),
-            PrimaryButton(
-              text: '保存',
-              onPressed: () => _submitRecord(
-                ctx,
-                type,
-                valueController.text,
-                valueController2.text,
-                noteController.text,
-              ),
-              gradient: LinearGradient(
-                colors: [type.color, type.color.withValues(alpha: 0.7)],
-              ),
-            ),
-          ],
+            );
+          },
         );
+      },
+    ).then((_) {
+      // 对话框关闭时释放语音资源
+      voiceService.dispose();
+    });
+  }
+
+  /// 将语音识别文本解析后填入对应的输入框
+  void _fillFromVoice(
+    HealthType type,
+    String text,
+    TextEditingController valueController,
+    TextEditingController valueController2,
+  ) {
+    VoiceParser.parseAndFill(
+      type,
+      text,
+      onBloodPressure: (systolic, diastolic) {
+        valueController.text = systolic.toString();
+        valueController2.text = diastolic.toString();
+      },
+      onBloodSugar: (value) {
+        valueController.text = value.toStringAsFixed(1);
+      },
+      onHeartRate: (value) {
+        valueController.text = value.toString();
+      },
+      onTemperature: (value) {
+        valueController.text = value.toStringAsFixed(1);
       },
     );
   }
