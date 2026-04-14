@@ -57,4 +57,24 @@ class FamilyService {
   }) async {
     await _dio.delete('/family/$familyId/members/$userId');
   }
+
+  /// 通过邀请码加入家庭
+  Future<FamilyGroup> joinFamilyByCode({
+    required String inviteCode,
+    required String relation,
+  }) async {
+    final response = await _dio.post('/family/join', data: {
+      'inviteCode': inviteCode,
+      'relation': relation,
+    });
+    final data = response.data['data'];
+    return FamilyGroup.fromJson(data);
+  }
+
+  /// 刷新邀请码
+  Future<FamilyGroup> refreshInviteCode(String familyId) async {
+    final response = await _dio.post('/family/$familyId/refresh-code');
+    final data = response.data['data'];
+    return FamilyGroup.fromJson(data);
+  }
 }
