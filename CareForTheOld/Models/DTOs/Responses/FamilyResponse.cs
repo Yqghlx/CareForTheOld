@@ -6,6 +6,7 @@ public class FamilyResponse
 {
     public Guid Id { get; set; }
     public string FamilyName { get; set; } = string.Empty;
+    public string InviteCode { get; set; } = string.Empty;
     public List<FamilyMemberResponse> Members { get; set; } = [];
 }
 

@@ -4,11 +4,13 @@ import 'user_role.dart';
 class FamilyGroup {
   final String id;
   final String familyName;
+  final String inviteCode;
   final List<FamilyMember> members;
 
   const FamilyGroup({
     required this.id,
     required this.familyName,
+    required this.inviteCode,
     required this.members,
   });
 
@@ -16,6 +18,7 @@ class FamilyGroup {
     return FamilyGroup(
       id: json['id'] as String,
       familyName: json['familyName'] as String,
+      inviteCode: json['inviteCode'] as String? ?? '',
       members: (json['members'] as List<dynamic>)
           .map((m) => FamilyMember.fromJson(m as Map<String, dynamic>))
           .toList(),

@@ -8,6 +8,7 @@ public class Family
     public Guid Id { get; set; }
     public string FamilyName { get; set; } = string.Empty;
     public Guid CreatorId { get; set; }
+    public string InviteCode { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     // 导航属性

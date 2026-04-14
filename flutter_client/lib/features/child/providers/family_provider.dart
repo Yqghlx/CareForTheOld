@@ -71,6 +71,7 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
 
   /// 创建家庭组
   Future<bool> createFamily(String familyName) async {
+    state = state.copyWith(clearError: true);
     try {
       final family = await _service.createFamily(familyName);
       // 保存家庭信息到本地
@@ -121,9 +122,46 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
         family: FamilyGroup(
           id: state.family!.id,
           familyName: state.family!.familyName,
+          inviteCode: state.family!.inviteCode,
           members: updatedMembers,
         ),
       );
+      return true;
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+      return false;
+    }
+  }
+
+  /// 通过邀请码加入家庭
+  Future<bool> joinFamily({
+    required String inviteCode,
+    required String relation,
+  }) async {
+    try {
+      final family = await _service.joinFamilyByCode(
+        inviteCode: inviteCode,
+        relation: relation,
+      );
+      // 保存家庭信息到本地
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('familyId', family.id);
+      await prefs.setString('familyName', family.familyName);
+      state = state.copyWith(family: family);
+      return true;
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+      return false;
+    }
+  }
+
+  /// 刷新邀请码
+  Future<bool> refreshInviteCode() async {
+    final familyId = state.familyId;
+    if (familyId == null) return false;
+    try {
+      final family = await _service.refreshInviteCode(familyId);
+      state = state.copyWith(family: family);
       return true;
     } catch (e) {
       state = state.copyWith(error: e.toString());

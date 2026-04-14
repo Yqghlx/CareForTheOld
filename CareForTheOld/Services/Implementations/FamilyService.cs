@@ -10,8 +10,17 @@ namespace CareForTheOld.Services.Implementations;
 public class FamilyService : IFamilyService
 {
     private readonly AppDbContext _context;
+    private static readonly Random _random = new();
 
     public FamilyService(AppDbContext context) => _context = context;
+
+    /// <summary>
+    /// 生成 6 位数字邀请码
+    /// </summary>
+    private static string GenerateInviteCode()
+    {
+        return _random.Next(100000, 999999).ToString();
+    }
 
     /// <summary>
     /// 获取用户所属的家庭信息
@@ -37,6 +46,7 @@ public class FamilyService : IFamilyService
             Id = Guid.NewGuid(),
             FamilyName = request.FamilyName,
             CreatorId = creatorId,
+            InviteCode = GenerateInviteCode(),
             CreatedAt = DateTime.UtcNow
         };
 
@@ -75,6 +85,53 @@ public class FamilyService : IFamilyService
         });
 
         await _context.SaveChangesAsync();
+        return await GetFamilyResponse(familyId);
+    }
+
+    /// <summary>
+    /// 通过邀请码加入家庭
+    /// </summary>
+    public async Task<FamilyResponse> JoinFamilyByCodeAsync(Guid userId, JoinFamilyRequest request)
+    {
+        // 检查用户是否已在某个家庭中
+        if (await _context.FamilyMembers.AnyAsync(fm => fm.UserId == userId))
+            throw new ArgumentException("您已加入家庭组，不能重复加入");
+
+        var user = await _context.Users.FindAsync(userId)
+            ?? throw new KeyNotFoundException("用户不存在");
+
+        // 根据邀请码查找家庭
+        var family = await _context.Families
+            .FirstOrDefaultAsync(f => f.InviteCode == request.InviteCode)
+            ?? throw new KeyNotFoundException("邀请码无效，请检查后重试");
+
+        // 添加用户到家庭
+        _context.FamilyMembers.Add(new FamilyMember
+        {
+            Id = Guid.NewGuid(),
+            FamilyId = family.Id,
+            UserId = userId,
+            Role = user.Role,
+            Relation = request.Relation,
+        });
+
+        await _context.SaveChangesAsync();
+        return await GetFamilyResponse(family.Id);
+    }
+
+    /// <summary>
+    /// 刷新邀请码
+    /// </summary>
+    public async Task<FamilyResponse> RefreshInviteCodeAsync(Guid familyId, Guid operatorId)
+    {
+        await EnsureMemberAsync(familyId, operatorId);
+
+        var family = await _context.Families.FindAsync(familyId)
+            ?? throw new KeyNotFoundException("家庭组不存在");
+
+        family.InviteCode = GenerateInviteCode();
+        await _context.SaveChangesAsync();
+
         return await GetFamilyResponse(familyId);
     }
 
@@ -122,6 +179,7 @@ public class FamilyService : IFamilyService
         {
             Id = family.Id,
             FamilyName = family.FamilyName,
+            InviteCode = family.InviteCode,
             Members = family.Members.Select(fm => new FamilyMemberResponse
             {
                 UserId = fm.UserId,

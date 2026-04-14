@@ -43,6 +43,26 @@ public class FamilyController : ControllerBase
         return ApiResponse<FamilyResponse>.Ok(result, "邀请成功");
     }
 
+    /// <summary>
+    /// 通过邀请码加入家庭
+    /// </summary>
+    [HttpPost("join")]
+    public async Task<ApiResponse<FamilyResponse>> JoinFamily([FromBody] JoinFamilyRequest request)
+    {
+        var result = await _familyService.JoinFamilyByCodeAsync(CurrentUserId, request);
+        return ApiResponse<FamilyResponse>.Ok(result, "加入成功");
+    }
+
+    /// <summary>
+    /// 刷新邀请码
+    /// </summary>
+    [HttpPost("{id:guid}/refresh-code")]
+    public async Task<ApiResponse<FamilyResponse>> RefreshInviteCode(Guid id)
+    {
+        var result = await _familyService.RefreshInviteCodeAsync(id, CurrentUserId);
+        return ApiResponse<FamilyResponse>.Ok(result, "邀请码已刷新");
+    }
+
     [HttpGet("{id:guid}/members")]
     public async Task<ApiResponse<List<FamilyMemberResponse>>> GetMembers(Guid id)
     {
