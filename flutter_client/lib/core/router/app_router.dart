@@ -11,6 +11,7 @@ import '../../features/child/pages/family_member_page.dart';
 import '../../features/child/pages/elder_health_page.dart';
 import '../../features/child/pages/elder_location_page.dart';
 import '../../features/child/pages/emergency_page.dart';
+import '../../features/shared/pages/settings_page.dart';
 
 /// 应用路由配置
 final appRouter = GoRouter(
@@ -74,6 +75,12 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/child/emergency',
       builder: (context, state) => const EmergencyPage(),
+    ),
+
+    // 通用路由
+    GoRoute(
+      path: '/settings',
+      builder: (context, state) => const SettingsPage(),
     ),
   ],
 );

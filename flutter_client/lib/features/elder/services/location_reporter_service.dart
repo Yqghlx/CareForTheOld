@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/api/api_client.dart';
 import '../services/location_service.dart';
 
@@ -19,6 +20,14 @@ class LocationReporterService {
   /// 启动位置上报
   Future<bool> start() async {
     if (_isRunning) return true;
+
+    // 检查定位开关设置
+    final prefs = await SharedPreferences.getInstance();
+    final locationEnabled = prefs.getBool('location_enabled') ?? true;
+    if (!locationEnabled) {
+      debugPrint('定位上报已关闭');
+      return false;
+    }
 
     // 检查并请求定位权限
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -45,7 +54,7 @@ class LocationReporterService {
     await _reportLocation();
 
     // 启动定时器
-    _timer = Timer.periodic(_reportInterval, (_) => _reportLocation());
+    _timer = Timer.periodic(_reportInterval, (_) => _reportLocationIfEnabled());
     _isRunning = true;
     debugPrint('位置上报服务已启动');
     return true;
@@ -57,6 +66,17 @@ class LocationReporterService {
     _timer = null;
     _isRunning = false;
     debugPrint('位置上报服务已停止');
+  }
+
+  /// 检查并上报位置（根据设置决定是否上报）
+  Future<void> _reportLocationIfEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    final locationEnabled = prefs.getBool('location_enabled') ?? true;
+    if (!locationEnabled) {
+      debugPrint('定位上报已关闭，跳过上报');
+      return;
+    }
+    await _reportLocation();
   }
 
   /// 上报位置

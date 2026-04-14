@@ -33,6 +33,13 @@ public class UserController : ControllerBase
         return ApiResponse<UserResponse>.Ok(result, "更新成功");
     }
 
+    [HttpPost("me/password")]
+    public async Task<ApiResponse<object>> ChangePassword([FromBody] ChangePasswordRequest request)
+    {
+        await _userService.ChangePasswordAsync(CurrentUserId, request);
+        return ApiResponse<object>.Ok(new { success = true }, "密码修改成功");
+    }
+
     [HttpGet("{id:guid}")]
     public async Task<ApiResponse<UserResponse>> GetUserById(Guid id)
     {

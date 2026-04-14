@@ -41,7 +41,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
           actions: [
             IconButton(
               icon: const Icon(Icons.settings),
-              onPressed: () => _showSettingsDialog(),
+              onPressed: () => context.push('/settings'),
             ),
           ],
         ),
@@ -185,7 +185,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                 title: '设置',
                 subtitle: '个人信息设置',
                 color: Colors.grey,
-                onTap: () => _showSettingsDialog(),
+                onTap: () => context.push('/settings'),
               ),
             ],
           ),
@@ -376,54 +376,6 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
             onPressed: () => Navigator.pop(ctx),
             gradient: const LinearGradient(
               colors: [Colors.green, Colors.lightGreen],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// 设置对话框（登出）
-  void _showSettingsDialog() {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        title: const Text('设置'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('用户: ${ref.read(authProvider).user?.realName ?? "未知"}'),
-            const SizedBox(height: 8),
-            Text('角色: ${ref.read(authProvider).user?.role.label ?? "未知"}'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('关闭'),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Colors.red, Colors.redAccent],
-              ),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pop(ctx);
-                ref.read(authProvider.notifier).logout();
-                context.go('/login');
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-              ),
-              child: const Text('退出登录'),
             ),
           ),
         ],

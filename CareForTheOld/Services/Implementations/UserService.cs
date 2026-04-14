@@ -28,7 +28,26 @@ public class UserService : IUserService
         user.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
-        return await MapToResponse(userId)!;
+        return await MapToResponse(userId) ?? throw new KeyNotFoundException("用户不存在");
+    }
+
+    public async Task<bool> ChangePasswordAsync(Guid userId, ChangePasswordRequest request)
+    {
+        var user = await _context.Users.FindAsync(userId)
+            ?? throw new KeyNotFoundException("用户不存在");
+
+        // 验证旧密码
+        if (!BCrypt.Net.BCrypt.Verify(request.OldPassword, user.PasswordHash))
+        {
+            throw new InvalidOperationException("旧密码不正确");
+        }
+
+        // 更新新密码
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+        user.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+        return true;
     }
 
     private async Task<UserResponse?> MapToResponse(Guid userId)
