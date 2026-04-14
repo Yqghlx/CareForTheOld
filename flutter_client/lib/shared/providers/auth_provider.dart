@@ -1,8 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/user_role.dart';
 import '../models/user.dart';
+import '../../features/shared/services/signalr_service.dart';
 
 /// 认证状态
 class AuthState {
@@ -42,7 +44,9 @@ class AuthState {
 
 /// 认证 Provider
 class AuthNotifier extends StateNotifier<AuthState> {
-  AuthNotifier() : super(const AuthState()) {
+  final Ref _ref;
+
+  AuthNotifier(this._ref) : super(const AuthState()) {
     _loadStoredAuth();
   }
 
@@ -60,6 +64,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
         refreshToken: refreshToken,
         role: roleStr != null ? UserRole.fromString(roleStr) : null,
       );
+
+      // 已登录状态自动连接 SignalR
+      _connectSignalR();
     }
   }
 
@@ -82,10 +89,16 @@ class AuthNotifier extends StateNotifier<AuthState> {
       refreshToken: refreshToken,
       role: user.role,
     );
+
+    // 登录成功后连接 SignalR
+    _connectSignalR();
   }
 
   /// 登出
   Future<void> logout() async {
+    // 登出时断开 SignalR
+    await _disconnectSignalR();
+
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('accessToken');
     await prefs.remove('refreshToken');
@@ -93,6 +106,24 @@ class AuthNotifier extends StateNotifier<AuthState> {
     await prefs.remove('userId');
 
     state = const AuthState();
+  }
+
+  /// 连接 SignalR
+  void _connectSignalR() {
+    try {
+      _ref.read(signalrServiceProvider).connect();
+    } catch (e) {
+      debugPrint('SignalR 连接失败: $e');
+    }
+  }
+
+  /// 断开 SignalR
+  Future<void> _disconnectSignalR() async {
+    try {
+      await _ref.read(signalrServiceProvider).disconnect();
+    } catch (e) {
+      debugPrint('SignalR 断开失败: $e');
+    }
   }
 
   /// 更新令牌
@@ -113,5 +144,5 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
 /// Auth Provider
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
-  return AuthNotifier();
+  return AuthNotifier(ref);
 });
