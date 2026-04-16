@@ -5,6 +5,7 @@ import '../../../shared/models/health_record.dart';
 import '../providers/health_provider.dart';
 import '../../../shared/widgets/health_trend_chart.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../shared/services/health_report_service.dart';
 
 /// 按类型过滤的健康记录 Provider（用于趋势页面）
 final filteredHealthRecordsProvider =
@@ -44,6 +45,12 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
               icon: const Icon(Icons.refresh),
               onPressed: () => ref.invalidate(filteredHealthRecordsProvider(_selectedType)),
               tooltip: '刷新',
+            ),
+            // 导出报告按钮
+            IconButton(
+              icon: const Icon(Icons.picture_as_pdf),
+              onPressed: () => _showExportDialog(context),
+              tooltip: '导出报告',
             ),
           ],
         ),
@@ -215,5 +222,95 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
         ),
       ),
     );
+  }
+
+  /// 显示导出报告对话框
+  void _showExportDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Colors.blue.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(Icons.picture_as_pdf, color: Colors.blue),
+            ),
+            const SizedBox(width: 12),
+            const Text('导出健康报告'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('选择报告时间范围：'),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      Navigator.pop(ctx);
+                      _exportReport(context, 7);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text('最近7天', style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      Navigator.pop(ctx);
+                      _exportReport(context, 30);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text('最近30天', style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('取消'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 导出报告
+  Future<void> _exportReport(BuildContext context, int days) async {
+    final service = ref.read(healthReportServiceProvider);
+    final success = await service.downloadAndShareReport(days: days);
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(success ? '报告已生成，请选择分享方式' : '导出失败，请稍后重试'),
+          backgroundColor: success ? AppTheme.successColor : AppTheme.errorColor,
+        ),
+      );
+    }
   }
 }

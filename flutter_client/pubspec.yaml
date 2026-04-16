@@ -40,6 +40,9 @@ dependencies:
   # 本地通知
   flutter_local_notifications: ^18.0.0
 
+  # 分享文件
+  share_plus: ^10.0.0
+
   # 国际化
   intl: ^0.19.0
 

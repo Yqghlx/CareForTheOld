@@ -19,11 +19,16 @@ public class HealthController : ControllerBase
 {
     private readonly IHealthService _healthService;
     private readonly IFamilyService _familyService;
+    private readonly IHealthReportService _reportService;
 
-    public HealthController(IHealthService healthService, IFamilyService familyService)
+    public HealthController(
+        IHealthService healthService,
+        IFamilyService familyService,
+        IHealthReportService reportService)
     {
         _healthService = healthService;
         _familyService = familyService;
+        _reportService = reportService;
     }
 
     private Guid CurrentUserId => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
@@ -104,5 +109,35 @@ public class HealthController : ControllerBase
     {
         await _healthService.DeleteRecordAsync(CurrentUserId, id);
         return ApiResponse<object>.Ok(null!, "删除成功");
+    }
+
+    /// <summary>
+    /// 导出自己的健康报告 PDF
+    /// </summary>
+    [HttpGet("me/report")]
+    public async Task<IActionResult> ExportMyReport([FromQuery] int days = 7)
+    {
+        var pdfBytes = await _reportService.GeneratePdfReportAsync(CurrentUserId, days);
+        var fileName = $"健康报告_{DateTime.Now:yyyyMMdd}.pdf";
+        return File(pdfBytes, "application/pdf", fileName);
+    }
+
+    /// <summary>
+    /// 导出家庭成员的健康报告 PDF（子女导出老人报告）
+    /// </summary>
+    [HttpGet("family/{familyId:guid}/member/{memberId:guid}/report")]
+    public async Task<IActionResult> ExportFamilyMemberReport(
+        Guid familyId,
+        Guid memberId,
+        [FromQuery] int days = 7)
+    {
+        // 验证当前用户是否是该家庭成员
+        var members = await _familyService.GetMembersAsync(familyId);
+        if (!members.Any(m => m.UserId == CurrentUserId))
+            return Forbid();
+
+        var pdfBytes = await _reportService.GeneratePdfReportAsync(memberId, days);
+        var fileName = $"健康报告_{DateTime.Now:yyyyMMdd}.pdf";
+        return File(pdfBytes, "application/pdf", fileName);
     }
 }
