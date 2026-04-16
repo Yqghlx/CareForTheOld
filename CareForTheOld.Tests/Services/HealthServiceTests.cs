@@ -2,8 +2,10 @@ using CareForTheOld.Data;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Implementations;
+using CareForTheOld.Services.Interfaces;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using Xunit;
 
 namespace CareForTheOld.Tests.Services;
@@ -14,6 +16,7 @@ namespace CareForTheOld.Tests.Services;
 public class HealthServiceTests
 {
     private readonly AppDbContext _context;
+    private readonly Mock<IHealthAlertService> _mockAlertService;
     private readonly HealthService _service;
 
     public HealthServiceTests()
@@ -22,7 +25,8 @@ public class HealthServiceTests
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
         _context = new AppDbContext(options);
-        _service = new HealthService(_context);
+        _mockAlertService = new Mock<IHealthAlertService>();
+        _service = new HealthService(_context, _mockAlertService.Object);
     }
 
     private async Task<Guid> CreateTestUserAsync()
