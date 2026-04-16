@@ -14,8 +14,13 @@ namespace CareForTheOld.Services.Implementations;
 public class HealthService : IHealthService
 {
     private readonly AppDbContext _context;
+    private readonly IHealthAlertService _alertService;
 
-    public HealthService(AppDbContext context) => _context = context;
+    public HealthService(AppDbContext context, IHealthAlertService alertService)
+    {
+        _context = context;
+        _alertService = alertService;
+    }
 
     public async Task<HealthRecordResponse> CreateRecordAsync(Guid userId, CreateHealthRecordRequest request)
     {
@@ -39,6 +44,14 @@ public class HealthService : IHealthService
 
         _context.HealthRecords.Add(record);
         await _context.SaveChangesAsync();
+
+        // 检查健康异常并通知子女
+        var alertMessage = _alertService.CheckAbnormal(record);
+        if (alertMessage != null)
+        {
+            // 异步发送预警通知，不阻塞主流程
+            _ = _alertService.SendAlertToChildrenAsync(userId, record, alertMessage);
+        }
 
         return await MapToResponse(record.Id) ?? throw new KeyNotFoundException("记录不存在");
     }
