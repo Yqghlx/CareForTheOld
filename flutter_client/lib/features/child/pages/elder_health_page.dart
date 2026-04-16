@@ -11,6 +11,7 @@ import '../../../core/api/api_client.dart';
 import '../providers/family_provider.dart';
 import '../../../shared/widgets/common_cards.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../shared/services/health_report_service.dart';
 
 /// 老人健康数据 Provider（按 elderId 区分）
 final elderHealthStatsProvider =
@@ -74,7 +75,17 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         ref.watch(elderMedicationLogsProvider(widget.elderId));
 
     return Scaffold(
-      appBar: AppBar(title: Text('$elderName - 健康数据')),
+      appBar: AppBar(
+        title: Text('$elderName - 健康数据'),
+        actions: [
+          // 导出报告按钮
+          IconButton(
+            icon: const Icon(Icons.picture_as_pdf),
+            onPressed: () => _showExportDialog(context, elderName),
+            tooltip: '导出报告',
+          ),
+        ],
+      ),
       body: RefreshIndicator(
         onRefresh: () async {
           ref.invalidate(elderHealthStatsProvider(widget.elderId));
@@ -440,5 +451,104 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         ),
       ),
     );
+  }
+
+  /// 显示导出报告对话框
+  void _showExportDialog(BuildContext context, String elderName) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Colors.blue.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(Icons.picture_as_pdf, color: Colors.blue),
+            ),
+            const SizedBox(width: 12),
+            const Text('导出健康报告'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('为 $elderName 导出健康报告'),
+            const SizedBox(height: 16),
+            const Text('选择报告时间范围：'),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      Navigator.pop(ctx);
+                      _exportReport(context, 7);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text('最近7天', style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      Navigator.pop(ctx);
+                      _exportReport(context, 30);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text('最近30天', style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('取消'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 导出报告
+  Future<void> _exportReport(BuildContext context, int days) async {
+    final familyId = ref.read(familyProvider).familyId;
+    if (familyId == null) return;
+
+    final service = ref.read(healthReportServiceProvider);
+    final success = await service.downloadAndShareReport(
+      days: days,
+      elderId: widget.elderId,
+      familyId: familyId,
+    );
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(success ? '报告已生成，请选择分享方式' : '导出失败，请稍后重试'),
+          backgroundColor: success ? AppTheme.successColor : AppTheme.errorColor,
+        ),
+      );
+    }
   }
 }

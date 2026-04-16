@@ -38,6 +38,7 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IEmergencyService, EmergencyService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IGeoFenceService, GeoFenceService>();
+builder.Services.AddScoped<IHealthReportService, HealthReportService>();
 
 // 注册后台服务
 builder.Services.AddHostedService<MedicationReminderService>();
