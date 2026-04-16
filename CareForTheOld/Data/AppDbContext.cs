@@ -17,6 +17,7 @@ public class AppDbContext : DbContext
     public DbSet<EmergencyCall> EmergencyCalls => Set<EmergencyCall>();
     public DbSet<LocationRecord> LocationRecords => Set<LocationRecord>();
     public DbSet<NotificationRecord> NotificationRecords => Set<NotificationRecord>();
+    public DbSet<GeoFence> GeoFences => Set<GeoFence>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
