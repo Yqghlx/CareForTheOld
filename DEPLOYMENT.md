@@ -1,0 +1,190 @@
+# 关爱老人 App 部署指南
+
+## 部署架构
+
+```
+┌─────────────────────────────────────────────────────┐
+│                     Docker 环境                      │
+│  ┌─────────────────┐    ┌─────────────────────────┐ │
+│  │   PostgreSQL    │    │      ASP.NET Core       │ │
+│  │   (数据库)       │◄───│      (后端 API)          │ │
+│  │   Port: 5432    │    │      Port: 5000         │ │
+│  └─────────────────┘    └─────────────────────────┘ │
+└─────────────────────────────────────────────────────┘
+                           ▲
+                           │ HTTP API
+                           ▼
+              ┌─────────────────────────┐
+              │   Flutter Android App   │
+              │   (客户端 APK)           │
+              └─────────────────────────┘
+```
+
+## 快速部署
+
+### 1. 使用 Docker Compose 部署（推荐）
+
+```bash
+# 进入项目目录
+cd CareForTheOld
+
+# 构建并启动所有服务
+docker-compose up -d --build
+
+# 查看服务状态
+docker-compose ps
+
+# 查看日志
+docker-compose logs -f api
+```
+
+服务启动后：
+- 后端 API: `http://localhost:5000`
+- PostgreSQL: `localhost:5432`
+
+### 2. 配置修改
+
+#### 数据库配置 (docker-compose.yml)
+```yaml
+environment:
+  POSTGRES_USER: carefortheold        # 数据库用户名
+  POSTGRES_PASSWORD: your_password    # 数据库密码（建议修改）
+  POSTGRES_DB: carefortheold          # 数据库名
+```
+
+#### JWT 配置
+```yaml
+environment:
+  Jwt__Key: "Your_Secret_Key_Min_32_Characters!"  # JWT密钥（建议修改）
+  Jwt__Issuer: "CareForTheOld"
+  Jwt__Audience: "CareForTheOld"
+```
+
+### 3. 客户端 APK 配置
+
+修改 Flutter 客户端 API 地址：
+
+**文件**: `flutter_client/lib/core/api/api_client.dart`
+
+```dart
+static const String _baseUrl = 'http://YOUR_SERVER_IP:5000';
+```
+
+然后重新构建 APK：
+```bash
+cd flutter_client
+flutter build apk --release
+```
+
+APK 输出位置: `build/app/outputs/flutter-apk/app-release.apk`
+
+## 生产环境部署建议
+
+### 1. 安全配置
+
+- 修改默认数据库密码
+- 修改 JWT 密钥（至少32字符）
+- 使用 HTTPS（配置反向代理如 Nginx）
+- 配置防火墙规则
+
+### 2. Nginx 反向代理配置
+
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+
+    location / {
+        proxy_pass http://localhost:5000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection keep-alive;
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # SignalR WebSocket 支持
+    location /hubs/ {
+        proxy_pass http://localhost:5000/hubs/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
+```
+
+### 3. 数据持久化
+
+Docker Compose 已配置数据卷：
+```yaml
+volumes:
+  postgres_data:  # PostgreSQL 数据持久化
+```
+
+备份命令：
+```bash
+docker-compose exec postgres pg_dump -U carefortheold carefortheold > backup.sql
+```
+
+## 常用命令
+
+```bash
+# 启动服务
+docker-compose up -d
+
+# 停止服务
+docker-compose down
+
+# 重启服务
+docker-compose restart
+
+# 查看日志
+docker-compose logs -f
+
+# 重新构建
+docker-compose up -d --build
+
+# 进入容器
+docker-compose exec api bash
+docker-compose exec postgres bash
+```
+
+## 故障排查
+
+### 1. API 无法启动
+```bash
+# 查看日志
+docker-compose logs api
+
+# 检查数据库连接
+docker-compose exec postgres pg_isready -U carefortheold
+```
+
+### 2. 数据库连接失败
+```bash
+# 检查数据库状态
+docker-compose ps postgres
+
+# 重启数据库
+docker-compose restart postgres
+```
+
+### 3. APK 无法连接后端
+- 检查 API 地址配置是否正确
+- 检查防火墙是否开放端口
+- 检查服务器 IP 是否可访问
+
+## 端口说明
+
+| 服务 | 端口 | 说明 |
+|------|------|------|
+| PostgreSQL | 5432 | 数据库内部端口 |
+| API | 5000 | 后端 API 端口 |
+| SignalR | 5000/hubs | WebSocket 连接 |
+
+## 系统要求
+
+- Docker 20.x+
+- Docker Compose 2.x+
+- 服务器内存: 最低 2GB，推荐 4GB
+- 存储: 最低 10GB
