@@ -9,21 +9,33 @@ namespace CareForTheOld.Common.Extensions;
 public static class ServiceCollectionExtensions
 {
     /// <summary>
-    /// 注册数据库服务
+    /// 注册数据库服务（支持 PostgreSQL 和 SQLite）
     /// </summary>
     public static IServiceCollection AddDatabaseServices(
         this IServiceCollection services, IConfiguration configuration)
     {
-        // 使用 SQLite 数据库（数据持久化到本地文件）
         var connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? "Data Source=carefortheold.db";
 
-        services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlite(connectionString));
+        // 根据连接字符串判断使用 PostgreSQL 还是 SQLite
+        if (connectionString.Contains("Host=") || connectionString.Contains("Server="))
+        {
+            // PostgreSQL 生产环境
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseNpgsql(connectionString));
+        }
+        else
+        {
+            // SQLite 开发环境
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlite(connectionString));
+        }
 
-        // 启动时自动创建数据库和表
-        services.BuildServiceProvider().GetRequiredService<AppDbContext>()
-            .Database.EnsureCreated();
+        // 启动时自动创建数据库和表（生产环境建议使用迁移）
+        var serviceProvider = services.BuildServiceProvider();
+        using var scope = serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        context.Database.EnsureCreated();
 
         return services;
     }
