@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -51,6 +52,23 @@ class _LoginPageState extends ConsumerState<LoginPage>
     super.dispose();
   }
 
+  /// 从 DioException 中提取后端返回的错误信息
+  String _extractErrorMessage(DioException e) {
+    try {
+      final data = e.response?.data;
+      if (data is Map<String, dynamic> && data['message'] != null) {
+        return data['message'] as String;
+      }
+    } catch (_) {}
+    switch (e.type) {
+      case DioExceptionType.connectionError:
+      case DioExceptionType.connectionTimeout:
+        return '无法连接服务器，请检查网络';
+      default:
+        return '手机号或密码错误';
+    }
+  }
+
   Future<void> login() async {
     if (!formKey.currentState!.validate()) return;
 
@@ -82,15 +100,38 @@ class _LoginPageState extends ConsumerState<LoginPage>
       } else {
         context.go('/child/home');
       }
-    } catch (e, stackTrace) {
+    } on DioException catch (e) {
       debugPrint('登录异常: $e');
-      debugPrint('堆栈: $stackTrace');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('登录失败: ${e.toString()}'),
-          backgroundColor: AppTheme.errorColor,
-        ),
-      );
+      // 从后端响应中提取错误信息
+      final serverMessage = _extractErrorMessage(e);
+      final isUserNotFound = e.response?.statusCode == 400;
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(serverMessage),
+            backgroundColor: AppTheme.errorColor,
+            action: isUserNotFound
+                ? SnackBarAction(
+                    label: '去注册',
+                    textColor: Colors.white,
+                    onPressed: () => context.go('/register'),
+                  )
+                : null,
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('登录未知异常: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('网络连接失败，请检查网络设置'),
+            backgroundColor: AppTheme.errorColor,
+          ),
+        );
+      }
     } finally {
       setState(() => isLoading = false);
     }

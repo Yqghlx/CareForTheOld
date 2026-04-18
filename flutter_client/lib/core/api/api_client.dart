@@ -5,9 +5,10 @@ import '../../shared/providers/auth_provider.dart';
 
 /// API 客户端配置
 class ApiClient {
-  // 局域网 IP，真机和模拟器都可访问
+  // Android 模拟器通过 10.0.2.2 访问宿主机 localhost
+  // 真机部署时改为宿主机局域网 IP（如 192.168.x.x）
   // Docker 部署端口为 5001（macOS AirPlay 占用 5000）
-  static const String baseUrl = 'http://192.168.100.199:5001/api';
+  static const String baseUrl = 'http://10.0.2.2:5001/api';
 
   late final Dio _dio;
 
