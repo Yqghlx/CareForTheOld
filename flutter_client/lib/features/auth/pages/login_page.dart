@@ -23,6 +23,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
   final TextEditingController passwordController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool isLoading = false;
+  String? _errorMessage;
 
   // Logo 呼吸动画
   late AnimationController _breathController;
@@ -72,7 +73,10 @@ class _LoginPageState extends ConsumerState<LoginPage>
   Future<void> login() async {
     if (!formKey.currentState!.validate()) return;
 
-    setState(() => isLoading = true);
+    setState(() {
+      isLoading = true;
+      _errorMessage = null;
+    });
 
     try {
       final apiClient = ref.read(apiClientProvider);
@@ -102,36 +106,11 @@ class _LoginPageState extends ConsumerState<LoginPage>
       }
     } on DioException catch (e) {
       debugPrint('登录异常: $e');
-      // 从后端响应中提取错误信息
       final serverMessage = _extractErrorMessage(e);
-      final isUserNotFound = e.response?.statusCode == 400;
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(serverMessage),
-            backgroundColor: AppTheme.errorColor,
-            action: isUserNotFound
-                ? SnackBarAction(
-                    label: '去注册',
-                    textColor: Colors.white,
-                    onPressed: () => context.go('/register'),
-                  )
-                : null,
-            duration: const Duration(seconds: 4),
-          ),
-        );
-      }
+      if (mounted) setState(() => _errorMessage = serverMessage);
     } catch (e) {
       debugPrint('登录未知异常: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('网络连接失败，请检查网络设置'),
-            backgroundColor: AppTheme.errorColor,
-          ),
-        );
-      }
+      if (mounted) setState(() => _errorMessage = '网络连接失败，请检查网络设置');
     } finally {
       setState(() => isLoading = false);
     }
@@ -269,6 +248,45 @@ class _LoginPageState extends ConsumerState<LoginPage>
                     ),
                   ),
                   const SizedBox(height: 32),
+
+                  // 错误信息提示
+                  if (_errorMessage != null)
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(
+                        color: AppTheme.errorColor.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: AppTheme.errorColor.withValues(alpha: 0.3)),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.error_outline, color: AppTheme.errorColor, size: 20),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              _errorMessage!,
+                              style: TextStyle(color: AppTheme.errorColor, fontSize: 14),
+                            ),
+                          ),
+                          if (_errorMessage!.contains('手机号或密码错误') ||
+                              _errorMessage!.contains('错误'))
+                            TextButton(
+                              onPressed: () => context.go('/register'),
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                minimumSize: Size.zero,
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: Text(
+                                '去注册',
+                                style: TextStyle(color: AppTheme.primaryColor, fontSize: 14),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
 
                   // 渐变登录按钮
                   PrimaryButton(

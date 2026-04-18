@@ -1,18 +1,21 @@
-# 数据库文件
+# .NET 编译输出
+[Bb]in/
+[Oo]bj/
+
+# 本地数据库
 *.db
 *.db-shm
 *.db-wal
 
-# 日志文件
+# 日志
 logs/
 *.log
-
-# 编译输出
-bin/
-obj/
 
 # IDE
 .vs/
 .idea/
 *.user
 *.suo
+
+# 用户级配置（含连接字符串等敏感信息）
+appsettings.Development.json

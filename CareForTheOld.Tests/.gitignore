@@ -1,0 +1,16 @@
+# .NET 编译输出
+[Bb]in/
+[Oo]bj/
+
+# 测试结果与覆盖率
+[Tt]est[Rr]esult*/
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# IDE
+.vs/
+.idea/
+*.user
+*.suo
