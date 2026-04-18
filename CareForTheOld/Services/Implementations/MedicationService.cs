@@ -55,7 +55,7 @@ public class MedicationService : IMedicationService
     {
         return await _context.MedicationPlans
             .Include(p => p.Elder)
-            .Where(p => p.ElderId == elderId)
+            .Where(p => p.ElderId == elderId && !p.IsDeleted)
             .OrderByDescending(p => p.CreatedAt)
             .Select(p => MapToPlanResponseProjection(p))
             .ToListAsync();
@@ -94,7 +94,9 @@ public class MedicationService : IMedicationService
 
         await EnsureFamilyMemberAsync(plan.ElderId, operatorId);
 
-        _context.MedicationPlans.Remove(plan);
+        // 软删除：标记为已删除，保留数据
+        plan.IsDeleted = true;
+        plan.DeletedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync();
     }
 
@@ -137,7 +139,7 @@ public class MedicationService : IMedicationService
         return MapToLogResponse(log, plan.MedicineName, plan.Elder.RealName);
     }
 
-    public async Task<List<MedicationLogResponse>> GetLogsAsync(Guid elderId, DateOnly? date, int limit = 50)
+    public async Task<List<MedicationLogResponse>> GetLogsAsync(Guid elderId, DateOnly? date, int skip = 0, int limit = 50)
     {
         var query = _context.MedicationLogs
             .Include(l => l.Plan)
@@ -153,6 +155,7 @@ public class MedicationService : IMedicationService
 
         return await query
             .OrderByDescending(l => l.ScheduledAt)
+            .Skip(skip)
             .Take(limit)
             .Select(l => MapToLogResponseProjection(l))
             .ToListAsync();

@@ -13,8 +13,16 @@ class SignalRService {
   HubConnection? _hubConnection;
   final Ref _ref;
 
-  /// SignalR Hub URL（去掉 /api 后缀，使用 /hubs/notification）
-  static const String _hubUrl = 'http://192.168.100.199:5136/hubs/notification';
+  /// 从 ApiClient.baseUrl 派生 SignalR Hub URL
+  /// 规则：去掉 /api 后缀，拼接 /hubs/notification
+  static String get _hubUrl {
+    const apiBase = ApiClient.baseUrl;
+    const suffix = '/api';
+    final base = apiBase.endsWith(suffix)
+        ? apiBase.substring(0, apiBase.length - suffix.length)
+        : apiBase;
+    return '$base/hubs/notification';
+  }
 
   SignalRService(this._ref);
 

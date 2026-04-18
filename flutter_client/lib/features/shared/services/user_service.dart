@@ -36,6 +36,22 @@ class UserService {
     });
     return response.data['success'] == true;
   }
+
+  /// 上传头像
+  ///
+  /// [filePath] 本地图片文件路径。
+  /// 返回头像在服务端的相对 URL。
+  Future<String> uploadAvatar(String filePath) async {
+    final formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(filePath),
+    });
+    final response = await _dio.post(
+      '/api/user/me/avatar',
+      data: formData,
+      options: Options(contentType: 'multipart/form-data'),
+    );
+    return response.data['data']['avatarUrl'] as String;
+  }
 }
 
 /// 用户服务 Provider

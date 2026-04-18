@@ -98,7 +98,7 @@ public class HealthServiceTests
             HeartRate = 72
         });
 
-        var result = await _service.GetUserRecordsAsync(userId, null, 50);
+        var result = await _service.GetUserRecordsAsync(userId, null, skip: 0, limit: 50);
 
         result.Should().HaveCount(2);
         result.Should().Contain(r => r.Type == HealthType.BloodPressure);
@@ -122,7 +122,7 @@ public class HealthServiceTests
             HeartRate = 72
         });
 
-        var result = await _service.GetUserRecordsAsync(userId, HealthType.BloodPressure, 50);
+        var result = await _service.GetUserRecordsAsync(userId, HealthType.BloodPressure, skip: 0, limit: 50);
 
         result.Should().HaveCount(1);
         result[0].Type.Should().Be(HealthType.BloodPressure);

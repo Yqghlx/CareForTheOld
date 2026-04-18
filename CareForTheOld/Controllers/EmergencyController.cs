@@ -1,8 +1,11 @@
+using Asp.Versioning;
+using CareForTheOld.Common.Extensions;
+using CareForTheOld.Common.Helpers;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace CareForTheOld.Controllers;
 
@@ -10,8 +13,10 @@ namespace CareForTheOld.Controllers;
 /// 紧急呼叫控制器
 /// </summary>
 [ApiController]
-[Route("api/[controller]")]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
 [Authorize]
+[EnableRateLimiting("GeneralPolicy")]
 public class EmergencyController : ControllerBase
 {
     private readonly IEmergencyService _emergencyService;
@@ -25,85 +30,46 @@ public class EmergencyController : ControllerBase
     /// 老人发起紧急呼叫
     /// </summary>
     [HttpPost]
-    public async Task<ActionResult<EmergencyCallResponse>> CreateCall()
+    [Authorize(Roles = "Elder")]
+    public async Task<ApiResponse<EmergencyCallResponse>> CreateCall()
     {
-        var userId = GetUserId();
-        if (userId == null)
-            return Unauthorized();
-
-        try
-        {
-            var call = await _emergencyService.CreateCallAsync(userId.Value);
-            return Ok(new { success = true, data = call });
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { success = false, message = ex.Message });
-        }
+        var userId = this.GetUserId();
+        var call = await _emergencyService.CreateCallAsync(userId);
+        return ApiResponse<EmergencyCallResponse>.Ok(call, "紧急呼叫已发送");
     }
 
     /// <summary>
     /// 获取未处理的紧急呼叫（子女端）
     /// </summary>
     [HttpGet("unread")]
-    public async Task<ActionResult<List<EmergencyCallResponse>>> GetUnreadCalls()
+    [Authorize(Roles = "Child")]
+    public async Task<ApiResponse<List<EmergencyCallResponse>>> GetUnreadCalls()
     {
-        var userId = GetUserId();
-        if (userId == null)
-            return Unauthorized();
-
-        var calls = await _emergencyService.GetUnreadCallsAsync(userId.Value);
-        return Ok(new { success = true, data = calls });
+        var userId = this.GetUserId();
+        var calls = await _emergencyService.GetUnreadCallsAsync(userId);
+        return ApiResponse<List<EmergencyCallResponse>>.Ok(calls);
     }
 
     /// <summary>
     /// 获取历史呼叫记录
     /// </summary>
     [HttpGet("history")]
-    public async Task<ActionResult<List<EmergencyCallResponse>>> GetHistory([FromQuery] int limit = 20)
+    public async Task<ApiResponse<List<EmergencyCallResponse>>> GetHistory([FromQuery] int skip = 0, [FromQuery] int limit = 20)
     {
-        var userId = GetUserId();
-        if (userId == null)
-            return Unauthorized();
-
-        var calls = await _emergencyService.GetHistoryAsync(userId.Value, limit);
-        return Ok(new { success = true, data = calls });
+        var userId = this.GetUserId();
+        var calls = await _emergencyService.GetHistoryAsync(userId, skip, limit);
+        return ApiResponse<List<EmergencyCallResponse>>.Ok(calls);
     }
 
     /// <summary>
     /// 子女标记已处理
     /// </summary>
     [HttpPut("{id}/respond")]
-    public async Task<ActionResult<EmergencyCallResponse>> RespondCall(Guid id)
+    [Authorize(Roles = "Child")]
+    public async Task<ApiResponse<EmergencyCallResponse>> RespondCall(Guid id)
     {
-        var userId = GetUserId();
-        if (userId == null)
-            return Unauthorized();
-
-        try
-        {
-            var call = await _emergencyService.RespondCallAsync(id, userId.Value);
-            return Ok(new { success = true, data = call });
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(new { success = false, message = ex.Message });
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { success = false, message = ex.Message });
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-    }
-
-    private Guid? GetUserId()
-    {
-        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userIdClaim))
-            return null;
-        return Guid.TryParse(userIdClaim, out var userId) ? userId : null;
+        var userId = this.GetUserId();
+        var call = await _emergencyService.RespondCallAsync(id, userId);
+        return ApiResponse<EmergencyCallResponse>.Ok(call, "已标记处理");
     }
 }

@@ -10,6 +10,10 @@ public class RefreshToken
     public string Token { get; set; } = string.Empty;
     public DateTime ExpiresAt { get; set; }
     public bool IsRevoked { get; set; }
+    /// <summary>
+    /// 是否已被使用（用于检测 Token 重放攻击）
+    /// </summary>
+    public bool IsUsed { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     // 导航属性

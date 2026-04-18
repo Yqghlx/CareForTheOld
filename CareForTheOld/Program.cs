@@ -1,3 +1,5 @@
+using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
 using CareForTheOld.Common.Extensions;
 using CareForTheOld.Common.Middleware;
 using CareForTheOld.Data;
@@ -7,6 +9,7 @@ using CareForTheOld.Services.Implementations;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,11 +23,32 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
+// 开发/测试环境设置默认 JWT 密钥
+if (builder.Environment.IsDevelopment() || builder.Environment.IsEnvironment("Testing"))
+{
+    var jwtKey = builder.Configuration["Jwt:Key"];
+    if (string.IsNullOrWhiteSpace(jwtKey))
+    {
+        builder.Configuration["Jwt:Key"] = "CareForTheOld_DevSecretKey_2026_MustBe32Chars!";
+    }
+}
+
 // 注册服务
 builder.Services.AddControllers();
-builder.Services.AddDatabaseServices(builder.Configuration);
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+}).AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
+builder.Services.AddDatabaseServices(builder.Configuration, builder.Environment);
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddSwaggerServices();
+builder.Services.AddHealthCheckServices(builder.Configuration);
 builder.Services.AddSignalR();
 
 // 注册业务服务
@@ -39,41 +63,126 @@ builder.Services.AddScoped<IEmergencyService, EmergencyService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IGeoFenceService, GeoFenceService>();
 builder.Services.AddScoped<IHealthReportService, HealthReportService>();
+builder.Services.AddScoped<ICacheService, CacheService>();
+
+// 注册分布式缓存：优先使用 Redis，未配置时回退到内存缓存
+var redisConnection = builder.Configuration.GetConnectionString("Redis");
+if (!string.IsNullOrEmpty(redisConnection))
+{
+    builder.Services.AddStackExchangeRedisCache(options => options.Configuration = redisConnection);
+}
+else
+{
+    builder.Services.AddDistributedMemoryCache();
+}
 
 // 注册后台服务
 builder.Services.AddHostedService<MedicationReminderService>();
 
+// CORS 配置：从配置读取允许的来源
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("ConfiguredCors", policy =>
     {
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
+        var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+            ?? Array.Empty<string>();
+
+        if (allowedOrigins.Length == 0)
+        {
+            // 未配置时：开发环境允许 localhost，生产环境拒绝跨域
+            if (builder.Environment.IsDevelopment())
+            {
+                policy.SetIsOriginAllowed(origin =>
+                    new Uri(origin).Host is "localhost" or "127.0.0.1")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+            }
+            else
+            {
+                policy.SetIsOriginAllowed(_ => false)
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            }
+        }
+        else
+        {
+            policy.WithOrigins(allowedOrigins)
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .AllowCredentials();
+        }
     });
+});
+
+// 限流配置
+builder.Services.AddRateLimiter(options =>
+{
+    // 认证接口限流：每 IP 每分钟 10 次
+    options.AddPolicy("AuthPolicy", context =>
+        RateLimitPartition.GetSlidingWindowLimiter(
+            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = builder.Configuration.GetValue("RateLimit:AuthPermitLimit", 10),
+                Window = TimeSpan.FromSeconds(builder.Configuration.GetValue("RateLimit:AuthWindow", 60)),
+                SegmentsPerWindow = 2,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0
+            }));
+
+    // 通用 API 限流：每 IP 每分钟 60 次
+    options.AddPolicy("GeneralPolicy", context =>
+        RateLimitPartition.GetSlidingWindowLimiter(
+            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = builder.Configuration.GetValue("RateLimit:GeneralPermitLimit", 60),
+                Window = TimeSpan.FromSeconds(builder.Configuration.GetValue("RateLimit:GeneralWindow", 60)),
+                SegmentsPerWindow = 2,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0
+            }));
+
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 });
 
 var app = builder.Build();
 
-// 开发环境：InMemory 数据库无需迁移
-// if (app.Environment.IsDevelopment())
-// {
-//     using var scope = app.Services.CreateScope();
-//     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-//     await db.Database.MigrateAsync();
-// }
-
 // 中间件管道
 if (app.Environment.IsDevelopment())
 {
+    var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        // 为每个 API 版本生成独立的 Swagger 端点
+        foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
+        {
+            options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
+                $"CareForTheOld API {description.GroupName}");
+        }
+    });
 }
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
-app.UseCors("AllowAll");
+app.UseCors("ConfiguredCors");
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
+
+// 提供上传文件的静态访问（头像等）
+var uploadsPath = Path.Combine(builder.Environment.ContentRootPath, "uploads");
+Directory.CreateDirectory(uploadsPath);
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(uploadsPath),
+    RequestPath = "/uploads"
+});
+
+// 健康检查端点（无需认证，供容器编排和负载均衡器使用）
+app.MapHealthChecks("/health");
+
 app.MapControllers();
 app.MapHub<NotificationHub>("/hubs/notification");
 

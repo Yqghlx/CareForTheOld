@@ -1,23 +1,25 @@
+using Asp.Versioning;
+using CareForTheOld.Common.Extensions;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Models.DTOs.Requests.Families;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace CareForTheOld.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
 [Authorize]
+[EnableRateLimiting("GeneralPolicy")]
 public class FamilyController : ControllerBase
 {
     private readonly IFamilyService _familyService;
 
     public FamilyController(IFamilyService familyService) => _familyService = familyService;
-
-    private Guid CurrentUserId => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
     /// <summary>
     /// 获取当前用户所属的家庭信息
@@ -25,21 +27,24 @@ public class FamilyController : ControllerBase
     [HttpGet("me")]
     public async Task<ApiResponse<FamilyResponse?>> GetMyFamily()
     {
-        var result = await _familyService.GetMyFamilyAsync(CurrentUserId);
+        var userId = this.GetUserId();
+        var result = await _familyService.GetMyFamilyAsync(userId);
         return ApiResponse<FamilyResponse?>.Ok(result);
     }
 
     [HttpPost]
     public async Task<ApiResponse<FamilyResponse>> Create([FromBody] CreateFamilyRequest request)
     {
-        var result = await _familyService.CreateFamilyAsync(CurrentUserId, request);
+        var userId = this.GetUserId();
+        var result = await _familyService.CreateFamilyAsync(userId, request);
         return ApiResponse<FamilyResponse>.Ok(result, "创建成功");
     }
 
     [HttpPost("{id:guid}/members")]
     public async Task<ApiResponse<FamilyResponse>> AddMember(Guid id, [FromBody] AddFamilyMemberRequest request)
     {
-        var result = await _familyService.AddMemberAsync(id, CurrentUserId, request);
+        var userId = this.GetUserId();
+        var result = await _familyService.AddMemberAsync(id, userId, request);
         return ApiResponse<FamilyResponse>.Ok(result, "邀请成功");
     }
 
@@ -49,7 +54,8 @@ public class FamilyController : ControllerBase
     [HttpPost("join")]
     public async Task<ApiResponse<FamilyResponse>> JoinFamily([FromBody] JoinFamilyRequest request)
     {
-        var result = await _familyService.JoinFamilyByCodeAsync(CurrentUserId, request);
+        var userId = this.GetUserId();
+        var result = await _familyService.JoinFamilyByCodeAsync(userId, request);
         return ApiResponse<FamilyResponse>.Ok(result, "加入成功");
     }
 
@@ -59,7 +65,8 @@ public class FamilyController : ControllerBase
     [HttpPost("{id:guid}/refresh-code")]
     public async Task<ApiResponse<FamilyResponse>> RefreshInviteCode(Guid id)
     {
-        var result = await _familyService.RefreshInviteCodeAsync(id, CurrentUserId);
+        var userId = this.GetUserId();
+        var result = await _familyService.RefreshInviteCodeAsync(id, userId);
         return ApiResponse<FamilyResponse>.Ok(result, "邀请码已刷新");
     }
 
@@ -73,7 +80,8 @@ public class FamilyController : ControllerBase
     [HttpDelete("{id:guid}/members/{userId:guid}")]
     public async Task<ApiResponse<object>> RemoveMember(Guid id, Guid userId)
     {
-        await _familyService.RemoveMemberAsync(id, userId, CurrentUserId);
+        var currentUserId = this.GetUserId();
+        await _familyService.RemoveMemberAsync(id, userId, currentUserId);
         return ApiResponse<object>.Ok(null!, "移除成功");
     }
 }

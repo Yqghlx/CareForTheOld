@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Validators;
 using CareForTheOld.Models.Enums;
 using System.ComponentModel.DataAnnotations;
 
@@ -13,7 +14,7 @@ public class RegisterRequest
     public string PhoneNumber { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "密码不能为空")]
-    [StringLength(100, MinimumLength = 6, ErrorMessage = "密码长度至少6位")]
+    [PasswordValidator]
     public string Password { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "姓名不能为空")]

@@ -87,7 +87,7 @@ public class EmergencyService : IEmergencyService
     /// <summary>
     /// 获取历史呼叫记录
     /// </summary>
-    public async Task<List<EmergencyCallResponse>> GetHistoryAsync(Guid userId, int limit = 20)
+    public async Task<List<EmergencyCallResponse>> GetHistoryAsync(Guid userId, int skip = 0, int limit = 20)
     {
         // 获取用户的家庭信息
         var familyMember = await _context.FamilyMembers
@@ -101,6 +101,7 @@ public class EmergencyService : IEmergencyService
             .Include(c => c.Elder)
             .Where(c => c.FamilyId == familyMember.FamilyId)
             .OrderByDescending(c => c.CalledAt)
+            .Skip(skip)
             .Take(limit)
             .ToListAsync();
 

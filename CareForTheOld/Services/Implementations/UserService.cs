@@ -50,6 +50,20 @@ public class UserService : IUserService
         return true;
     }
 
+    /// <summary>
+    /// 更新用户头像 URL
+    /// </summary>
+    public async Task UpdateAvatarUrlAsync(Guid userId, string avatarUrl)
+    {
+        var user = await _context.Users.FindAsync(userId)
+            ?? throw new KeyNotFoundException("用户不存在");
+
+        user.AvatarUrl = avatarUrl;
+        user.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+    }
+
     private async Task<UserResponse?> MapToResponse(Guid userId)
     {
         return await _context.Users
