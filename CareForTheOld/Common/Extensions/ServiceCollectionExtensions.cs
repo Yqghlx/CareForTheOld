@@ -3,6 +3,7 @@ using CareForTheOld.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -30,7 +31,8 @@ public static class ServiceCollectionExtensions
         {
             // PostgreSQL 生产环境
             services.AddDbContext<AppDbContext>(options =>
-                options.UseNpgsql(connectionString));
+                options.UseNpgsql(connectionString)
+                    .ConfigureWarnings(w => w.Log(RelationalEventId.PendingModelChangesWarning)));
         }
         else
         {
@@ -44,14 +46,11 @@ public static class ServiceCollectionExtensions
         using var scope = serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        if (environment.IsDevelopment() && !isPostgres)
-        {
-            context.Database.EnsureCreated();
-        }
-        else
-        {
-            context.Database.Migrate();
-        }
+        // 迁移文件由 SQLite 提供商生成，其中 bool 列类型为 INTEGER，
+        // PostgreSQL 要求严格的 boolean 类型。使用 EnsureCreated() 让各提供商
+        // 根据模型自动生成正确的列类型，避免跨提供商类型不兼容问题。
+        // 待后续统一生成 PostgreSQL 专属迁移后可切换回 Migrate()
+        context.Database.EnsureCreated();
 
         return services;
     }
