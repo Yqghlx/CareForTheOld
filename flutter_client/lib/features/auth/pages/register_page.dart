@@ -75,7 +75,8 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       final data = response.data['data'];
       final user = User.fromJson(data['user']);
 
-      ref.read(authProvider.notifier).login(
+      // 等待 login 完成，确保 token 已更新后再跳转
+      await ref.read(authProvider.notifier).login(
         user: user,
         accessToken: data['accessToken'],
         refreshToken: data['refreshToken'],

@@ -1,0 +1,89 @@
+# ============================================
+# 关爱老人项目 - 根目录 Git 忽略规则
+# ============================================
+
+# --------------- 通用 ---------------
+# 操作系统
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# 编辑器 / IDE
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 环境变量与密钥（严禁提交）
+.env
+.env.*
+!.env.example
+appsettings.Development.json
+appsettings.Production.json
+*.pfx
+*.key
+*.pem
+
+# 日志
+logs/
+*.log
+
+# 压缩包
+*.zip
+*.tar.gz
+*.rar
+
+# --------------- .NET ---------------
+## 编译输出
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Aa]rtifacts/
+
+## 发布输出
+[Pp]ublish/
+[pP]ublished/
+
+## 用户级配置
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## NuGet
+**/[Pp]ackages/*
+*.nupkg
+*.snupkg
+**/[Nn]u[Gg]et.exe
+nuget.config
+
+## 测试结果
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.VisualState.xml
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+## 本地数据库
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# --------------- Docker ---------------
+## 数据卷（本地持久化目录）
+docker-data/
+postgres-data/
+redis-data/
+
+# --------------- Node（工具链） ---------------
+node_modules/
+
+# --------------- 文档生成 ---------------
+docs/_build/
+docs/api/

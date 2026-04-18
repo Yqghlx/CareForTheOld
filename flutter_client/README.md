@@ -82,7 +82,7 @@ flutter build apk --release
 修改 `lib/core/api/api_client.dart` 中的 `baseUrl` 以连接后端服务：
 
 ```dart
-static const String baseUrl = 'http://your-server:5000/api';
+static const String baseUrl = 'http://your-server:5001/api';  // Docker 部署端口为 5001
 ```
 
 ## API 对接
