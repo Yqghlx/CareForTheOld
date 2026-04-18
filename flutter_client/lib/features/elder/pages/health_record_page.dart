@@ -66,7 +66,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                 crossAxisCount: 2,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                childAspectRatio: 1.4,
+                childAspectRatio: 1.2,
                 mainAxisSpacing: 12,
                 crossAxisSpacing: 12,
                 children: HealthType.values
@@ -129,7 +129,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
     if (stats.isEmpty) return const SizedBox.shrink();
 
     return Container(
-      height: 56,
+      constraints: const BoxConstraints(minHeight: 48, maxHeight: 64),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -141,34 +141,41 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
       ),
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         itemCount: stats.length,
         separatorBuilder: (_, __) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
           final stat = stats[index];
           final avg7 = stat.average7Days?.toStringAsFixed(1) ?? '--';
           return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.8),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  stat.typeName,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade600,
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    stat.typeName,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey.shade600,
+                    ),
                   ),
                 ),
-                Text(
-                  avg7,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.primaryColor,
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    avg7,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.primaryColor,
+                    ),
                   ),
                 ),
               ],
