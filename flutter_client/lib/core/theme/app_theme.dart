@@ -17,10 +17,10 @@ class AppTheme {
   static const Color backgroundColor = Color(0xFFF5F5F5);
   static const Color cardColor = Colors.white;
 
-  /// 文字色
+  /// 文字色（textHint 满足 WCAG AA 对比度标准 4.5:1）
   static const Color textPrimary = Color(0xFF333333);
   static const Color textSecondary = Color(0xFF666666);
-  static const Color textHint = Color(0xFF999999);
+  static const Color textHint = Color(0xFF757575);
 
   /// 渐变配置
   static const LinearGradient primaryGradient = LinearGradient(
@@ -75,7 +75,7 @@ class AppTheme {
       titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
       titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
       titleSmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-      bodyLarge: TextStyle(fontSize: 18), // 老人端正文加大
+      bodyLarge: TextStyle(fontSize: 20), // 老人端正文加大，适老化
       bodyMedium: TextStyle(fontSize: 16),
       bodySmall: TextStyle(fontSize: 14),
       labelLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),

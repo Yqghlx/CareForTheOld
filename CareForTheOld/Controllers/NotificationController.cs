@@ -4,6 +4,7 @@ using CareForTheOld.Data;
 using CareForTheOld.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -13,6 +14,7 @@ namespace CareForTheOld.Controllers;
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]
 [Authorize]
+[EnableRateLimiting("GeneralPolicy")]
 public class NotificationController : ControllerBase
 {
     private readonly AppDbContext _context;

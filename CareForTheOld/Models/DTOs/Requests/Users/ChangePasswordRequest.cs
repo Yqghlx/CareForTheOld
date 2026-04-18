@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Validators;
 using System.ComponentModel.DataAnnotations;
 
 namespace CareForTheOld.Models.DTOs.Requests.Users;
@@ -14,9 +15,9 @@ public class ChangePasswordRequest
     public string OldPassword { get; set; } = string.Empty;
 
     /// <summary>
-    /// 新密码
+    /// 新密码（与注册一致：至少 8 位，必须包含字母和数字）
     /// </summary>
     [Required(ErrorMessage = "新密码不能为空")]
-    [MinLength(6, ErrorMessage = "密码长度至少6位")]
+    [PasswordValidator]
     public string NewPassword { get; set; } = string.Empty;
 }

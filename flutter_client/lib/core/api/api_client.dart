@@ -2,13 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../shared/providers/auth_provider.dart';
+import '../config/app_config.dart';
 
 /// API 客户端配置
 class ApiClient {
-  // Android 模拟器通过 10.0.2.2 访问宿主机 localhost
-  // 真机部署时改为宿主机局域网 IP（如 192.168.x.x）
-  // Docker 部署端口为 5001（macOS AirPlay 占用 5000）
-  static const String baseUrl = 'http://10.0.2.2:5001/api/v1';
+  /// 从 AppConfig 读取 baseUrl，不再硬编码 IP
+  static final String baseUrl = AppConfig.current.apiBaseUrl;
 
   late final Dio _dio;
 

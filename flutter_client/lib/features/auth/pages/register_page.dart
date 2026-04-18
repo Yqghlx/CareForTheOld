@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/api/api_client.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/validators/form_validators.dart';
 import '../../../shared/providers/auth_provider.dart';
 import '../../../shared/models/user.dart';
 import '../../../shared/models/user_role.dart';
@@ -132,15 +133,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                     prefixIcon: Icon(Icons.phone),
                   ),
                   keyboardType: TextInputType.phone,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '请输入手机号';
-                    }
-                    if (value.length != 11) {
-                      return '手机号格式不正确';
-                    }
-                    return null;
-                  },
+                  validator: FormValidators.phone,
                 ),
                 const SizedBox(height: 16),
 
@@ -153,21 +146,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                     helperText: '至少8位，需包含字母和数字',
                   ),
                   obscureText: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '请输入密码';
-                    }
-                    if (value.length < 8) {
-                      return '密码至少8位';
-                    }
-                    if (!RegExp(r'[a-zA-Z]').hasMatch(value)) {
-                      return '密码必须包含字母';
-                    }
-                    if (!RegExp(r'\d').hasMatch(value)) {
-                      return '密码必须包含数字';
-                    }
-                    return null;
-                  },
+                  validator: FormValidators.password,
                 ),
                 const SizedBox(height: 16),
 
@@ -178,12 +157,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                     labelText: '姓名',
                     prefixIcon: Icon(Icons.person),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '请输入姓名';
-                    }
-                    return null;
-                  },
+                  validator: FormValidators.name,
                 ),
                 const SizedBox(height: 24),
 

@@ -445,104 +445,139 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
   /// 加入家庭对话框（老人端）
   void _showJoinFamilyDialog() {
     final codeController = TextEditingController();
-    final relationController = TextEditingController();
+    String? selectedRelation;
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Row(
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.orange.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Icon(Icons.vpn_key, color: Colors.orange),
-            ),
-            const SizedBox(width: 12),
-            const Text('加入家庭'),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: codeController,
-              decoration: InputDecoration(
-                labelText: '邀请码（6位数字）',
-                prefixIcon: const Icon(Icons.vpn_key),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              keyboardType: TextInputType.number,
-              maxLength: 6,
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: relationController,
-              decoration: InputDecoration(
-                labelText: '您与创建者的关系',
-                hintText: '如：妈妈、爸爸',
-                prefixIcon: const Icon(Icons.people),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('取消'),
-          ),
-          PrimaryButton(
-            text: '加入',
-            gradient: const LinearGradient(
-              colors: [Colors.orange, Colors.deepOrange],
-            ),
-            onPressed: () async {
-              final code = codeController.text.trim();
-              final relation = relationController.text.trim();
-              if (code.length != 6 || relation.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('请输入6位邀请码和关系'),
-                    backgroundColor: AppTheme.warningColor,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (ctx, setDialogState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              title: Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.orange.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(Icons.vpn_key, color: Colors.orange),
                   ),
-                );
-                return;
-              }
-              Navigator.pop(ctx);
-              final success = await ref.read(familyProvider.notifier).joinFamily(
-                inviteCode: code,
-                relation: relation,
-              );
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(success ? '加入家庭成功！' : '加入失败，请检查邀请码'),
-                    backgroundColor: success ? AppTheme.successColor : AppTheme.errorColor,
+                  const SizedBox(width: 12),
+                  const Text('加入家庭'),
+                ],
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: codeController,
+                    decoration: InputDecoration(
+                      labelText: '邀请码（6位数字）',
+                      prefixIcon: const Icon(Icons.vpn_key),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    keyboardType: TextInputType.number,
+                    maxLength: 6,
                   ),
-                );
-              }
-            },
-          ),
-        ],
-      ),
+                  const SizedBox(height: 12),
+                  DropdownButtonFormField<String>(
+                    value: selectedRelation,
+                    decoration: InputDecoration(
+                      labelText: '您与创建者的关系',
+                      prefixIcon: const Icon(Icons.people),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    items: const [
+                      DropdownMenuItem(value: '爸爸', child: Text('爸爸')),
+                      DropdownMenuItem(value: '妈妈', child: Text('妈妈')),
+                      DropdownMenuItem(value: '爷爷', child: Text('爷爷')),
+                      DropdownMenuItem(value: '奶奶', child: Text('奶奶')),
+                      DropdownMenuItem(value: '外公', child: Text('外公')),
+                      DropdownMenuItem(value: '外婆', child: Text('外婆')),
+                      DropdownMenuItem(value: '其他', child: Text('其他')),
+                    ],
+                    onChanged: (v) => setDialogState(() => selectedRelation = v),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text('取消'),
+                ),
+                PrimaryButton(
+                  text: '加入',
+                  gradient: const LinearGradient(
+                    colors: [Colors.orange, Colors.deepOrange],
+                  ),
+                  onPressed: () async {
+                    final code = codeController.text.trim();
+                    if (code.length != 6 || selectedRelation == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('请输入6位邀请码并选择关系'),
+                          backgroundColor: AppTheme.warningColor,
+                        ),
+                      );
+                      return;
+                    }
+                    Navigator.pop(ctx);
+                    final success = await ref.read(familyProvider.notifier).joinFamily(
+                      inviteCode: code,
+                      relation: selectedRelation!,
+                    );
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(success ? '加入家庭成功！' : '加入失败，请检查邀请码'),
+                          backgroundColor: success ? AppTheme.successColor : AppTheme.errorColor,
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 
   /// 添加成员对话框（子女端）
   void _showAddMemberDialog() {
     final phoneController = TextEditingController();
-    final relationController = TextEditingController();
     String selectedRole = 'child';
+    String? selectedRelation;
 
     showDialog(
       context: context,
       builder: (ctx) {
         return StatefulBuilder(
           builder: (ctx, setDialogState) {
+            // 根据角色动态生成关系选项
+            final relationItems = selectedRole == 'elder'
+                ? const [
+                    DropdownMenuItem(value: '爷爷', child: Text('爷爷')),
+                    DropdownMenuItem(value: '奶奶', child: Text('奶奶')),
+                    DropdownMenuItem(value: '外公', child: Text('外公')),
+                    DropdownMenuItem(value: '外婆', child: Text('外婆')),
+                    DropdownMenuItem(value: '爸爸', child: Text('爸爸')),
+                    DropdownMenuItem(value: '妈妈', child: Text('妈妈')),
+                    DropdownMenuItem(value: '其他', child: Text('其他')),
+                  ]
+                : const [
+                    DropdownMenuItem(value: '儿子', child: Text('儿子')),
+                    DropdownMenuItem(value: '女儿', child: Text('女儿')),
+                    DropdownMenuItem(value: '其他', child: Text('其他')),
+                  ];
+            // 角色切换时重置关系选项
+            if (selectedRelation != null &&
+                !relationItems.any((item) => item.value == selectedRelation)) {
+              selectedRelation = null;
+            }
             return AlertDialog(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
               title: Row(
@@ -583,15 +618,21 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                       DropdownMenuItem(value: 'child', child: Text('子女')),
                       DropdownMenuItem(value: 'elder', child: Text('老人')),
                     ],
-                    onChanged: (v) => setDialogState(() => selectedRole = v!),
+                    onChanged: (v) => setDialogState(() {
+                      selectedRole = v!;
+                      selectedRelation = null;
+                    }),
                   ),
                   const SizedBox(height: 16),
-                  TextField(
-                    controller: relationController,
+                  DropdownButtonFormField<String>(
+                    value: selectedRelation,
                     decoration: InputDecoration(
-                      labelText: '称呼（如：妈妈、爸爸）',
+                      labelText: '称呼',
+                      prefixIcon: const Icon(Icons.people),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     ),
+                    items: relationItems,
+                    onChanged: (v) => setDialogState(() => selectedRelation = v),
                   ),
                 ],
               ),
@@ -604,13 +645,12 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                   text: '添加',
                   onPressed: () async {
                     final phone = phoneController.text.trim();
-                    final relation = relationController.text.trim();
-                    if (phone.isEmpty || relation.isEmpty) return;
+                    if (phone.isEmpty || selectedRelation == null) return;
                     Navigator.pop(ctx);
                     final success = await ref.read(familyProvider.notifier).addMember(
                       phoneNumber: phone,
                       role: selectedRole == 'elder' ? UserRole.elder : UserRole.child,
-                      relation: relation,
+                      relation: selectedRelation!,
                     );
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(

@@ -231,3 +231,4 @@
 /Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/bin/Debug/net10.0/Microsoft.Extensions.Caching.StackExchangeRedis.dll
 /Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/bin/Debug/net10.0/Pipelines.Sockets.Unofficial.dll
 /Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/bin/Debug/net10.0/StackExchange.Redis.dll
+/Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld/obj/Debug/net10.0/CareForTheOld.sourcelink.json

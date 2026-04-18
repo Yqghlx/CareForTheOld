@@ -148,7 +148,7 @@ public class MedicationService : IMedicationService
 
         if (date.HasValue)
         {
-            var start = date.Value.ToDateTime(TimeOnly.MinValue);
+            var start = DateTime.SpecifyKind(date.Value.ToDateTime(TimeOnly.MinValue), DateTimeKind.Utc);
             var end = start.AddDays(1);
             query = query.Where(l => l.ScheduledAt >= start && l.ScheduledAt < end);
         }
@@ -164,7 +164,8 @@ public class MedicationService : IMedicationService
     public async Task<List<MedicationLogResponse>> GetTodayPendingAsync(Guid elderId)
     {
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
-        var start = today.ToDateTime(TimeOnly.MinValue);
+        // PostgreSQL timestamp with time zone 要求 DateTime.Kind 必须是 UTC
+        var start = DateTime.SpecifyKind(today.ToDateTime(TimeOnly.MinValue), DateTimeKind.Utc);
         var end = start.AddDays(1);
 
         // 获取所有激活的计划
@@ -188,7 +189,7 @@ public class MedicationService : IMedicationService
             {
                 if (!TimeOnly.TryParse(timeStr, out var time)) continue;
 
-                var scheduledAt = today.ToDateTime(time);
+                var scheduledAt = DateTime.SpecifyKind(today.ToDateTime(time), DateTimeKind.Utc);
                 var existingLog = existingLogs.FirstOrDefault(l => l.ScheduledAt == scheduledAt);
 
                 if (existingLog != null)
