@@ -1,0 +1,61 @@
+# CareForTheOld 开发/测试环境 Docker Compose 配置
+# 使用方式: docker-compose up -d --build
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: carefortheold-db
+    environment:
+      POSTGRES_USER: carefortheold
+      POSTGRES_PASSWORD: carefortheold_dev_2026
+      POSTGRES_DB: carefortheold
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U carefortheold"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: carefortheold-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: carefortheold-api
+    ports:
+      - "5001:5000"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:5000
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=carefortheold;Username=carefortheold;Password=carefortheold_dev_2026;Pooling=true;Minimum Pool Size=5;Maximum Pool Size=100;"
+      ConnectionStrings__Redis: "redis:6379"
+      Jwt__Key: "CareForTheOld_Docker_SecretKey_2026_MustBe32Chars!"
+      Jwt__Issuer: "CareForTheOld"
+      Jwt__Audience: "CareForTheOld"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+
+volumes:
+  postgres_data:

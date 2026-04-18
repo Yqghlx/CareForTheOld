@@ -1,0 +1,21 @@
+# 构建产物
+**/bin/
+**/obj/
+**/logs/
+
+# Flutter 客户端（独立构建）
+flutter_client/
+
+# IDE 和编辑器
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# 文档和杂项
+docs/
+*.md
+!README.md
+.git/
+.gitignore
