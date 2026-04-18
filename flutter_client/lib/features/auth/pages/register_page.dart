@@ -1,8 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/api/api_client.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../shared/providers/auth_provider.dart';
 import '../../../shared/models/user.dart';
 import '../../../shared/models/user_role.dart';
@@ -29,6 +31,30 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     _passwordController.dispose();
     _nameController.dispose();
     super.dispose();
+  }
+
+  /// 从后端响应中提取验证错误信息
+  String _extractErrorMessage(DioException e) {
+    try {
+      final data = e.response?.data;
+      if (data is Map<String, dynamic>) {
+        // 优先提取 validation errors
+        final errors = data['errors'];
+        if (errors is Map) {
+          return errors.values.expand((v) => v is List ? v : [v]).join('\n');
+        }
+        if (data['message'] != null) {
+          return data['message'] as String;
+        }
+      }
+    } catch (_) {}
+    switch (e.type) {
+      case DioExceptionType.connectionError:
+      case DioExceptionType.connectionTimeout:
+        return '无法连接服务器，请检查网络';
+      default:
+        return '注册失败，请检查输入信息';
+    }
   }
 
   Future<void> _register() async {
@@ -61,10 +87,26 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       } else {
         context.go('/child/home');
       }
+    } on DioException catch (e) {
+      final msg = _extractErrorMessage(e);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(msg),
+            backgroundColor: AppTheme.errorColor,
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('注册失败: ${e.toString()}')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('注册失败: $e'),
+            backgroundColor: AppTheme.errorColor,
+          ),
+        );
+      }
     } finally {
       setState(() => _isLoading = false);
     }
@@ -107,14 +149,21 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                   decoration: const InputDecoration(
                     labelText: '密码',
                     prefixIcon: Icon(Icons.lock),
+                    helperText: '至少8位，需包含字母和数字',
                   ),
                   obscureText: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return '请输入密码';
                     }
-                    if (value.length < 6) {
-                      return '密码至少6位';
+                    if (value.length < 8) {
+                      return '密码至少8位';
+                    }
+                    if (!RegExp(r'[a-zA-Z]').hasMatch(value)) {
+                      return '密码必须包含字母';
+                    }
+                    if (!RegExp(r'\d').hasMatch(value)) {
+                      return '密码必须包含数字';
                     }
                     return null;
                   },
