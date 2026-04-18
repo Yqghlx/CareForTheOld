@@ -27,10 +27,10 @@ class HealthReportService {
       String url;
       if (elderId != null && familyId != null) {
         // 子女端导出老人报告
-        url = '/api/health/family/$familyId/member/$elderId/report?days=$days';
+        url = '/health/family/$familyId/member/$elderId/report?days=$days';
       } else {
         // 老人端导出自己的报告
-        url = '/api/health/me/report?days=$days';
+        url = '/health/me/report?days=$days';
       }
 
       // 下载PDF
