@@ -340,8 +340,12 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       );
     }
 
-    return Column(
-      children: records.map((record) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: records.length,
+      itemBuilder: (context, index) {
+        final record = records[index];
         final time = record.recordedAt.toLocal();
         final timeStr =
             '${time.month}/${time.day} ${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
@@ -385,7 +389,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
             ),
           ),
         );
-      }).toList(),
+      },
     );
   }
 

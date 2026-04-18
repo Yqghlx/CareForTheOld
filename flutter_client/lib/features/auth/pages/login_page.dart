@@ -8,6 +8,7 @@ import '../../../core/api/api_client.dart';
 import '../../../shared/models/user.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/validators/form_validators.dart';
 
 /// 登录页面
 class LoginPage extends ConsumerStatefulWidget {
@@ -203,15 +204,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                       ),
                       keyboardType: TextInputType.phone,
                       style: const TextStyle(fontSize: 18),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '请输入手机号';
-                        }
-                        if (value.length != 11) {
-                          return '手机号格式不正确';
-                        }
-                        return null;
-                      },
+                      validator: FormValidators.phone,
                     ),
                   ),
                   const SizedBox(height: 16),

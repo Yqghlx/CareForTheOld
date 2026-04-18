@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/user_role.dart';
@@ -46,15 +47,22 @@ class AuthState {
 class AuthNotifier extends StateNotifier<AuthState> {
   final Ref _ref;
 
+  /// 安全存储实例，用于加密保存 Token 等敏感信息
+  static const _secureStorage = FlutterSecureStorage(
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+  );
+
   AuthNotifier(this._ref) : super(const AuthState()) {
     _loadStoredAuth();
   }
 
   /// 加载本地存储的认证信息
   Future<void> _loadStoredAuth() async {
+    // Token 从加密存储读取
+    final accessToken = await _secureStorage.read(key: 'accessToken');
+    final refreshToken = await _secureStorage.read(key: 'refreshToken');
+    // 非敏感信息从 SharedPreferences 读取
     final prefs = await SharedPreferences.getInstance();
-    final accessToken = prefs.getString('accessToken');
-    final refreshToken = prefs.getString('refreshToken');
     final roleStr = prefs.getString('userRole');
 
     if (accessToken != null && refreshToken != null) {
@@ -76,9 +84,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
     required String accessToken,
     required String refreshToken,
   }) async {
+    // Token 加密存储
+    await _secureStorage.write(key: 'accessToken', value: accessToken);
+    await _secureStorage.write(key: 'refreshToken', value: refreshToken);
+    // 非敏感信息普通存储
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('accessToken', accessToken);
-    await prefs.setString('refreshToken', refreshToken);
     await prefs.setString('userRole', user.role.value);
     await prefs.setString('userId', user.id);
 
@@ -99,9 +109,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
     // 登出时断开 SignalR
     await _disconnectSignalR();
 
+    // 清除加密存储中的 Token
+    await _secureStorage.delete(key: 'accessToken');
+    await _secureStorage.delete(key: 'refreshToken');
+    // 清除非敏感信息
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('accessToken');
-    await prefs.remove('refreshToken');
     await prefs.remove('userRole');
     await prefs.remove('userId');
 
@@ -126,14 +138,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  /// 更新令牌
+  /// 更新令牌（Token 刷新后调用）
   Future<void> updateTokens({
     required String accessToken,
     required String refreshToken,
   }) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('accessToken', accessToken);
-    await prefs.setString('refreshToken', refreshToken);
+    await _secureStorage.write(key: 'accessToken', value: accessToken);
+    await _secureStorage.write(key: 'refreshToken', value: refreshToken);
 
     state = state.copyWith(
       accessToken: accessToken,

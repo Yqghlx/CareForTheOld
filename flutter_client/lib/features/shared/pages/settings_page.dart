@@ -7,6 +7,7 @@ import '../../../shared/providers/auth_provider.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../shared/widgets/common_cards.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/validators/form_validators.dart';
 import '../providers/user_provider.dart';
 
 /// 设置页面
@@ -447,10 +448,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 return;
               }
 
-              if (newPassword.length < 6) {
+              // 使用统一的密码验证规则（与注册一致）
+              final passwordError = FormValidators.password(newPassword);
+              if (passwordError != null) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('密码长度至少6位'),
+                  SnackBar(
+                    content: Text(passwordError),
                     backgroundColor: AppTheme.warningColor,
                   ),
                 );

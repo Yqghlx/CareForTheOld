@@ -537,3 +537,4 @@
 /Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld.Tests/bin/Debug/net10.0/runtimes/win/lib/net10.0/System.Diagnostics.EventLog.Messages.dll
 /Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld.Tests/obj/Debug/net10.0/MvcTestingAppManifest.json
 /Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld.Tests/bin/Debug/net10.0/Bogus.dll
+/Users/yqgmac/yqg/project/careForTheOld/CareForTheOld/CareForTheOld.Tests/obj/Debug/net10.0/CareForTheOld.Tests.sourcelink.json

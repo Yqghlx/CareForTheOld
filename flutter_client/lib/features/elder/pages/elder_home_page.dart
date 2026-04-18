@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +8,7 @@ import '../../../shared/providers/auth_provider.dart';
 import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/config/app_config.dart';
 import '../../shared/providers/emergency_provider.dart';
 import '../../shared/providers/user_provider.dart';
 import '../../shared/services/emergency_service.dart';
@@ -116,25 +118,22 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                     onTap: _isUploadingAvatar ? null : _pickAndUploadAvatar,
                     child: Stack(
                       children: [
-                        Container(
-                          width: 64,
-                          height: 64,
-                          decoration: BoxDecoration(
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Container(
+                            width: 64,
+                            height: 64,
                             color: Colors.white.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(16),
-                            // 若有头像 URL 则显示网络图片
-                            image: authState.user?.avatarUrl != null
-                                ? DecorationImage(
-                                    image: NetworkImage(
-                                      'http://192.168.100.199:5001${authState.user!.avatarUrl}',
-                                    ),
+                            child: authState.user?.avatarUrl != null
+                                ? CachedNetworkImage(
+                                    imageUrl: '${AppConfig.current.apiBaseUrl.replaceFirst('/api/v1', '')}${authState.user!.avatarUrl}',
                                     fit: BoxFit.cover,
+                                    width: 64,
+                                    height: 64,
+                                    errorWidget: (_, __, ___) => const Icon(Icons.person, size: 40, color: Colors.white),
                                   )
-                                : null,
+                                : const Icon(Icons.person, size: 40, color: Colors.white),
                           ),
-                          child: authState.user?.avatarUrl == null
-                              ? const Icon(Icons.person, size: 40, color: Colors.white)
-                              : null,
                         ),
                         // 上传中遮罩
                         if (_isUploadingAvatar)
@@ -258,24 +257,46 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
     );
   }
 
-  /// 紧急呼叫按钮 - 醒目的红色大按钮
+  /// 紧急呼叫按钮 - 长按 2 秒触发，防止误触
   Widget _buildEmergencyCallButton() {
     return GestureDetector(
-      onTap: () => _showEmergencyCallDialog(),
-      child: Container(
+      onLongPressStart: (_) => setState(() => _isCalling = true),
+      onLongPressEnd: (_) {
+        if (_isCalling) {
+          // 长按完成，触发实际呼叫
+          _performEmergencyCall();
+        }
+      },
+      onLongPressCancel: () => setState(() => _isCalling = false),
+      onTap: () {
+        // 短按提示长按操作
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('请长按按钮发起紧急呼叫'),
+            duration: Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         width: double.infinity,
         height: 80,
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Colors.red, Colors.redAccent],
+          gradient: LinearGradient(
+            colors: _isCalling
+                ? [Colors.redAccent, Colors.red]
+                : [Colors.red, Colors.redAccent],
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
           ),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.red.withValues(alpha: 0.4),
-              blurRadius: 16,
+              color: Colors.red.withValues(alpha: _isCalling ? 0.7 : 0.4),
+              blurRadius: _isCalling ? 24 : 16,
+              spreadRadius: _isCalling ? 4 : 0,
               offset: const Offset(0, 6),
             ),
           ],
@@ -283,16 +304,16 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.emergency,
+            Icon(
+              _isCalling ? Icons.phone_in_talk : Icons.emergency,
               color: Colors.white,
               size: 40,
             ),
             const SizedBox(width: 12),
-            const Text(
-              '紧急呼叫',
-              style: TextStyle(
-                fontSize: 28,
+            Text(
+              _isCalling ? '正在呼叫...' : '长按紧急呼叫',
+              style: const TextStyle(
+                fontSize: 26,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),

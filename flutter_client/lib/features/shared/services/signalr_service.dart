@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 
-import '../../../core/api/api_client.dart';
+import '../../../core/config/app_config.dart';
 import '../../../shared/providers/auth_provider.dart';
 import 'local_notification_service.dart';
 
@@ -13,16 +13,8 @@ class SignalRService {
   HubConnection? _hubConnection;
   final Ref _ref;
 
-  /// 从 ApiClient.baseUrl 派生 SignalR Hub URL
-  /// 规则：去掉 /api/v1 后缀，拼接 /hubs/notification
-  static String get _hubUrl {
-    const apiBase = ApiClient.baseUrl;
-    const suffix = '/api/v1';
-    final base = apiBase.endsWith(suffix)
-        ? apiBase.substring(0, apiBase.length - suffix.length)
-        : apiBase;
-    return '$base/hubs/notification';
-  }
+  /// 从 AppConfig 读取 SignalR Hub URL
+  static String get _hubUrl => AppConfig.current.signalrBaseUrl;
 
   SignalRService(this._ref);
 
