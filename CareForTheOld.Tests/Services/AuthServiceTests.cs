@@ -117,4 +117,53 @@ public class AuthServiceTests
         var act = async () => await _service.LoginAsync(loginRequest);
         await act.Should().ThrowAsync<ArgumentException>();
     }
+
+    [Fact]
+    public async Task RefreshTokenAsync_ShouldReturnNewToken_WhenValidToken()
+    {
+        // 注册获取 token
+        var registerResult = await _service.RegisterAsync(new RegisterRequest
+        {
+            PhoneNumber = "13900007001", Password = "Test1234", RealName = "刷新测试", Role = UserRole.Elder
+        });
+        // 刷新
+        var result = await _service.RefreshTokenAsync(registerResult.RefreshToken);
+        result.Should().NotBeNull();
+        result.AccessToken.Should().NotBeEmpty();
+        result.RefreshToken.Should().NotBe(registerResult.RefreshToken);
+    }
+
+    [Fact]
+    public async Task RefreshTokenAsync_ShouldThrow_WhenTokenExpired()
+    {
+        // 手动创建一个过期的 token
+        var user = new User { Id = Guid.NewGuid(), PhoneNumber = "13900007002", PasswordHash = "hash", RealName = "过期测试", Role = UserRole.Elder, CreatedAt = DateTime.UtcNow };
+        _context.Users.Add(user);
+        var token = new RefreshToken { Id = Guid.NewGuid(), UserId = user.Id, Token = "expired_token", ExpiresAt = DateTime.UtcNow.AddDays(-1), IsRevoked = false, IsUsed = false, CreatedAt = DateTime.UtcNow };
+        _context.RefreshTokens.Add(token);
+        await _context.SaveChangesAsync();
+        var act = async () => await _service.RefreshTokenAsync("expired_token");
+        await act.Should().ThrowAsync<ArgumentException>().WithMessage("刷新令牌已过期或已撤销");
+    }
+
+    [Fact]
+    public async Task RefreshTokenAsync_ShouldThrow_WhenTokenReplayed()
+    {
+        var registerResult = await _service.RegisterAsync(new RegisterRequest
+        {
+            PhoneNumber = "13900007003", Password = "Test1234", RealName = "重放测试", Role = UserRole.Elder
+        });
+        // 第一次刷新成功
+        await _service.RefreshTokenAsync(registerResult.RefreshToken);
+        // 第二次重放 → 应吊销全部 token 并抛异常
+        var act = async () => await _service.RefreshTokenAsync(registerResult.RefreshToken);
+        await act.Should().ThrowAsync<ArgumentException>().WithMessage("检测到安全异常，请重新登录");
+    }
+
+    [Fact]
+    public async Task RefreshTokenAsync_ShouldThrow_WhenTokenNotFound()
+    {
+        var act = async () => await _service.RefreshTokenAsync("nonexistent_token");
+        await act.Should().ThrowAsync<ArgumentException>().WithMessage("无效的刷新令牌");
+    }
 }

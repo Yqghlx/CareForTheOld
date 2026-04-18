@@ -85,4 +85,37 @@ public class UserServiceTests
 
         result.AvatarUrl.Should().Be("https://example.com/avatar.jpg");
     }
+
+    [Fact]
+    public async Task ChangePasswordAsync_ShouldReturnTrue_WhenOldPasswordCorrect()
+    {
+        var userId = Guid.NewGuid();
+        var hash = BCrypt.Net.BCrypt.HashPassword("OldPass123");
+        _context.Users.Add(new User { Id = userId, PhoneNumber = "13900008001", PasswordHash = hash, RealName = "改密测试", Role = UserRole.Elder, CreatedAt = DateTime.UtcNow });
+        await _context.SaveChangesAsync();
+        var result = await _service.ChangePasswordAsync(userId, new ChangePasswordRequest { OldPassword = "OldPass123", NewPassword = "NewPass456" });
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ChangePasswordAsync_ShouldThrow_WhenOldPasswordWrong()
+    {
+        var userId = Guid.NewGuid();
+        var hash = BCrypt.Net.BCrypt.HashPassword("CorrectPass1");
+        _context.Users.Add(new User { Id = userId, PhoneNumber = "13900008002", PasswordHash = hash, RealName = "改密测试2", Role = UserRole.Elder, CreatedAt = DateTime.UtcNow });
+        await _context.SaveChangesAsync();
+        var act = async () => await _service.ChangePasswordAsync(userId, new ChangePasswordRequest { OldPassword = "WrongPass1", NewPassword = "NewPass456" });
+        await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("旧密码不正确");
+    }
+
+    [Fact]
+    public async Task UpdateAvatarUrlAsync_ShouldUpdateAvatar()
+    {
+        var userId = Guid.NewGuid();
+        _context.Users.Add(new User { Id = userId, PhoneNumber = "13900008003", PasswordHash = "hash", RealName = "头像测试", Role = UserRole.Elder, CreatedAt = DateTime.UtcNow });
+        await _context.SaveChangesAsync();
+        await _service.UpdateAvatarUrlAsync(userId, "/uploads/avatar.png");
+        var user = await _context.Users.FindAsync(userId);
+        user!.AvatarUrl.Should().Be("/uploads/avatar.png");
+    }
 }
