@@ -30,6 +30,12 @@ public class HealthRecord
     public DateTime RecordedAt { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    /// <summary>是否已软删除</summary>
+    public bool IsDeleted { get; set; }
+
+    /// <summary>软删除时间</summary>
+    public DateTime? DeletedAt { get; set; }
+
     // 导航属性
     public User User { get; set; } = null!;
 }

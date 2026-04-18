@@ -86,6 +86,22 @@ class UserNotifier extends StateNotifier<UserState> {
   void clearError() {
     state = state.copyWith(clearError: true);
   }
+
+  /// 上传头像并刷新用户信息
+  ///
+  /// [filePath] 本地图片文件路径。
+  /// 成功返回新的头像 URL，失败返回 null。
+  Future<String?> uploadAvatar(String filePath) async {
+    try {
+      final avatarUrl = await _service.uploadAvatar(filePath);
+      // 重新加载用户信息以获取最新的 avatarUrl
+      await loadUser();
+      return avatarUrl;
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+      return null;
+    }
+  }
 }
 
 /// 用户状态 Provider

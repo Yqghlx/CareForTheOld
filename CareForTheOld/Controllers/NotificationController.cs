@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Data;
 using CareForTheOld.Models.Entities;
@@ -9,7 +10,8 @@ using System.Security.Claims;
 namespace CareForTheOld.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
 [Authorize]
 public class NotificationController : ControllerBase
 {

@@ -56,23 +56,24 @@ public class HealthService : IHealthService
         return await MapToResponse(record.Id) ?? throw new KeyNotFoundException("记录不存在");
     }
 
-    public async Task<List<HealthRecordResponse>> GetUserRecordsAsync(Guid userId, HealthType? type, int limit = 50)
+    public async Task<List<HealthRecordResponse>> GetUserRecordsAsync(Guid userId, HealthType? type, int skip = 0, int limit = 50)
     {
         var query = _context.HealthRecords
             .Include(r => r.User)
-            .Where(r => r.UserId == userId);
+            .Where(r => r.UserId == userId && !r.IsDeleted);
 
         if (type.HasValue)
             query = query.Where(r => r.Type == type.Value);
 
         return await query
             .OrderByDescending(r => r.RecordedAt)
+            .Skip(skip)
             .Take(limit)
             .Select(r => MapToResponseProjection(r))
             .ToListAsync();
     }
 
-    public async Task<List<HealthRecordResponse>> GetFamilyMemberRecordsAsync(Guid familyId, Guid memberId, HealthType? type, int limit = 50)
+    public async Task<List<HealthRecordResponse>> GetFamilyMemberRecordsAsync(Guid familyId, Guid memberId, HealthType? type, int skip = 0, int limit = 50)
     {
         // 验证 memberId 是否属于该家庭
         var isMember = await _context.FamilyMembers
@@ -81,7 +82,7 @@ public class HealthService : IHealthService
         if (!isMember)
             throw new UnauthorizedAccessException("该用户不是家庭成员");
 
-        return await GetUserRecordsAsync(memberId, type, limit);
+        return await GetUserRecordsAsync(memberId, type, skip, limit);
     }
 
     public async Task<List<HealthStatsResponse>> GetUserStatsAsync(Guid userId)
@@ -147,7 +148,9 @@ public class HealthService : IHealthService
             .FirstOrDefaultAsync(r => r.Id == recordId && r.UserId == userId)
             ?? throw new KeyNotFoundException("记录不存在或无权删除");
 
-        _context.HealthRecords.Remove(record);
+        // 软删除：标记为已删除，保留数据
+        record.IsDeleted = true;
+        record.DeletedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync();
     }
 

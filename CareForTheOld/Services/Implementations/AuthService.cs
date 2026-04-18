@@ -9,6 +9,7 @@ using CareForTheOld.Models.Entities;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 
 namespace CareForTheOld.Services.Implementations;
 
@@ -47,17 +48,22 @@ public class AuthService : IAuthService
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
+        Log.Information("用户注册成功：{PhoneNumber}，角色：{Role}", request.PhoneNumber, request.Role);
+
         return await GenerateAuthResponse(user);
     }
 
     public async Task<AuthResponse> LoginAsync(LoginRequest request)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber)
-            ?? throw new ArgumentException("手机号或密码错误");
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
 
-        if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+        if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+        {
+            Log.Warning("登录失败：{PhoneNumber}，手机号或密码错误", request.PhoneNumber);
             throw new ArgumentException("手机号或密码错误");
+        }
 
+        Log.Information("用户登录成功：{PhoneNumber}，角色：{Role}", request.PhoneNumber, user.Role);
         return await GenerateAuthResponse(user);
     }
 
@@ -65,15 +71,41 @@ public class AuthService : IAuthService
     {
         var refreshToken = await _context.RefreshTokens
             .Include(rt => rt.User)
-            .FirstOrDefaultAsync(rt => rt.Token == token)
-            ?? throw new ArgumentException("无效的刷新令牌");
+            .FirstOrDefaultAsync(rt => rt.Token == token);
+
+        if (refreshToken == null)
+        {
+            Log.Warning("刷新令牌无效：Token 不存在");
+            throw new ArgumentException("无效的刷新令牌");
+        }
+
+        // 检测 Token 重放攻击：已使用过的 Token 再次出现，说明可能被盗用
+        if (refreshToken.IsUsed)
+        {
+            Log.Warning("检测到 Token 重放攻击，撤销用户 {UserId} 的所有令牌", refreshToken.UserId);
+            // 撤销该用户所有刷新令牌（强制重新登录）
+            var allTokens = await _context.RefreshTokens
+                .Where(rt => rt.UserId == refreshToken.UserId && !rt.IsRevoked)
+                .ToListAsync();
+            foreach (var t in allTokens)
+            {
+                t.IsRevoked = true;
+            }
+            await _context.SaveChangesAsync();
+            throw new ArgumentException("检测到安全异常，请重新登录");
+        }
 
         if (refreshToken.IsRevoked || refreshToken.ExpiresAt < DateTime.UtcNow)
+        {
+            Log.Warning("刷新令牌已过期或已撤销，用户：{UserId}", refreshToken.UserId);
             throw new ArgumentException("刷新令牌已过期或已撤销");
+        }
 
-        // 撤销旧令牌
+        // 标记旧令牌为已使用（轮换）
+        refreshToken.IsUsed = true;
         refreshToken.IsRevoked = true;
 
+        Log.Information("令牌刷新成功，用户：{UserId}", refreshToken.UserId);
         return await GenerateAuthResponse(refreshToken.User);
     }
 
@@ -118,7 +150,7 @@ public class AuthService : IAuthService
     private string GenerateAccessToken(User user)
     {
         var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? "CareForTheOld_DefaultSecretKey_2026_MustBe32Chars!"));
+            Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var expirationMinutes = int.Parse(_configuration["Jwt:AccessTokenExpirationMinutes"] ?? "60");

@@ -1,8 +1,10 @@
+using Asp.Versioning;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Models.DTOs.Requests.Auth;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace CareForTheOld.Controllers;
 
@@ -10,7 +12,9 @@ namespace CareForTheOld.Controllers;
 /// 认证控制器
 /// </summary>
 [ApiController]
-[Route("api/[controller]")]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
+[EnableRateLimiting("AuthPolicy")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;

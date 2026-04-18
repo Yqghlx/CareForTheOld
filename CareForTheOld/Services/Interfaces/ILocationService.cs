@@ -20,7 +20,7 @@ public interface ILocationService
     /// <summary>
     /// 获取用户位置历史
     /// </summary>
-    Task<List<LocationRecordResponse>> GetLocationHistoryAsync(Guid userId, int limit = 50);
+    Task<List<LocationRecordResponse>> GetLocationHistoryAsync(Guid userId, int skip = 0, int limit = 50);
 
     /// <summary>
     /// 获取家庭成员最新位置（子女查看老人）
@@ -30,5 +30,5 @@ public interface ILocationService
     /// <summary>
     /// 获取家庭成员位置历史（子女查看老人）
     /// </summary>
-    Task<List<LocationRecordResponse>> GetFamilyMemberLocationHistoryAsync(Guid familyId, Guid memberId, int limit = 50);
+    Task<List<LocationRecordResponse>> GetFamilyMemberLocationHistoryAsync(Guid familyId, Guid memberId, int skip = 0, int limit = 50);
 }

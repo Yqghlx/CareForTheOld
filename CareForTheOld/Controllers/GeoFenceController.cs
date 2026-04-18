@@ -1,18 +1,23 @@
+using Asp.Versioning;
+using CareForTheOld.Common.Extensions;
+using CareForTheOld.Common.Helpers;
 using CareForTheOld.Models.DTOs.Requests.GeoFences;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace CareForTheOld.Controllers;
 
 /// <summary>
-/// 电子围栏控制器
+/// 电子围栏控制器（仅子女可操作）
 /// </summary>
 [ApiController]
-[Route("api/geofence")]
-[Authorize]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/geofence")]
+[Authorize(Roles = "Child")]
+[EnableRateLimiting("GeneralPolicy")]
 public class GeoFenceController : ControllerBase
 {
     private readonly IGeoFenceService _geoFenceService;
@@ -26,53 +31,42 @@ public class GeoFenceController : ControllerBase
     /// 创建电子围栏
     /// </summary>
     [HttpPost]
-    public async Task<ActionResult<GeoFenceResponse>> CreateFence([FromBody] CreateGeoFenceRequest request)
+    public async Task<ApiResponse<GeoFenceResponse>> CreateFence([FromBody] CreateGeoFenceRequest request)
     {
-        var userId = GetCurrentUserId();
+        var userId = this.GetUserId();
         var result = await _geoFenceService.CreateFenceAsync(userId, request);
-        return Ok(result);
+        return ApiResponse<GeoFenceResponse>.Ok(result, "围栏创建成功");
     }
 
     /// <summary>
     /// 获取老人的电子围栏
     /// </summary>
     [HttpGet("elder/{elderId}")]
-    public async Task<ActionResult<GeoFenceResponse?>> GetElderFence(Guid elderId)
+    public async Task<ApiResponse<GeoFenceResponse?>> GetElderFence(Guid elderId)
     {
         var result = await _geoFenceService.GetElderFenceAsync(elderId);
-        return Ok(result);
+        return ApiResponse<GeoFenceResponse?>.Ok(result);
     }
 
     /// <summary>
     /// 更新电子围栏
     /// </summary>
     [HttpPut("{id}")]
-    public async Task<ActionResult<GeoFenceResponse>> UpdateFence(Guid id, [FromBody] CreateGeoFenceRequest request)
+    public async Task<ApiResponse<GeoFenceResponse>> UpdateFence(Guid id, [FromBody] CreateGeoFenceRequest request)
     {
-        var userId = GetCurrentUserId();
+        var userId = this.GetUserId();
         var result = await _geoFenceService.UpdateFenceAsync(id, userId, request);
-        return Ok(result);
+        return ApiResponse<GeoFenceResponse>.Ok(result, "围栏更新成功");
     }
 
     /// <summary>
     /// 删除电子围栏
     /// </summary>
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteFence(Guid id)
+    public async Task<ApiResponse<object>> DeleteFence(Guid id)
     {
-        var userId = GetCurrentUserId();
+        var userId = this.GetUserId();
         await _geoFenceService.DeleteFenceAsync(id, userId);
-        return Ok(new { success = true });
-    }
-
-    /// <summary>
-    /// 获取当前用户ID
-    /// </summary>
-    private Guid GetCurrentUserId()
-    {
-        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        return Guid.TryParse(userIdClaim, out var userId)
-            ? userId
-            : throw new UnauthorizedAccessException("无法获取用户ID");
+        return ApiResponse<object>.Ok(null!, "围栏删除成功");
     }
 }

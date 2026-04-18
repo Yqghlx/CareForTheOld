@@ -93,12 +93,13 @@ public class LocationService : ILocationService
     /// <summary>
     /// 获取用户位置历史
     /// </summary>
-    public async Task<List<LocationRecordResponse>> GetLocationHistoryAsync(Guid userId, int limit = 50)
+    public async Task<List<LocationRecordResponse>> GetLocationHistoryAsync(Guid userId, int skip = 0, int limit = 50)
     {
         var records = await _context.LocationRecords
             .Include(r => r.User)
             .Where(r => r.UserId == userId)
             .OrderByDescending(r => r.RecordedAt)
+            .Skip(skip)
             .Take(limit)
             .ToListAsync();
 
@@ -130,7 +131,7 @@ public class LocationService : ILocationService
     /// <summary>
     /// 获取家庭成员位置历史（子女查看老人）
     /// </summary>
-    public async Task<List<LocationRecordResponse>> GetFamilyMemberLocationHistoryAsync(Guid familyId, Guid memberId, int limit = 50)
+    public async Task<List<LocationRecordResponse>> GetFamilyMemberLocationHistoryAsync(Guid familyId, Guid memberId, int skip = 0, int limit = 50)
     {
         // 验证 memberId 是否在该家庭中
         var isMember = await _context.FamilyMembers
@@ -138,7 +139,7 @@ public class LocationService : ILocationService
 
         if (!isMember) return [];
 
-        return await GetLocationHistoryAsync(memberId, limit);
+        return await GetLocationHistoryAsync(memberId, skip, limit);
     }
 
     /// <summary>

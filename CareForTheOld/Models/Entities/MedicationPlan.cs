@@ -21,6 +21,12 @@ public class MedicationPlan
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
+    /// <summary>是否已软删除</summary>
+    public bool IsDeleted { get; set; }
+
+    /// <summary>软删除时间</summary>
+    public DateTime? DeletedAt { get; set; }
+
     // 导航属性
     public User Elder { get; set; } = null!;
     public ICollection<MedicationLog> MedicationLogs { get; set; } = [];

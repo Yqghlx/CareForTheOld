@@ -20,7 +20,7 @@ public interface IEmergencyService
     /// <summary>
     /// 获取历史呼叫记录
     /// </summary>
-    Task<List<EmergencyCallResponse>> GetHistoryAsync(Guid userId, int limit = 20);
+    Task<List<EmergencyCallResponse>> GetHistoryAsync(Guid userId, int skip = 0, int limit = 20);
 
     /// <summary>
     /// 子女标记已处理

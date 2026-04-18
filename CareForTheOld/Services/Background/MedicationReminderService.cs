@@ -120,8 +120,9 @@ public class MedicationReminderService : BackgroundService
             }
         };
 
-        // 发送给老人
-        await notificationService.SendToUserAsync(plan.ElderId, message.Type, message);
+        // 发送给老人（含重试逻辑）
+        await SendWithRetryAsync(() => notificationService.SendToUserAsync(plan.ElderId, message.Type, message),
+            $"老人用药提醒-{plan.ElderId}");
 
         // 获取老人的家庭，通知家庭成员
         var familyMembers = await context.FamilyMembers
@@ -152,11 +153,43 @@ public class MedicationReminderService : BackgroundService
                         ScheduledAt = scheduledAt
                     }
                 };
-                await notificationService.SendToUserAsync(other.UserId, familyMessage.Type, familyMessage);
+                await SendWithRetryAsync(() => notificationService.SendToUserAsync(other.UserId, familyMessage.Type, familyMessage),
+                    $"家庭成员用药提醒-{other.UserId}");
             }
         }
 
         _logger.LogInformation("发送用药提醒: 用户 {ElderId}, 药品 {MedicineName}, 时间 {ScheduledAt}",
             plan.ElderId, plan.MedicineName, scheduledAt);
+    }
+
+    /// <summary>
+    /// 带重试的通知发送方法，最多重试3次，每次间隔1秒
+    /// </summary>
+    private async Task SendWithRetryAsync(Func<Task> sendAction, string description)
+    {
+        const int maxRetries = 3;
+        for (int attempt = 1; attempt <= maxRetries; attempt++)
+        {
+            try
+            {
+                await sendAction();
+                return; // 发送成功，直接返回
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "通知发送失败（第 {Attempt}/{MaxRetries} 次）: {Description}",
+                    attempt, maxRetries, description);
+
+                if (attempt < maxRetries)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                }
+                else
+                {
+                    _logger.LogError(ex, "通知发送最终失败（已重试 {MaxRetries} 次）: {Description}",
+                        maxRetries, description);
+                }
+            }
+        }
     }
 }

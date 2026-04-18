@@ -36,7 +36,7 @@ public interface IMedicationService
     /// <summary>
     /// 获取用药日志列表
     /// </summary>
-    Task<List<MedicationLogResponse>> GetLogsAsync(Guid elderId, DateOnly? date, int limit = 50);
+    Task<List<MedicationLogResponse>> GetLogsAsync(Guid elderId, DateOnly? date, int skip = 0, int limit = 50);
 
     /// <summary>
     /// 获取今日待服药列表

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../shared/providers/auth_provider.dart';
 import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../shared/providers/emergency_provider.dart';
+import '../../shared/providers/user_provider.dart';
 import '../../shared/services/emergency_service.dart';
 import '../../../core/api/api_client.dart';
 import 'health_record_page.dart';
@@ -23,6 +25,7 @@ class ElderHomePage extends ConsumerStatefulWidget {
 class _ElderHomePageState extends ConsumerState<ElderHomePage> {
   int _selectedIndex = 0;
   bool _isCalling = false;
+  bool _isUploadingAvatar = false;
 
   @override
   Widget build(BuildContext context) {
@@ -108,14 +111,71 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
               padding: const EdgeInsets.all(24),
               child: Row(
                 children: [
-                  Container(
-                    width: 64,
-                    height: 64,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(16),
+                  // 头像区域：点击可上传新头像
+                  GestureDetector(
+                    onTap: _isUploadingAvatar ? null : _pickAndUploadAvatar,
+                    child: Stack(
+                      children: [
+                        Container(
+                          width: 64,
+                          height: 64,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(16),
+                            // 若有头像 URL 则显示网络图片
+                            image: authState.user?.avatarUrl != null
+                                ? DecorationImage(
+                                    image: NetworkImage(
+                                      'http://192.168.100.199:5001${authState.user!.avatarUrl}',
+                                    ),
+                                    fit: BoxFit.cover,
+                                  )
+                                : null,
+                          ),
+                          child: authState.user?.avatarUrl == null
+                              ? const Icon(Icons.person, size: 40, color: Colors.white)
+                              : null,
+                        ),
+                        // 上传中遮罩
+                        if (_isUploadingAvatar)
+                          Container(
+                            width: 64,
+                            height: 64,
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.4),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: const Center(
+                              child: SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation(Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                        // 右下角相机图标
+                        if (!_isUploadingAvatar)
+                          Positioned(
+                            right: -2,
+                            bottom: -2,
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(
+                                Icons.camera_alt,
+                                size: 16,
+                                color: AppTheme.primaryColor,
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
-                    child: const Icon(Icons.person, size: 40, color: Colors.white),
                   ),
                   const SizedBox(width: 20),
                   Column(
@@ -385,5 +445,98 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
         ],
       ),
     );
+  }
+
+  /// 选择并上传头像
+  ///
+  /// 弹出底部菜单供用户选择相册或拍照，选取后自动上传到服务端。
+  Future<void> _pickAndUploadAvatar() async {
+    // 弹出选择来源的底部菜单
+    final source = await showModalBottomSheet<ImageSource>(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Text(
+                '更换头像',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library, color: AppTheme.primaryColor),
+              title: const Text('从相册选择', style: TextStyle(fontSize: 18)),
+              onTap: () => Navigator.pop(ctx, ImageSource.gallery),
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera_alt, color: AppTheme.primaryColor),
+              title: const Text('拍照', style: TextStyle(fontSize: 18)),
+              onTap: () => Navigator.pop(ctx, ImageSource.camera),
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+
+    if (source == null) return;
+
+    try {
+      final picker = ImagePicker();
+      final image = await picker.pickImage(
+        source: source,
+        maxWidth: 512,
+        maxHeight: 512,
+        imageQuality: 80,
+      );
+
+      if (image == null) return;
+
+      setState(() => _isUploadingAvatar = true);
+
+      final avatarUrl = await ref.read(userProvider.notifier).uploadAvatar(image.path);
+
+      if (mounted) {
+        if (avatarUrl != null) {
+          // 同时更新 authProvider 中的用户信息
+          await ref.read(authProvider.notifier).login(
+                user: ref.read(userProvider).user!,
+                accessToken: ref.read(authProvider).accessToken!,
+                refreshToken: ref.read(authProvider).refreshToken!,
+              );
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('头像更新成功'),
+              backgroundColor: AppTheme.successColor,
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('头像上传失败，请重试'),
+              backgroundColor: AppTheme.errorColor,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('头像上传失败: $e'),
+            backgroundColor: AppTheme.errorColor,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isUploadingAvatar = false);
+      }
+    }
   }
 }

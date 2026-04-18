@@ -9,4 +9,9 @@ public interface IUserService
     Task<UserResponse> GetUserByIdAsync(Guid userId);
     Task<UserResponse> UpdateUserAsync(Guid userId, UpdateUserRequest request);
     Task<bool> ChangePasswordAsync(Guid userId, ChangePasswordRequest request);
+
+    /// <summary>
+    /// 更新用户头像 URL
+    /// </summary>
+    Task UpdateAvatarUrlAsync(Guid userId, string avatarUrl);
 }

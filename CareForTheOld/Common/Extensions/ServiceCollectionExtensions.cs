@@ -1,5 +1,7 @@
+using CareForTheOld.Common.Options;
 using CareForTheOld.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -10,15 +12,21 @@ public static class ServiceCollectionExtensions
 {
     /// <summary>
     /// 注册数据库服务（支持 PostgreSQL 和 SQLite）
+    /// 生产环境使用 Migrate()，开发环境使用 EnsureCreated()
     /// </summary>
     public static IServiceCollection AddDatabaseServices(
-        this IServiceCollection services, IConfiguration configuration)
+        this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
     {
+        // 测试环境完全跳过，由 WebApplicationFactory 自行配置 InMemory 数据库
+        if (environment.IsEnvironment("Testing"))
+            return services;
+
         var connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? "Data Source=carefortheold.db";
 
-        // 根据连接字符串判断使用 PostgreSQL 还是 SQLite
-        if (connectionString.Contains("Host=") || connectionString.Contains("Server="))
+        bool isPostgres = connectionString.Contains("Host=") || connectionString.Contains("Server=");
+
+        if (isPostgres)
         {
             // PostgreSQL 生产环境
             services.AddDbContext<AppDbContext>(options =>
@@ -31,22 +39,39 @@ public static class ServiceCollectionExtensions
                 options.UseSqlite(connectionString));
         }
 
-        // 启动时自动创建数据库和表（生产环境建议使用迁移）
+        // 启动时初始化数据库
         var serviceProvider = services.BuildServiceProvider();
         using var scope = serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        context.Database.EnsureCreated();
+
+        if (environment.IsDevelopment() && !isPostgres)
+        {
+            context.Database.EnsureCreated();
+        }
+        else
+        {
+            context.Database.Migrate();
+        }
 
         return services;
     }
 
     /// <summary>
     /// 注册 JWT 认证服务
+    /// 密钥优先从环境变量读取，长度不足 32 字符则拒绝启动
     /// </summary>
     public static IServiceCollection AddJwtAuthentication(
         this IServiceCollection services, IConfiguration configuration)
     {
-        var jwtKey = configuration["Jwt:Key"] ?? "CareForTheOld_DefaultSecretKey_2026_MustBe32Chars!";
+        var jwtKey = configuration["Jwt:Key"] ?? string.Empty;
+
+        // 启动时校验密钥
+        if (string.IsNullOrWhiteSpace(jwtKey) || jwtKey.Length < 32)
+        {
+            throw new InvalidOperationException(
+                "JWT 密钥未配置或长度不足 32 字符。请通过环境变量 Jwt__Key 或 appsettings.json 配置。");
+        }
+
         var key = Encoding.UTF8.GetBytes(jwtKey);
 
         services.AddAuthentication(options =>
@@ -73,12 +98,44 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// 注册 Swagger 服务
+    /// 注册健康检查服务
+    /// </summary>
+    public static IServiceCollection AddHealthCheckServices(
+        this IServiceCollection services, IConfiguration configuration)
+    {
+        var connectionString = configuration.GetConnectionString("DefaultConnection")
+            ?? "Data Source=carefortheold.db";
+
+        var healthChecksBuilder = services.AddHealthChecks();
+
+        if (connectionString.Contains("Host=") || connectionString.Contains("Server="))
+        {
+            healthChecksBuilder.AddNpgSql(connectionString, name: "postgresql");
+        }
+        else
+        {
+            healthChecksBuilder.AddSqlite(connectionString, name: "sqlite");
+        }
+
+        return services;
+    }
+
+    /// <summary>
+    /// 注册 Swagger 服务（支持 API 版本控制）
     /// </summary>
     public static IServiceCollection AddSwaggerServices(this IServiceCollection services)
     {
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(c =>
+        {
+            var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
+            c.IncludeXmlComments(xmlPath);
+        });
+
+        // 配置版本化 Swagger：为每个 API 版本生成独立的 Swagger 文档
+        services.ConfigureOptions<ConfigureSwaggerOptions>();
+
         return services;
     }
 }

@@ -39,7 +39,7 @@ docker-compose logs -f api
 ```
 
 服务启动后：
-- 后端 API: `http://localhost:5000`
+- 后端 API: `http://localhost:5001` (macOS AirPlay 占用 5000，改用 5001)
 - PostgreSQL: `localhost:5432`
 
 ### 2. 配置修改
@@ -179,8 +179,8 @@ docker-compose restart postgres
 | 服务 | 端口 | 说明 |
 |------|------|------|
 | PostgreSQL | 5432 | 数据库内部端口 |
-| API | 5000 | 后端 API 端口 |
-| SignalR | 5000/hubs | WebSocket 连接 |
+| API | 5001 | 后端 API 端口 (容器内部5000，外部映射5001) |
+| SignalR | 5001/hubs | WebSocket 连接 |
 
 ## 系统要求
 
