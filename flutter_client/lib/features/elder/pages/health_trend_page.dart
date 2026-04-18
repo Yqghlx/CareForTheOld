@@ -154,14 +154,19 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                     Icon(
                       type.icon,
                       color: isSelected ? Colors.white : Colors.grey,
-                      size: 24,
+                      size: 20,
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      type.label,
-                      style: TextStyle(
-                        color: isSelected ? Colors.white : Colors.grey.shade700,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    const SizedBox(height: 2),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        type.label,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: isSelected ? Colors.white : Colors.grey.shade700,
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        ),
+                        maxLines: 1,
                       ),
                     ),
                   ],
