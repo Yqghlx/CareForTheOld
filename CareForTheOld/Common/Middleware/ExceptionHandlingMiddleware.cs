@@ -46,8 +46,7 @@ public class ExceptionHandlingMiddleware
         {
             KeyNotFoundException => (StatusCodes.Status404NotFound, "资源未找到"),
             UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, "未授权"),
-            ArgumentException => (StatusCodes.Status400BadRequest,
-                _environment.IsDevelopment() ? exception.Message : "请求参数错误"),
+            ArgumentException => (StatusCodes.Status400BadRequest, exception.Message),
             _ => (StatusCodes.Status500InternalServerError, "服务器内部错误")
         };
 
