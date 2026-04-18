@@ -8,7 +8,7 @@ class ApiClient {
   // Android 模拟器通过 10.0.2.2 访问宿主机 localhost
   // 真机部署时改为宿主机局域网 IP（如 192.168.x.x）
   // Docker 部署端口为 5001（macOS AirPlay 占用 5000）
-  static const String baseUrl = 'http://10.0.2.2:5001/api';
+  static const String baseUrl = 'http://10.0.2.2:5001/api/v1';
 
   late final Dio _dio;
 

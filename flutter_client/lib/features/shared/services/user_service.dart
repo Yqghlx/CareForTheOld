@@ -12,13 +12,13 @@ class UserService {
 
   /// 获取当前用户信息
   Future<User> getCurrentUser() async {
-    final response = await _dio.get('/api/user/me');
+    final response = await _dio.get('/user/me');
     return User.fromJson(response.data['data']);
   }
 
   /// 更新用户信息
   Future<User> updateUser({String? realName, String? avatarUrl}) async {
-    final response = await _dio.put('/api/user/me', data: {
+    final response = await _dio.put('/user/me', data: {
       if (realName != null) 'realName': realName,
       if (avatarUrl != null) 'avatarUrl': avatarUrl,
     });
@@ -30,7 +30,7 @@ class UserService {
     required String oldPassword,
     required String newPassword,
   }) async {
-    final response = await _dio.post('/api/user/me/password', data: {
+    final response = await _dio.post('/user/me/password', data: {
       'oldPassword': oldPassword,
       'newPassword': newPassword,
     });
@@ -46,7 +46,7 @@ class UserService {
       'file': await MultipartFile.fromFile(filePath),
     });
     final response = await _dio.post(
-      '/api/user/me/avatar',
+      '/user/me/avatar',
       data: formData,
       options: Options(contentType: 'multipart/form-data'),
     );

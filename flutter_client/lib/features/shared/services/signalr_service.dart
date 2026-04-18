@@ -14,10 +14,10 @@ class SignalRService {
   final Ref _ref;
 
   /// 从 ApiClient.baseUrl 派生 SignalR Hub URL
-  /// 规则：去掉 /api 后缀，拼接 /hubs/notification
+  /// 规则：去掉 /api/v1 后缀，拼接 /hubs/notification
   static String get _hubUrl {
     const apiBase = ApiClient.baseUrl;
-    const suffix = '/api';
+    const suffix = '/api/v1';
     final base = apiBase.endsWith(suffix)
         ? apiBase.substring(0, apiBase.length - suffix.length)
         : apiBase;
