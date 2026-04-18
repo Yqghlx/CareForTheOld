@@ -127,4 +127,60 @@ public class HealthServiceTests
         result.Should().HaveCount(1);
         result[0].Type.Should().Be(HealthType.BloodPressure);
     }
+
+    /// <summary>
+    /// 创建包含老人和子女的家庭关系，用于家庭成员健康记录查询测试
+    /// </summary>
+    private async Task<(Guid elderId, Guid childId, Guid familyId)> CreateFamilyWithMembersAsync()
+    {
+        var elder = new User { Id = Guid.NewGuid(), PhoneNumber = "13900009001", PasswordHash = "hash", RealName = "老人", Role = UserRole.Elder, CreatedAt = DateTime.UtcNow };
+        var child = new User { Id = Guid.NewGuid(), PhoneNumber = "13900009002", PasswordHash = "hash", RealName = "子女", Role = UserRole.Child, CreatedAt = DateTime.UtcNow };
+        _context.Users.AddRange(elder, child);
+        var family = new Family { Id = Guid.NewGuid(), FamilyName = "测试家庭", CreatorId = child.Id, InviteCode = "123456", CreatedAt = DateTime.UtcNow };
+        _context.Families.Add(family);
+        _context.FamilyMembers.AddRange(
+            new FamilyMember { Id = Guid.NewGuid(), FamilyId = family.Id, UserId = elder.Id, Role = UserRole.Elder, Relation = "父亲" },
+            new FamilyMember { Id = Guid.NewGuid(), FamilyId = family.Id, UserId = child.Id, Role = UserRole.Child, Relation = "子女" }
+        );
+        await _context.SaveChangesAsync();
+        return (elder.Id, child.Id, family.Id);
+    }
+
+    [Fact]
+    public async Task GetUserStatsAsync_ShouldReturnStatsForAllTypes()
+    {
+        var userId = await CreateTestUserAsync();
+        await _service.CreateRecordAsync(userId, new Models.DTOs.Requests.Health.CreateHealthRecordRequest { Type = HealthType.BloodPressure, Systolic = 120, Diastolic = 80 });
+        await _service.CreateRecordAsync(userId, new Models.DTOs.Requests.Health.CreateHealthRecordRequest { Type = HealthType.HeartRate, HeartRate = 72 });
+        var stats = await _service.GetUserStatsAsync(userId);
+        stats.Should().NotBeEmpty();
+    }
+
+    [Fact]
+    public async Task DeleteRecordAsync_ShouldSoftDelete()
+    {
+        var userId = await CreateTestUserAsync();
+        var record = await _service.CreateRecordAsync(userId, new Models.DTOs.Requests.Health.CreateHealthRecordRequest { Type = HealthType.BloodPressure, Systolic = 130, Diastolic = 85 });
+        await _service.DeleteRecordAsync(userId, record.Id);
+        // 验证软删除
+        var records = await _service.GetUserRecordsAsync(userId, null, skip: 0, limit: 50);
+        records.Should().NotContain(r => r.Id == record.Id);
+    }
+
+    [Fact]
+    public async Task GetFamilyMemberRecordsAsync_ShouldReturnRecords()
+    {
+        var (elderId, _, familyId) = await CreateFamilyWithMembersAsync();
+        await _service.CreateRecordAsync(elderId, new Models.DTOs.Requests.Health.CreateHealthRecordRequest { Type = HealthType.BloodPressure, Systolic = 125, Diastolic = 82 });
+        var result = await _service.GetFamilyMemberRecordsAsync(familyId, elderId, null, skip: 0, limit: 50);
+        result.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public async Task DeleteRecordAsync_ShouldThrow_WhenRecordNotFound()
+    {
+        var userId = await CreateTestUserAsync();
+        var act = async () => await _service.DeleteRecordAsync(userId, Guid.NewGuid());
+        await act.Should().ThrowAsync<KeyNotFoundException>();
+    }
 }
