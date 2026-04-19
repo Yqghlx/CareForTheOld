@@ -4,6 +4,7 @@ using CareForTheOld.Common.Extensions;
 using CareForTheOld.Common.Middleware;
 using CareForTheOld.Data;
 using CareForTheOld.Services.Background;
+using Hangfire;
 using CareForTheOld.Services.Hubs;
 using CareForTheOld.Services.Implementations;
 using CareForTheOld.Services.Interfaces;
@@ -93,8 +94,11 @@ else
     builder.Services.AddDistributedMemoryCache();
 }
 
-// 注册后台服务
+// 注册后台任务调度（Hangfire）
+builder.Services.AddHangfireServices(builder.Configuration, builder.Environment);
+// 注册用药提醒服务（同时支持 IHostedService 回退模式和 Hangfire 调度）
 builder.Services.AddHostedService<MedicationReminderService>();
+builder.Services.AddSingleton<MedicationReminderService>();
 
 // CORS 配置：从配置读取允许的来源
 builder.Services.AddCors(options =>
@@ -238,6 +242,21 @@ app.UseCors("ConfiguredCors");
 app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Hangfire Dashboard（仅开发环境，生产环境需额外配置认证）
+if (app.Environment.IsDevelopment())
+{
+    app.UseHangfireDashboard("/hangfire");
+}
+
+// 配置 Hangfire 定时任务（非测试环境）
+if (!app.Environment.IsEnvironment("Testing"))
+{
+    RecurringJob.AddOrUpdate<MedicationReminderService>(
+        "medication-reminder",
+        service => service.ExecuteHangfireJobAsync(),
+        Cron.Minutely);
+}
 
 // 提供上传文件的静态访问（头像等）
 var uploadsPath = Path.Combine(builder.Environment.ContentRootPath, "uploads");

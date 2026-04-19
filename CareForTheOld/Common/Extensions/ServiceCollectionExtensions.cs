@@ -1,5 +1,7 @@
 using CareForTheOld.Common.Options;
 using CareForTheOld.Data;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
@@ -153,6 +155,36 @@ public static class ServiceCollectionExtensions
 
         // 配置版本化 Swagger：为每个 API 版本生成独立的 Swagger 文档
         services.ConfigureOptions<ConfigureSwaggerOptions>();
+
+        return services;
+    }
+
+    /// <summary>
+    /// 注册 Hangfire 后台任务调度（生产环境使用 PostgreSQL 持久化存储）
+    /// </summary>
+    public static IServiceCollection AddHangfireServices(
+        this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
+    {
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+
+        if (!string.IsNullOrEmpty(connectionString) && connectionString.Contains("Host="))
+        {
+            // 生产环境：PostgreSQL 持久化存储
+            services.AddHangfire(config => config
+                .UsePostgreSqlStorage(options => options.UseNpgsqlConnection(connectionString))
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings());
+        }
+        else
+        {
+            // 开发/测试环境：内存存储（应用重启后任务状态丢失，仅开发使用）
+            services.AddHangfire(config => config
+                .UseInMemoryStorage()
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings());
+        }
+
+        services.AddHangfireServer();
 
         return services;
     }
