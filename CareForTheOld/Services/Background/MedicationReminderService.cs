@@ -8,8 +8,8 @@ using System.Text.Json;
 namespace CareForTheOld.Services.Background;
 
 /// <summary>
-/// 用药提醒后台服务
-/// 每分钟检查是否有需要提醒的用药计划
+/// 用药提醒任务
+/// 既可作为 Hangfire RecurringJob 运行（生产环境），也可作为 IHostedService 运行（开发/回退）
 /// </summary>
 public class MedicationReminderService : BackgroundService
 {
@@ -24,7 +24,7 @@ public class MedicationReminderService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("用药提醒后台服务启动");
+        _logger.LogInformation("用药提醒后台服务启动（IHostedService 模式）");
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -42,6 +42,15 @@ public class MedicationReminderService : BackgroundService
         }
 
         _logger.LogInformation("用药提醒后台服务停止");
+    }
+
+    /// <summary>
+    /// Hangfire RecurringJob 入口方法（供 Hangfire 调度调用）
+    /// </summary>
+    public async Task ExecuteHangfireJobAsync()
+    {
+        _logger.LogDebug("Hangfire 用药提醒任务执行");
+        await CheckAndSendRemindersAsync(CancellationToken.None);
     }
 
     /// <summary>
