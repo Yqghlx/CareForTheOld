@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -54,7 +55,7 @@ class HealthReportService {
 
       return true;
     } catch (e) {
-      print('导出报告失败: $e');
+      debugPrint('导出报告失败: $e');
       return false;
     }
   }

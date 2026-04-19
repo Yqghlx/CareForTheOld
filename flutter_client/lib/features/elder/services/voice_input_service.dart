@@ -181,7 +181,6 @@ class VoiceParser {
 
     // 处理简单的中文数字（仅支持常用的健康数值范围）
     // 将连续的中文数字片段转换为阿拉伯数字
-    final buffer = StringBuffer();
     final chineseDigitPattern = RegExp(r'[零一二三四五六七八九十百]+');
 
     result = result.replaceAllMapped(chineseDigitPattern, (match) {

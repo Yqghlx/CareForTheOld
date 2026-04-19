@@ -38,7 +38,7 @@ class SignalRService {
         .withUrl(
           _hubUrl,
           options: HttpConnectionOptions(
-            accessTokenFactory: () async => token!,
+            accessTokenFactory: () async => token,
             requestTimeout: 10000,
           ),
         )
