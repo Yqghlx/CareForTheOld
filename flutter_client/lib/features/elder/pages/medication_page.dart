@@ -172,7 +172,13 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
             const Text(
               '今日暂无用药计划',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18, color: Colors.grey),
+              style: TextStyle(fontSize: 20, color: Colors.grey),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              '请让子女帮忙添加用药计划',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16, color: Colors.grey.shade500),
             ),
           ],
         ),
@@ -190,6 +196,15 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
 
   /// 单条用药记录卡片
   Widget _buildMedicationCard(MedicationLog log) {
+    if (log.isPending) {
+      // 待服用卡片：使用脉冲动画提醒
+      return _PendingMedicationCard(log: log, onTaken: () => _markTaken(log), onSkipped: () => _markSkipped(log));
+    }
+    return _buildStaticMedicationCard(log);
+  }
+
+  /// 已处理状态的卡片（已服用/已跳过）
+  Widget _buildStaticMedicationCard(MedicationLog log) {
     final scheduledTime = log.scheduledAt.toLocal();
     final timeStr =
         '${scheduledTime.hour.toString().padLeft(2, '0')}:${scheduledTime.minute.toString().padLeft(2, '0')}';
@@ -320,5 +335,149 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
         ),
       );
     }
+  }
+}
+
+/// 待服用卡片 - 带脉冲边框动画提醒老人服药
+class _PendingMedicationCard extends StatefulWidget {
+  final MedicationLog log;
+  final VoidCallback onTaken;
+  final VoidCallback onSkipped;
+
+  const _PendingMedicationCard({
+    required this.log,
+    required this.onTaken,
+    required this.onSkipped,
+  });
+
+  @override
+  State<_PendingMedicationCard> createState() => _PendingMedicationCardState();
+}
+
+class _PendingMedicationCardState extends State<_PendingMedicationCard>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _pulseController;
+  late Animation<double> _pulseAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _pulseController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+    _pulseAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
+    _pulseController.repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final log = widget.log;
+    final scheduledTime = log.scheduledAt.toLocal();
+    final timeStr =
+        '${scheduledTime.hour.toString().padLeft(2, '0')}:${scheduledTime.minute.toString().padLeft(2, '0')}';
+
+    return AnimatedBuilder(
+      animation: _pulseAnimation,
+      builder: (context, child) {
+        final glowAlpha = 0.15 + _pulseAnimation.value * 0.25;
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: Colors.orange.withValues(alpha: glowAlpha),
+              width: 2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.orange.withValues(alpha: glowAlpha * 0.5),
+                blurRadius: 12,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
+          child: child,
+        );
+      },
+      child: Card(
+        elevation: 4,
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      color: Colors.orange.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: const Icon(Icons.medication, color: Colors.orange, size: 28),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          log.medicineName,
+                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '计划时间: $timeStr',
+                          style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
+                        ),
+                      ],
+                    ),
+                  ),
+                  StatusChip(label: log.status.label, color: Colors.orange),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: PrimaryIconButton(
+                        text: '已服用',
+                        icon: Icons.check,
+                        onPressed: widget.onTaken,
+                        gradient: const LinearGradient(colors: [Colors.green, Colors.lightGreen]),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    SizedBox(
+                      width: 100,
+                      child: SecondaryButton(
+                        text: '跳过',
+                        onPressed: widget.onSkipped,
+                        borderColor: Colors.grey,
+                        textColor: Colors.grey.shade700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

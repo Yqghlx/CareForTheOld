@@ -72,10 +72,10 @@ class _PrimaryButtonState extends State<PrimaryButton>
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: Container(
-          height: 52,
+          height: 56,
           decoration: BoxDecoration(
             gradient: widget.gradient ?? defaultGradient,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(14),
             boxShadow: [
               BoxShadow(
                 color: const Color(0xFFE86B4A).withValues(alpha: 0.3),
@@ -87,7 +87,7 @@ class _PrimaryButtonState extends State<PrimaryButton>
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(14),
               onTap: widget.isLoading ? null : widget.onPressed,
               child: Center(
                 child: widget.isLoading
@@ -185,12 +185,12 @@ class _SecondaryButtonState extends State<SecondaryButton>
           height: 48,
           decoration: BoxDecoration(
             border: Border.all(color: widget.borderColor, width: 2),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(14),
           ),
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(14),
               onTap: widget.onPressed,
               child: Center(
                 child: Text(
@@ -284,10 +284,10 @@ class _PrimaryIconButtonState extends State<PrimaryIconButton>
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: Container(
-          height: 52,
+          height: 56,
           decoration: BoxDecoration(
             gradient: widget.gradient ?? defaultGradient,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(14),
             boxShadow: [
               BoxShadow(
                 color: const Color(0xFFE86B4A).withValues(alpha: 0.3),
@@ -299,7 +299,7 @@ class _PrimaryIconButtonState extends State<PrimaryIconButton>
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(14),
               onTap: widget.isLoading ? null : widget.onPressed,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

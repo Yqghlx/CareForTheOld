@@ -395,6 +395,25 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    // 正常范围提示
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: type.color.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.info_outline, size: 18, color: type.color),
+                          const SizedBox(width: 8),
+                          Text(
+                            _getNormalRangeHint(type),
+                            style: TextStyle(fontSize: 14, color: type.color),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
                     // 语音输入区域
                     Container(
                       padding: const EdgeInsets.all(16),
@@ -678,6 +697,20 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
       // 对话框关闭时释放语音资源
       voiceService.dispose();
     });
+  }
+
+  /// 获取健康类型正常范围提示文字
+  String _getNormalRangeHint(HealthType type) {
+    switch (type) {
+      case HealthType.bloodPressure:
+        return '正常范围: 收缩压 90-140 / 舒张压 60-90 mmHg';
+      case HealthType.bloodSugar:
+        return '正常范围: 空腹 3.9-6.1 mmol/L';
+      case HealthType.heartRate:
+        return '正常范围: 60-100 次/分';
+      case HealthType.temperature:
+        return '正常范围: 36.1-37.2 °C';
+    }
   }
 
   /// 将语音识别文本解析后填入对应的输入框
