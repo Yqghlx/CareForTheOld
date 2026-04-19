@@ -16,6 +16,9 @@ public class FamilyMemberConfiguration : IEntityTypeConfiguration<FamilyMember>
         // 同一家庭组内同一用户只能出现一次
         builder.HasIndex(fm => new { fm.FamilyId, fm.UserId }).IsUnique();
 
+        // 一个用户只能属于一个家庭组（防止并发竞态创建重复关系）
+        builder.HasIndex(fm => fm.UserId).IsUnique();
+
         builder.HasOne(fm => fm.Family)
             .WithMany(f => f.Members)
             .HasForeignKey(fm => fm.FamilyId)
