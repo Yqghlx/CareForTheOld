@@ -22,15 +22,18 @@ namespace CareForTheOld.Controllers;
 public class HealthController : ControllerBase
 {
     private readonly IHealthService _healthService;
+    private readonly IHealthQueryService _healthQueryService;
     private readonly IFamilyService _familyService;
     private readonly IHealthReportService _reportService;
 
     public HealthController(
         IHealthService healthService,
+        IHealthQueryService healthQueryService,
         IFamilyService familyService,
         IHealthReportService reportService)
     {
         _healthService = healthService;
+        _healthQueryService = healthQueryService;
         _familyService = familyService;
         _reportService = reportService;
     }
@@ -93,7 +96,7 @@ public class HealthController : ControllerBase
     public async Task<ApiResponse<List<HealthStatsResponse>>> GetMyStats()
     {
         var userId = this.GetUserId();
-        var result = await _healthService.GetUserStatsAsync(userId);
+        var result = await _healthQueryService.GetUserStatsAsync(userId);
         return ApiResponse<List<HealthStatsResponse>>.Ok(result);
     }
 
@@ -113,7 +116,7 @@ public class HealthController : ControllerBase
         if (!members.Any(m => m.UserId == userId))
             return ApiResponse<List<HealthStatsResponse>>.Fail("您不是该家庭成员");
 
-        var result = await _healthService.GetUserStatsAsync(memberId);
+        var result = await _healthQueryService.GetUserStatsAsync(memberId);
         return ApiResponse<List<HealthStatsResponse>>.Ok(result);
     }
 

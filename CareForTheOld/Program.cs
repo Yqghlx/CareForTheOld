@@ -58,6 +58,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFamilyService, FamilyService>();
 builder.Services.AddScoped<IHealthService, HealthService>();
+builder.Services.AddScoped<IHealthQueryService, DapperHealthQueryService>();
 builder.Services.AddScoped<IHealthAlertService, HealthAlertService>();
 builder.Services.AddScoped<IMedicationService, MedicationService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
