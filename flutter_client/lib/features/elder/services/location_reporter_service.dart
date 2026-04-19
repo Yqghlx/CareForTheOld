@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/services/connectivity_service.dart';
+import '../../../core/services/offline_queue_service.dart';
 import '../../shared/services/location_service.dart';
 
 /// 位置上报服务（老人端后台定时上报）
@@ -16,6 +17,7 @@ import '../../shared/services/location_service.dart';
 class LocationReporterService {
   final LocationService _service;
   final ConnectivityService _connectivityService;
+  final OfflineQueueService _offlineQueue;
   Timer? _timer;
   StreamSubscription<bool>? _networkSubscription;
   bool _isRunning = false;
@@ -32,7 +34,7 @@ class LocationReporterService {
   /// 连续失败计数，用于计算退避时间
   int _consecutiveFailures = 0;
 
-  LocationReporterService(this._service, this._connectivityService);
+  LocationReporterService(this._service, this._connectivityService, this._offlineQueue);
 
   /// 是否正在运行
   bool get isRunning => _isRunning;
@@ -154,6 +156,7 @@ class LocationReporterService {
   /// 单次位置上报（获取 GPS + 发送到服务端）
   ///
   /// 返回 true 表示上报成功，false 表示失败。
+  /// 离线时自动将位置数据存入离线队列，等待网络恢复后上传。
   Future<bool> _reportLocation() async {
     try {
       final position = await Geolocator.getCurrentPosition(
@@ -162,6 +165,18 @@ class LocationReporterService {
       );
 
       debugPrint('[位置上报] 获取位置: ${position.latitude}, ${position.longitude}');
+
+      final isOnline = await _connectivityService.checkOnline();
+      if (!isOnline) {
+        // 离线：存入队列
+        await _offlineQueue.enqueue('location', {
+          'latitude': position.latitude,
+          'longitude': position.longitude,
+        });
+        debugPrint('[位置上报] 网络不可用，位置已存入离线队列');
+        return true; // 入队成功视为成功，不触发重试
+      }
+
       await _service.reportLocation(position.latitude, position.longitude);
       debugPrint('[位置上报] 上报成功');
       return true;
@@ -203,5 +218,6 @@ class LocationReporterService {
 final locationReporterServiceProvider = Provider<LocationReporterService>((ref) {
   final dio = ref.read(apiClientProvider).dio;
   final connectivityService = ref.read(connectivityServiceProvider);
-  return LocationReporterService(LocationService(dio), connectivityService);
+  final offlineQueue = ref.read(offlineQueueServiceProvider);
+  return LocationReporterService(LocationService(dio), connectivityService, offlineQueue);
 });

@@ -73,6 +73,8 @@ dependencies:
   # 时间处理
   uuid: ^4.2.0
   url_launcher: ^6.3.2
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
 
 dev_dependencies:
   flutter_test:
