@@ -36,6 +36,23 @@ class HealthTrendChart extends StatelessWidget {
 
     return Column(
       children: [
+        // 血压图例（仅血压类型显示）
+        if (type == HealthType.bloodPressure)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(width: 12, height: 12, decoration: BoxDecoration(color: Colors.red, shape: BoxShape.circle)),
+                const SizedBox(width: 4),
+                const Text('收缩压', style: TextStyle(fontSize: 13)),
+                const SizedBox(width: 20),
+                Container(width: 12, height: 12, decoration: BoxDecoration(color: Colors.blue, shape: BoxShape.circle)),
+                const SizedBox(width: 4),
+                const Text('舒张压', style: TextStyle(fontSize: 13)),
+              ],
+            ),
+          ),
         // 图表
         SizedBox(
           height: 200,
@@ -111,7 +128,7 @@ class HealthTrendChart extends StatelessWidget {
                   value.toInt().toString(),
                   style: TextStyle(
                     color: Colors.grey.shade600,
-                    fontSize: 12,
+                    fontSize: 14,
                   ),
                 ),
               ),
@@ -130,7 +147,7 @@ class HealthTrendChart extends StatelessWidget {
                       '${date.month}/${date.day}',
                       style: TextStyle(
                         color: Colors.grey.shade600,
-                        fontSize: 12,
+                        fontSize: 14,
                       ),
                     ),
                   );
@@ -212,7 +229,7 @@ class HealthTrendChart extends StatelessWidget {
                 value.toStringAsFixed(1),
                 style: TextStyle(
                   color: Colors.grey.shade600,
-                  fontSize: 12,
+                  fontSize: 14,
                 ),
               ),
             ),
@@ -231,7 +248,7 @@ class HealthTrendChart extends StatelessWidget {
                     '${date.month}/${date.day}',
                     style: TextStyle(
                       color: Colors.grey.shade600,
-                      fontSize: 12,
+                      fontSize: 14,
                     ),
                   ),
                 );
@@ -312,14 +329,14 @@ class HealthTrendChart extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            fontSize: 12,
-            color: Colors.grey.shade600,
+            fontSize: 14,
+            color: Colors.grey.shade700,
           ),
         ),
         Text(
           value,
           style: TextStyle(
-            fontSize: 18,
+            fontSize: 20,
             fontWeight: FontWeight.bold,
             color: color,
           ),
@@ -327,8 +344,8 @@ class HealthTrendChart extends StatelessWidget {
         Text(
           type.unit,
           style: TextStyle(
-            fontSize: 10,
-            color: Colors.grey.shade500,
+            fontSize: 12,
+            color: Colors.grey.shade600,
           ),
         ),
       ],

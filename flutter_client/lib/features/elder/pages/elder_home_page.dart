@@ -324,7 +324,37 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
     );
   }
 
-  /// 显示紧急呼叫确认对话框
+  /// 执行紧急呼叫（长按完成后直接触发，不再弹确认框）
+  Future<void> _performEmergencyCall() async {
+    setState(() => _isCalling = false);
+
+    try {
+      final service = EmergencyService(ref.read(apiClientProvider).dio);
+      final call = await service.createCall();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('紧急呼叫已发送，家人将尽快联系您'),
+            backgroundColor: AppTheme.successColor,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+        _showCallSuccessDialog(call);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('呼叫失败: $e'),
+            backgroundColor: AppTheme.errorColor,
+          ),
+        );
+      }
+    }
+  }
+
+  /// 显示紧急呼叫确认对话框（保留用于其他入口）
   void _showEmergencyCallDialog() {
     showDialog(
       context: context,

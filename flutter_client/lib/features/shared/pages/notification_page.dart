@@ -15,6 +15,7 @@ class NotificationPage extends ConsumerStatefulWidget {
 }
 
 class _NotificationPageState extends ConsumerState<NotificationPage> {
+  String? _expandedNotificationId;
   @override
   void initState() {
     super.initState();
@@ -110,6 +111,10 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
           if (!notification.isRead) {
             ref.read(notificationListProvider.notifier).markAsRead(notification.id);
           }
+          // 切换展开/收起
+          setState(() {
+            _expandedNotificationId = _expandedNotificationId == notification.id ? null : notification.id;
+          });
         },
         borderRadius: BorderRadius.circular(16),
         child: Padding(
@@ -163,13 +168,13 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
                         fontSize: 14,
                         color: Colors.grey.shade600,
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                      maxLines: _expandedNotificationId == notification.id ? null : 3,
+                      overflow: _expandedNotificationId == notification.id ? null : TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 8),
                     Text(
                       notification.formattedTime,
-                      style: TextStyle(fontSize: 12, color: Colors.grey.shade400),
+                      style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                     ),
                   ],
                 ),

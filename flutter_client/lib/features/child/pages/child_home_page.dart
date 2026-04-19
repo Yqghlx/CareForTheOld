@@ -81,16 +81,30 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 紧急呼叫提示（如果有未处理呼叫）
+            // 紧急呼叫提示（如果有未处理呼叫）- 脉冲动画
             if (emergencyState.hasUnreadCalls)
-              Container(
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Colors.red, Colors.redAccent],
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                ),
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0, end: 1),
+                duration: const Duration(milliseconds: 1200),
+                builder: (context, animValue, child) {
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Colors.red, Colors.redAccent],
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.red.withValues(alpha: 0.3 + animValue * 0.4),
+                          blurRadius: 8 + animValue * 16,
+                          spreadRadius: animValue * 4,
+                        ),
+                      ],
+                    ),
+                    child: child,
+                  );
+                },
                 child: InkWell(
                   onTap: () => context.push('/child/emergency'),
                   borderRadius: BorderRadius.circular(16),
@@ -98,7 +112,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     padding: const EdgeInsets.all(16),
                     child: Row(
                       children: [
-                        const Icon(Icons.warning_amber_rounded, color: Colors.white, size: 32),
+                        const Icon(Icons.emergency, color: Colors.white, size: 36),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Column(
@@ -108,18 +122,21 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                                 '有紧急呼叫待处理！',
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 18,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                               Text(
-                                '${emergencyState.unreadCount} 条待处理',
-                                style: const TextStyle(color: Colors.white),
+                                '${emergencyState.unreadCount} 条待处理，点击查看',
+                                style: TextStyle(
+                                  color: Colors.white.withValues(alpha: 0.9),
+                                  fontSize: 16,
+                                ),
                               ),
                             ],
                           ),
                         ),
-                        const Icon(Icons.chevron_right, color: Colors.white),
+                        const Icon(Icons.chevron_right, color: Colors.white, size: 28),
                       ],
                     ),
                   ),

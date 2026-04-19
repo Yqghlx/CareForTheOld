@@ -65,28 +65,28 @@ class AppTheme {
       elevation: 0,
     ),
     textTheme: const TextTheme(
-      // 老人端使用更大的字体
-      displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-      displayMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-      displaySmall: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-      headlineLarge: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
-      headlineMedium: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-      headlineSmall: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-      titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-      titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-      titleSmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-      bodyLarge: TextStyle(fontSize: 20), // 老人端正文加大，适老化
-      bodyMedium: TextStyle(fontSize: 16),
-      bodySmall: TextStyle(fontSize: 14),
-      labelLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-      labelMedium: TextStyle(fontSize: 14),
-      labelSmall: TextStyle(fontSize: 12),
+      // 老人端使用更大的字体，适老化设计
+      displayLarge: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+      displayMedium: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+      displaySmall: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+      headlineLarge: TextStyle(fontSize: 26, fontWeight: FontWeight.w600),
+      headlineMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+      headlineSmall: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+      titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+      titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+      titleSmall: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+      bodyLarge: TextStyle(fontSize: 22), // 老人端正文加大，适老化
+      bodyMedium: TextStyle(fontSize: 18),
+      bodySmall: TextStyle(fontSize: 16),
+      labelLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+      labelMedium: TextStyle(fontSize: 16),
+      labelSmall: TextStyle(fontSize: 14),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
-        minimumSize: const Size(double.infinity, 56), // 大按钮
+        minimumSize: const Size(double.infinity, 60), // 大按钮，适老化
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(buttonRadius),
         ),
