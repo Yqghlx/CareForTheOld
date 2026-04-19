@@ -5,6 +5,7 @@ using CareForTheOld.Services.Implementations;
 using CareForTheOld.Services.Interfaces;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -26,7 +27,7 @@ public class HealthServiceTests
             .Options;
         _context = new AppDbContext(options);
         _mockAlertService = new Mock<IHealthAlertService>();
-        _service = new HealthService(_context, _mockAlertService.Object);
+        _service = new HealthService(_context, _mockAlertService.Object, new Mock<ILogger<HealthService>>().Object);
     }
 
     private async Task<Guid> CreateTestUserAsync()

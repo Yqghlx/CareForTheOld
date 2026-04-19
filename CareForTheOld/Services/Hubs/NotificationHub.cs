@@ -1,22 +1,27 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace CareForTheOld.Services.Hubs;
 
 /// <summary>
-/// 通知推送中心
+/// 通知推送中心（需认证）
 /// </summary>
+[Authorize]
 public class NotificationHub : Hub
 {
     /// <summary>
-    /// 用户连接时，加入个人组
+    /// 用户连接时，加入个人组（需已认证）
     /// </summary>
     public override async Task OnConnectedAsync()
     {
         var userId = Context.UserIdentifier;
-        if (!string.IsNullOrEmpty(userId))
+        if (string.IsNullOrEmpty(userId))
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, $"user_{userId}");
+            // 未认证用户直接拒绝连接
+            Context.Abort();
+            return;
         }
+        await Groups.AddToGroupAsync(Context.ConnectionId, $"user_{userId}");
         await base.OnConnectedAsync();
     }
 

@@ -23,6 +23,7 @@ class EmergencyCall {
   final String id;
   final String elderId;
   final String elderName;
+  final String? elderPhoneNumber;
   final String familyId;
   final DateTime calledAt;
   final EmergencyStatus status;
@@ -34,6 +35,7 @@ class EmergencyCall {
     required this.id,
     required this.elderId,
     required this.elderName,
+    this.elderPhoneNumber,
     required this.familyId,
     required this.calledAt,
     required this.status,
@@ -48,6 +50,7 @@ class EmergencyCall {
       id: json['id'] ?? '',
       elderId: json['elderId'] ?? '',
       elderName: json['elderName'] ?? '',
+      elderPhoneNumber: json['elderPhoneNumber'],
       familyId: json['familyId'] ?? '',
       calledAt: DateTime.parse(json['calledAt']),
       status: EmergencyStatus.fromInt(json['status']),

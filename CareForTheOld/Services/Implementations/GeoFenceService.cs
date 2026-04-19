@@ -17,10 +17,13 @@ public class GeoFenceService : IGeoFenceService
     public GeoFenceService(AppDbContext context) => _context = context;
 
     /// <summary>
-    /// 创建电子围栏
+    /// 创建电子围栏（需验证是否为老人的家庭成员）
     /// </summary>
     public async Task<GeoFenceResponse> CreateFenceAsync(Guid creatorId, CreateGeoFenceRequest request)
     {
+        // 验证创建者是否是老人的家庭成员
+        await EnsureFamilyMemberAsync(request.ElderId, creatorId);
+
         // 检查老人是否已存在围栏（一个老人只能有一个围栏）
         var existingFence = await _context.GeoFences
             .FirstOrDefaultAsync(f => f.ElderId == request.ElderId);
@@ -81,9 +84,7 @@ public class GeoFenceService : IGeoFenceService
             ?? throw new KeyNotFoundException("围栏不存在");
 
         // 验证操作者是否是创建者或家庭成员
-        var isFamilyMember = await _context.FamilyMembers
-            .AnyAsync(fm => fm.UserId == operatorId && fm.FamilyId ==
-                _context.FamilyMembers.Where(m => m.UserId == fence.ElderId).Select(m => m.FamilyId).FirstOrDefault());
+        var isFamilyMember = await IsInSameFamilyAsync(operatorId, fence.ElderId);
 
         if (fence.CreatedBy != operatorId && !isFamilyMember)
             throw new UnauthorizedAccessException("无权修改此围栏");
@@ -109,9 +110,7 @@ public class GeoFenceService : IGeoFenceService
             ?? throw new KeyNotFoundException("围栏不存在");
 
         // 验证操作者是否是创建者或家庭成员
-        var isFamilyMember = await _context.FamilyMembers
-            .AnyAsync(fm => fm.UserId == operatorId && fm.FamilyId ==
-                _context.FamilyMembers.Where(m => m.UserId == fence.ElderId).Select(m => m.FamilyId).FirstOrDefault());
+        var isFamilyMember = await IsInSameFamilyAsync(operatorId, fence.ElderId);
 
         if (fence.CreatedBy != operatorId && !isFamilyMember)
             throw new UnauthorizedAccessException("无权删除此围栏");
@@ -191,5 +190,33 @@ public class GeoFenceService : IGeoFenceService
             CreatedAt = fence.CreatedAt,
             UpdatedAt = fence.UpdatedAt
         };
+    }
+
+    /// <summary>
+    /// 检查两个用户是否在同一家庭（拆分子查询为两次独立查询，提升性能）
+    /// </summary>
+    private async Task<bool> IsInSameFamilyAsync(Guid userId1, Guid userId2)
+    {
+        var familyId = await _context.FamilyMembers
+            .Where(fm => fm.UserId == userId2)
+            .Select(fm => fm.FamilyId)
+            .FirstOrDefaultAsync();
+
+        if (familyId == Guid.Empty) return false;
+
+        return await _context.FamilyMembers
+            .AnyAsync(fm => fm.UserId == userId1 && fm.FamilyId == familyId);
+    }
+
+    /// <summary>
+    /// 验证操作者是老人的家庭成员，否则抛出异常
+    /// </summary>
+    private async Task EnsureFamilyMemberAsync(Guid elderId, Guid operatorId)
+    {
+        if (elderId == operatorId) return;
+
+        var isFamily = await IsInSameFamilyAsync(operatorId, elderId);
+        if (!isFamily)
+            throw new UnauthorizedAccessException("您不是该老人的家庭成员，无权操作");
     }
 }

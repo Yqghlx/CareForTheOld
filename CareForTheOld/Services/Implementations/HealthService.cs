@@ -15,11 +15,13 @@ public class HealthService : IHealthService
 {
     private readonly AppDbContext _context;
     private readonly IHealthAlertService _alertService;
+    private readonly ILogger<HealthService> _logger;
 
-    public HealthService(AppDbContext context, IHealthAlertService alertService)
+    public HealthService(AppDbContext context, IHealthAlertService alertService, ILogger<HealthService> logger)
     {
         _context = context;
         _alertService = alertService;
+        _logger = logger;
     }
 
     public async Task<HealthRecordResponse> CreateRecordAsync(Guid userId, CreateHealthRecordRequest request)
@@ -49,8 +51,18 @@ public class HealthService : IHealthService
         var alertMessage = _alertService.CheckAbnormal(record);
         if (alertMessage != null)
         {
-            // 异步发送预警通知，不阻塞主流程
-            _ = _alertService.SendAlertToChildrenAsync(userId, record, alertMessage);
+            // 异步发送预警通知，不阻塞主流程，但捕获异常记录日志
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await _alertService.SendAlertToChildrenAsync(userId, record, alertMessage);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "健康预警通知发送失败，用户 {UserId}", userId);
+                }
+            });
         }
 
         return await MapToResponse(record.Id) ?? throw new KeyNotFoundException("记录不存在");
@@ -108,7 +120,8 @@ public class HealthService : IHealthService
             // 根据类型计算平均值
             var recent7Days = typeRecords.Where(r => r.RecordedAt >= now.AddDays(-7)).ToList();
             var recent30Days = typeRecords.Where(r => r.RecordedAt >= now.AddDays(-30)).ToList();
-            var latest = typeRecords.OrderByDescending(r => r.RecordedAt).First();
+            var latest = typeRecords.OrderByDescending(r => r.RecordedAt).FirstOrDefault();
+            if (latest == null) continue;
 
             statsResponse.LatestRecordedAt = latest.RecordedAt;
 
@@ -155,7 +168,7 @@ public class HealthService : IHealthService
     }
 
     /// <summary>
-    /// 验证健康数据必填字段
+    /// 验证健康数据必填字段和数值范围
     /// </summary>
     private static void ValidateHealthData(CreateHealthRecordRequest request)
     {
@@ -164,18 +177,28 @@ public class HealthService : IHealthService
             case HealthType.BloodPressure:
                 if (!request.Systolic.HasValue || !request.Diastolic.HasValue)
                     throw new ArgumentException("血压记录需要填写收缩压和舒张压");
+                if (request.Systolic.Value < 60 || request.Systolic.Value > 300)
+                    throw new ArgumentException("收缩压数值异常（正常范围 60-300 mmHg）");
+                if (request.Diastolic.Value < 30 || request.Diastolic.Value > 200)
+                    throw new ArgumentException("舒张压数值异常（正常范围 30-200 mmHg）");
                 break;
             case HealthType.BloodSugar:
                 if (!request.BloodSugar.HasValue)
                     throw new ArgumentException("血糖记录需要填写血糖值");
+                if (request.BloodSugar.Value < 1.0m || request.BloodSugar.Value > 35.0m)
+                    throw new ArgumentException("血糖数值异常（正常范围 1.0-35.0 mmol/L）");
                 break;
             case HealthType.HeartRate:
                 if (!request.HeartRate.HasValue)
                     throw new ArgumentException("心率记录需要填写心率值");
+                if (request.HeartRate.Value < 30 || request.HeartRate.Value > 250)
+                    throw new ArgumentException("心率数值异常（正常范围 30-250 次/分钟）");
                 break;
             case HealthType.Temperature:
                 if (!request.Temperature.HasValue)
                     throw new ArgumentException("体温记录需要填写体温值");
+                if (request.Temperature.Value < 34.0m || request.Temperature.Value > 43.0m)
+                    throw new ArgumentException("体温数值异常（正常范围 34.0-43.0 °C）");
                 break;
         }
     }

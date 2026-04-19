@@ -10,6 +10,7 @@ public class EmergencyCallResponse
     public Guid Id { get; set; }
     public Guid ElderId { get; set; }
     public string ElderName { get; set; } = string.Empty;
+    public string? ElderPhoneNumber { get; set; }
     public Guid FamilyId { get; set; }
     public DateTime CalledAt { get; set; }
     public EmergencyStatus Status { get; set; }

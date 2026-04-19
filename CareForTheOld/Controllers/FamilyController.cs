@@ -49,9 +49,10 @@ public class FamilyController : ControllerBase
     }
 
     /// <summary>
-    /// 通过邀请码加入家庭
+    /// 通过邀请码加入家庭（严格限流，防止暴力破解邀请码）
     /// </summary>
     [HttpPost("join")]
+    [EnableRateLimiting("JoinFamilyPolicy")]
     public async Task<ApiResponse<FamilyResponse>> JoinFamily([FromBody] JoinFamilyRequest request)
     {
         var userId = this.GetUserId();

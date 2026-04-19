@@ -27,10 +27,11 @@ public class EmergencyController : ControllerBase
     }
 
     /// <summary>
-    /// 老人发起紧急呼叫
+    /// 老人发起紧急呼叫（限流：每分钟最多3次）
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Elder")]
+    [EnableRateLimiting("EmergencyPolicy")]
     public async Task<ApiResponse<EmergencyCallResponse>> CreateCall()
     {
         var userId = this.GetUserId();
@@ -56,6 +57,7 @@ public class EmergencyController : ControllerBase
     [HttpGet("history")]
     public async Task<ApiResponse<List<EmergencyCallResponse>>> GetHistory([FromQuery] int skip = 0, [FromQuery] int limit = 20)
     {
+        limit = Math.Clamp(limit, 1, 100);
         var userId = this.GetUserId();
         var calls = await _emergencyService.GetHistoryAsync(userId, skip, limit);
         return ApiResponse<List<EmergencyCallResponse>>.Ok(calls);

@@ -48,7 +48,7 @@ public class AuthService : IAuthService
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        Log.Information("用户注册成功：{PhoneNumber}，角色：{Role}", request.PhoneNumber, request.Role);
+        Log.Information("用户注册成功：{MaskedPhone}，角色：{Role}", MaskPhoneNumber(request.PhoneNumber), request.Role);
 
         return await GenerateAuthResponse(user);
     }
@@ -59,11 +59,11 @@ public class AuthService : IAuthService
 
         if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
         {
-            Log.Warning("登录失败：{PhoneNumber}，手机号或密码错误", request.PhoneNumber);
+            Log.Warning("登录失败：{MaskedPhone}，手机号或密码错误", MaskPhoneNumber(request.PhoneNumber));
             throw new ArgumentException("手机号或密码错误");
         }
 
-        Log.Information("用户登录成功：{PhoneNumber}，角色：{Role}", request.PhoneNumber, user.Role);
+        Log.Information("用户登录成功：{MaskedPhone}，角色：{Role}", MaskPhoneNumber(request.PhoneNumber), user.Role);
         return await GenerateAuthResponse(user);
     }
 
@@ -104,6 +104,15 @@ public class AuthService : IAuthService
         // 标记旧令牌为已使用（轮换）
         refreshToken.IsUsed = true;
         refreshToken.IsRevoked = true;
+
+        // 清理该用户已过期的旧刷新令牌，防止数据库膨胀
+        var expiredTokens = await _context.RefreshTokens
+            .Where(rt => rt.UserId == refreshToken.UserId && rt.ExpiresAt < DateTime.UtcNow)
+            .ToListAsync();
+        if (expiredTokens.Count > 0)
+        {
+            _context.RefreshTokens.RemoveRange(expiredTokens);
+        }
 
         Log.Information("令牌刷新成功，用户：{UserId}", refreshToken.UserId);
         return await GenerateAuthResponse(refreshToken.User);
@@ -176,4 +185,14 @@ public class AuthService : IAuthService
 
     private static string GenerateRefreshToken()
         => Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+
+    /// <summary>
+    /// 手机号脱敏：138****1234
+    /// </summary>
+    private static string MaskPhoneNumber(string phone)
+    {
+        if (phone.Length >= 7)
+            return string.Concat(phone.AsSpan(0, 3), "****", phone.AsSpan(phone.Length - 4));
+        return "***";
+    }
 }

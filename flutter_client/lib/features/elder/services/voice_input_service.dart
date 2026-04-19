@@ -26,11 +26,12 @@ class VoiceInputService {
   /// 开始语音识别
   /// [onResult] 识别结果回调
   /// [onSoundLevelChange] 音量变化回调（用于动画反馈）
-  Future<void> startListening({
+  /// 返回 true 表示开始成功，false 表示不可用或正在监听
+  Future<bool> startListening({
     required Function(String text, bool isFinal) onResult,
     Function(double)? onSoundLevelChange,
   }) async {
-    if (!_isAvailable || _isListening) return;
+    if (!_isAvailable || _isListening) return false;
 
     _isListening = true;
     await _speech.listen(
@@ -46,6 +47,7 @@ class VoiceInputService {
       ),
     );
     _isListening = false;
+    return true;
   }
 
   /// 停止语音识别

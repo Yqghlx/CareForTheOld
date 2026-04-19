@@ -58,6 +58,7 @@ public class LocationController : ControllerBase
     [HttpGet("me/history")]
     public async Task<ApiResponse<List<LocationRecordResponse>>> GetMyHistory([FromQuery] int skip = 0, [FromQuery] int limit = 50)
     {
+        limit = Math.Clamp(limit, 1, 100);
         var userId = this.GetUserId();
         var records = await _locationService.GetLocationHistoryAsync(userId, skip, limit);
         return ApiResponse<List<LocationRecordResponse>>.Ok(records);
@@ -89,6 +90,7 @@ public class LocationController : ControllerBase
     public async Task<ApiResponse<List<LocationRecordResponse>>> GetFamilyMemberHistory(
         Guid familyId, Guid memberId, [FromQuery] int skip = 0, [FromQuery] int limit = 50)
     {
+        limit = Math.Clamp(limit, 1, 100);
         var userId = this.GetUserId();
 
         // 验证当前用户是否是该家庭成员

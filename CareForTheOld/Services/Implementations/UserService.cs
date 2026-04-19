@@ -64,6 +64,26 @@ public class UserService : IUserService
         await _context.SaveChangesAsync();
     }
 
+    /// <summary>
+    /// 验证两个用户是否在同一家庭中，否则抛出 UnauthorizedAccessException
+    /// </summary>
+    public async Task EnsureFamilyMemberAsync(Guid currentUserId, Guid targetUserId)
+    {
+        var currentFamilyId = await _context.FamilyMembers
+            .Where(fm => fm.UserId == currentUserId)
+            .Select(fm => fm.FamilyId)
+            .FirstOrDefaultAsync();
+
+        if (currentFamilyId == Guid.Empty)
+            throw new UnauthorizedAccessException("您不是该用户的家庭成员，无权查看");
+
+        var isInSameFamily = await _context.FamilyMembers
+            .AnyAsync(fm => fm.UserId == targetUserId && fm.FamilyId == currentFamilyId);
+
+        if (!isInSameFamily)
+            throw new UnauthorizedAccessException("您不是该用户的家庭成员，无权查看");
+    }
+
     private async Task<UserResponse?> MapToResponse(Guid userId)
     {
         return await _context.Users

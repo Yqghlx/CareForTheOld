@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../shared/models/emergency_call.dart';
 import '../../shared/providers/emergency_provider.dart';
@@ -208,13 +209,36 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
               ],
             ),
             const SizedBox(height: 16),
-            PrimaryIconButton(
-              text: '已处理',
-              icon: Icons.check,
-              onPressed: () => _respondCall(call),
-              gradient: const LinearGradient(
-                colors: [Colors.green, Colors.lightGreen],
-              ),
+            Row(
+              children: [
+                // 拨打电话按钮
+                if (call.elderPhoneNumber != null && call.elderPhoneNumber!.isNotEmpty)
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => _callElder(call.elderPhoneNumber!),
+                      icon: const Icon(Icons.phone, size: 20),
+                      label: const Text('拨打电话'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.blue,
+                        side: const BorderSide(color: Colors.blue),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+                  ),
+                if (call.elderPhoneNumber != null && call.elderPhoneNumber!.isNotEmpty)
+                  const SizedBox(width: 12),
+                Expanded(
+                  child: PrimaryIconButton(
+                    text: '已处理',
+                    icon: Icons.check,
+                    onPressed: () => _respondCall(call),
+                    gradient: const LinearGradient(
+                      colors: [Colors.green, Colors.lightGreen],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -284,6 +308,21 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
   }
 
   /// 处理呼叫
+  /// 拨打老人电话
+  Future<void> _callElder(String phoneNumber) async {
+    final uri = Uri.parse('tel:$phoneNumber');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('无法拨打电话，请手动拨打'),
+          backgroundColor: AppTheme.warningColor,
+        ),
+      );
+    }
+  }
+
   Future<void> _respondCall(EmergencyCall call) async {
     final confirmed = await showDialog<bool>(
       context: context,

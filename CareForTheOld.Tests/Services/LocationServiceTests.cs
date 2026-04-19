@@ -6,6 +6,7 @@ using CareForTheOld.Services.Implementations;
 using CareForTheOld.Services.Interfaces;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -36,7 +37,8 @@ public class LocationServiceTests
         _service = new LocationService(
             _context,
             _mockGeoFenceService.Object,
-            _mockNotificationService.Object);
+            _mockNotificationService.Object,
+            new Mock<ILogger<LocationService>>().Object);
     }
 
     /// <summary>

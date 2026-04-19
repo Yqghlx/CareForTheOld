@@ -189,18 +189,22 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
       itemCount: state.todayPending.length,
       itemBuilder: (context, index) {
         final log = state.todayPending[index];
-        return _buildMedicationCard(log);
+        if (log.isPending) {
+          final key = ref.read(medicationProvider.notifier).logKey(log);
+          final isSubmitting = ref.watch(medicationProvider).isSubmitting(key);
+          // 限制脉冲动画卡片数量，超过3个时不再动画以节省性能
+          final animate = index < 3;
+          return _PendingMedicationCard(
+            log: log,
+            isSubmitting: isSubmitting,
+            enableAnimation: animate,
+            onTaken: () => _markTaken(log),
+            onSkipped: () => _markSkipped(log),
+          );
+        }
+        return _buildStaticMedicationCard(log);
       },
     );
-  }
-
-  /// 单条用药记录卡片
-  Widget _buildMedicationCard(MedicationLog log) {
-    if (log.isPending) {
-      // 待服用卡片：使用脉冲动画提醒
-      return _PendingMedicationCard(log: log, onTaken: () => _markTaken(log), onSkipped: () => _markSkipped(log));
-    }
-    return _buildStaticMedicationCard(log);
   }
 
   /// 已处理状态的卡片（已服用/已跳过）
@@ -341,11 +345,15 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
 /// 待服用卡片 - 带脉冲边框动画提醒老人服药
 class _PendingMedicationCard extends StatefulWidget {
   final MedicationLog log;
+  final bool isSubmitting;
+  final bool enableAnimation;
   final VoidCallback onTaken;
   final VoidCallback onSkipped;
 
   const _PendingMedicationCard({
     required this.log,
+    required this.isSubmitting,
+    this.enableAnimation = true,
     required this.onTaken,
     required this.onSkipped,
   });
@@ -369,7 +377,10 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
     _pulseAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
-    _pulseController.repeat(reverse: true);
+    // 仅启用动画时才循环播放，节省性能
+    if (widget.enableAnimation) {
+      _pulseController.repeat(reverse: true);
+    }
   }
 
   @override
@@ -384,6 +395,20 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
     final scheduledTime = log.scheduledAt.toLocal();
     final timeStr =
         '${scheduledTime.hour.toString().padLeft(2, '0')}:${scheduledTime.minute.toString().padLeft(2, '0')}';
+
+    // 无动画时使用静态橙色边框
+    if (!widget.enableAnimation) {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: Colors.orange.withValues(alpha: 0.4),
+            width: 2,
+          ),
+        ),
+        child: _buildCardContent(log, timeStr),
+      );
+    }
 
     return AnimatedBuilder(
       animation: _pulseAnimation,
@@ -407,75 +432,79 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
           child: child,
         );
       },
-      child: Card(
-        elevation: 4,
-        margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+      child: _buildCardContent(log, timeStr),
+    );
+  }
+
+  /// 卡片内容（动画和非动画共用）
+  Widget _buildCardContent(MedicationLog log, String timeStr) {
+    return Card(
+      elevation: 4,
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: Colors.orange.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: const Icon(Icons.medication, color: Colors.orange, size: 28),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        log.medicineName,
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '计划时间: $timeStr',
+                        style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
+                      ),
+                    ],
+                  ),
+                ),
+                StatusChip(label: log.status.label, color: Colors.orange),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: Row(
                 children: [
-                  Container(
-                    width: 56,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      color: Colors.orange.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: const Icon(Icons.medication, color: Colors.orange, size: 28),
-                  ),
-                  const SizedBox(width: 16),
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          log.medicineName,
-                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '计划时间: $timeStr',
-                          style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
-                        ),
-                      ],
+                    child: PrimaryIconButton(
+                      text: '已服用',
+                      icon: Icons.check,
+                      onPressed: widget.isSubmitting ? null : widget.onTaken,
+                      isLoading: widget.isSubmitting,
+                      gradient: const LinearGradient(colors: [Colors.green, Colors.lightGreen]),
                     ),
                   ),
-                  StatusChip(label: log.status.label, color: Colors.orange),
+                  const SizedBox(width: 12),
+                  SizedBox(
+                    width: 100,
+                    child: SecondaryButton(
+                      text: '跳过',
+                      onPressed: widget.isSubmitting ? null : widget.onSkipped,
+                    ),
+                  ),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: PrimaryIconButton(
-                        text: '已服用',
-                        icon: Icons.check,
-                        onPressed: widget.onTaken,
-                        gradient: const LinearGradient(colors: [Colors.green, Colors.lightGreen]),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    SizedBox(
-                      width: 100,
-                      child: SecondaryButton(
-                        text: '跳过',
-                        onPressed: widget.onSkipped,
-                        borderColor: Colors.grey,
-                        textColor: Colors.grey.shade700,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -30,7 +30,7 @@ public class HealthReportService : IHealthReportService
         // 获取指定时间范围内的健康记录
         var startDate = DateTime.UtcNow.AddDays(-daysRange);
         var records = await _context.HealthRecords
-            .Where(r => r.UserId == userId && r.RecordedAt >= startDate)
+            .Where(r => r.UserId == userId && !r.IsDeleted && r.RecordedAt >= startDate)
             .OrderByDescending(r => r.RecordedAt)
             .ToListAsync();
 
@@ -82,7 +82,7 @@ public class HealthReportService : IHealthReportService
             column.Item().AlignCenter().Text($"报告范围: 最近 {daysRange} 天")
                 .FontSize(14).FontColor("#666666");
 
-            column.Item().AlignCenter().Text($"生成时间: {DateTime.Now:yyyy-MM-dd HH:mm}")
+            column.Item().AlignCenter().Text($"生成时间: {DateTime.UtcNow:yyyy-MM-dd HH:mm}")
                 .FontSize(12).FontColor("#666666");
 
             column.Item().PaddingTop(10).LineHorizontal(1).LineColor("#CCCCCC");

@@ -15,15 +15,18 @@ public class LocationService : ILocationService
     private readonly AppDbContext _context;
     private readonly IGeoFenceService _geoFenceService;
     private readonly INotificationService _notificationService;
+    private readonly ILogger<LocationService> _logger;
 
     public LocationService(
         AppDbContext context,
         IGeoFenceService geoFenceService,
-        INotificationService notificationService)
+        INotificationService notificationService,
+        ILogger<LocationService> logger)
     {
         _context = context;
         _geoFenceService = geoFenceService;
         _notificationService = notificationService;
+        _logger = logger;
     }
 
     /// <summary>
@@ -51,8 +54,18 @@ public class LocationService : ILocationService
         if (outsideResult != null)
         {
             var (fence, distance) = outsideResult.Value;
-            // 异步发送围栏预警通知，不阻塞主流程
-            _ = SendGeoFenceAlertAsync(userId, fence!, distance);
+            // 异步发送围栏预警通知，不阻塞主流程，捕获异常防止后台任务崩溃
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await SendGeoFenceAlertAsync(userId, fence!, distance);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "围栏预警通知发送失败，用户 {UserId}", userId);
+                }
+            });
         }
 
         return new LocationRecordResponse

@@ -14,4 +14,9 @@ public interface IUserService
     /// 更新用户头像 URL
     /// </summary>
     Task UpdateAvatarUrlAsync(Guid userId, string avatarUrl);
+
+    /// <summary>
+    /// 验证两个用户是否在同一家庭中，否则抛出 UnauthorizedAccessException
+    /// </summary>
+    Task EnsureFamilyMemberAsync(Guid currentUserId, Guid targetUserId);
 }

@@ -8,6 +8,7 @@ using CareForTheOld.Services.Interfaces;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace CareForTheOld.Tests.Fuzz;
@@ -37,7 +38,7 @@ public class InputValidationFuzzTests
         mockConfig.Setup(c => c["Jwt:RefreshTokenExpirationDays"]).Returns("30");
 
         _authService = new AuthService(_context, mockConfig.Object);
-        _healthService = new HealthService(_context, new Mock<IHealthAlertService>().Object);
+        _healthService = new HealthService(_context, new Mock<IHealthAlertService>().Object, new Mock<ILogger<HealthService>>().Object);
     }
 
     /// <summary>

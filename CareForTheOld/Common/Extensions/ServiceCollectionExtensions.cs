@@ -89,7 +89,24 @@ public static class ServiceCollectionExtensions
                 ValidIssuer = configuration["Jwt:Issuer"] ?? "CareForTheOld",
                 ValidAudience = configuration["Jwt:Audience"] ?? "CareForTheOld",
                 IssuerSigningKey = new SymmetricSecurityKey(key),
-                ClockSkew = TimeSpan.FromMinutes(5)
+                ClockSkew = TimeSpan.FromMinutes(5),
+                // SignalR 的 Context.UserIdentifier 依赖此配置
+                NameClaimType = System.Security.Claims.ClaimTypes.NameIdentifier
+            };
+
+            // 支持 SignalR 通过查询字符串传递 JWT Token（WebSocket 不支持 Header）
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    var accessToken = context.Request.Query["access_token"];
+                    var path = context.HttpContext.Request.Path;
+                    if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                    {
+                        context.Token = accessToken;
+                    }
+                    return Task.CompletedTask;
+                }
             };
         });
 
