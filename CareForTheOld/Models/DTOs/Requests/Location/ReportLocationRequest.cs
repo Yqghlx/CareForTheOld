@@ -21,4 +21,10 @@ public class ReportLocationRequest
     [Required(ErrorMessage = "经度不能为空")]
     [Range(-180.0, 180.0, ErrorMessage = "经度范围应在 -180 到 180 之间")]
     public double Longitude { get; set; }
+
+    /// <summary>
+    /// GPS 定位精度（米），用于过滤低精度飘移数据
+    /// 精度超过 100 米时跳过电子围栏判断，防止室内 GPS 飘移触发误报
+    /// </summary>
+    public double? Accuracy { get; set; }
 }

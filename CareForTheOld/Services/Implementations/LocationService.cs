@@ -32,7 +32,7 @@ public class LocationService : ILocationService
     /// <summary>
     /// 上报位置
     /// </summary>
-    public async Task<LocationRecordResponse> ReportLocationAsync(Guid userId, double latitude, double longitude)
+    public async Task<LocationRecordResponse> ReportLocationAsync(Guid userId, double latitude, double longitude, double? accuracy = null)
     {
         var user = await _context.Users.FindAsync(userId)
             ?? throw new KeyNotFoundException("用户不存在");
@@ -49,23 +49,36 @@ public class LocationService : ILocationService
         _context.LocationRecords.Add(record);
         await _context.SaveChangesAsync();
 
-        // 检查是否超出电子围栏
-        var outsideResult = await _geoFenceService.CheckOutsideFenceAsync(userId, latitude, longitude);
-        if (outsideResult != null)
+        // GPS 精度过滤：精度超过 100 米时跳过围栏检查，防止室内飘移误报
+        const double accuracyThreshold = 100.0;
+        var shouldCheckFence = accuracy == null || accuracy.Value <= accuracyThreshold;
+
+        if (!shouldCheckFence)
         {
-            var (fence, distance) = outsideResult.Value;
-            // 异步发送围栏预警通知，不阻塞主流程，捕获异常防止后台任务崩溃
-            _ = Task.Run(async () =>
+            _logger.LogDebug("[位置上报] GPS 精度 {Accuracy:F0}m 超过阈值 {Threshold}m，跳过围栏检查",
+                accuracy, accuracyThreshold);
+        }
+
+        // 检查是否超出电子围栏
+        if (shouldCheckFence)
+        {
+            var outsideResult = await _geoFenceService.CheckOutsideFenceAsync(userId, latitude, longitude);
+            if (outsideResult != null)
             {
-                try
+                var (fence, distance) = outsideResult.Value;
+                // 异步发送围栏预警通知，不阻塞主流程，捕获异常防止后台任务崩溃
+                _ = Task.Run(async () =>
                 {
-                    await SendGeoFenceAlertAsync(userId, fence!, distance);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "围栏预警通知发送失败，用户 {UserId}", userId);
-                }
-            });
+                    try
+                    {
+                        await SendGeoFenceAlertAsync(userId, fence!, distance);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "围栏预警通知发送失败，用户 {UserId}", userId);
+                    }
+                });
+            }
         }
 
         return new LocationRecordResponse

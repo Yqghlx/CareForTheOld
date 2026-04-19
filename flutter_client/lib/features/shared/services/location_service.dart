@@ -8,13 +8,17 @@ class LocationService {
   LocationService(this._dio);
 
   /// 上报位置
-  Future<LocationRecord> reportLocation(double latitude, double longitude) async {
-    final response = await _dio.post('/location', data: {
+  Future<LocationRecord> reportLocation(double latitude, double longitude, {double? accuracy}) async {
+    final data = <String, dynamic>{
       'latitude': latitude,
       'longitude': longitude,
-    });
-    final data = response.data['data'];
-    return LocationRecord.fromJson(data);
+    };
+    if (accuracy != null) {
+      data['accuracy'] = accuracy;
+    }
+    final response = await _dio.post('/location', data: data);
+    final responseData = response.data['data'];
+    return LocationRecord.fromJson(responseData);
   }
 
   /// 获取我的最新位置

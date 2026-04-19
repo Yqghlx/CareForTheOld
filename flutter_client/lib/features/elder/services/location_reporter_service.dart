@@ -164,7 +164,7 @@ class LocationReporterService {
         timeLimit: const Duration(seconds: 10),
       );
 
-      debugPrint('[位置上报] 获取位置: ${position.latitude}, ${position.longitude}');
+      debugPrint('[位置上报] 获取位置: ${position.latitude}, ${position.longitude}, 精度: ${position.accuracy}m');
 
       final isOnline = await _connectivityService.checkOnline();
       if (!isOnline) {
@@ -172,12 +172,17 @@ class LocationReporterService {
         await _offlineQueue.enqueue('location', {
           'latitude': position.latitude,
           'longitude': position.longitude,
+          'accuracy': position.accuracy,
         });
         debugPrint('[位置上报] 网络不可用，位置已存入离线队列');
         return true; // 入队成功视为成功，不触发重试
       }
 
-      await _service.reportLocation(position.latitude, position.longitude);
+      await _service.reportLocation(
+        position.latitude,
+        position.longitude,
+        accuracy: position.accuracy,
+      );
       debugPrint('[位置上报] 上报成功');
       return true;
     } catch (e) {

@@ -37,7 +37,7 @@ public class LocationController : ControllerBase
     public async Task<ApiResponse<LocationRecordResponse>> ReportLocation([FromBody] ReportLocationRequest request)
     {
         var userId = this.GetUserId();
-        var record = await _locationService.ReportLocationAsync(userId, request.Latitude, request.Longitude);
+        var record = await _locationService.ReportLocationAsync(userId, request.Latitude, request.Longitude, request.Accuracy);
         return ApiResponse<LocationRecordResponse>.Ok(record, "位置上报成功");
     }
 
