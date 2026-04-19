@@ -270,12 +270,12 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                           const SizedBox(height: 8),
                           if (centerLat != 0)
                             Text(
-                              '纬度: ${centerLat.toStringAsFixed(6)}',
+                              '纬度: ${centerLat.toStringAsFixed(4)}',
                               style: const TextStyle(fontSize: 14),
                             ),
                           if (centerLon != 0)
                             Text(
-                              '经度: ${centerLon.toStringAsFixed(6)}',
+                              '经度: ${centerLon.toStringAsFixed(4)}',
                               style: const TextStyle(fontSize: 14),
                             ),
                           if (centerLat == 0)
@@ -474,7 +474,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                       const Icon(Icons.explore, size: 20, color: Colors.grey),
                       const SizedBox(width: 8),
                       Text(
-                        '纬度: ${location.latitude.toStringAsFixed(6)}',
+                        '纬度: ${location.latitude.toStringAsFixed(4)}',
                         style: const TextStyle(fontSize: 16),
                       ),
                     ],
@@ -485,7 +485,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                       const Icon(Icons.explore, size: 20, color: Colors.grey),
                       const SizedBox(width: 8),
                       Text(
-                        '经度: ${location.longitude.toStringAsFixed(6)}',
+                        '经度: ${location.longitude.toStringAsFixed(4)}',
                         style: const TextStyle(fontSize: 16),
                       ),
                     ],

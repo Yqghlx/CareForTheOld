@@ -354,6 +354,10 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
             backgroundColor: success ? AppTheme.successColor : AppTheme.errorColor,
           ),
         );
+        // 处理后自动刷新列表，保持数据最新
+        if (success) {
+          ref.read(emergencyProvider.notifier).loadAll();
+        }
       }
     }
   }

@@ -172,9 +172,23 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
                       overflow: _expandedNotificationId == notification.id ? null : TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      notification.formattedTime,
-                      style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          notification.formattedTime,
+                          style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                        ),
+                        // 展开/收起提示
+                        if (notification.content.length > 60)
+                          Text(
+                            _expandedNotificationId == notification.id ? '收起' : '展开全文',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppTheme.primaryColor,
+                            ),
+                          ),
+                      ],
                     ),
                   ],
                 ),

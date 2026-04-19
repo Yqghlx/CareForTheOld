@@ -302,23 +302,40 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
             ),
           ],
         ),
-        child: Row(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              _isCalling ? Icons.phone_in_talk : Icons.emergency,
-              color: Colors.white,
-              size: 40,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  _isCalling ? Icons.phone_in_talk : Icons.emergency,
+                  color: Colors.white,
+                  size: 40,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  _isCalling ? '正在呼叫...' : '长按紧急呼叫',
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 12),
-            Text(
-              _isCalling ? '正在呼叫...' : '长按紧急呼叫',
-              style: const TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+            // 长按时显示进度提示
+            if (_isCalling)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  '请保持按住...',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white.withValues(alpha: 0.9),
+                  ),
+                ),
               ),
-            ),
           ],
         ),
       ),
