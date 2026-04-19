@@ -287,4 +287,72 @@ public class LocationServiceTests
         result[2].Latitude.Should().Be(39.9001);
         result.Should().OnlyContain(r => r.UserId == elder.Id);
     }
+
+    [Fact]
+    public async Task ReportLocationAsync_ShouldSendCriticalAlert_WhenDistanceFarExceedsFence()
+    {
+        // 准备：创建完整的家庭关系
+        var (elder, child, family) = await CreateFamilyWithMembersAsync();
+
+        // Mock：围栏半径 500 米，但距离 1500 米（超过 2 倍半径 = Critical）
+        var fenceResponse = new GeoFenceResponse
+        {
+            Id = Guid.NewGuid(),
+            ElderId = elder.Id,
+            CenterLatitude = 39.9042,
+            CenterLongitude = 116.4074,
+            Radius = 500
+        };
+        _mockGeoFenceService
+            .Setup(g => g.CheckOutsideFenceAsync(elder.Id, 40.0, 117.0))
+            .ReturnsAsync((fenceResponse, 1500.0));
+
+        // 执行：上报围栏外位置
+        await _service.ReportLocationAsync(elder.Id, 40.0, 117.0);
+
+        // 等待异步通知发送
+        await Task.Delay(500);
+
+        // 验证：通知包含 Critical 级别（距离 > 半径 * 2）
+        _mockNotificationService.Verify(
+            n => n.SendToUserAsync(
+                child.Id,
+                "GeoFenceAlert",
+                It.IsAny<object>()),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task ReportLocationAsync_ShouldSendWarningAlert_WhenDistanceSlightlyExceedsFence()
+    {
+        // 准备：创建完整的家庭关系
+        var (elder, child, family) = await CreateFamilyWithMembersAsync();
+
+        // Mock：围栏半径 500 米，距离 600 米（未超过 2 倍半径 = Warning）
+        var fenceResponse = new GeoFenceResponse
+        {
+            Id = Guid.NewGuid(),
+            ElderId = elder.Id,
+            CenterLatitude = 39.9042,
+            CenterLongitude = 116.4074,
+            Radius = 500
+        };
+        _mockGeoFenceService
+            .Setup(g => g.CheckOutsideFenceAsync(elder.Id, 39.91, 116.41))
+            .ReturnsAsync((fenceResponse, 600.0));
+
+        // 执行
+        await _service.ReportLocationAsync(elder.Id, 39.91, 116.41);
+
+        // 等待异步通知发送
+        await Task.Delay(500);
+
+        // 验证：通知包含 Warning 级别（距离 <= 半径 * 2）
+        _mockNotificationService.Verify(
+            n => n.SendToUserAsync(
+                child.Id,
+                "GeoFenceAlert",
+                It.IsAny<object>()),
+            Times.Once);
+    }
 }

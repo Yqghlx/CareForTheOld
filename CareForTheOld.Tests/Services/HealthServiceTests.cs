@@ -184,4 +184,42 @@ public class HealthServiceTests
         var act = async () => await _service.DeleteRecordAsync(userId, Guid.NewGuid());
         await act.Should().ThrowAsync<KeyNotFoundException>();
     }
+
+    [Fact]
+    public async Task CreateRecordAsync_ShouldTriggerAlert_WhenAbnormalValue()
+    {
+        var userId = await CreateTestUserAsync();
+
+        // 创建异常血压值（收缩压 180，明显偏高）
+        await _service.CreateRecordAsync(userId, new Models.DTOs.Requests.Health.CreateHealthRecordRequest
+        {
+            Type = HealthType.BloodPressure,
+            Systolic = 180,
+            Diastolic = 110
+        });
+
+        // 验证告警检查被调用（CheckAbnormal 应返回非 null 值）
+        _mockAlertService.Verify(
+            a => a.CheckAbnormal(It.IsAny<HealthRecord>()),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task CreateRecordAsync_ShouldNotTriggerAlert_WhenNormalValue()
+    {
+        var userId = await CreateTestUserAsync();
+
+        // 创建正常血压值
+        await _service.CreateRecordAsync(userId, new Models.DTOs.Requests.Health.CreateHealthRecordRequest
+        {
+            Type = HealthType.BloodPressure,
+            Systolic = 120,
+            Diastolic = 80
+        });
+
+        // 验证 CheckAbnormal 被调用但返回 null（无告警）
+        _mockAlertService.Verify(
+            a => a.CheckAbnormal(It.IsAny<HealthRecord>()),
+            Times.Once);
+    }
 }

@@ -166,4 +166,56 @@ public class AuthServiceTests
         var act = async () => await _service.RefreshTokenAsync("nonexistent_token");
         await act.Should().ThrowAsync<ArgumentException>().WithMessage("无效的刷新令牌");
     }
+
+    [Fact]
+    public async Task RefreshTokenAsync_ShouldMarkOldTokenAsUsedAndRevoked()
+    {
+        // 注册获取 token
+        var registerResult = await _service.RegisterAsync(new RegisterRequest
+        {
+            PhoneNumber = "13900007004", Password = "Test1234", RealName = "轮换验证", Role = UserRole.Elder
+        });
+
+        // 刷新
+        await _service.RefreshTokenAsync(registerResult.RefreshToken);
+
+        // 验证旧 Token 已标记为已使用和已撤销
+        var oldToken = await _context.RefreshTokens
+            .FirstOrDefaultAsync(t => t.Token == registerResult.RefreshToken);
+        oldToken.Should().NotBeNull();
+        oldToken!.IsUsed.Should().BeTrue();
+        oldToken.IsRevoked.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task RefreshTokenAsync_ShouldCleanupExpiredTokens()
+    {
+        // 注册用户
+        var registerResult = await _service.RegisterAsync(new RegisterRequest
+        {
+            PhoneNumber = "13900007005", Password = "Test1234", RealName = "清理测试", Role = UserRole.Elder
+        });
+
+        // 手动添加一个已过期的旧 Token
+        var expiredToken = new RefreshToken
+        {
+            Id = Guid.NewGuid(),
+            UserId = registerResult.User.Id,
+            Token = "old_expired_token",
+            ExpiresAt = DateTime.UtcNow.AddDays(-10),
+            IsRevoked = false,
+            IsUsed = false,
+            CreatedAt = DateTime.UtcNow.AddDays(-30)
+        };
+        _context.RefreshTokens.Add(expiredToken);
+        await _context.SaveChangesAsync();
+
+        // 使用有效 Token 刷新（触发清理）
+        await _service.RefreshTokenAsync(registerResult.RefreshToken);
+
+        // 过期 Token 应已被清理
+        var cleanedToken = await _context.RefreshTokens
+            .FirstOrDefaultAsync(t => t.Token == "old_expired_token");
+        cleanedToken.Should().BeNull();
+    }
 }

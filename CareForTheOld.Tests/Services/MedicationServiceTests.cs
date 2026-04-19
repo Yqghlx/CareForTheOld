@@ -304,4 +304,36 @@ public class MedicationServiceTests
         // 验证：无活跃计划时返回空列表
         result.Should().BeEmpty();
     }
+
+    [Fact]
+    public async Task CreatePlanAsync_ShouldThrow_WhenUserNotFamilyMember()
+    {
+        // 准备：创建老人和一个陌生子女（不在同一家庭）
+        var (elder, _, _) = await CreateTestDataAsync();
+        var stranger = new User
+        {
+            Id = Guid.NewGuid(),
+            PhoneNumber = "13900009999",
+            PasswordHash = "hash",
+            RealName = "陌生人",
+            Role = UserRole.Child
+        };
+        _context.Users.Add(stranger);
+        await _context.SaveChangesAsync();
+
+        var request = new CreateMedicationPlanRequest
+        {
+            ElderId = elder.Id,
+            MedicineName = "测试药品",
+            Dosage = "1片",
+            Frequency = Frequency.OnceDaily,
+            ReminderTimes = ["08:00"],
+            StartDate = DateOnly.FromDateTime(DateTime.Today),
+            EndDate = DateOnly.FromDateTime(DateTime.Today.AddDays(30))
+        };
+
+        // 执行并验证：非家庭成员应抛出权限异常
+        var act = async () => await _service.CreatePlanAsync(stranger.Id, request);
+        await act.Should().ThrowAsync<UnauthorizedAccessException>();
+    }
 }
