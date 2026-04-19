@@ -6,6 +6,25 @@ import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'features/shared/services/local_notification_service.dart';
 
+/// 全局 ScaffoldMessenger Key，用于在无 Context 场景下显示 SnackBar
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
+
+/// 全局 SnackBar 提示工具
+void showGlobalSnackBar(String message, {Color? backgroundColor}) {
+  final state = scaffoldMessengerKey.currentState;
+  if (state == null) return;
+  state.clearSnackBars();
+  state.showSnackBar(
+    SnackBar(
+      content: Text(message),
+      backgroundColor: backgroundColor,
+      behavior: SnackBarBehavior.floating,
+      duration: const Duration(seconds: 3),
+    ),
+  );
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -49,6 +68,7 @@ class CareForTheOldApp extends ConsumerWidget {
       theme: AppTheme.lightTheme,
       routerConfig: router,
       locale: const Locale('zh', 'CN'),
+      scaffoldMessengerKey: scaffoldMessengerKey,
     );
   }
 }
