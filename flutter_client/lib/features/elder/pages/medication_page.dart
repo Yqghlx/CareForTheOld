@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../shared/models/medication_plan.dart';
 import '../../../shared/models/medication_log.dart';
 import '../providers/medication_provider.dart';
+import '../services/voice_input_service.dart';
 import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../core/theme/app_theme.dart';
@@ -17,6 +18,9 @@ class MedicationPage extends ConsumerStatefulWidget {
 }
 
 class _MedicationPageState extends ConsumerState<MedicationPage> {
+  final VoiceInputService _voiceService = VoiceInputService();
+  bool _isListening = false;
+
   @override
   void initState() {
     super.initState();
@@ -30,11 +34,30 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
   }
 
   @override
+  void dispose() {
+    _voiceService.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final medState = ref.watch(medicationProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('用药提醒')),
+      appBar: AppBar(
+        title: const Text('用药提醒'),
+        actions: [
+          // 语音确认服药按钮
+          IconButton(
+            icon: Icon(
+              _isListening ? Icons.mic : Icons.mic_none,
+              color: _isListening ? Colors.red : null,
+            ),
+            onPressed: _startVoiceConfirm,
+            tooltip: '语音确认服药',
+          ),
+        ],
+      ),
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: Padding(
@@ -370,6 +393,100 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
           backgroundColor: Colors.grey.shade700,
         ),
       );
+    }
+  }
+
+  /// 语音确认服药
+  /// 老人说"已服药"、"吃了"、"服用了"等语音指令来标记用药
+  Future<void> _startVoiceConfirm() async {
+    if (_isListening) {
+      await _voiceService.stopListening();
+      setState(() => _isListening = false);
+      return;
+    }
+
+    final available = await _voiceService.initialize();
+    if (!available) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('语音识别不可用，请检查设备设置'),
+            backgroundColor: AppTheme.warningColor,
+          ),
+        );
+      }
+      return;
+    }
+
+    setState(() => _isListening = true);
+
+    final started = await _voiceService.startListening(
+      onResult: (text, isFinal) {
+        if (isFinal && text.isNotEmpty) {
+          _handleVoiceCommand(text);
+        }
+      },
+    );
+
+    if (!started) {
+      setState(() => _isListening = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('语音识别启动失败，请手动操作'),
+            backgroundColor: AppTheme.warningColor,
+          ),
+        );
+      }
+    }
+  }
+
+  /// 处理语音命令
+  void _handleVoiceCommand(String text) {
+    _voiceService.stopListening();
+    setState(() => _isListening = false);
+
+    final medState = ref.read(medicationProvider);
+    final pendingLogs = medState.todayPending.where((log) => log.isPending).toList();
+
+    if (pendingLogs.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('当前没有待服用的药物'),
+            backgroundColor: AppTheme.warningColor,
+          ),
+        );
+      }
+      return;
+    }
+
+    // 匹配语音指令关键词
+    final lowerText = text.toLowerCase();
+
+    // 已服药相关关键词
+    final takenKeywords = ['已服药', '吃了', '服用了', '已服用', '吃过', '吃完了', '吃完', '服药了'];
+    // 跳过相关关键词
+    final skipKeywords = ['跳过', '不吃', '不需要'];
+
+    if (takenKeywords.any((kw) => lowerText.contains(kw))) {
+      // 标记第一个待服用的药物为已服用
+      final log = pendingLogs.first;
+      _markTaken(log);
+    } else if (skipKeywords.any((kw) => lowerText.contains(kw))) {
+      // 跳过第一个待服用的药物
+      final log = pendingLogs.first;
+      _markSkipped(log);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('未能识别指令"$text"，请说"已服药"或"跳过"'),
+            backgroundColor: AppTheme.warningColor,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
     }
   }
 }
