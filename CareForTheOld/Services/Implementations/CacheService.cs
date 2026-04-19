@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Text.Json;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.Extensions.Caching.Distributed;
@@ -7,12 +8,16 @@ namespace CareForTheOld.Services.Implementations;
 
 /// <summary>
 /// 缓存服务实现（基于 IDistributedCache，支持 Redis 和内存）
+/// 使用 SemaphoreSlim 防止缓存击穿：同一 key 的并发请求只重建一次缓存
 /// </summary>
 public class CacheService : ICacheService
 {
     private readonly IDistributedCache _cache;
     private readonly ILogger<CacheService> _logger;
     private readonly IConnectionMultiplexer? _redis;
+
+    // 按 key 粒度的锁，防止缓存击穿（同一 key 并发重建）
+    private readonly ConcurrentDictionary<string, SemaphoreSlim> _locks = new();
 
     public CacheService(
         IDistributedCache cache,
@@ -29,6 +34,42 @@ public class CacheService : ICacheService
         var bytes = await _cache.GetAsync(key);
         if (bytes == null) return null;
         return JsonSerializer.Deserialize<T>(bytes);
+    }
+
+    /// <summary>
+    /// 带防击穿保护的获取或创建缓存
+    /// 同一 key 的并发请求只触发一次重建，其余请求等待结果
+    /// </summary>
+    public async Task<T?> GetOrCreateAsync<T>(string key, Func<Task<T>> factory, TimeSpan? expiration = null) where T : class
+    {
+        // 先尝试直接获取
+        var cached = await GetAsync<T>(key);
+        if (cached != null) return cached;
+
+        // 获取或创建该 key 专属的信号量
+        var semaphore = _locks.GetOrAdd(key, _ => new SemaphoreSlim(1, 1));
+
+        await semaphore.WaitAsync();
+        try
+        {
+            // 双重检查：等待期间可能已被其他请求填充
+            cached = await GetAsync<T>(key);
+            if (cached != null) return cached;
+
+            // 重建缓存
+            var value = await factory();
+            if (value != null)
+            {
+                await SetAsync(key, value, expiration);
+            }
+            return value;
+        }
+        finally
+        {
+            semaphore.Release();
+            // 清理不再使用的锁，防止内存泄漏
+            _locks.TryRemove(key, out _);
+        }
     }
 
     public async Task SetAsync<T>(string key, T value, TimeSpan? expiration = null) where T : class

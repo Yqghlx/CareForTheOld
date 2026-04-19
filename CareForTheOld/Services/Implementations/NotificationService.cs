@@ -82,6 +82,7 @@ public class NotificationService : INotificationService
     public async Task<bool> MarkAsReadAsync(Guid notificationId, Guid userId)
     {
         var notification = await _context.NotificationRecords
+            .AsTracking()
             .FirstOrDefaultAsync(n => n.Id == notificationId && n.UserId == userId);
 
         if (notification == null) return false;
@@ -94,6 +95,7 @@ public class NotificationService : INotificationService
     public async Task MarkAllAsReadAsync(Guid userId)
     {
         var unreadNotifications = await _context.NotificationRecords
+            .AsTracking()
             .Where(n => n.UserId == userId && !n.IsRead)
             .ToListAsync();
 

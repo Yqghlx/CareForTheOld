@@ -251,6 +251,17 @@ app.UseStaticFiles(new StaticFileOptions
 // 健康检查端点（无需认证，供容器编排和负载均衡器使用）
 app.MapHealthChecks("/health");
 
+// SignalR 连接状态端点（供运维监控使用）
+app.MapGet("/health/signalr", (HttpContext _) =>
+{
+    return Results.Ok(new
+    {
+        onlineUsers = NotificationHub.OnlineUserCount,
+        totalConnections = NotificationHub.TotalConnectionCount,
+        timestamp = DateTime.UtcNow
+    });
+});
+
 app.MapControllers();
 app.MapHub<NotificationHub>("/hubs/notification");
 
