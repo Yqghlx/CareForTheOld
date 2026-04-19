@@ -18,7 +18,7 @@ namespace CareForTheOld.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
-    private readonly IWebHostEnvironment _env;
+    private readonly IFileStorageService _fileStorageService;
     /// <summary>
     /// 允许的头像文件扩展名
     /// </summary>
@@ -32,10 +32,10 @@ public class UserController : ControllerBase
     /// </summary>
     private const long _maxFileSize = 2 * 1024 * 1024;
 
-    public UserController(IUserService userService, IWebHostEnvironment env)
+    public UserController(IUserService userService, IFileStorageService fileStorageService)
     {
         _userService = userService;
-        _env = env;
+        _fileStorageService = fileStorageService;
     }
 
     [HttpGet("me")]
@@ -66,8 +66,8 @@ public class UserController : ControllerBase
     /// 上传用户头像
     /// </summary>
     /// <remarks>
-    /// 接受 jpg/png 格式图片，最大 2MB。文件保存到 uploads/avatars/ 目录，
-    /// 并更新用户的 AvatarUrl 字段。
+    /// 接受 jpg/png 格式图片，最大 2MB。通过 IFileStorageService 抽象层存储文件，
+    /// 便于后续切换至云存储（OSS/S3）而无需修改 Controller 逻辑。
     /// </remarks>
     [HttpPost("me/avatar")]
     [RequestSizeLimit(_maxFileSize)]
@@ -97,22 +97,12 @@ public class UserController : ControllerBase
 
         var userId = this.GetUserId();
 
-        // 确保上传目录存在
-        var uploadsDir = Path.Combine(_env.ContentRootPath, "uploads", "avatars");
-        Directory.CreateDirectory(uploadsDir);
-
         // 使用用户 ID 作为文件名，避免重复文件堆积
         var fileName = $"{userId}{extension}";
-        var filePath = Path.Combine(uploadsDir, fileName);
 
-        // 保存文件
-        using (var stream = new FileStream(filePath, FileMode.Create))
-        {
-            await file.CopyToAsync(stream);
-        }
-
-        // 生成访问 URL（使用 api 前缀，便于后续配置静态文件中间件）
-        var avatarUrl = $"/uploads/avatars/{fileName}";
+        // 通过文件存储抽象层上传，解耦文件 IO 与 Web 进程
+        using var stream = file.OpenReadStream();
+        var avatarUrl = await _fileStorageService.UploadAsync("avatars", fileName, stream, file.ContentType);
 
         // 更新用户头像 URL
         await _userService.UpdateAvatarUrlAsync(userId, avatarUrl);
