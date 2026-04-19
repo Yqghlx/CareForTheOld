@@ -81,6 +81,9 @@ builder.Services.AddScoped<IGeoFenceService, GeoFenceService>();
 builder.Services.AddScoped<IHealthReportService, HealthReportService>();
 builder.Services.AddScoped<ICacheService, CacheService>();
 
+// 注册文件存储服务（本地磁盘实现，生产环境可替换为 OSS/S3 实现）
+builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
+
 // 注册分布式缓存：优先使用 Redis，未配置时回退到内存缓存
 var redisConnection = builder.Configuration.GetConnectionString("Redis");
 if (!string.IsNullOrEmpty(redisConnection))
