@@ -10,7 +10,11 @@ public interface IEmergencyService
     /// <summary>
     /// 老人发起紧急呼叫
     /// </summary>
-    Task<EmergencyCallResponse> CreateCallAsync(Guid elderId);
+    /// <param name="elderId">老人ID</param>
+    /// <param name="latitude">纬度（可选）</param>
+    /// <param name="longitude">经度（可选）</param>
+    /// <param name="batteryLevel">电池电量百分比（可选）</param>
+    Task<EmergencyCallResponse> CreateCallAsync(Guid elderId, double? latitude = null, double? longitude = null, int? batteryLevel = null);
 
     /// <summary>
     /// 获取未处理的紧急呼叫（子女端）

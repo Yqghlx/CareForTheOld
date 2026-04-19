@@ -30,6 +30,9 @@ class EmergencyCall {
   final String? respondedBy;
   final String? respondedByRealName;
   final DateTime? respondedAt;
+  final double? latitude;
+  final double? longitude;
+  final int? batteryLevel;
 
   EmergencyCall({
     required this.id,
@@ -42,6 +45,9 @@ class EmergencyCall {
     this.respondedBy,
     this.respondedByRealName,
     this.respondedAt,
+    this.latitude,
+    this.longitude,
+    this.batteryLevel,
   });
 
   /// 从 JSON 解析
@@ -59,11 +65,31 @@ class EmergencyCall {
       respondedAt: json['respondedAt'] != null
           ? DateTime.parse(json['respondedAt'])
           : null,
+      latitude: (json['latitude'] as num?)?.toDouble(),
+      longitude: (json['longitude'] as num?)?.toDouble(),
+      batteryLevel: json['batteryLevel'] as int?,
     );
   }
 
   /// 是否待处理
   bool get isPending => status == EmergencyStatus.pending;
+
+  /// 是否有位置信息
+  bool get hasLocation => latitude != null && longitude != null;
+
+  /// 电池电量描述
+  String get batteryText {
+    if (batteryLevel == null) return '未知';
+    return '$batteryLevel%';
+  }
+
+  /// 电池状态颜色
+  Color get batteryColor {
+    if (batteryLevel == null) return Colors.grey;
+    if (batteryLevel! > 50) return Colors.green;
+    if (batteryLevel! > 20) return Colors.orange;
+    return Colors.red;
+  }
 
   /// 格式化呼叫时间
   String get formattedTime {

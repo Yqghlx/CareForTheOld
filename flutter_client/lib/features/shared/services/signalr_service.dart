@@ -129,6 +129,22 @@ class SignalRService {
             body: content,
           );
           break;
+        case 'EmergencyCall':
+          // 紧急呼叫（最高优先级通知）
+          LocalNotificationService.showNotification(
+            id: 4,
+            title: title,
+            body: content,
+          );
+          break;
+        case 'EmergencyCallReminder':
+          // 紧急呼叫二次提醒（最高优先级）
+          LocalNotificationService.showNotification(
+            id: 5,
+            title: title,
+            body: content,
+          );
+          break;
         default:
           _showGeneralNotification(title, content);
       }

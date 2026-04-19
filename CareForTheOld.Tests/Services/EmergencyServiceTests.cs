@@ -2,8 +2,11 @@ using CareForTheOld.Data;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Implementations;
+using CareForTheOld.Services.Interfaces;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
 using Xunit;
 
 namespace CareForTheOld.Tests.Services;
@@ -15,6 +18,7 @@ public class EmergencyServiceTests
 {
     private readonly AppDbContext _context;
     private readonly EmergencyService _service;
+    private readonly Mock<INotificationService> _mockNotificationService;
 
     public EmergencyServiceTests()
     {
@@ -23,7 +27,9 @@ public class EmergencyServiceTests
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
         _context = new AppDbContext(options);
-        _service = new EmergencyService(_context);
+        _mockNotificationService = new Mock<INotificationService>();
+        var mockLogger = new Mock<ILogger<EmergencyService>>();
+        _service = new EmergencyService(_context, _mockNotificationService.Object, mockLogger.Object);
     }
 
     /// <summary>
@@ -106,6 +112,29 @@ public class EmergencyServiceTests
         callInDb.Should().NotBeNull();
         callInDb!.ElderId.Should().Be(elder.Id);
         callInDb.Status.Should().Be(EmergencyStatus.Pending);
+    }
+
+    [Fact]
+    public async Task CreateCallAsync_ShouldSaveLocationAndBattery()
+    {
+        // 准备：创建老人、子女、家庭组和成员关系
+        var (elder, child, family) = await CreateTestDataAsync();
+
+        // 执行：老人带位置和电量信息发起紧急呼叫
+        var result = await _service.CreateCallAsync(elder.Id, latitude: 39.9042, longitude: 116.4074, batteryLevel: 75);
+
+        // 验证：响应包含位置和电量信息
+        result.Should().NotBeNull();
+        result.Latitude.Should().Be(39.9042);
+        result.Longitude.Should().Be(116.4074);
+        result.BatteryLevel.Should().Be(75);
+
+        // 验证：数据库中正确保存
+        var callInDb = await _context.EmergencyCalls.FirstOrDefaultAsync(c => c.Id == result.Id);
+        callInDb.Should().NotBeNull();
+        callInDb!.Latitude.Should().Be(39.9042);
+        callInDb!.Longitude.Should().Be(116.4074);
+        callInDb!.BatteryLevel.Should().Be(75);
     }
 
     [Fact]

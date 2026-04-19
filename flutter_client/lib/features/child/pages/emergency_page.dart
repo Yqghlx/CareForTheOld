@@ -209,6 +209,43 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
               ],
             ),
             const SizedBox(height: 16),
+            // 位置和电量信息
+            if (call.hasLocation || call.batteryLevel != null)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  children: [
+                    if (call.hasLocation) ...[
+                      Icon(Icons.location_on, size: 18, color: Colors.blue.shade700),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${call.latitude!.toStringAsFixed(4)}, ${call.longitude!.toStringAsFixed(4)}',
+                        style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
+                      ),
+                    ],
+                    if (call.hasLocation && call.batteryLevel != null)
+                      const SizedBox(width: 16),
+                    if (call.batteryLevel != null) ...[
+                      Icon(Icons.battery_std, size: 18, color: call.batteryColor),
+                      const SizedBox(width: 4),
+                      Text(
+                        '电量 ${call.batteryText}',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: call.batteryColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            if (call.hasLocation || call.batteryLevel != null)
+              const SizedBox(height: 12),
             Row(
               children: [
                 // 拨打电话按钮

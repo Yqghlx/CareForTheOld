@@ -8,10 +8,22 @@ class EmergencyService {
   EmergencyService(this._dio);
 
   /// 老人发起紧急呼叫
-  Future<EmergencyCall> createCall() async {
-    final response = await _dio.post('/emergency');
-    final data = response.data['data'];
-    return EmergencyCall.fromJson(data);
+  /// [latitude] 纬度（可选）
+  /// [longitude] 经度（可选）
+  /// [batteryLevel] 电池电量百分比 0~100（可选）
+  Future<EmergencyCall> createCall({
+    double? latitude,
+    double? longitude,
+    int? batteryLevel,
+  }) async {
+    final data = <String, dynamic>{};
+    if (latitude != null) data['latitude'] = latitude;
+    if (longitude != null) data['longitude'] = longitude;
+    if (batteryLevel != null) data['batteryLevel'] = batteryLevel;
+
+    final response = await _dio.post('/emergency', data: data);
+    final responseData = response.data['data'];
+    return EmergencyCall.fromJson(responseData);
   }
 
   /// 获取未处理的紧急呼叫（子女端）
