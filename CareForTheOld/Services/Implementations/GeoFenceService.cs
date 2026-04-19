@@ -9,12 +9,31 @@ namespace CareForTheOld.Services.Implementations;
 
 /// <summary>
 /// 电子围栏服务实现
+///
+/// 围栏数据通过 Redis 缓存热点化，位置上报时直接从缓存读取围栏，
+/// 避免每次位置校验都查询数据库，将围栏查询响应时间降低一个数量级。
+/// 写操作（创建/更新/删除）后自动刷新缓存。
 /// </summary>
 public class GeoFenceService : IGeoFenceService
 {
     private readonly AppDbContext _context;
+    private readonly ICacheService _cacheService;
 
-    public GeoFenceService(AppDbContext context) => _context = context;
+    /// <summary>
+    /// 围栏缓存 key 前缀（格式：geofence:{elderId}）
+    /// </summary>
+    private const string _cacheKeyPrefix = "geofence:";
+
+    /// <summary>
+    /// 围栏缓存过期时间（10 分钟，围栏数据变更频率低）
+    /// </summary>
+    private static readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(10);
+
+    public GeoFenceService(AppDbContext context, ICacheService cacheService)
+    {
+        _context = context;
+        _cacheService = cacheService;
+    }
 
     /// <summary>
     /// 创建电子围栏（需验证是否为老人的家庭成员）
@@ -39,6 +58,7 @@ public class GeoFenceService : IGeoFenceService
             existingFence.CreatedBy = creatorId;
             existingFence.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
+            await InvalidateCacheAsync(request.ElderId);
             return MapToResponse(existingFence);
         }
 
@@ -58,6 +78,7 @@ public class GeoFenceService : IGeoFenceService
 
         _context.GeoFences.Add(fence);
         await _context.SaveChangesAsync();
+        await InvalidateCacheAsync(request.ElderId);
 
         return MapToResponse(fence);
     }
@@ -98,6 +119,7 @@ public class GeoFenceService : IGeoFenceService
         fence.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
+        await InvalidateCacheAsync(fence.ElderId);
 
         return MapToResponse(fence);
     }
@@ -120,27 +142,69 @@ public class GeoFenceService : IGeoFenceService
 
         _context.GeoFences.Remove(fence);
         await _context.SaveChangesAsync();
+        await InvalidateCacheAsync(fence.ElderId);
     }
 
     /// <summary>
-    /// 检查用户是否超出围栏
+    /// 检查用户是否超出围栏（优先从 Redis 缓存读取围栏数据）
+    ///
+    /// 位置上报是高频操作（每 5 分钟一次），围栏数据变更频率极低。
+    /// 将围栏数据缓存至 Redis 后，位置校验无需查询数据库，响应时间降低一个数量级。
     /// </summary>
     public async Task<(GeoFenceResponse? fence, double distance)?> CheckOutsideFenceAsync(Guid userId, double latitude, double longitude)
     {
-        // 获取该用户的围栏
-        var fence = await _context.GeoFences
-            .Include(f => f.Elder)
-            .FirstOrDefaultAsync(f => f.ElderId == userId && f.IsEnabled);
+        var cacheKey = $"{_cacheKeyPrefix}{userId}";
 
-        if (fence == null) return null;
+        // 优先从缓存获取围栏数据
+        var cachedFence = await _cacheService.GetOrCreateAsync<GeoFenceCacheEntry>(
+            cacheKey,
+            async () =>
+            {
+                // 缓存未命中：从数据库加载
+                var fence = await _context.GeoFences
+                    .Include(f => f.Elder)
+                    .FirstOrDefaultAsync(f => f.ElderId == userId && f.IsEnabled);
+
+                if (fence == null) return null;
+
+                return new GeoFenceCacheEntry
+                {
+                    Id = fence.Id,
+                    ElderId = fence.ElderId,
+                    ElderName = fence.Elder?.RealName ?? "",
+                    CenterLatitude = fence.CenterLatitude,
+                    CenterLongitude = fence.CenterLongitude,
+                    Radius = fence.Radius,
+                    IsEnabled = fence.IsEnabled,
+                    CreatedBy = fence.CreatedBy,
+                    CreatedAt = fence.CreatedAt,
+                    UpdatedAt = fence.UpdatedAt
+                };
+            },
+            _cacheExpiration);
+
+        if (cachedFence == null) return null;
 
         // 计算当前位置与围栏中心的距离
-        var distance = CalculateDistance(latitude, longitude, fence.CenterLatitude, fence.CenterLongitude);
+        var distance = CalculateDistance(latitude, longitude, cachedFence.CenterLatitude, cachedFence.CenterLongitude);
 
         // 超出围栏
-        if (distance > fence.Radius)
+        if (distance > cachedFence.Radius)
         {
-            return (MapToResponse(fence), distance);
+            var response = new GeoFenceResponse
+            {
+                Id = cachedFence.Id,
+                ElderId = cachedFence.ElderId,
+                ElderName = cachedFence.ElderName,
+                CenterLatitude = cachedFence.CenterLatitude,
+                CenterLongitude = cachedFence.CenterLongitude,
+                Radius = (int)cachedFence.Radius,
+                IsEnabled = cachedFence.IsEnabled,
+                CreatedBy = cachedFence.CreatedBy,
+                CreatedAt = cachedFence.CreatedAt,
+                UpdatedAt = cachedFence.UpdatedAt
+            };
+            return (response, distance);
         }
 
         return null;
@@ -222,4 +286,32 @@ public class GeoFenceService : IGeoFenceService
         if (!isFamily)
             throw new UnauthorizedAccessException("您不是该老人的家庭成员，无权操作");
     }
+
+    /// <summary>
+    /// 清除指定老人的围栏缓存（写操作后调用）
+    /// </summary>
+    private async Task InvalidateCacheAsync(Guid elderId)
+    {
+        await _cacheService.RemoveAsync($"{_cacheKeyPrefix}{elderId}");
+    }
+}
+
+/// <summary>
+/// 围栏缓存条目（轻量级 DTO，仅包含围栏校验所需的核心字段）
+///
+/// 不直接缓存 GeoFence 实体，避免 EF Core 导航属性序列化问题，
+/// 同时减少缓存体积，提升 Redis 读写效率。
+/// </summary>
+public class GeoFenceCacheEntry
+{
+    public Guid Id { get; set; }
+    public Guid ElderId { get; set; }
+    public string ElderName { get; set; } = string.Empty;
+    public double CenterLatitude { get; set; }
+    public double CenterLongitude { get; set; }
+    public double Radius { get; set; }
+    public bool IsEnabled { get; set; }
+    public Guid CreatedBy { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 }
