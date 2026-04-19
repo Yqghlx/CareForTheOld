@@ -80,6 +80,7 @@ public class GeoFenceServiceTests
     {
         var elderId = await CreateTestUserAsync("老人");
         var childId = await CreateTestUserAsync("子女", UserRole.Child);
+        await CreateTestFamilyAsync(elderId, childId);
 
         var request = new Models.DTOs.Requests.GeoFences.CreateGeoFenceRequest
         {
@@ -105,6 +106,7 @@ public class GeoFenceServiceTests
     {
         var elderId = await CreateTestUserAsync("老人");
         var childId = await CreateTestUserAsync("子女", UserRole.Child);
+        await CreateTestFamilyAsync(elderId, childId);
 
         await _service.CreateFenceAsync(childId, new Models.DTOs.Requests.GeoFences.CreateGeoFenceRequest
         {
@@ -135,6 +137,7 @@ public class GeoFenceServiceTests
     {
         var elderId = await CreateTestUserAsync("老人");
         var childId = await CreateTestUserAsync("子女", UserRole.Child);
+        await CreateTestFamilyAsync(elderId, childId);
 
         // 创建围栏（北京天安门附近）
         await _service.CreateFenceAsync(childId, new Models.DTOs.Requests.GeoFences.CreateGeoFenceRequest
@@ -156,6 +159,7 @@ public class GeoFenceServiceTests
     {
         var elderId = await CreateTestUserAsync("老人");
         var childId = await CreateTestUserAsync("子女", UserRole.Child);
+        await CreateTestFamilyAsync(elderId, childId);
 
         // 创建围栏（北京天安门附近，半径100米）
         await _service.CreateFenceAsync(childId, new Models.DTOs.Requests.GeoFences.CreateGeoFenceRequest
@@ -191,6 +195,7 @@ public class GeoFenceServiceTests
     {
         var elderId = await CreateTestUserAsync("老人");
         var childId = await CreateTestUserAsync("子女", UserRole.Child);
+        await CreateTestFamilyAsync(elderId, childId);
 
         await _service.CreateFenceAsync(childId, new Models.DTOs.Requests.GeoFences.CreateGeoFenceRequest
         {
@@ -254,6 +259,7 @@ public class GeoFenceServiceTests
     {
         var elderId = await CreateTestUserAsync("老人");
         var childId = await CreateTestUserAsync("子女", UserRole.Child);
+        await CreateTestFamilyAsync(elderId, childId);
 
         // 创建第一个围栏
         await _service.CreateFenceAsync(childId, new Models.DTOs.Requests.GeoFences.CreateGeoFenceRequest

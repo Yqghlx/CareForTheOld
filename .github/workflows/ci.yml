@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # 后端：构建 + 测试
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 设置 .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: 还原依赖
+        run: dotnet restore
+
+      - name: 构建
+        run: dotnet build --no-restore --configuration Release
+
+      - name: 运行测试
+        run: dotnet test --no-build --configuration Release --collect:"XPlat Code Coverage" --results-directory ./coverage
+
+      - name: 上传测试结果
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: coverage/
+
+  # 前端：分析 + 构建
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: flutter_client
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 设置 Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.x'
+          channel: 'stable'
+
+      - name: 安装依赖
+        run: flutter pub get
+
+      - name: 静态分析
+        run: flutter analyze --no-fatal-infos
+
+      - name: 构建 APK（仅 main 分支）
+        if: github.ref == 'refs/heads/main'
+        run: flutter build apk --release --dart-define=APP_ENV=production
+
+      - name: 上传 APK
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: flutter_client/build/app/outputs/flutter-apk/app-release.apk

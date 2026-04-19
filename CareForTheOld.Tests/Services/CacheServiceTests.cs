@@ -149,6 +149,58 @@ public class CacheServiceTests
             Times.Once);
     }
 
+    [Fact]
+    public async Task GetOrCreateAsync_ShouldReturnValue_WhenCached()
+    {
+        // 准备：缓存中已有数据
+        var cachedData = new TestData { Name = "已缓存", Value = 1 };
+        var cachedBytes = JsonSerializer.SerializeToUtf8Bytes(cachedData);
+        _mockCache
+            .Setup(c => c.GetAsync("cached_key", default))
+            .ReturnsAsync(cachedBytes);
+
+        var factoryCalled = false;
+
+        // 执行
+        var result = await _service.GetOrCreateAsync<TestData>(
+            "cached_key",
+            () => { factoryCalled = true; return Task.FromResult(new TestData { Name = "新建", Value = 2 }); });
+
+        // 验证：返回缓存值，factory 未调用
+        result.Should().NotBeNull();
+        result!.Name.Should().Be("已缓存");
+        factoryCalled.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task GetOrCreateAsync_ShouldCallFactory_WhenNotCached()
+    {
+        // 准备：缓存中没有数据，第一次返回 null，第二次（重建后）也返回 null
+        _mockCache
+            .Setup(c => c.GetAsync("new_key", default))
+            .ReturnsAsync((byte[]?)null);
+
+        _mockCache
+            .Setup(c => c.SetAsync(
+                "new_key",
+                It.IsAny<byte[]>(),
+                It.IsAny<DistributedCacheEntryOptions>(),
+                default))
+            .Returns(Task.CompletedTask);
+
+        // 执行
+        var result = await _service.GetOrCreateAsync<TestData>(
+            "new_key",
+            () => Task.FromResult(new TestData { Name = "工厂创建", Value = 99 })!);
+
+        // 验证：factory 被调用并缓存
+        result.Should().NotBeNull();
+        result!.Name.Should().Be("工厂创建");
+        _mockCache.Verify(
+            c => c.SetAsync("new_key", It.IsAny<byte[]>(), It.IsAny<DistributedCacheEntryOptions>(), default),
+            Times.Once);
+    }
+
     /// <summary>
     /// 测试用的数据类
     /// </summary>

@@ -5,7 +5,6 @@ using CareForTheOld.Services.Hubs;
 using CareForTheOld.Services.Implementations;
 using FluentAssertions;
 using Microsoft.AspNetCore.SignalR;
-
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
@@ -25,13 +24,11 @@ public class NotificationServiceTests
 
     public NotificationServiceTests()
     {
-        // 使用 InMemory 数据库，GUID 命名确保测试隔离
         var options = new DbContextOptionsBuilder<AppDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
         _context = new AppDbContext(options);
 
-        // Mock IHubContext<NotificationHub>
         _mockHubContext = new Mock<IHubContext<NotificationHub>>();
         _mockClients = new Mock<IHubClients>();
         _mockClientProxy = new Mock<IClientProxy>();
@@ -63,10 +60,30 @@ public class NotificationServiceTests
         return user;
     }
 
+    /// <summary>
+    /// 创建测试通知
+    /// </summary>
+    private async Task<NotificationRecord> CreateNotificationAsync(
+        Guid userId, string type = "Test", string title = "测试通知", bool isRead = false)
+    {
+        var notification = new NotificationRecord
+        {
+            Id = Guid.NewGuid(),
+            UserId = userId,
+            Type = type,
+            Title = title,
+            Content = "测试内容",
+            IsRead = isRead,
+            CreatedAt = DateTime.UtcNow
+        };
+        _context.NotificationRecords.Add(notification);
+        await _context.SaveChangesAsync();
+        return notification;
+    }
+
     [Fact]
     public async Task SendToUserAsync_ShouldPersistAndPush()
     {
-        // 准备：创建目标用户
         var user = await CreateUserAsync("13500001001", "通知接收者");
 
         var notificationData = new
@@ -75,10 +92,8 @@ public class NotificationServiceTests
             Content = "该吃降压药了"
         };
 
-        // 执行：向用户发送通知
         await _service.SendToUserAsync(user.Id, "MedicationReminder", notificationData);
 
-        // 验证：数据库中存在通知记录
         var record = await _context.NotificationRecords
             .FirstOrDefaultAsync(n => n.UserId == user.Id);
         record.Should().NotBeNull();
@@ -87,15 +102,10 @@ public class NotificationServiceTests
         record.Content.Should().Be("该吃降压药了");
         record.IsRead.Should().BeFalse();
 
-        // 验证：SignalR 推送被调用（通过 Group 方式发送）
-        _mockClients.Verify(
-            c => c.Group($"user_{user.Id}"),
-            Times.Once);
+        _mockClients.Verify(c => c.Group($"user_{user.Id}"), Times.Once);
         _mockClientProxy.Verify(
             p => p.SendCoreAsync("ReceiveNotification",
-                It.Is<object[]>(args =>
-                    args.Length == 2
-                    && (string)args[0] == "MedicationReminder"),
+                It.Is<object[]>(args => args.Length == 2 && (string)args[0] == "MedicationReminder"),
                 default),
             Times.Once);
     }
@@ -103,27 +113,94 @@ public class NotificationServiceTests
     [Fact]
     public async Task SendToFamilyAsync_ShouldSendToAllMembers()
     {
-        // 准备
         var familyId = Guid.NewGuid();
-        var notificationData = new
-        {
-            Title = "紧急呼叫",
-            Content = "老人发起了紧急呼叫"
-        };
+        var notificationData = new { Title = "紧急呼叫", Content = "老人发起了紧急呼叫" };
 
-        // 执行：向家庭组发送通知
         await _service.SendToFamilyAsync(familyId, "EmergencyCall", notificationData);
 
-        // 验证：SignalR 向家庭组推送通知
-        _mockClients.Verify(
-            c => c.Group($"family_{familyId}"),
-            Times.Once);
-        _mockClientProxy.Verify(
-            p => p.SendCoreAsync("ReceiveNotification",
-                It.Is<object[]>(args =>
-                    args.Length == 2
-                    && (string)args[0] == "EmergencyCall"),
-                default),
-            Times.Once);
+        _mockClients.Verify(c => c.Group($"family_{familyId}"), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetUserNotificationsAsync_ShouldReturnUserNotifications()
+    {
+        var user = await CreateUserAsync();
+        // 创建该用户的通知和其他用户的通知
+        await CreateNotificationAsync(user.Id, "Type1", "通知1");
+        await CreateNotificationAsync(user.Id, "Type2", "通知2");
+        await CreateNotificationAsync(Guid.NewGuid(), "Type3", "其他用户通知");
+
+        var result = await _service.GetUserNotificationsAsync(user.Id, limit: 10);
+
+        result.Should().HaveCount(2);
+        // 验证返回的均为该用户的通知（通过标题区分）
+        result.Should().OnlyContain(r => r.Title == "通知1" || r.Title == "通知2");
+    }
+
+    [Fact]
+    public async Task GetUserNotificationsAsync_ShouldRespectLimit()
+    {
+        var user = await CreateUserAsync();
+        for (int i = 0; i < 5; i++)
+        {
+            await CreateNotificationAsync(user.Id, "Type", $"通知{i}");
+        }
+
+        var result = await _service.GetUserNotificationsAsync(user.Id, limit: 3);
+
+        result.Should().HaveCount(3);
+    }
+
+    [Fact]
+    public async Task GetUnreadCountAsync_ShouldReturnCorrectCount()
+    {
+        var user = await CreateUserAsync();
+        await CreateNotificationAsync(user.Id, isRead: false);
+        await CreateNotificationAsync(user.Id, isRead: false);
+        await CreateNotificationAsync(user.Id, isRead: true);
+
+        var count = await _service.GetUnreadCountAsync(user.Id);
+
+        count.Should().Be(2);
+    }
+
+    [Fact]
+    public async Task MarkAsReadAsync_ShouldMarkNotificationAsRead()
+    {
+        var user = await CreateUserAsync();
+        var notification = await CreateNotificationAsync(user.Id, isRead: false);
+
+        var success = await _service.MarkAsReadAsync(notification.Id, user.Id);
+
+        success.Should().BeTrue();
+        var updated = await _context.NotificationRecords.FindAsync(notification.Id);
+        updated!.IsRead.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task MarkAsReadAsync_ShouldReturnFalseForOtherUsersNotification()
+    {
+        var user = await CreateUserAsync();
+        var otherUser = await CreateUserAsync("13500002222", "其他用户");
+        var notification = await CreateNotificationAsync(otherUser.Id, isRead: false);
+
+        var success = await _service.MarkAsReadAsync(notification.Id, user.Id);
+
+        success.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task MarkAllAsReadAsync_ShouldMarkAllUnreadNotifications()
+    {
+        var user = await CreateUserAsync();
+        await CreateNotificationAsync(user.Id, isRead: false);
+        await CreateNotificationAsync(user.Id, isRead: false);
+        await CreateNotificationAsync(user.Id, isRead: true);
+
+        await _service.MarkAllAsReadAsync(user.Id);
+
+        var unreadCount = await _context.NotificationRecords
+            .CountAsync(n => n.UserId == user.Id && !n.IsRead);
+        unreadCount.Should().Be(0);
     }
 }

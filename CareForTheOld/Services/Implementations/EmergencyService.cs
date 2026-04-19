@@ -114,6 +114,9 @@ public class EmergencyService : IEmergencyService
             ElderName = c.Elder.RealName,
             ElderPhoneNumber = c.Elder.PhoneNumber,
             FamilyId = c.FamilyId,
+            CalledAt = c.CalledAt,
+            Status = c.Status,
+            RespondedBy = c.RespondedBy,
             RespondedByRealName = c.RespondedByRealName,
             RespondedAt = c.RespondedAt,
         }).ToList();
