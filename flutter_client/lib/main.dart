@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'core/router/app_router.dart';
+import 'core/services/offline_queue_service.dart';
 import 'core/theme/app_theme.dart';
 import 'features/shared/services/local_notification_service.dart';
 
@@ -31,6 +34,10 @@ void main() async {
   // 初始化本地通知
   await LocalNotificationService.initialize();
 
+  // 初始化 Hive 本地数据库（离线队列使用）
+  final appDir = await getApplicationDocumentsDirectory();
+  Hive.init(appDir.path);
+
   // 初始化 Sentry 错误监控
   // DSN 从环境变量或编译配置注入，未配置时自动禁用
   const sentryDsn = String.fromEnvironment('SENTRY_DSN');
@@ -55,11 +62,25 @@ void main() async {
 }
 
 /// 应用入口
-class CareForTheOldApp extends ConsumerWidget {
+class CareForTheOldApp extends ConsumerStatefulWidget {
   const CareForTheOldApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CareForTheOldApp> createState() => _CareForTheOldAppState();
+}
+
+class _CareForTheOldAppState extends ConsumerState<CareForTheOldApp> {
+  @override
+  void initState() {
+    super.initState();
+    // 初始化离线队列（网络恢复后自动上传）
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(offlineQueueServiceProvider).init();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final router = ref.watch(appRouterProvider);
 
     return MaterialApp.router(
