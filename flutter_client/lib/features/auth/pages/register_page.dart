@@ -88,6 +88,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       );
 
       // 根据角色跳转
+      if (!mounted) return;
       if (user.role.isElder) {
         context.go('/elder/home');
       } else {

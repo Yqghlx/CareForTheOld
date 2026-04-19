@@ -606,7 +606,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         startDate:
                             '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}',
                       );
-                      if (mounted) {
+                      if (mounted && context.mounted) {
                         // 刷新子女端老人健康页面的用药计划/记录
                         ref.invalidate(elderMedicationPlansProvider);
                         ref.invalidate(elderMedicationLogsProvider);
@@ -618,7 +618,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         );
                       }
                     } catch (e) {
-                      if (mounted) {
+                      if (mounted && context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text('创建失败: $e'),

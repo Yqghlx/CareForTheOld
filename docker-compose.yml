@@ -1,20 +1,24 @@
 # CareForTheOld 开发/测试环境 Docker Compose 配置
-# 使用方式: docker-compose up -d --build
+# 使用方式:
+#   1. 复制 .env.example 为 .env 并填入实际值: cp .env.example .env
+#   2. docker-compose up -d --build
+#
+# 注意：敏感配置通过 .env 文件注入，不要在此文件中硬编码密码
 
 services:
   postgres:
     image: postgres:16-alpine
     container_name: carefortheold-db
     environment:
-      POSTGRES_USER: carefortheold
-      POSTGRES_PASSWORD: carefortheold_dev_2026
-      POSTGRES_DB: carefortheold
+      POSTGRES_USER: ${POSTGRES_USER:-carefortheold}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?请在 .env 中设置 POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-carefortheold}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U carefortheold"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-carefortheold}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -23,7 +27,7 @@ services:
     image: redis:7-alpine
     container_name: carefortheold-redis
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -36,13 +40,13 @@ services:
       dockerfile: Dockerfile
     container_name: carefortheold-api
     ports:
-      - "5001:5000"
+      - "${API_PORT:-5001}:5000"
     environment:
-      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
       ASPNETCORE_URLS: http://+:5000
-      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=carefortheold;Username=carefortheold;Password=carefortheold_dev_2026;Pooling=true;Minimum Pool Size=10;Maximum Pool Size=200;Connection Lifetime=300;"
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=${POSTGRES_DB:-carefortheold};Username=${POSTGRES_USER:-carefortheold};Password=${POSTGRES_PASSWORD:?请在 .env 中设置 POSTGRES_PASSWORD};Pooling=true;Minimum Pool Size=10;Maximum Pool Size=200;Connection Lifetime=300;"
       ConnectionStrings__Redis: "redis:6379"
-      Jwt__Key: "CareForTheOld_Docker_SecretKey_2026_MustBe32Chars!"
+      Jwt__Key: ${JWT_SECRET_KEY:?请在 .env 中设置 JWT_SECRET_KEY}
       Jwt__Issuer: "CareForTheOld"
       Jwt__Audience: "CareForTheOld"
     depends_on:

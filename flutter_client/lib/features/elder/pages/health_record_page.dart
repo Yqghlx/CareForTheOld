@@ -460,7 +460,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                 // 初始化并开始录音
                                 final available = await voiceService.initialize();
                                 if (!available) {
-                                  if (ctx.mounted) {
+                                  if (ctx.mounted && context.mounted) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                         content: Text('语音识别不可用，请检查设备设置'),
@@ -823,7 +823,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
           note: note,
         );
 
-    if (success && mounted) {
+    if (success && mounted && context.mounted) {
       Navigator.pop(dialogContext);
       // 带动画的成功提示
       ScaffoldMessenger.of(context).clearSnackBars();
@@ -865,7 +865,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
       );
       // 保存成功后刷新统计
       ref.invalidate(healthStatsProvider);
-    } else if (mounted) {
+    } else if (mounted && dialogContext.mounted) {
       // 提交失败，保持对话框打开，让用户可以重试
       ScaffoldMessenger.of(dialogContext).showSnackBar(
         const SnackBar(
