@@ -3,8 +3,10 @@ using CareForTheOld.Models.DTOs.Requests.GeoFences;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Implementations;
+using CareForTheOld.Services.Interfaces;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using Xunit;
 
 namespace CareForTheOld.Tests.Integration;
@@ -19,6 +21,7 @@ public class GeoFenceServiceIntegrationTests : IAsyncLifetime
     private readonly PostgreSqlFixture _fixture;
     private AppDbContext _context = null!;
     private GeoFenceService _service = null!;
+    private Mock<ICacheService> _mockCacheService = null!;
 
     public GeoFenceServiceIntegrationTests(PostgreSqlFixture fixture)
     {
@@ -29,7 +32,17 @@ public class GeoFenceServiceIntegrationTests : IAsyncLifetime
     {
         _context = _fixture.CreateDbContext();
         await _context.Database.EnsureCreatedAsync();
-        _service = new GeoFenceService(_context);
+
+        // Mock ICacheService：集成测试关注数据库行为，缓存侧不影响
+        _mockCacheService = new Mock<ICacheService>();
+        _mockCacheService
+            .Setup(c => c.RemoveAsync(It.IsAny<string>()))
+            .Returns(Task.CompletedTask);
+        _mockCacheService
+            .Setup(c => c.GetOrCreateAsync<GeoFenceCacheEntry>(It.IsAny<string>(), It.IsAny<Func<Task<GeoFenceCacheEntry?>>>(), It.IsAny<TimeSpan?>()))
+            .Returns((string _, Func<Task<GeoFenceCacheEntry?>> factory, TimeSpan? _) => factory());
+
+        _service = new GeoFenceService(_context, _mockCacheService.Object);
     }
 
     public Task DisposeAsync()
@@ -149,7 +162,9 @@ public class GeoFenceServiceIntegrationTests : IAsyncLifetime
         {
             using var ctx = _fixture.CreateDbContext();
             await ctx.Database.EnsureCreatedAsync();
-            var svc = new GeoFenceService(ctx);
+            var cache = new Mock<ICacheService>();
+            cache.Setup(c => c.RemoveAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
+            var svc = new GeoFenceService(ctx, cache.Object);
             return await svc.CreateFenceAsync(child.Id, new CreateGeoFenceRequest
             {
                 ElderId = elder.Id,
@@ -163,7 +178,9 @@ public class GeoFenceServiceIntegrationTests : IAsyncLifetime
         {
             using var ctx = _fixture.CreateDbContext();
             await ctx.Database.EnsureCreatedAsync();
-            var svc = new GeoFenceService(ctx);
+            var cache = new Mock<ICacheService>();
+            cache.Setup(c => c.RemoveAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
+            var svc = new GeoFenceService(ctx, cache.Object);
             return await svc.CreateFenceAsync(child.Id, new CreateGeoFenceRequest
             {
                 ElderId = elder.Id,

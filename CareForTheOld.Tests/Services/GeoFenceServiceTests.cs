@@ -2,8 +2,10 @@ using CareForTheOld.Data;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Implementations;
+using CareForTheOld.Services.Interfaces;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using Xunit;
 
 namespace CareForTheOld.Tests.Services;
@@ -15,6 +17,7 @@ public class GeoFenceServiceTests
 {
     private readonly AppDbContext _context;
     private readonly GeoFenceService _service;
+    private readonly Mock<ICacheService> _mockCacheService;
 
     public GeoFenceServiceTests()
     {
@@ -22,7 +25,17 @@ public class GeoFenceServiceTests
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
         _context = new AppDbContext(options);
-        _service = new GeoFenceService(_context);
+
+        // Mock ICacheService：GetOrCreateAsync 直接执行 factory（模拟缓存未命中）
+        _mockCacheService = new Mock<ICacheService>();
+        _mockCacheService
+            .Setup(c => c.GetOrCreateAsync<GeoFenceCacheEntry>(It.IsAny<string>(), It.IsAny<Func<Task<GeoFenceCacheEntry?>>>(), It.IsAny<TimeSpan?>()))
+            .Returns((string _, Func<Task<GeoFenceCacheEntry?>> factory, TimeSpan? _) => factory());
+        _mockCacheService
+            .Setup(c => c.RemoveAsync(It.IsAny<string>()))
+            .Returns(Task.CompletedTask);
+
+        _service = new GeoFenceService(_context, _mockCacheService.Object);
     }
 
     private async Task<Guid> CreateTestUserAsync(string realName = "测试老人", UserRole role = UserRole.Elder)
