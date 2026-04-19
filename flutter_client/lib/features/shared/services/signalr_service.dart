@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +13,9 @@ import 'local_notification_service.dart';
 class SignalRService {
   HubConnection? _hubConnection;
   final Ref _ref;
+
+  /// 心跳定时器（每 60 秒发送一次心跳）
+  Timer? _heartbeatTimer;
 
   /// 从 AppConfig 读取 SignalR Hub URL
   static String get _hubUrl => AppConfig.current.signalrBaseUrl;
@@ -67,6 +71,7 @@ class SignalRService {
     try {
       await _hubConnection!.start();
       debugPrint('SignalR 连接成功');
+      _startHeartbeat();
     } catch (e) {
       debugPrint('SignalR 连接失败: $e');
     }
@@ -74,6 +79,8 @@ class SignalRService {
 
   /// 断开连接
   Future<void> disconnect() async {
+    _heartbeatTimer?.cancel();
+    _heartbeatTimer = null;
     if (_hubConnection != null) {
       await _hubConnection!.stop();
       _hubConnection = null;
@@ -146,6 +153,21 @@ class SignalRService {
       title: title,
       body: content,
     );
+  }
+
+  /// 启动心跳定时器（每 60 秒发送一次心跳，保持后端感知在线状态）
+  void _startHeartbeat() {
+    _heartbeatTimer?.cancel();
+    _heartbeatTimer = Timer.periodic(const Duration(seconds: 60), (_) async {
+      if (_hubConnection != null && isConnected) {
+        try {
+          await _hubConnection!.invoke('Heartbeat');
+          debugPrint('[心跳] 已发送');
+        } catch (e) {
+          debugPrint('[心跳] 发送失败: $e');
+        }
+      }
+    });
   }
 }
 

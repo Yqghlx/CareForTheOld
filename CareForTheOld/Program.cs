@@ -90,6 +90,8 @@ builder.Services.AddHostedService<MedicationReminderService>();
 builder.Services.AddSingleton<MedicationReminderService>();
 // 注册 Outbox 投递服务（用于 SignalR 通知的异步投递）
 builder.Services.AddSingleton<OutboxDispatchService>();
+// 注册心跳监控服务（检测老人端离线并触发告警）
+builder.Services.AddSingleton<HeartbeatMonitorService>();
 
 // CORS 配置：从配置读取允许的来源
 builder.Services.AddCors(options =>
@@ -253,6 +255,12 @@ if (!app.Environment.IsEnvironment("Testing"))
         "outbox-dispatch",
         service => service.DispatchOutboxMessagesAsync(),
         "*/10 * * * * *");
+
+    // 心跳监控：每分钟检查老人端心跳状态
+    RecurringJob.AddOrUpdate<HeartbeatMonitorService>(
+        "heartbeat-monitor",
+        service => service.CheckHeartbeatsAsync(),
+        Cron.Minutely);
 }
 
 // 提供上传文件的静态访问（头像等）
