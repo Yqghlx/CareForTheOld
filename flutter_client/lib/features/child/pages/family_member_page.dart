@@ -646,6 +646,16 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                   onPressed: () async {
                     final phone = phoneController.text.trim();
                     if (phone.isEmpty || selectedRelation == null) return;
+                    // 前端手机号格式校验（11 位中国手机号）
+                    if (!RegExp(r'^1[3-9]\d{9}$').hasMatch(phone)) {
+                      ScaffoldMessenger.of(ctx).showSnackBar(
+                        const SnackBar(
+                          content: Text('请输入正确的手机号格式'),
+                          backgroundColor: AppTheme.errorColor,
+                        ),
+                      );
+                      return;
+                    }
                     Navigator.pop(ctx);
                     final success = await ref.read(familyProvider.notifier).addMember(
                       phoneNumber: phone,

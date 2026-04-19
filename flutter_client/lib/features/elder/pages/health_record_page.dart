@@ -251,11 +251,17 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
         '${localTime.year}-${localTime.month.toString().padLeft(2, '0')}-${localTime.day.toString().padLeft(2, '0')} '
         '${localTime.hour.toString().padLeft(2, '0')}:${localTime.minute.toString().padLeft(2, '0')}';
 
+    // 判断数值是否异常
+    final abnormal = _isAbnormal(record);
+
     return Card(
       elevation: 4,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
+        side: abnormal
+            ? BorderSide(color: Colors.orange.withValues(alpha: 0.5), width: 1.5)
+            : BorderSide.none,
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -265,22 +271,45 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
               width: 52,
               height: 52,
               decoration: BoxDecoration(
-                color: record.type.color.withValues(alpha: 0.15),
+                color: (abnormal ? Colors.orange : record.type.color).withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(record.type.icon, color: record.type.color, size: 28),
+              child: Icon(
+                abnormal ? Icons.warning_amber : record.type.icon,
+                color: abnormal ? Colors.orange : record.type.color,
+                size: 28,
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    '${record.type.label}: ${record.displayValue} ${record.type.unit}',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        '${record.type.label}: ${record.displayValue} ${record.type.unit}',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: abnormal ? Colors.orange.shade700 : null,
+                        ),
+                      ),
+                      if (abnormal) ...[
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: Colors.orange.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: const Text(
+                            '偏高',
+                            style: TextStyle(fontSize: 12, color: Colors.orange, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -293,70 +322,28 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                 ],
               ),
             ),
-            IconButton(
-              icon: Icon(
-                Icons.delete_outline,
-                color: Colors.grey.shade500,
-              ),
-              onPressed: () => _confirmDelete(record),
-            ),
           ],
         ),
       ),
     );
   }
 
-  /// 确认删除对话框
-  void _confirmDelete(HealthRecord record) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        title: const Text('确认删除'),
-        content: Text('确定要删除 ${record.type.label}: ${record.displayValue} 这条记录吗？'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('取消'),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Colors.red, Colors.redAccent],
-              ),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: ElevatedButton(
-              onPressed: () async {
-                Navigator.pop(ctx);
-                final success = await ref
-                    .read(healthRecordsProvider.notifier)
-                    .deleteRecord(record.id);
-                if (success) {
-                  // 删除成功后刷新统计数据，保持数据一致性
-                  ref.invalidate(healthStatsProvider);
-                }
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(success ? '已删除' : '删除失败'),
-                      backgroundColor: success ? AppTheme.successColor : AppTheme.errorColor,
-                    ),
-                  );
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-              ),
-              child: const Text('删除'),
-            ),
-          ),
-        ],
-      ),
-    );
+  /// 判断健康数据是否超出正常范围
+  bool _isAbnormal(HealthRecord record) {
+    switch (record.type) {
+      case HealthType.bloodPressure:
+        return (record.systolic != null && (record.systolic! > 140 || record.systolic! < 90)) ||
+               (record.diastolic != null && (record.diastolic! > 90 || record.diastolic! < 60));
+      case HealthType.bloodSugar:
+        return record.bloodSugar != null &&
+               (record.bloodSugar! > 6.1 || record.bloodSugar! < 3.9);
+      case HealthType.heartRate:
+        return record.heartRate != null &&
+               (record.heartRate! > 100 || record.heartRate! < 60);
+      case HealthType.temperature:
+        return record.temperature != null &&
+               (record.temperature! > 37.3 || record.temperature! < 36.0);
+    }
   }
 
   /// 显示录入对话框

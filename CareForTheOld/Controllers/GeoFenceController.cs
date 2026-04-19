@@ -21,10 +21,12 @@ namespace CareForTheOld.Controllers;
 public class GeoFenceController : ControllerBase
 {
     private readonly IGeoFenceService _geoFenceService;
+    private readonly IFamilyService _familyService;
 
-    public GeoFenceController(IGeoFenceService geoFenceService)
+    public GeoFenceController(IGeoFenceService geoFenceService, IFamilyService familyService)
     {
         _geoFenceService = geoFenceService;
+        _familyService = familyService;
     }
 
     /// <summary>
@@ -39,11 +41,18 @@ public class GeoFenceController : ControllerBase
     }
 
     /// <summary>
-    /// 获取老人的电子围栏
+    /// 获取老人的电子围栏（需验证与老人是同一家庭成员）
     /// </summary>
     [HttpGet("elder/{elderId}")]
     public async Task<ApiResponse<GeoFenceResponse?>> GetElderFence(Guid elderId)
     {
+        // 验证请求的子女与目标老人属于同一家庭
+        var userId = this.GetUserId();
+        var userFamilyId = await _familyService.GetMyFamilyAsync(userId);
+        var elderFamilyId = await _familyService.GetMyFamilyAsync(elderId);
+        if (userFamilyId == null || elderFamilyId == null || userFamilyId.Id != elderFamilyId.Id)
+            return ApiResponse<GeoFenceResponse?>.Fail("无权查看该老人的围栏信息");
+
         var result = await _geoFenceService.GetElderFenceAsync(elderId);
         return ApiResponse<GeoFenceResponse?>.Ok(result);
     }

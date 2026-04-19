@@ -57,6 +57,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedIndex,
           onTap: (index) => setState(() => _selectedIndex = index),
+          type: BottomNavigationBarType.fixed,
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
@@ -74,6 +75,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
           selectedFontSize: 18,
           unselectedFontSize: 16,
           selectedItemColor: AppTheme.primaryColor,
+          unselectedItemColor: Colors.grey,
         ),
       ),
     );

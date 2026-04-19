@@ -25,5 +25,6 @@ public class RegisterRequest
     public DateOnly BirthDate { get; set; }
 
     [Required(ErrorMessage = "角色不能为空")]
+    [EnumDataType(typeof(UserRole), ErrorMessage = "角色值无效")]
     public UserRole Role { get; set; }
 }

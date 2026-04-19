@@ -138,7 +138,7 @@ public class HealthController : ControllerBase
     {
         var userId = this.GetUserId();
         var pdfBytes = await _reportService.GeneratePdfReportAsync(userId, days);
-        var fileName = $"健康报告_{DateTime.Now:yyyyMMdd}.pdf";
+        var fileName = $"健康报告_{DateTime.UtcNow:yyyyMMdd}.pdf";
         return File(pdfBytes, "application/pdf", fileName);
     }
 
@@ -160,7 +160,7 @@ public class HealthController : ControllerBase
             return Forbid();
 
         var pdfBytes = await _reportService.GeneratePdfReportAsync(memberId, days);
-        var fileName = $"健康报告_{DateTime.Now:yyyyMMdd}.pdf";
+        var fileName = $"健康报告_{DateTime.UtcNow:yyyyMMdd}.pdf";
         return File(pdfBytes, "application/pdf", fileName);
     }
 }

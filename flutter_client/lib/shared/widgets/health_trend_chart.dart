@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../shared/models/health_record.dart';
-import '../../core/theme/app_theme.dart';
 
 /// 健康趋势图表组件
 class HealthTrendChart extends StatelessWidget {
@@ -293,8 +292,6 @@ class HealthTrendChart extends StatelessWidget {
       final minSys = systolics.reduce((a, b) => a < b ? a : b);
       final avgSys = systolics.reduce((a, b) => a + b) / systolics.length;
 
-      final maxDia = diastolics.reduce((a, b) => a > b ? a : b);
-      final minDia = diastolics.reduce((a, b) => a < b ? a : b);
       final avgDia = diastolics.reduce((a, b) => a + b) / diastolics.length;
 
       return Row(
@@ -368,9 +365,7 @@ class HealthTrendChart extends StatelessWidget {
 
   /// 血压最小值（取收缩压和舒张压的最小）
   double _getMinValue(List<HealthRecord> data) {
-    final minSys = data.map((r) => r.systolic ?? 0).reduce((a, b) => a < b ? a : b);
-    final minDia = data.map((r) => r.diastolic ?? 0).reduce((a, b) => a < b ? a : b);
-    return minDia.toDouble();
+    return data.map((r) => r.diastolic ?? 0).reduce((a, b) => a < b ? a : b).toDouble();
   }
 
   /// 血压最大值（取收缩压最大）
