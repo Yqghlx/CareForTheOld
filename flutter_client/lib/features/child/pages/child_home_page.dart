@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +13,7 @@ import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../shared/providers/emergency_provider.dart';
+import 'elder_health_page.dart';
 
 /// 子女端首页
 class ChildHomePage extends ConsumerStatefulWidget {
@@ -21,14 +24,27 @@ class ChildHomePage extends ConsumerStatefulWidget {
 }
 
 class _ChildHomePageState extends ConsumerState<ChildHomePage> {
+  Timer? _pollTimer;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(familyProvider.notifier).loadFamily();
-      // 加载紧急呼叫状态
       ref.read(emergencyProvider.notifier).loadUnreadCalls();
     });
+    // 每 30 秒轮询紧急呼叫状态
+    _pollTimer = Timer.periodic(const Duration(seconds: 30), (_) {
+      if (mounted) {
+        ref.read(emergencyProvider.notifier).loadUnreadCalls();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _pollTimer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -66,9 +82,35 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                 ),
             ],
           ),
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () => context.push('/notifications'),
+          // 通知按钮（带未读红点）
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.notifications),
+                onPressed: () => context.push('/notifications'),
+              ),
+              // 未读通知红点
+              Positioned(
+                right: 8,
+                top: 8,
+                child: Consumer(
+                  builder: (context, ref, _) {
+                    final unreadCount = ref.watch(unreadEmergencyCountProvider);
+                    // 这里使用紧急呼叫未读数作为通知提示
+                    // TODO: 接入通知未读数
+                    if (unreadCount == 0) return const SizedBox.shrink();
+                    return Container(
+                      width: 10,
+                      height: 10,
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
           IconButton(
             icon: const Icon(Icons.settings),
@@ -565,6 +607,9 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                             '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}',
                       );
                       if (mounted) {
+                        // 刷新子女端老人健康页面的用药计划/记录
+                        ref.invalidate(elderMedicationPlansProvider);
+                        ref.invalidate(elderMedicationLogsProvider);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('用药计划创建成功'),

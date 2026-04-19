@@ -38,6 +38,10 @@ public class FamilyService : IFamilyService
 
     public async Task<FamilyResponse> CreateFamilyAsync(Guid creatorId, CreateFamilyRequest request)
     {
+        // 检查用户是否已加入其他家庭
+        if (await _context.FamilyMembers.AnyAsync(fm => fm.UserId == creatorId))
+            throw new ArgumentException("您已加入家庭组，不能重复创建");
+
         var creator = await _context.Users.FindAsync(creatorId)
             ?? throw new KeyNotFoundException("用户不存在");
 
@@ -80,7 +84,7 @@ public class FamilyService : IFamilyService
             Id = Guid.NewGuid(),
             FamilyId = familyId,
             UserId = user.Id,
-            Role = request.Role,
+            Role = user.Role, // 使用用户实际角色，防止客户端伪造
             Relation = request.Relation,
         });
 
@@ -120,7 +124,7 @@ public class FamilyService : IFamilyService
     }
 
     /// <summary>
-    /// 刷新邀请码
+    /// 刷新邀请码（仅家庭创建者可操作）
     /// </summary>
     public async Task<FamilyResponse> RefreshInviteCodeAsync(Guid familyId, Guid operatorId)
     {
@@ -128,6 +132,9 @@ public class FamilyService : IFamilyService
 
         var family = await _context.Families.FindAsync(familyId)
             ?? throw new KeyNotFoundException("家庭组不存在");
+
+        if (family.CreatorId != operatorId)
+            throw new UnauthorizedAccessException("仅家庭创建者可以刷新邀请码");
 
         family.InviteCode = GenerateInviteCode();
         await _context.SaveChangesAsync();
@@ -153,7 +160,16 @@ public class FamilyService : IFamilyService
 
     public async Task RemoveMemberAsync(Guid familyId, Guid userId, Guid operatorId)
     {
-        await EnsureMemberAsync(familyId, operatorId);
+        // 验证操作者是家庭创建者
+        var family = await _context.Families.FindAsync(familyId)
+            ?? throw new KeyNotFoundException("家庭组不存在");
+
+        if (family.CreatorId != operatorId)
+            throw new UnauthorizedAccessException("仅家庭创建者可以移除成员");
+
+        // 不能移除创建者本人
+        if (userId == family.CreatorId)
+            throw new ArgumentException("不能移除家庭创建者");
 
         var member = await _context.FamilyMembers
             .FirstOrDefaultAsync(fm => fm.FamilyId == familyId && fm.UserId == userId)

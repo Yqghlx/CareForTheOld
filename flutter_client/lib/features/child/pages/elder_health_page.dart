@@ -196,7 +196,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       crossAxisCount: 2,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      childAspectRatio: 1.2,
+      childAspectRatio: 1.0,
       mainAxisSpacing: 12,
       crossAxisSpacing: 12,
       children: [
@@ -231,7 +231,18 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
   String _getStatsValue(Map<String, HealthStats> map, String typeName) {
     final stat = map[typeName];
     if (stat == null || stat.latestValue == null) return '--';
-    return stat.latestValue!.toStringAsFixed(1);
+    final unit = _getUnit(typeName);
+    return '${stat.latestValue!.toStringAsFixed(1)} $unit';
+  }
+
+  String _getUnit(String typeName) {
+    return switch (typeName) {
+      '血压' => 'mmHg',
+      '血糖' => 'mmol/L',
+      '心率' => '次/分',
+      '体温' => '°C',
+      _ => '',
+    };
   }
 
   /// 用药计划列表

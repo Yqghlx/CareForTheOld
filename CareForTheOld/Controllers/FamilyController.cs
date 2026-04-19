@@ -74,8 +74,12 @@ public class FamilyController : ControllerBase
     [HttpGet("{id:guid}/members")]
     public async Task<ApiResponse<List<FamilyMemberResponse>>> GetMembers(Guid id)
     {
-        var result = await _familyService.GetMembersAsync(id);
-        return ApiResponse<List<FamilyMemberResponse>>.Ok(result);
+        // 验证请求者是该家庭成员，防止越权查看
+        var userId = this.GetUserId();
+        var members = await _familyService.GetMembersAsync(id);
+        if (!members.Any(m => m.UserId == userId))
+            return ApiResponse<List<FamilyMemberResponse>>.Fail("您不是该家庭成员");
+        return ApiResponse<List<FamilyMemberResponse>>.Ok(members);
     }
 
     [HttpDelete("{id:guid}/members/{userId:guid}")]

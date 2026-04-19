@@ -327,8 +327,26 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
     }
   }
 
-  /// 标记跳过
+  /// 标记跳过（带二次确认）
   Future<void> _markSkipped(MedicationLog log) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('确认跳过'),
+        content: Text('确定跳过 ${log.medicineName} 本次用药吗？'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('取消')),
+          PrimaryButton(
+            text: '确认跳过',
+            onPressed: () => Navigator.pop(ctx, true),
+            gradient: const LinearGradient(colors: [Colors.grey, Colors.grey]),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
     final success =
         await ref.read(medicationProvider.notifier).markAsSkipped(log);
     if (mounted) {
