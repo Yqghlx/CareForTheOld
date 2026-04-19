@@ -93,11 +93,19 @@ class EmergencyNotifier extends StateNotifier<EmergencyState> {
   }
 
   /// 老人发起紧急呼叫（带防重复提交保护）
-  Future<EmergencyCall?> createCall() async {
+  Future<EmergencyCall?> createCall({
+    double? latitude,
+    double? longitude,
+    int? batteryLevel,
+  }) async {
     if (_isCreatingCall) return null;
     _isCreatingCall = true;
     try {
-      final call = await _service.createCall();
+      final call = await _service.createCall(
+        latitude: latitude,
+        longitude: longitude,
+        batteryLevel: batteryLevel,
+      );
       return call;
     } catch (e) {
       state = state.copyWith(error: e.toString());

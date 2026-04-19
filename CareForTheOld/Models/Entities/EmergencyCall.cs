@@ -44,6 +44,26 @@ public class EmergencyCall
     /// </summary>
     public string? RespondedByRealName { get; set; }
 
+    /// <summary>
+    /// 呼叫时纬度（可选，前端获取 GPS 后上报）
+    /// </summary>
+    public double? Latitude { get; set; }
+
+    /// <summary>
+    /// 呼叫时经度（可选，前端获取 GPS 后上报）
+    /// </summary>
+    public double? Longitude { get; set; }
+
+    /// <summary>
+    /// 呼叫时电池电量百分比（可选，0~100）
+    /// </summary>
+    public int? BatteryLevel { get; set; }
+
+    /// <summary>
+    /// 是否已发送过二次提醒
+    /// </summary>
+    public bool Reminded { get; set; }
+
     // 导航属性
     public User Elder { get; set; } = null!;
     public Family Family { get; set; } = null!;

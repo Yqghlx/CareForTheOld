@@ -4,6 +4,7 @@ using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Interfaces;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 
 namespace CareForTheOld.Services.Implementations;
@@ -14,13 +15,23 @@ namespace CareForTheOld.Services.Implementations;
 public class EmergencyService : IEmergencyService
 {
     private readonly AppDbContext _context;
+    private readonly INotificationService _notificationService;
+    private readonly ILogger<EmergencyService> _logger;
 
-    public EmergencyService(AppDbContext context) => _context = context;
+    public EmergencyService(
+        AppDbContext context,
+        INotificationService notificationService,
+        ILogger<EmergencyService> logger)
+    {
+        _context = context;
+        _notificationService = notificationService;
+        _logger = logger;
+    }
 
     /// <summary>
     /// 老人发起紧急呼叫
     /// </summary>
-    public async Task<EmergencyCallResponse> CreateCallAsync(Guid elderId)
+    public async Task<EmergencyCallResponse> CreateCallAsync(Guid elderId, double? latitude = null, double? longitude = null, int? batteryLevel = null)
     {
         // 获取老人的家庭信息
         var familyMember = await _context.FamilyMembers
@@ -30,7 +41,7 @@ public class EmergencyService : IEmergencyService
         if (familyMember == null)
             throw new InvalidOperationException("您不在任何家庭组中，无法发起紧急呼叫");
 
-        // 创建紧急呼叫记录
+        // 创建紧急呼叫记录（含位置和电量）
         var call = new EmergencyCall
         {
             Id = Guid.NewGuid(),
@@ -38,10 +49,31 @@ public class EmergencyService : IEmergencyService
             FamilyId = familyMember.FamilyId,
             CalledAt = DateTime.UtcNow,
             Status = EmergencyStatus.Pending,
+            Latitude = latitude,
+            Longitude = longitude,
+            BatteryLevel = batteryLevel,
         };
 
         _context.EmergencyCalls.Add(call);
         await _context.SaveChangesAsync();
+
+        // 异步发送紧急呼叫通知给子女（不阻塞主流程）
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await SendEmergencyNotificationAsync(elderId, familyMember.User.RealName, call.Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "紧急呼叫通知发送失败，老人 {ElderId}", elderId);
+            }
+        });
+
+        // 安排 3 分钟后的二次提醒检查（如果无人响应则再次通知）
+        BackgroundJob.Schedule<EmergencyService>(
+            svc => svc.CheckAndSendFollowUpAsync(call.Id),
+            TimeSpan.FromMinutes(3));
 
         // 返回响应
         return new EmergencyCallResponse
@@ -53,7 +85,68 @@ public class EmergencyService : IEmergencyService
             FamilyId = call.FamilyId,
             CalledAt = call.CalledAt,
             Status = call.Status,
+            Latitude = call.Latitude,
+            Longitude = call.Longitude,
+            BatteryLevel = call.BatteryLevel,
         };
+    }
+
+    /// <summary>
+    /// 检查并发送二次提醒（由 Hangfire 定时调用）
+    /// </summary>
+    public async Task CheckAndSendFollowUpAsync(Guid callId)
+    {
+        var call = await _context.EmergencyCalls
+            .AsTracking()
+            .Include(c => c.Elder)
+            .FirstOrDefaultAsync(c => c.Id == callId);
+
+        // 呼叫已被响应或已提醒过，跳过
+        if (call == null || call.Status == EmergencyStatus.Responded || call.Reminded)
+            return;
+
+        call.Reminded = true;
+        await _context.SaveChangesAsync();
+
+        // 发送二次提醒通知
+        await SendEmergencyNotificationAsync(call.ElderId, call.Elder.RealName, call.Id, isReminder: true);
+
+        _logger.LogInformation("紧急呼叫 {CallId} 已发送二次提醒", callId);
+    }
+
+    /// <summary>
+    /// 发送紧急呼叫通知给子女
+    /// </summary>
+    private async Task SendEmergencyNotificationAsync(Guid elderId, string elderName, Guid callId, bool isReminder = false)
+    {
+        var familyMember = await _context.FamilyMembers
+            .FirstOrDefaultAsync(fm => fm.UserId == elderId);
+
+        if (familyMember == null) return;
+
+        var children = await _context.FamilyMembers
+            .Include(fm => fm.User)
+            .Where(fm => fm.FamilyId == familyMember.FamilyId && fm.Role == UserRole.Child)
+            .ToListAsync();
+
+        foreach (var child in children)
+        {
+            await _notificationService.SendToUserAsync(
+                child.UserId,
+                isReminder ? "EmergencyCallReminder" : "EmergencyCall",
+                new
+                {
+                    Title = isReminder ? "紧急呼叫仍未响应" : "紧急呼叫",
+                    Content = isReminder
+                        ? $"{elderName}的紧急呼叫已超过3分钟未得到响应，请尽快处理！"
+                        : $"{elderName}发起了紧急呼叫，请尽快处理！",
+                    ElderId = elderId,
+                    ElderName = elderName,
+                    CallId = callId,
+                    IsReminder = isReminder,
+                }
+            );
+        }
     }
 
     /// <summary>
@@ -84,6 +177,9 @@ public class EmergencyService : IEmergencyService
             FamilyId = c.FamilyId,
             CalledAt = c.CalledAt,
             Status = c.Status,
+            Latitude = c.Latitude,
+            Longitude = c.Longitude,
+            BatteryLevel = c.BatteryLevel,
         }).ToList();
     }
 
@@ -120,6 +216,9 @@ public class EmergencyService : IEmergencyService
             RespondedBy = c.RespondedBy,
             RespondedByRealName = c.RespondedByRealName,
             RespondedAt = c.RespondedAt,
+            Latitude = c.Latitude,
+            Longitude = c.Longitude,
+            BatteryLevel = c.BatteryLevel,
         }).ToList();
     }
 
@@ -171,6 +270,9 @@ public class EmergencyService : IEmergencyService
             RespondedBy = call.RespondedBy,
             RespondedByRealName = call.RespondedByRealName,
             RespondedAt = call.RespondedAt,
+            Latitude = call.Latitude,
+            Longitude = call.Longitude,
+            BatteryLevel = call.BatteryLevel,
         };
     }
 }

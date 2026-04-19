@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using CareForTheOld.Common.Extensions;
 using CareForTheOld.Common.Helpers;
+using CareForTheOld.Models.DTOs.Requests.Emergency;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -32,10 +33,14 @@ public class EmergencyController : ControllerBase
     [HttpPost]
     [Authorize(Roles = "Elder")]
     [EnableRateLimiting("EmergencyPolicy")]
-    public async Task<ApiResponse<EmergencyCallResponse>> CreateCall()
+    public async Task<ApiResponse<EmergencyCallResponse>> CreateCall([FromBody] CreateEmergencyCallRequest? request)
     {
         var userId = this.GetUserId();
-        var call = await _emergencyService.CreateCallAsync(userId);
+        var call = await _emergencyService.CreateCallAsync(
+            userId,
+            request?.Latitude,
+            request?.Longitude,
+            request?.BatteryLevel);
         return ApiResponse<EmergencyCallResponse>.Ok(call, "紧急呼叫已发送");
     }
 

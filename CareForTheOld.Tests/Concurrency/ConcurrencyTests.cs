@@ -3,9 +3,11 @@ using CareForTheOld.Models.DTOs.Requests.Auth;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Implementations;
+using CareForTheOld.Services.Interfaces;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace CareForTheOld.Tests.Concurrency;
@@ -112,7 +114,7 @@ public class ConcurrencyTests
     public async Task EmergencyCall_ShouldHandleConcurrentCreation()
     {
         var context = CreateContext();
-        var service = new EmergencyService(context);
+        var service = new EmergencyService(context, new Mock<INotificationService>().Object, new Mock<ILogger<EmergencyService>>().Object);
 
         var elderId = Guid.NewGuid();
         var familyId = Guid.NewGuid();

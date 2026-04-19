@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -407,8 +408,28 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
     if (confirmed != true || !mounted) return;
 
     try {
+      // 并行获取 GPS 位置和电池电量（不阻塞呼叫，获取失败也不影响）
+      double? latitude;
+      double? longitude;
+      int? batteryLevel;
+
+      final results = await Future.wait([
+        _getLocation(),
+        _getBatteryLevel(),
+      ]);
+
+      if (results[0] != null) {
+        latitude = (results[0] as Position).latitude;
+        longitude = (results[0] as Position).longitude;
+      }
+      batteryLevel = results[1] as int?;
+
       final service = EmergencyService(ref.read(apiClientProvider).dio);
-      final call = await service.createCall();
+      final call = await service.createCall(
+        latitude: latitude,
+        longitude: longitude,
+        batteryLevel: batteryLevel,
+      );
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -429,6 +450,37 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
           ),
         );
       }
+    }
+  }
+
+  /// 获取当前位置（获取失败返回 null，不影响呼叫流程）
+  Future<Position?> _getLocation() async {
+    try {
+      final permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        return null;
+      }
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) return null;
+
+      return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.medium,
+        timeLimit: const Duration(seconds: 5),
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// 获取电池电量百分比（获取失败返回 null）
+  Future<int?> _getBatteryLevel() async {
+    try {
+      // 使用 battery_plus 包获取电量
+      // 暂时返回 null，后续可引入 battery_plus 包
+      return null;
+    } catch (_) {
+      return null;
     }
   }
 
