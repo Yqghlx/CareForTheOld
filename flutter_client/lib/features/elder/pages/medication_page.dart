@@ -231,22 +231,36 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
                   width: 56,
                   height: 56,
                   decoration: BoxDecoration(
+                    gradient: log.status == MedicationStatus.taken
+                        ? const LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Color(0xFF66BB6A),
+                              Color(0xFFA5D6A7),
+                            ],
+                          )
+                        : null,
                     color: log.status == MedicationStatus.taken
-                        ? Colors.green.withValues(alpha: 0.15)
+                        ? null
                         : log.isPending
                             ? Colors.orange.withValues(alpha: 0.15)
                             : Colors.grey.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  child: Icon(
-                    Icons.medication,
-                    color: log.status == MedicationStatus.taken
-                        ? Colors.green
-                        : log.isPending
-                            ? Colors.orange
-                            : Colors.grey,
-                    size: 28,
-                  ),
+                  child: log.status == MedicationStatus.taken
+                      ? const Icon(
+                          Icons.check_circle_rounded,
+                          color: Colors.white,
+                          size: 32,
+                        )
+                      : Icon(
+                          Icons.medication,
+                          color: log.isPending
+                              ? Colors.orange
+                              : Colors.grey,
+                          size: 28,
+                        ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
