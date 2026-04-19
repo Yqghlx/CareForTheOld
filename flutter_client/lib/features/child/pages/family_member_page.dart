@@ -196,6 +196,25 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               IconButton(
                 icon: const Icon(Icons.refresh, color: Colors.white),
                 onPressed: () async {
+                  final confirmed = await showDialog<bool>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      title: const Text('刷新邀请码'),
+                      content: const Text('刷新后旧邀请码将失效，确定要刷新吗？'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx, false),
+                          child: const Text('取消'),
+                        ),
+                        PrimaryButton(
+                          text: '确定',
+                          onPressed: () => Navigator.pop(ctx, true),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (confirmed != true) return;
                   final success = await ref.read(familyProvider.notifier).refreshInviteCode();
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(

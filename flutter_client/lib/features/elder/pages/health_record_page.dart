@@ -252,7 +252,8 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
         '${localTime.hour.toString().padLeft(2, '0')}:${localTime.minute.toString().padLeft(2, '0')}';
 
     // 判断数值是否异常
-    final abnormal = _isAbnormal(record);
+    final abnormalLabel = _getAbnormalLabel(record);
+    final abnormal = abnormalLabel != null;
 
     return Card(
       elevation: 4,
@@ -303,9 +304,9 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                             color: Colors.orange.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(6),
                           ),
-                          child: const Text(
-                            '偏高',
-                            style: TextStyle(fontSize: 12, color: Colors.orange, fontWeight: FontWeight.w600),
+                          child: Text(
+                            abnormalLabel,
+                            style: const TextStyle(fontSize: 12, color: Colors.orange, fontWeight: FontWeight.w600),
                           ),
                         ),
                       ],
@@ -328,21 +329,30 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
     );
   }
 
-  /// 判断健康数据是否超出正常范围
-  bool _isAbnormal(HealthRecord record) {
+  /// 判断健康数据是否超出正常范围，返回异常标签或 null
+  String? _getAbnormalLabel(HealthRecord record) {
     switch (record.type) {
       case HealthType.bloodPressure:
-        return (record.systolic != null && (record.systolic! > 140 || record.systolic! < 90)) ||
-               (record.diastolic != null && (record.diastolic! > 90 || record.diastolic! < 60));
+        if (record.systolic != null && record.systolic! > 140) return '偏高';
+        if (record.systolic != null && record.systolic! < 90) return '偏低';
+        if (record.diastolic != null && record.diastolic! > 90) return '偏高';
+        if (record.diastolic != null && record.diastolic! < 60) return '偏低';
+        return null;
       case HealthType.bloodSugar:
-        return record.bloodSugar != null &&
-               (record.bloodSugar! > 6.1 || record.bloodSugar! < 3.9);
+        if (record.bloodSugar == null) return null;
+        if (record.bloodSugar! > 6.1) return '偏高';
+        if (record.bloodSugar! < 3.9) return '偏低';
+        return null;
       case HealthType.heartRate:
-        return record.heartRate != null &&
-               (record.heartRate! > 100 || record.heartRate! < 60);
+        if (record.heartRate == null) return null;
+        if (record.heartRate! > 100) return '偏高';
+        if (record.heartRate! < 60) return '偏低';
+        return null;
       case HealthType.temperature:
-        return record.temperature != null &&
-               (record.temperature! > 37.3 || record.temperature! < 36.0);
+        if (record.temperature == null) return null;
+        if (record.temperature! > 37.3) return '偏高';
+        if (record.temperature! < 36.0) return '偏低';
+        return null;
     }
   }
 

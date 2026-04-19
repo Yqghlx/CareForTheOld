@@ -24,6 +24,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
   final TextEditingController passwordController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool isLoading = false;
+  bool _obscurePassword = true;
   String? _errorMessage;
 
   // Logo 呼吸动画
@@ -220,13 +221,21 @@ class _LoginPageState extends ConsumerState<LoginPage>
                     ),
                     child: TextFormField(
                       controller: passwordController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: '密码',
-                        prefixIcon: Icon(Icons.lock, color: AppTheme.primaryColor),
+                        prefixIcon: const Icon(Icons.lock, color: AppTheme.primaryColor),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                            color: Colors.grey,
+                          ),
+                          onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                          tooltip: _obscurePassword ? '显示密码' : '隐藏密码',
+                        ),
                       ),
-                      obscureText: true,
+                      obscureText: _obscurePassword,
                       style: const TextStyle(fontSize: 18),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
