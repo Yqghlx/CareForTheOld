@@ -97,6 +97,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
         refreshToken: data['refreshToken'],
       );
 
+      if (!mounted) return;
       if (user.role.isElder) {
         context.go('/elder/home');
       } else {

@@ -634,7 +634,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     );
 
     // 关闭加载对话框
-    if (mounted) {
+    if (mounted && context.mounted) {
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

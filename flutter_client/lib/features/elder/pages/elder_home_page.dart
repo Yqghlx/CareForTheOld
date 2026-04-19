@@ -544,19 +544,23 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                 accessToken: ref.read(authProvider).accessToken!,
                 refreshToken: ref.read(authProvider).refreshToken!,
               );
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('头像更新成功'),
-              backgroundColor: AppTheme.successColor,
-            ),
-          );
+          if (mounted && context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('头像更新成功'),
+                backgroundColor: AppTheme.successColor,
+              ),
+            );
+          }
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('头像上传失败，请重试'),
-              backgroundColor: AppTheme.errorColor,
-            ),
-          );
+          if (mounted && context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('头像上传失败，请重试'),
+                backgroundColor: AppTheme.errorColor,
+              ),
+            );
+          }
         }
       }
     } catch (e) {

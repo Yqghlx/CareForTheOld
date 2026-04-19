@@ -331,7 +331,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
     final service = ref.read(healthReportServiceProvider);
     final success = await service.downloadAndShareReport(days: days);
 
-    if (mounted) {
+    if (mounted && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(success ? '报告已生成，请选择分享方式' : '导出失败，请稍后重试'),
