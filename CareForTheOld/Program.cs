@@ -102,6 +102,8 @@ builder.Services.AddHangfireServices(builder.Configuration, builder.Environment)
 // 注册用药提醒服务（同时支持 IHostedService 回退模式和 Hangfire 调度）
 builder.Services.AddHostedService<MedicationReminderService>();
 builder.Services.AddSingleton<MedicationReminderService>();
+// 注册 Outbox 投递服务（用于 SignalR 通知的异步投递）
+builder.Services.AddSingleton<OutboxDispatchService>();
 
 // CORS 配置：从配置读取允许的来源
 builder.Services.AddCors(options =>
@@ -259,6 +261,12 @@ if (!app.Environment.IsEnvironment("Testing"))
         "medication-reminder",
         service => service.ExecuteHangfireJobAsync(),
         Cron.Minutely);
+
+    // Outbox 通知投递：每 10 秒检查一次待投递消息
+    RecurringJob.AddOrUpdate<OutboxDispatchService>(
+        "outbox-dispatch",
+        service => service.DispatchOutboxMessagesAsync(),
+        "*/10 * * * * *");
 }
 
 // 提供上传文件的静态访问（头像等）

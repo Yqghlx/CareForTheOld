@@ -10,7 +10,10 @@ using System.Text.Json;
 namespace CareForTheOld.Services.Implementations;
 
 /// <summary>
-/// 通知服务实现
+/// 通知服务实现（Outbox Pattern）
+///
+/// SendToUserAsync 将通知同时写入 NotificationRecord（供查询）和 NotificationOutbox（供投递），
+/// 由后台 OutboxDispatchService 异步通过 SignalR 推送，确保数据库变更与通知的最终一致性。
 /// </summary>
 public class NotificationService : INotificationService
 {
@@ -25,26 +28,41 @@ public class NotificationService : INotificationService
 
     public async Task SendToUserAsync(Guid userId, string type, object data)
     {
-        // 通过 SignalR 实时推送
-        await _hubContext.Clients.Group($"user_{userId}")
-            .SendAsync("ReceiveNotification", type, data);
-
-        // 持久化通知记录
+        // 解析通知数据
         var dict = JsonSerializer.Deserialize<Dictionary<string, object>>(
             JsonSerializer.Serialize(data));
 
+        var title = dict?.GetValueOrDefault("Title")?.ToString() ?? "通知";
+        var content = dict?.GetValueOrDefault("Content")?.ToString() ?? "";
+
+        // 写入通知记录（供用户查询历史通知）
         var record = new NotificationRecord
         {
             Id = Guid.NewGuid(),
             UserId = userId,
             Type = type,
-            Title = dict?.GetValueOrDefault("Title")?.ToString() ?? "通知",
-            Content = dict?.GetValueOrDefault("Content")?.ToString() ?? "",
+            Title = title,
+            Content = content,
             IsRead = false,
             CreatedAt = DateTime.UtcNow
         };
-
         _context.NotificationRecords.Add(record);
+
+        // 写入 Outbox 表（供后台 Job 异步投递 SignalR 消息）
+        var outbox = new NotificationOutbox
+        {
+            Id = Guid.NewGuid(),
+            UserId = userId,
+            Type = type,
+            Title = title,
+            Content = content,
+            Payload = JsonSerializer.Serialize(data),
+            Status = OutboxStatus.Pending,
+            CreatedAt = DateTime.UtcNow
+        };
+        _context.NotificationOutboxes.Add(outbox);
+
+        // 同一事务中写入两张表，确保数据一致性
         await _context.SaveChangesAsync();
     }
 

@@ -82,7 +82,7 @@ public class NotificationServiceTests
     }
 
     [Fact]
-    public async Task SendToUserAsync_ShouldPersistAndPush()
+    public async Task SendToUserAsync_ShouldPersistRecordAndOutbox()
     {
         var user = await CreateUserAsync("13500001001", "通知接收者");
 
@@ -94,6 +94,7 @@ public class NotificationServiceTests
 
         await _service.SendToUserAsync(user.Id, "MedicationReminder", notificationData);
 
+        // 验证通知记录已持久化
         var record = await _context.NotificationRecords
             .FirstOrDefaultAsync(n => n.UserId == user.Id);
         record.Should().NotBeNull();
@@ -102,12 +103,14 @@ public class NotificationServiceTests
         record.Content.Should().Be("该吃降压药了");
         record.IsRead.Should().BeFalse();
 
-        _mockClients.Verify(c => c.Group($"user_{user.Id}"), Times.Once);
-        _mockClientProxy.Verify(
-            p => p.SendCoreAsync("ReceiveNotification",
-                It.Is<object[]>(args => args.Length == 2 && (string)args[0] == "MedicationReminder"),
-                default),
-            Times.Once);
+        // 验证 Outbox 消息已写入（SignalR 推送由后台 Job 异步处理）
+        var outbox = await _context.NotificationOutboxes
+            .FirstOrDefaultAsync(o => o.UserId == user.Id);
+        outbox.Should().NotBeNull();
+        outbox!.Type.Should().Be("MedicationReminder");
+        outbox.Status.Should().Be(OutboxStatus.Pending);
+        // JSON 序列化中文会被 Unicode 转义，验证包含 Title 字段即可
+        outbox.Payload.Should().Contain("Title");
     }
 
     [Fact]
