@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 /// 健康统计数据模型（对应后端 HealthStatsResponse）
 class HealthStats {
   /// 健康数据类型名称
@@ -18,6 +20,12 @@ class HealthStats {
   /// 记录总数
   final int totalCount;
 
+  /// 趋势方向："rising"、"falling"、"stable"、null（数据不足）
+  final String? trend;
+
+  /// 趋势预警提示文字
+  final String? trendWarning;
+
   const HealthStats({
     required this.typeName,
     this.average7Days,
@@ -25,6 +33,8 @@ class HealthStats {
     this.latestValue,
     this.latestRecordedAt,
     required this.totalCount,
+    this.trend,
+    this.trendWarning,
   });
 
   factory HealthStats.fromJson(Map<String, dynamic> json) {
@@ -38,6 +48,31 @@ class HealthStats {
           ? DateTime.parse(json['latestRecordedAt'] as String)
           : null,
       totalCount: json['totalCount'] as int,
+      trend: json['trend'] as String?,
+      trendWarning: json['trendWarning'] as String?,
     );
+  }
+
+  /// 是否有趋势预警
+  bool get hasWarning => trend != null && trend != 'stable' && trendWarning != null;
+
+  /// 趋势图标
+  IconData get trendIcon {
+    switch (trend) {
+      case 'rising': return Icons.trending_up;
+      case 'falling': return Icons.trending_down;
+      case 'stable': return Icons.trending_flat;
+      default: return Icons.trending_flat;
+    }
+  }
+
+  /// 趋势颜色
+  Color get trendColor {
+    switch (trend) {
+      case 'rising': return Colors.orange;
+      case 'falling': return Colors.blue;
+      case 'stable': return Colors.green;
+      default: return Colors.grey;
+    }
   }
 }
