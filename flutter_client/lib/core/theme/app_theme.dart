@@ -17,10 +17,10 @@ class AppTheme {
   static const Color backgroundColor = Color(0xFFF5F5F5);
   static const Color cardColor = Colors.white;
 
-  /// 文字色（textHint 满足 WCAG AA 对比度标准 4.5:1）
+  /// 文字色（textHint 满足 WCAG AAA 对比度标准 7:1）
   static const Color textPrimary = Color(0xFF333333);
   static const Color textSecondary = Color(0xFF666666);
-  static const Color textHint = Color(0xFF757575);
+  static const Color textHint = Color(0xFF616161);
 
   /// 渐变配置
   static const LinearGradient primaryGradient = LinearGradient(

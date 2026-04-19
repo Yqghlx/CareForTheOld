@@ -601,6 +601,31 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     final familyId = ref.read(familyProvider).familyId;
     if (familyId == null) return;
 
+    // 显示加载对话框
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => PopScope(
+        canPop: false,
+        child: Center(
+          child: Card(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 16),
+                  const Text('正在生成报告...', style: TextStyle(fontSize: 16)),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
     final service = ref.read(healthReportServiceProvider);
     final success = await service.downloadAndShareReport(
       days: days,
@@ -608,7 +633,9 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       familyId: familyId,
     );
 
+    // 关闭加载对话框
     if (mounted) {
+      Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(success ? '报告已生成，请选择分享方式' : '导出失败，请稍后重试'),

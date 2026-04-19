@@ -94,13 +94,35 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
               // 图表区域
               Expanded(
                 child: recordsAsync.when(
-                  data: (records) => SingleChildScrollView(
-                    child: HealthTrendChart(
-                      type: _selectedType,
-                      records: records,
-                      daysRange: _daysRange,
-                    ),
-                  ),
+                  data: (records) {
+                    if (records.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(_selectedType.icon, size: 64, color: Colors.grey.shade400),
+                            const SizedBox(height: 16),
+                            Text(
+                              '暂无${_selectedType.label}记录',
+                              style: const TextStyle(fontSize: 18, color: Colors.grey),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              '请先在健康页面记录${_selectedType.label}数据',
+                              style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    return SingleChildScrollView(
+                      child: HealthTrendChart(
+                        type: _selectedType,
+                        records: records,
+                        daysRange: _daysRange,
+                      ),
+                    );
+                  },
                   loading: () => const Center(child: CircularProgressIndicator()),
                   error: (e, _) => Center(
                     child: Column(
