@@ -1,5 +1,7 @@
 using CareForTheOld.Common.Options;
 using CareForTheOld.Data;
+using CareForTheOld.Services.Implementations;
+using CareForTheOld.Services.Interfaces;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -61,21 +63,25 @@ public static class ServiceCollectionExtensions
 
     /// <summary>
     /// 注册 JWT 认证服务
-    /// 密钥优先从环境变量读取，长度不足 32 字符则拒绝启动
+    /// 通过 IKeyProvider 抽象获取签名密钥，支持多种密钥来源
     /// </summary>
     public static IServiceCollection AddJwtAuthentication(
-        this IServiceCollection services, IConfiguration configuration)
+        this IServiceCollection services, IConfiguration configuration,
+        IWebHostEnvironment environment)
     {
-        var jwtKey = configuration["Jwt:Key"] ?? string.Empty;
-
-        // 启动时校验密钥
-        if (string.IsNullOrWhiteSpace(jwtKey) || jwtKey.Length < 32)
+        // 根据环境选择密钥提供者实现
+        if (environment.IsDevelopment() || environment.IsEnvironment("Testing"))
         {
-            throw new InvalidOperationException(
-                "JWT 密钥未配置或长度不足 32 字符。请通过环境变量 Jwt__Key 或 appsettings.json 配置。");
+            services.AddSingleton<IKeyProvider, ConfigurationKeyProvider>();
+        }
+        else
+        {
+            services.AddSingleton<IKeyProvider, EnvironmentKeyProvider>();
         }
 
-        var key = Encoding.UTF8.GetBytes(jwtKey);
+        // 从 IKeyProvider 获取密钥（启动时立即校验）
+        var keyProvider = services.BuildServiceProvider().GetRequiredService<IKeyProvider>();
+        var key = keyProvider.GetSigningKeyAsync().GetAwaiter().GetResult();
 
         services.AddAuthentication(options =>
         {

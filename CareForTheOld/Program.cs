@@ -25,28 +25,14 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
-// JWT 密钥配置：优先从环境变量读取，开发/测试环境回退到默认值
-var jwtSecretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY")
-    ?? builder.Configuration["Jwt:Key"];
-if (string.IsNullOrWhiteSpace(jwtSecretKey))
+// JWT 密钥配置：开发/测试环境确保配置文件中有默认密钥
+if (builder.Environment.IsDevelopment() || builder.Environment.IsEnvironment("Testing"))
 {
-    if (builder.Environment.IsDevelopment() || builder.Environment.IsEnvironment("Testing"))
+    var jwtKey = builder.Configuration["Jwt:Key"];
+    if (string.IsNullOrWhiteSpace(jwtKey))
     {
-        // 开发/测试环境使用固定密钥
-        jwtSecretKey = "CareForTheOld_DevSecretKey_2026_MustBe32Chars!";
-        builder.Configuration["Jwt:Key"] = jwtSecretKey;
+        builder.Configuration["Jwt:Key"] = "CareForTheOld_DevSecretKey_2026_MustBe32Chars!";
     }
-    else
-    {
-        // 生产环境必须通过环境变量 JWT_SECRET_KEY 配置，否则拒绝启动
-        throw new InvalidOperationException(
-            "生产环境必须通过环境变量 JWT_SECRET_KEY 配置 JWT 密钥。" +
-            "密钥长度至少 32 个字符。");
-    }
-}
-else
-{
-    builder.Configuration["Jwt:Key"] = jwtSecretKey;
 }
 
 // 注册服务
@@ -62,7 +48,7 @@ builder.Services.AddApiVersioning(options =>
     options.SubstituteApiVersionInUrl = true;
 });
 builder.Services.AddDatabaseServices(builder.Configuration, builder.Environment);
-builder.Services.AddJwtAuthentication(builder.Configuration);
+builder.Services.AddJwtAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddSwaggerServices();
 builder.Services.AddHealthCheckServices(builder.Configuration);
 builder.Services.AddSignalR();
