@@ -1,0 +1,107 @@
+using CareForTheOld.Data;
+using CareForTheOld.Models.Entities;
+using CareForTheOld.Services.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System.Text.Json;
+
+namespace CareForTheOld.Services.Background;
+
+/// <summary>
+/// Outbox 投递后台服务
+///
+/// 定期从 NotificationOutbox 表读取 Pending 状态的消息，
+/// 通过 SignalR 推送给用户，成功后标记为 Sent。
+/// 失败时增加重试计数，超过 5 次标记为 Failed。
+/// 使用独立的 ServiceProvider Scope 避免 DbContext 生命周期问题。
+/// </summary>
+public class OutboxDispatchService
+{
+    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly ILogger<OutboxDispatchService> _logger;
+
+    /// <summary>
+    /// 最大重试次数
+    /// </summary>
+    private const int _maxRetries = 5;
+
+    /// <summary>
+    /// 每次批量处理的最大消息数
+    /// </summary>
+    private const int _batchSize = 50;
+
+    public OutboxDispatchService(IServiceScopeFactory scopeFactory, ILogger<OutboxDispatchService> logger)
+    {
+        _scopeFactory = scopeFactory;
+        _logger = logger;
+    }
+
+    /// <summary>
+    /// Hangfire RecurringJob 入口方法
+    /// </summary>
+    public async Task DispatchOutboxMessagesAsync()
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<NotificationHub>>();
+
+        // 查询待投递的消息（按创建时间排序，先投递最早的）
+        var pendingMessages = await context.NotificationOutboxes
+            .Where(o => o.Status == OutboxStatus.Pending && o.RetryCount < _maxRetries)
+            .OrderBy(o => o.CreatedAt)
+            .Take(_batchSize)
+            .AsTracking()
+            .ToListAsync();
+
+        if (pendingMessages.Count == 0) return;
+
+        _logger.LogDebug("[Outbox] 开始投递 {Count} 条待发送通知", pendingMessages.Count);
+
+        var successCount = 0;
+        var failCount = 0;
+
+        foreach (var message in pendingMessages)
+        {
+            try
+            {
+                // 反序列化完整数据用于 SignalR 推送
+                object? data = string.IsNullOrEmpty(message.Payload)
+                    ? null
+                    : JsonSerializer.Deserialize<object>(message.Payload);
+
+                // 通过 SignalR 推送
+                await hubContext.Clients.Group($"user_{message.UserId}")
+                    .SendAsync("ReceiveNotification", message.Type, data);
+
+                // 标记为已投递
+                message.Status = OutboxStatus.Sent;
+                message.SentAt = DateTime.UtcNow;
+                successCount++;
+            }
+            catch (Exception ex)
+            {
+                message.RetryCount++;
+                message.LastError = ex.Message;
+
+                if (message.RetryCount >= _maxRetries)
+                {
+                    // 超过最大重试次数，标记为失败
+                    message.Status = OutboxStatus.Failed;
+                    _logger.LogWarning("[Outbox] 通知 {Id} 投递失败（已重试 {Retries} 次）：{Error}",
+                        message.Id, message.RetryCount, ex.Message);
+                }
+
+                failCount++;
+            }
+        }
+
+        await context.SaveChangesAsync();
+
+        if (successCount > 0 || failCount > 0)
+        {
+            _logger.LogInformation("[Outbox] 投递完成：成功 {Success}，失败 {Fail}", successCount, failCount);
+        }
+    }
+}
