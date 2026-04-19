@@ -81,66 +81,11 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 紧急呼叫提示（如果有未处理呼叫）- 脉冲动画
+            // 紧急呼叫提示（如果有未处理呼叫）- 循环脉冲动画
             if (emergencyState.hasUnreadCalls)
-              TweenAnimationBuilder<double>(
-                tween: Tween(begin: 0, end: 1),
-                duration: const Duration(milliseconds: 1200),
-                builder: (context, animValue, child) {
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Colors.red, Colors.redAccent],
-                      ),
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.red.withValues(alpha: 0.3 + animValue * 0.4),
-                          blurRadius: 8 + animValue * 16,
-                          spreadRadius: animValue * 4,
-                        ),
-                      ],
-                    ),
-                    child: child,
-                  );
-                },
-                child: InkWell(
-                  onTap: () => context.push('/child/emergency'),
-                  borderRadius: BorderRadius.circular(16),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.emergency, color: Colors.white, size: 36),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                '有紧急呼叫待处理！',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                '${emergencyState.unreadCount} 条待处理，点击查看',
-                                style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.9),
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Icon(Icons.chevron_right, color: Colors.white, size: 28),
-                      ],
-                    ),
-                  ),
-                ),
+              _EmergencyPulseBanner(
+                onTap: () => context.push('/child/emergency'),
+                unreadCount: emergencyState.unreadCount,
               ),
 
             // 用户信息 - 渐变卡片
@@ -581,7 +526,25 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                 PrimaryButton(
                   text: '创建',
                   onPressed: () async {
-                    if (nameCtl.text.trim().isEmpty || dosageCtl.text.trim().isEmpty) {
+                    final name = nameCtl.text.trim();
+                    final dosage = dosageCtl.text.trim();
+                    if (name.isEmpty || name.length > 50) {
+                      ScaffoldMessenger.of(ctx).showSnackBar(
+                        const SnackBar(content: Text('请输入有效的药品名称（1-50字符）')),
+                      );
+                      return;
+                    }
+                    if (dosage.isEmpty || dosage.length > 30) {
+                      ScaffoldMessenger.of(ctx).showSnackBar(
+                        const SnackBar(content: Text('请输入有效的剂量（1-30字符）')),
+                      );
+                      return;
+                    }
+                    final validTimes = timeControllers.map((c) => c.text.trim()).where((t) => t.isNotEmpty).toList();
+                    if (validTimes.isEmpty) {
+                      ScaffoldMessenger.of(ctx).showSnackBar(
+                        const SnackBar(content: Text('请至少添加一个提醒时间')),
+                      );
                       return;
                     }
                     Navigator.pop(ctx);
@@ -626,6 +589,108 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
           },
         );
       },
+    );
+  }
+}
+
+/// 紧急呼叫横幅 - 循环脉冲动画
+class _EmergencyPulseBanner extends StatefulWidget {
+  final VoidCallback onTap;
+  final int unreadCount;
+
+  const _EmergencyPulseBanner({
+    required this.onTap,
+    required this.unreadCount,
+  });
+
+  @override
+  State<_EmergencyPulseBanner> createState() => _EmergencyPulseBannerState();
+}
+
+class _EmergencyPulseBannerState extends State<_EmergencyPulseBanner>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+    _controller.repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        final alpha = 0.3 + _animation.value * 0.4;
+        return Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Colors.red, Colors.redAccent],
+            ),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.red.withValues(alpha: alpha),
+                blurRadius: 8 + _animation.value * 16,
+                spreadRadius: _animation.value * 4,
+              ),
+            ],
+          ),
+          child: child,
+        );
+      },
+      child: InkWell(
+        onTap: widget.onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              const Icon(Icons.emergency, color: Colors.white, size: 36),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '有紧急呼叫待处理！',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      '${widget.unreadCount} 条待处理，点击查看',
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.9),
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right, color: Colors.white, size: 28),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

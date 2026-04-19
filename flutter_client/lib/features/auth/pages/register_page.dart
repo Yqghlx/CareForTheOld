@@ -23,6 +23,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
   UserRole _selectedRole = UserRole.elder;
+  DateTime? _selectedBirthDate;
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
@@ -70,7 +71,9 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
         'password': _passwordController.text,
         'realName': _nameController.text,
         'role': _selectedRole == UserRole.elder ? 0 : 1,
-        'birthDate': '2000-01-01', // 默认出生日期
+        'birthDate': _selectedBirthDate != null
+            ? '${_selectedBirthDate!.year}-${_selectedBirthDate!.month.toString().padLeft(2, '0')}-${_selectedBirthDate!.day.toString().padLeft(2, '0')}'
+            : '2000-01-01', // 未选择时使用默认值
       });
 
       final data = response.data['data'];
@@ -158,6 +161,41 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                     prefixIcon: Icon(Icons.person),
                   ),
                   validator: FormValidators.name,
+                ),
+                const SizedBox(height: 16),
+
+                // 出生日期
+                GestureDetector(
+                  onTap: () async {
+                    final now = DateTime.now();
+                    final picked = await showDatePicker(
+                      context: context,
+                      initialDate: _selectedBirthDate ?? DateTime(1960, 1, 1),
+                      firstDate: DateTime(1920, 1, 1),
+                      lastDate: now,
+                      locale: const Locale('zh', 'CN'),
+                    );
+                    if (picked != null) {
+                      setState(() => _selectedBirthDate = picked);
+                    }
+                  },
+                  child: AbsorbPointer(
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: '出生日期（选填）',
+                        prefixIcon: const Icon(Icons.cake),
+                        suffixIcon: _selectedBirthDate != null
+                            ? const Icon(Icons.check_circle, color: Colors.green)
+                            : null,
+                        hintText: '点击选择出生日期',
+                      ),
+                      controller: TextEditingController(
+                        text: _selectedBirthDate != null
+                            ? '${_selectedBirthDate!.year}年${_selectedBirthDate!.month}月${_selectedBirthDate!.day}日'
+                            : '',
+                      ),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 24),
 

@@ -334,6 +334,10 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                 final success = await ref
                     .read(healthRecordsProvider.notifier)
                     .deleteRecord(record.id);
+                if (success) {
+                  // 删除成功后刷新统计数据，保持数据一致性
+                  ref.invalidate(healthStatsProvider);
+                }
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -472,7 +476,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                   isListening = true;
                                   voiceText = '';
                                 });
-                                await voiceService.startListening(
+                                final started = await voiceService.startListening(
                                   onResult: (text, isFinal) {
                                     setDialogState(() => voiceText = text);
                                     if (isFinal && text.isNotEmpty) {
@@ -492,7 +496,19 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                   },
                                 );
                                 // listen 结束后更新状态
-                                setDialogState(() => isListening = voiceService.isListening);
+                                if (!started) {
+                                  setDialogState(() => isListening = false);
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('语音识别启动失败，请手动输入'),
+                                        backgroundColor: AppTheme.warningColor,
+                                      ),
+                                    );
+                                  }
+                                } else {
+                                  setDialogState(() => isListening = voiceService.isListening);
+                                }
                               }
                             },
                             child: AnimatedContainer(
@@ -793,8 +809,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
       return;
     }
 
-    Navigator.pop(dialogContext);
-
+    // 先异步提交，成功后再关闭对话框；失败时保留对话框让用户可重试
     final success = await ref.read(healthRecordsProvider.notifier).createRecord(
           type: type,
           systolic: systolic,
@@ -805,17 +820,24 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
           note: note,
         );
 
-    if (mounted) {
+    if (success && mounted) {
+      Navigator.pop(dialogContext);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(success ? '${type.label}记录已保存' : '保存失败'),
-          backgroundColor: success ? AppTheme.successColor : AppTheme.errorColor,
+          content: Text('${type.label}记录已保存'),
+          backgroundColor: AppTheme.successColor,
         ),
       );
       // 保存成功后刷新统计
-      if (success) {
-        ref.invalidate(healthStatsProvider);
-      }
+      ref.invalidate(healthStatsProvider);
+    } else if (mounted) {
+      // 提交失败，保持对话框打开，让用户可以重试
+      ScaffoldMessenger.of(dialogContext).showSnackBar(
+        const SnackBar(
+          content: Text('保存失败，请重试'),
+          backgroundColor: AppTheme.errorColor,
+        ),
+      );
     }
   }
 }

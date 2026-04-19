@@ -9,6 +9,7 @@ using CareForTheOld.Services.Implementations;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using StackExchange.Redis;
 using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -84,6 +85,8 @@ var redisConnection = builder.Configuration.GetConnectionString("Redis");
 if (!string.IsNullOrEmpty(redisConnection))
 {
     builder.Services.AddStackExchangeRedisCache(options => options.Configuration = redisConnection);
+    // 注册 Redis 连接复用，供 CacheService 按前缀删除等高级操作使用
+    builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConnection));
 }
 else
 {
@@ -130,12 +133,27 @@ builder.Services.AddCors(options =>
 });
 
 // 限流配置
+// 获取客户端真实 IP（优先从 X-Forwarded-For / X-Real-IP 获取，兼容反向代理）
+static string GetClientIp(HttpContext context)
+{
+    var forwardedFor = context.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+    if (!string.IsNullOrEmpty(forwardedFor))
+    {
+        // X-Forwarded-For 可能包含多个 IP，取第一个（最原始的客户端 IP）
+        var ip = forwardedFor.Split(',').First().Trim();
+        if (!string.IsNullOrEmpty(ip)) return ip;
+    }
+    var realIp = context.Request.Headers["X-Real-IP"].FirstOrDefault();
+    if (!string.IsNullOrEmpty(realIp)) return realIp;
+    return context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+}
+
 builder.Services.AddRateLimiter(options =>
 {
     // 认证接口限流：每 IP 每分钟 10 次
     options.AddPolicy("AuthPolicy", context =>
         RateLimitPartition.GetSlidingWindowLimiter(
-            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            partitionKey: GetClientIp(context),
             factory: _ => new SlidingWindowRateLimiterOptions
             {
                 PermitLimit = builder.Configuration.GetValue("RateLimit:AuthPermitLimit", 10),
@@ -148,7 +166,7 @@ builder.Services.AddRateLimiter(options =>
     // 通用 API 限流：每 IP 每分钟 60 次
     options.AddPolicy("GeneralPolicy", context =>
         RateLimitPartition.GetSlidingWindowLimiter(
-            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            partitionKey: GetClientIp(context),
             factory: _ => new SlidingWindowRateLimiterOptions
             {
                 PermitLimit = builder.Configuration.GetValue("RateLimit:GeneralPermitLimit", 60),
@@ -161,11 +179,24 @@ builder.Services.AddRateLimiter(options =>
     // 加入家庭限流：每用户每5分钟最多5次，防止邀请码暴力破解
     options.AddPolicy("JoinFamilyPolicy", context =>
         RateLimitPartition.GetSlidingWindowLimiter(
-            partitionKey: context.User?.FindFirst("sub")?.Value ?? context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            partitionKey: context.User?.FindFirst("sub")?.Value ?? GetClientIp(context),
             factory: _ => new SlidingWindowRateLimiterOptions
             {
                 PermitLimit = 5,
                 Window = TimeSpan.FromMinutes(5),
+                SegmentsPerWindow = 2,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0
+            }));
+
+    // 紧急呼叫限流：每用户每分钟最多3次，防止恶意刷量
+    options.AddPolicy("EmergencyPolicy", context =>
+        RateLimitPartition.GetSlidingWindowLimiter(
+            partitionKey: context.User?.FindFirst("sub")?.Value ?? GetClientIp(context),
+            factory: _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = 3,
+                Window = TimeSpan.FromMinutes(1),
                 SegmentsPerWindow = 2,
                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                 QueueLimit = 0

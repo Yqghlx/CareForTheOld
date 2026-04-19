@@ -186,6 +186,12 @@ public class MedicationService : IMedicationService
             .Where(p => p.ElderId == elderId && p.IsActive && p.StartDate <= today)
             .ToListAsync();
 
+        // 批量查询所有相关计划的今日用药记录，避免 N+1 查询
+        var planIds = activePlans.Select(p => p.Id).ToList();
+        var allExistingLogs = await _context.MedicationLogs
+            .Where(l => planIds.Contains(l.PlanId) && l.ScheduledAt >= start && l.ScheduledAt < end)
+            .ToListAsync();
+
         var pendingLogs = new List<MedicationLogResponse>();
 
         foreach (var plan in activePlans)
@@ -193,9 +199,8 @@ public class MedicationService : IMedicationService
             if (plan.EndDate.HasValue && plan.EndDate.Value < today) continue;
 
             var reminderTimes = JsonSerializer.Deserialize<List<string>>(plan.ReminderTimes) ?? new();
-            var existingLogs = await _context.MedicationLogs
-                .Where(l => l.PlanId == plan.Id && l.ScheduledAt >= start && l.ScheduledAt < end)
-                .ToListAsync();
+            // 从批量查询结果中筛选当前计划的记录
+            var existingLogs = allExistingLogs.Where(l => l.PlanId == plan.Id).ToList();
 
             foreach (var timeStr in reminderTimes)
             {
@@ -240,17 +245,24 @@ public class MedicationService : IMedicationService
     }
 
     /// <summary>
-    /// 验证操作者是老人的家庭成员
+    /// 验证操作者是老人的家庭成员（拆分子查询为两次独立查询，提升性能）
     /// </summary>
     private async Task EnsureFamilyMemberAsync(Guid elderId, Guid operatorId)
     {
         // 老人本人可以操作
         if (elderId == operatorId) return;
 
-        // 验证是否在同一家庭
+        // 先查操作者所在家庭，再验证老人是否同家庭
+        var operatorFamilyId = await _context.FamilyMembers
+            .Where(fm => fm.UserId == operatorId)
+            .Select(fm => fm.FamilyId)
+            .FirstOrDefaultAsync();
+
+        if (operatorFamilyId == Guid.Empty)
+            throw new UnauthorizedAccessException("您不是该老人的家庭成员，无权操作");
+
         var isInSameFamily = await _context.FamilyMembers
-            .AnyAsync(fm => fm.UserId == elderId && fm.FamilyId ==
-                _context.FamilyMembers.Where(f => f.UserId == operatorId).Select(f => f.FamilyId).FirstOrDefault());
+            .AnyAsync(fm => fm.UserId == elderId && fm.FamilyId == operatorFamilyId);
 
         if (!isInSameFamily)
             throw new UnauthorizedAccessException("您不是该老人的家庭成员，无权操作");

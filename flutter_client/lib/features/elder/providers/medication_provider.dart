@@ -17,11 +17,15 @@ class MedicationState {
   final bool isLoading;
   final String? error;
 
+  /// 正在提交中的用药记录 key 集合，用于 UI 显示 loading 状态
+  final Set<String> submittingKeys;
+
   const MedicationState({
     this.plans = const [],
     this.todayPending = const [],
     this.isLoading = false,
     this.error,
+    this.submittingKeys = const {},
   });
 
   MedicationState copyWith({
@@ -30,12 +34,14 @@ class MedicationState {
     bool? isLoading,
     String? error,
     bool clearError = false,
+    Set<String>? submittingKeys,
   }) {
     return MedicationState(
       plans: plans ?? this.plans,
       todayPending: todayPending ?? this.todayPending,
       isLoading: isLoading ?? this.isLoading,
       error: clearError ? null : (error ?? this.error),
+      submittingKeys: submittingKeys ?? this.submittingKeys,
     );
   }
 
@@ -47,19 +53,19 @@ class MedicationState {
 
   /// 跳过/漏服数量
   int get skippedCount => todayPending.where((l) => l.status == MedicationStatus.skipped).length;
+
+  /// 判断指定记录是否正在提交中
+  bool isSubmitting(String logKey) => submittingKeys.contains(logKey);
 }
 
 /// 用药状态 Notifier
 class MedicationNotifier extends StateNotifier<MedicationState> {
   final MedicationService _service;
 
-  /// 正在提交的用药记录 key 集合（planId_scheduledAt），防止重复提交
-  final Set<String> _submittingKeys = {};
-
   MedicationNotifier(this._service) : super(const MedicationState());
 
   /// 生成防重复提交的 key
-  String _logKey(MedicationLog log) => '${log.planId}_${log.scheduledAt.toIso8601String()}';
+  String logKey(MedicationLog log) => '${log.planId}_${log.scheduledAt.toIso8601String()}';
 
   /// 加载所有用药数据（计划 + 今日待服）
   Future<void> loadAll() async {
@@ -94,11 +100,11 @@ class MedicationNotifier extends StateNotifier<MedicationState> {
     }).toList();
   }
 
-  /// 标记已服用（带防重复提交保护）
+  /// 标记已服用（带防重复提交保护 + loading 状态）
   Future<bool> markAsTaken(MedicationLog log) async {
-    final key = _logKey(log);
-    if (_submittingKeys.contains(key)) return false;
-    _submittingKeys.add(key);
+    final key = logKey(log);
+    if (state.isSubmitting(key)) return false;
+    state = state.copyWith(submittingKeys: {...state.submittingKeys, key});
     try {
       final updated = await _service.recordLog(
         planId: log.planId,
@@ -106,21 +112,25 @@ class MedicationNotifier extends StateNotifier<MedicationState> {
         scheduledAt: log.scheduledAt,
       );
       final newList = _replaceByPlanAndTime(state.todayPending, updated);
-      state = state.copyWith(todayPending: newList);
+      state = state.copyWith(
+        todayPending: newList,
+        submittingKeys: {...state.submittingKeys}..remove(key),
+      );
       return true;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(
+        error: e.toString(),
+        submittingKeys: {...state.submittingKeys}..remove(key),
+      );
       return false;
-    } finally {
-      _submittingKeys.remove(key);
     }
   }
 
-  /// 标记跳过（带防重复提交保护）
+  /// 标记跳过（带防重复提交保护 + loading 状态）
   Future<bool> markAsSkipped(MedicationLog log) async {
-    final key = _logKey(log);
-    if (_submittingKeys.contains(key)) return false;
-    _submittingKeys.add(key);
+    final key = logKey(log);
+    if (state.isSubmitting(key)) return false;
+    state = state.copyWith(submittingKeys: {...state.submittingKeys, key});
     try {
       final updated = await _service.recordLog(
         planId: log.planId,
@@ -128,13 +138,17 @@ class MedicationNotifier extends StateNotifier<MedicationState> {
         scheduledAt: log.scheduledAt,
       );
       final newList = _replaceByPlanAndTime(state.todayPending, updated);
-      state = state.copyWith(todayPending: newList);
+      state = state.copyWith(
+        todayPending: newList,
+        submittingKeys: {...state.submittingKeys}..remove(key),
+      );
       return true;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(
+        error: e.toString(),
+        submittingKeys: {...state.submittingKeys}..remove(key),
+      );
       return false;
-    } finally {
-      _submittingKeys.remove(key);
     }
   }
 }

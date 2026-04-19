@@ -9,7 +9,6 @@ import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/config/app_config.dart';
-import '../../shared/providers/emergency_provider.dart';
 import '../../shared/providers/user_provider.dart';
 import '../../shared/services/emergency_service.dart';
 import '../../../core/api/api_client.dart';
@@ -81,17 +80,15 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
   }
 
   Widget _buildBody() {
-    // 底部导航栏切换页面内容，不使用路由导航（避免 build 期间调用 setState）
-    switch (_selectedIndex) {
-      case 0:
-        return _buildHomeContent();
-      case 1:
-        return const HealthRecordPage();
-      case 2:
-        return const MedicationPage();
-      default:
-        return _buildHomeContent();
-    }
+    // 使用 IndexedStack 保持所有 Tab 页面状态，切换时不会重新构建
+    return IndexedStack(
+      index: _selectedIndex,
+      children: [
+        _buildHomeContent(),
+        const HealthRecordPage(),
+        const MedicationPage(),
+      ],
+    );
   }
 
   Widget _buildHomeContent() {
@@ -126,7 +123,9 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                             color: Colors.white.withValues(alpha: 0.2),
                             child: authState.user?.avatarUrl != null
                                 ? CachedNetworkImage(
-                                    imageUrl: '${AppConfig.current.apiBaseUrl.replaceFirst('/api/v1', '')}${authState.user!.avatarUrl}',
+                                    imageUrl: authState.user!.avatarUrl!.startsWith('http')
+                                        ? authState.user!.avatarUrl!
+                                        : '${AppConfig.current.apiBaseUrl.replaceFirst('/api/v1', '')}${authState.user!.avatarUrl}',
                                     fit: BoxFit.cover,
                                     width: 64,
                                     height: 64,
@@ -324,9 +323,69 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
     );
   }
 
-  /// 执行紧急呼叫（长按完成后直接触发，不再弹确认框）
+  /// 执行紧急呼叫（长按完成后弹出大按钮确认对话框）
   Future<void> _performEmergencyCall() async {
     setState(() => _isCalling = false);
+
+    // 二次确认：弹出大按钮确认对话框，防止误触
+    final confirmed = await showDialog<bool>(
+      context: context,
+      barrierDismissible: true,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        title: const Column(
+          children: [
+            Icon(Icons.emergency, color: Colors.red, size: 48),
+            SizedBox(height: 12),
+            Text('确认紧急呼叫？', textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          ],
+        ),
+        content: const Text(
+          '将通知您的所有家庭成员',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 18, color: Colors.grey),
+        ),
+        actions: [
+          SizedBox(
+            width: double.infinity,
+            height: 56,
+            child: OutlinedButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: Colors.grey),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              ),
+              child: const Text('取消', style: TextStyle(fontSize: 20)),
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            height: 56,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(colors: [Colors.red, Colors.redAccent]),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: ElevatedButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                ),
+                child: const Text('确认呼叫', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !mounted) return;
 
     try {
       final service = EmergencyService(ref.read(apiClientProvider).dio);
@@ -334,10 +393,10 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('紧急呼叫已发送，家人将尽快联系您'),
             backgroundColor: AppTheme.successColor,
-            duration: const Duration(seconds: 3),
+            duration: Duration(seconds: 3),
           ),
         );
         _showCallSuccessDialog(call);
@@ -345,107 +404,13 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('呼叫失败: $e'),
+          const SnackBar(
+            content: Text('呼叫失败，请直接拨打电话联系家人'),
             backgroundColor: AppTheme.errorColor,
           ),
         );
       }
     }
-  }
-
-  /// 显示紧急呼叫确认对话框（保留用于其他入口）
-  void _showEmergencyCallDialog() {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        title: Row(
-          children: [
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: Colors.red.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(Icons.emergency, color: Colors.red, size: 32),
-            ),
-            const SizedBox(width: 16),
-            const Text('紧急呼叫'),
-          ],
-        ),
-        content: const Text(
-          '确定要发起紧急呼叫吗？\n您的家人将收到紧急通知。',
-          style: TextStyle(fontSize: 16),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('取消'),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Colors.red, Colors.redAccent],
-              ),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: ElevatedButton(
-              onPressed: _isCalling ? null : () async {
-                Navigator.pop(ctx);
-                setState(() => _isCalling = true);
-
-                try {
-                  final service = EmergencyService(ref.read(apiClientProvider).dio);
-                  final call = await service.createCall();
-
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('紧急呼叫已发送，家人将尽快联系您'),
-                        backgroundColor: AppTheme.successColor,
-                        duration: const Duration(seconds: 3),
-                      ),
-                    );
-
-                    // 显示呼叫成功对话框
-                    _showCallSuccessDialog(call);
-                  }
-                } catch (e) {
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('呼叫失败: $e'),
-                        backgroundColor: AppTheme.errorColor,
-                      ),
-                    );
-                  }
-                } finally {
-                  setState(() => _isCalling = false);
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-              ),
-              child: _isCalling
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation(Colors.white),
-                      ),
-                    )
-                  : const Text('确认呼叫'),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   /// 显示呼叫成功对话框

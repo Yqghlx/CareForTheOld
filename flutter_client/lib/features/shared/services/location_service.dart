@@ -25,9 +25,9 @@ class LocationService {
     return LocationRecord.fromJson(data);
   }
 
-  /// 获取我的位置历史
-  Future<List<LocationRecord>> getMyHistory({int limit = 50}) async {
-    final response = await _dio.get('/location/me/history', queryParameters: {'limit': limit});
+  /// 获取我的位置历史（支持分页）
+  Future<List<LocationRecord>> getMyHistory({int skip = 0, int limit = 20}) async {
+    final response = await _dio.get('/location/me/history', queryParameters: {'skip': skip, 'limit': limit});
     final data = response.data['data'] as List;
     return data.map((e) => LocationRecord.fromJson(e)).toList();
   }
@@ -43,15 +43,16 @@ class LocationService {
     return LocationRecord.fromJson(data);
   }
 
-  /// 获取家庭成员位置历史
+  /// 获取家庭成员位置历史（支持分页）
   Future<List<LocationRecord>> getFamilyMemberHistory({
     required String familyId,
     required String memberId,
-    int limit = 50,
+    int skip = 0,
+    int limit = 20,
   }) async {
     final response = await _dio.get(
       '/location/family/$familyId/member/$memberId/history',
-      queryParameters: {'limit': limit},
+      queryParameters: {'skip': skip, 'limit': limit},
     );
     final data = response.data['data'] as List;
     return data.map((e) => LocationRecord.fromJson(e)).toList();

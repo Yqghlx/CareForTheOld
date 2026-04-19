@@ -1,4 +1,5 @@
 using CareForTheOld.Data;
+using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Services.Hubs;
 using CareForTheOld.Services.Interfaces;
@@ -51,5 +52,56 @@ public class NotificationService : INotificationService
     {
         await _hubContext.Clients.Group($"family_{familyId}")
             .SendAsync("ReceiveNotification", type, data);
+    }
+
+    public async Task<List<NotificationResponse>> GetUserNotificationsAsync(Guid userId, int limit = 50)
+    {
+        limit = Math.Clamp(limit, 1, 100);
+        return await _context.NotificationRecords
+            .Where(n => n.UserId == userId)
+            .OrderByDescending(n => n.CreatedAt)
+            .Take(limit)
+            .Select(n => new NotificationResponse
+            {
+                Id = n.Id,
+                Type = n.Type,
+                Title = n.Title,
+                Content = n.Content,
+                IsRead = n.IsRead,
+                CreatedAt = n.CreatedAt
+            })
+            .ToListAsync();
+    }
+
+    public async Task<int> GetUnreadCountAsync(Guid userId)
+    {
+        return await _context.NotificationRecords
+            .CountAsync(n => n.UserId == userId && !n.IsRead);
+    }
+
+    public async Task<bool> MarkAsReadAsync(Guid notificationId, Guid userId)
+    {
+        var notification = await _context.NotificationRecords
+            .FirstOrDefaultAsync(n => n.Id == notificationId && n.UserId == userId);
+
+        if (notification == null) return false;
+
+        notification.IsRead = true;
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task MarkAllAsReadAsync(Guid userId)
+    {
+        var unreadNotifications = await _context.NotificationRecords
+            .Where(n => n.UserId == userId && !n.IsRead)
+            .ToListAsync();
+
+        foreach (var notification in unreadNotifications)
+        {
+            notification.IsRead = true;
+        }
+
+        await _context.SaveChangesAsync();
     }
 }

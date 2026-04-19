@@ -408,52 +408,103 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       );
     }
 
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: logs.map((log) {
-            final isLast = log == logs.last;
-            return Column(
+    return Column(
+      children: logs.map((log) {
+        final scheduledTime = log.scheduledAt.toLocal();
+        final scheduledStr =
+            '${scheduledTime.month}/${scheduledTime.day} ${scheduledTime.hour.toString().padLeft(2, '0')}:${scheduledTime.minute.toString().padLeft(2, '0')}';
+
+        // 计算实际服药时间
+        String? takenStr;
+        String? delayInfo;
+        if (log.takenAt != null) {
+          final takenTime = log.takenAt!.toLocal();
+          takenStr =
+              '${takenTime.hour.toString().padLeft(2, '0')}:${takenTime.minute.toString().padLeft(2, '0')}';
+          // 计算延迟（超过30分钟视为延迟服药）
+          final delay = log.takenAt!.difference(log.scheduledAt);
+          if (delay.inMinutes > 30) {
+            delayInfo = '延迟${delay.inHours > 0 ? '${delay.inHours}小时' : ''}${delay.inMinutes % 60}分钟';
+          }
+        }
+
+        return Card(
+          elevation: 4,
+          margin: const EdgeInsets.only(bottom: 10),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Row(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: 32,
-                          height: 32,
-                          decoration: BoxDecoration(
-                            color: log.status.color.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            Icons.medication,
-                            color: log.status.color,
-                            size: 18,
+                // 状态图标
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: log.status.color.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    log.status == MedicationStatus.taken
+                        ? Icons.check_circle
+                        : log.status == MedicationStatus.skipped
+                            ? Icons.skip_next
+                            : Icons.alarm,
+                    color: log.status.color,
+                    size: 22,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                // 药品信息 + 时间
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        log.medicineName,
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '计划: $scheduledStr',
+                        style: TextStyle(
+                            fontSize: 13, color: Colors.grey.shade600),
+                      ),
+                      if (takenStr != null)
+                        Text(
+                          '实际: $takenStr',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: delayInfo != null
+                                ? Colors.orange.shade700
+                                : Colors.green.shade700,
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        Text(log.medicineName),
-                      ],
-                    ),
-                    StatusChip(
-                      label: log.status.label,
-                      color: log.status.color,
-                    ),
-                  ],
+                      if (delayInfo != null)
+                        Text(
+                          delayInfo,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.orange.shade700,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
-                if (!isLast) const Divider(height: 16),
+                // 状态标签
+                StatusChip(
+                  label: log.status.label,
+                  color: log.status.color,
+                ),
               ],
-            );
-          }).toList(),
-        ),
-      ),
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 

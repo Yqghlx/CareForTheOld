@@ -41,13 +41,17 @@ public class ExceptionHandlingMiddleware
     {
         context.Response.ContentType = "application/json";
 
-        // 生产环境隐藏 ArgumentException 详细信息
+        var isDev = _environment.IsDevelopment();
+
+        // 开发环境返回详细错误信息，生产环境隐藏内部细节
         var (statusCode, message) = exception switch
         {
             KeyNotFoundException => (StatusCodes.Status404NotFound, "资源未找到"),
             UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, "未授权"),
-            ArgumentException => (StatusCodes.Status400BadRequest, exception.Message),
-            _ => (StatusCodes.Status500InternalServerError, "服务器内部错误")
+            ArgumentException => (StatusCodes.Status400BadRequest,
+                isDev ? exception.Message : "请求参数错误"),
+            _ => (StatusCodes.Status500InternalServerError,
+                isDev ? exception.Message : "服务器内部错误")
         };
 
         context.Response.StatusCode = statusCode;

@@ -24,6 +24,10 @@ public class UserController : ControllerBase
     /// </summary>
     private static readonly HashSet<string> _allowedExtensions = new(StringComparer.OrdinalIgnoreCase) { ".jpg", ".jpeg", ".png" };
     /// <summary>
+    /// 允许的 MIME 内容类型
+    /// </summary>
+    private static readonly HashSet<string> _allowedContentTypes = new(StringComparer.OrdinalIgnoreCase) { "image/jpeg", "image/png" };
+    /// <summary>
     /// 最大文件大小（2 MB）
     /// </summary>
     private const long _maxFileSize = 2 * 1024 * 1024;
@@ -80,11 +84,15 @@ public class UserController : ControllerBase
             return ApiResponse<object>.Fail("文件大小不能超过 2MB");
         }
 
-        // 文件类型验证
+        // 文件类型验证（扩展名 + MIME 类型双重校验）
         var extension = Path.GetExtension(file.FileName);
         if (!_allowedExtensions.Contains(extension))
         {
             return ApiResponse<object>.Fail("仅支持 JPG 和 PNG 格式的图片");
+        }
+        if (!_allowedContentTypes.Contains(file.ContentType))
+        {
+            return ApiResponse<object>.Fail("文件内容类型不支持");
         }
 
         var userId = this.GetUserId();
@@ -115,6 +123,13 @@ public class UserController : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<ApiResponse<UserResponse>> GetUserById(Guid id)
     {
+        // 仅允许查看本人或同一家庭成员的信息，防止越权访问
+        var currentUserId = this.GetUserId();
+        if (id != currentUserId)
+        {
+            // 非本人查询：由服务层校验家庭成员关系
+            await _userService.EnsureFamilyMemberAsync(currentUserId, id);
+        }
         var result = await _userService.GetUserByIdAsync(id);
         return ApiResponse<UserResponse>.Ok(result);
     }

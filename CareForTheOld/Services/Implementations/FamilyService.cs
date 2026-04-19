@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.Families;
 using CareForTheOld.Models.DTOs.Responses;
@@ -10,16 +11,15 @@ namespace CareForTheOld.Services.Implementations;
 public class FamilyService : IFamilyService
 {
     private readonly AppDbContext _context;
-    private static readonly Random _random = new();
 
     public FamilyService(AppDbContext context) => _context = context;
 
     /// <summary>
-    /// 生成 6 位数字邀请码
+    /// 使用加密随机数生成器生成 6 位数字邀请码，防止可预测攻击
     /// </summary>
     private static string GenerateInviteCode()
     {
-        return _random.Next(100000, 999999).ToString();
+        return RandomNumberGenerator.GetInt32(100000, 999999).ToString();
     }
 
     /// <summary>

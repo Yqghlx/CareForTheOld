@@ -1,6 +1,7 @@
 using System.Text.Json;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.Extensions.Caching.Distributed;
+using StackExchange.Redis;
 
 namespace CareForTheOld.Services.Implementations;
 
@@ -11,11 +12,16 @@ public class CacheService : ICacheService
 {
     private readonly IDistributedCache _cache;
     private readonly ILogger<CacheService> _logger;
+    private readonly IConnectionMultiplexer? _redis;
 
-    public CacheService(IDistributedCache cache, ILogger<CacheService> logger)
+    public CacheService(
+        IDistributedCache cache,
+        ILogger<CacheService> logger,
+        IConnectionMultiplexer? redis = null)
     {
         _cache = cache;
         _logger = logger;
+        _redis = redis;
     }
 
     public async Task<T?> GetAsync<T>(string key) where T : class
@@ -41,11 +47,29 @@ public class CacheService : ICacheService
         await _cache.RemoveAsync(key);
     }
 
+    /// <summary>
+    /// 按前缀批量删除缓存键
+    /// 优先使用 Redis SCAN 命令精确删除；未配置 Redis 时记录警告日志
+    /// </summary>
     public async Task RemoveByPrefixAsync(string prefix)
     {
-        // IDistributedCache 不支持前缀扫描，此处记录日志
-        // 生产环境可使用 ConnectionMultiplexer 直接操作 Redis
-        _logger.LogInformation("前缀删除请求: {Prefix}（需 Redis 原生支持）", prefix);
-        await Task.CompletedTask;
+        if (_redis != null)
+        {
+            var db = _redis.GetDatabase();
+            var server = _redis.GetServers().FirstOrDefault();
+            if (server != null)
+            {
+                var keys = server.Keys(pattern: $"{prefix}*").ToArray();
+                if (keys.Length > 0)
+                {
+                    await db.KeyDeleteAsync(keys);
+                    _logger.LogInformation("已按前缀 {Prefix} 删除 {Count} 个缓存键", prefix, keys.Length);
+                }
+            }
+        }
+        else
+        {
+            _logger.LogWarning("未配置 Redis，无法按前缀删除缓存: {Prefix}", prefix);
+        }
     }
 }

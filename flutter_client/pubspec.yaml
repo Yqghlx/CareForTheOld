@@ -63,6 +63,7 @@ dependencies:
 
   # 时间处理
   uuid: ^4.2.0
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:

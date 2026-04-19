@@ -9,6 +9,10 @@ import '../../../shared/widgets/common_cards.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/validators/form_validators.dart';
 import '../providers/user_provider.dart';
+import '../providers/notification_record_provider.dart';
+import '../../elder/providers/health_provider.dart';
+import '../../elder/providers/medication_provider.dart';
+import '../../shared/providers/emergency_provider.dart';
 
 /// 设置页面
 class SettingsPage extends ConsumerStatefulWidget {
@@ -613,6 +617,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             text: '退出',
             onPressed: () {
               Navigator.pop(ctx);
+              // 清除所有业务 Provider 状态，防止残留旧数据
+              ref.invalidate(healthRecordsProvider);
+              ref.invalidate(healthStatsProvider);
+              ref.invalidate(medicationProvider);
+              ref.invalidate(emergencyProvider);
+              ref.invalidate(userProvider);
+              ref.invalidate(notificationListProvider);
+              // 执行登出（清除认证状态和 SignalR 连接）
               ref.read(authProvider.notifier).logout();
               context.go('/login');
             },

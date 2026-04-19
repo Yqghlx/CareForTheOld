@@ -13,6 +13,8 @@ public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
 
         builder.Property(rt => rt.Token).HasMaxLength(500).IsRequired();
         builder.HasIndex(rt => rt.Token);
+        // 过期时间索引：用于定期清理过期令牌
+        builder.HasIndex(rt => rt.ExpiresAt);
 
         builder.HasOne(rt => rt.User)
             .WithMany(u => u.RefreshTokens)

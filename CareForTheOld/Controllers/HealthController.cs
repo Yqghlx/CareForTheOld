@@ -56,6 +56,7 @@ public class HealthController : ControllerBase
         [FromQuery] int skip = 0,
         [FromQuery] int limit = 50)
     {
+        limit = Math.Clamp(limit, 1, 100);
         var userId = this.GetUserId();
         var result = await _healthService.GetUserRecordsAsync(userId, type, skip, limit);
         return ApiResponse<List<HealthRecordResponse>>.Ok(result);
@@ -73,6 +74,7 @@ public class HealthController : ControllerBase
         [FromQuery] int skip = 0,
         [FromQuery] int limit = 50)
     {
+        limit = Math.Clamp(limit, 1, 100);
         var userId = this.GetUserId();
 
         // 验证当前用户是否是该家庭成员
