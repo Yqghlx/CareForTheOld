@@ -769,6 +769,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
     // 解析并验证输入值
     int? systolic, diastolic, heartRate;
     double? bloodSugar, temperature;
+    String? abnormalHint;
 
     try {
       switch (type) {
@@ -776,22 +777,43 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
           systolic = int.parse(valueText);
           diastolic = int.parse(valueText2);
           if (systolic < 60 || systolic > 250 || diastolic < 40 || diastolic > 150) {
-            throw const FormatException('血压值超出范围');
+            throw const FormatException('血压值超出可记录范围（收缩压60-250，舒张压40-150）');
+          }
+          // 温和提示：超出正常范围但仍在可记录范围
+          if (systolic > 140 || diastolic > 90) {
+            abnormalHint = '血压偏高，已记录。建议关注并咨询医生。';
+          } else if (systolic < 90 || diastolic < 60) {
+            abnormalHint = '血压偏低，已记录。建议关注并咨询医生。';
           }
         case HealthType.bloodSugar:
           bloodSugar = double.parse(valueText);
           if (bloodSugar < 1.0 || bloodSugar > 35.0) {
-            throw const FormatException('血糖值超出范围');
+            throw const FormatException('血糖值超出可记录范围（1.0-35.0 mmol/L）');
+          }
+          if (bloodSugar > 6.1) {
+            abnormalHint = '血糖偏高，已记录。建议关注饮食并咨询医生。';
+          } else if (bloodSugar < 3.9) {
+            abnormalHint = '血糖偏低，已记录。请注意及时补充糖分。';
           }
         case HealthType.heartRate:
           heartRate = int.parse(valueText);
           if (heartRate < 30 || heartRate > 200) {
-            throw const FormatException('心率值超出范围');
+            throw const FormatException('心率值超出可记录范围（30-200 次/分）');
+          }
+          if (heartRate > 100) {
+            abnormalHint = '心率偏快，已记录。建议适当休息。';
+          } else if (heartRate < 60) {
+            abnormalHint = '心率偏慢，已记录。如感不适请咨询医生。';
           }
         case HealthType.temperature:
           temperature = double.parse(valueText);
           if (temperature < 35.0 || temperature > 42.0) {
-            throw const FormatException('体温值超出范围');
+            throw const FormatException('体温值超出可记录范围（35.0-42.0 °C）');
+          }
+          if (temperature > 37.3) {
+            abnormalHint = '体温偏高，已记录。建议多喝水并观察。';
+          } else if (temperature < 36.0) {
+            abnormalHint = '体温偏低，已记录。请注意保暖。';
           }
       }
     } on FormatException catch (e) {
@@ -848,13 +870,17 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                 ),
               ),
               const SizedBox(width: 12),
-              Text(
-                '${type.label}记录已保存',
-                style: const TextStyle(fontSize: 16),
+              Expanded(
+                child: Text(
+                  abnormalHint ?? '${type.label}记录已保存',
+                  style: const TextStyle(fontSize: 16),
+                ),
               ),
             ],
           ),
-          backgroundColor: AppTheme.successColor,
+          backgroundColor: abnormalHint != null
+              ? AppTheme.warningColor  // 温和提示用橙色而非红色
+              : AppTheme.successColor,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
