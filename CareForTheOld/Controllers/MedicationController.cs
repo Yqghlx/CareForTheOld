@@ -40,12 +40,14 @@ public class MedicationController : ControllerBase
     }
 
     /// <summary>
-    /// 获取老人的用药计划列表
+    /// 获取老人的用药计划列表（需为家庭成员）
     /// </summary>
     [HttpGet("plans/elder/{elderId:guid}")]
+    [Authorize(Roles = "Child")]
     public async Task<ApiResponse<List<MedicationPlanResponse>>> GetPlansByElder(Guid elderId)
     {
-        var result = await _medicationService.GetPlansByElderAsync(elderId);
+        var userId = this.GetUserId();
+        var result = await _medicationService.GetPlansByElderAsync(elderId, userId);
         return ApiResponse<List<MedicationPlanResponse>>.Ok(result);
     }
 
@@ -98,16 +100,18 @@ public class MedicationController : ControllerBase
     }
 
     /// <summary>
-    /// 获取用药日志列表
+    /// 获取用药日志列表（子女查看老人，需为家庭成员）
     /// </summary>
     [HttpGet("logs/elder/{elderId:guid}")]
+    [Authorize(Roles = "Child")]
     public async Task<ApiResponse<List<MedicationLogResponse>>> GetLogs(
         Guid elderId,
         [FromQuery] DateOnly? date,
         [FromQuery] int skip = 0,
         [FromQuery] int limit = 50)
     {
-        var result = await _medicationService.GetLogsAsync(elderId, date, skip, limit);
+        var userId = this.GetUserId();
+        var result = await _medicationService.GetLogsAsync(elderId, date, skip, limit, userId);
         return ApiResponse<List<MedicationLogResponse>>.Ok(result);
     }
 

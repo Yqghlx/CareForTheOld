@@ -14,9 +14,9 @@ public interface IMedicationService
     Task<MedicationPlanResponse> CreatePlanAsync(Guid operatorId, CreateMedicationPlanRequest request);
 
     /// <summary>
-    /// 获取老人的用药计划列表
+    /// 获取老人的用药计划列表（需验证操作者权限）
     /// </summary>
-    Task<List<MedicationPlanResponse>> GetPlansByElderAsync(Guid elderId);
+    Task<List<MedicationPlanResponse>> GetPlansByElderAsync(Guid elderId, Guid? operatorId = null);
 
     /// <summary>
     /// 更新用药计划
@@ -34,9 +34,9 @@ public interface IMedicationService
     Task<MedicationLogResponse> RecordLogAsync(Guid operatorId, RecordMedicationLogRequest request);
 
     /// <summary>
-    /// 获取用药日志列表
+    /// 获取用药日志列表（需验证操作者权限）
     /// </summary>
-    Task<List<MedicationLogResponse>> GetLogsAsync(Guid elderId, DateOnly? date, int skip = 0, int limit = 50);
+    Task<List<MedicationLogResponse>> GetLogsAsync(Guid elderId, DateOnly? date, int skip = 0, int limit = 50, Guid? operatorId = null);
 
     /// <summary>
     /// 获取今日待服药列表

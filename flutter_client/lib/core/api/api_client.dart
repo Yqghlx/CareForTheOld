@@ -68,9 +68,8 @@ class ApiClient {
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) {
         final token = _tokenGetter?.call();
-        // 调试日志
-        debugPrint(
-            'API请求: ${options.path}, Token: ${token != null ? "${token.substring(0, 20)}..." : "null"}');
+        // 调试日志（仅记录路径，不输出 Token 敏感信息）
+        debugPrint('API请求: ${options.path}');
         if (token != null && token.isNotEmpty) {
           options.headers['Authorization'] = 'Bearer $token';
         }

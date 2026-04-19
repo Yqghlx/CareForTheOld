@@ -17,6 +17,7 @@ class LocationReporterService {
   final LocationService _service;
   final ConnectivityService _connectivityService;
   Timer? _timer;
+  StreamSubscription<bool>? _networkSubscription;
   bool _isRunning = false;
 
   /// 上报间隔（默认 5 分钟）
@@ -76,6 +77,15 @@ class LocationReporterService {
     _timer = Timer.periodic(_reportInterval, (_) => _reportLocationIfEnabled());
     _isRunning = true;
     _consecutiveFailures = 0;
+
+    // 监听网络恢复，恢复后立即补报一次位置
+    _networkSubscription = _connectivityService.onConnectivityChanged.listen((isOnline) {
+      if (isOnline && _isRunning) {
+        debugPrint('[位置上报] 网络已恢复，立即补报位置');
+        _reportLocationWithRetry();
+      }
+    });
+
     debugPrint('[位置上报] 服务已启动，间隔 ${_reportInterval.inMinutes} 分钟');
     return true;
   }
@@ -84,6 +94,8 @@ class LocationReporterService {
   void stop() {
     _timer?.cancel();
     _timer = null;
+    _networkSubscription?.cancel();
+    _networkSubscription = null;
     _isRunning = false;
     _consecutiveFailures = 0;
     debugPrint('[位置上报] 服务已停止');

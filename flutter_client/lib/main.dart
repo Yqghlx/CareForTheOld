@@ -15,16 +15,18 @@ void main() async {
 }
 
 /// 应用入口
-class CareForTheOldApp extends StatelessWidget {
+class CareForTheOldApp extends ConsumerWidget {
   const CareForTheOldApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(appRouterProvider);
+
     return MaterialApp.router(
       title: '关爱老人',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      routerConfig: appRouter,
+      routerConfig: router,
       locale: const Locale('zh', 'CN'),
     );
   }

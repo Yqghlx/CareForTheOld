@@ -53,7 +53,13 @@ class MedicationState {
 class MedicationNotifier extends StateNotifier<MedicationState> {
   final MedicationService _service;
 
+  /// 正在提交的用药记录 key 集合（planId_scheduledAt），防止重复提交
+  final Set<String> _submittingKeys = {};
+
   MedicationNotifier(this._service) : super(const MedicationState());
+
+  /// 生成防重复提交的 key
+  String _logKey(MedicationLog log) => '${log.planId}_${log.scheduledAt.toIso8601String()}';
 
   /// 加载所有用药数据（计划 + 今日待服）
   Future<void> loadAll() async {
@@ -88,8 +94,11 @@ class MedicationNotifier extends StateNotifier<MedicationState> {
     }).toList();
   }
 
-  /// 标记已服用
+  /// 标记已服用（带防重复提交保护）
   Future<bool> markAsTaken(MedicationLog log) async {
+    final key = _logKey(log);
+    if (_submittingKeys.contains(key)) return false;
+    _submittingKeys.add(key);
     try {
       final updated = await _service.recordLog(
         planId: log.planId,
@@ -102,11 +111,16 @@ class MedicationNotifier extends StateNotifier<MedicationState> {
     } catch (e) {
       state = state.copyWith(error: e.toString());
       return false;
+    } finally {
+      _submittingKeys.remove(key);
     }
   }
 
-  /// 标记跳过
+  /// 标记跳过（带防重复提交保护）
   Future<bool> markAsSkipped(MedicationLog log) async {
+    final key = _logKey(log);
+    if (_submittingKeys.contains(key)) return false;
+    _submittingKeys.add(key);
     try {
       final updated = await _service.recordLog(
         planId: log.planId,
@@ -119,6 +133,8 @@ class MedicationNotifier extends StateNotifier<MedicationState> {
     } catch (e) {
       state = state.copyWith(error: e.toString());
       return false;
+    } finally {
+      _submittingKeys.remove(key);
     }
   }
 }

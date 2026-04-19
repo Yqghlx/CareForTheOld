@@ -49,6 +49,9 @@ class EmergencyState {
 class EmergencyNotifier extends StateNotifier<EmergencyState> {
   final EmergencyService _service;
 
+  /// 紧急呼叫发送锁，防止重复提交
+  bool _isCreatingCall = false;
+
   EmergencyNotifier(this._service) : super(const EmergencyState());
 
   /// 加载未处理呼叫（子女端）
@@ -89,14 +92,18 @@ class EmergencyNotifier extends StateNotifier<EmergencyState> {
     }
   }
 
-  /// 老人发起紧急呼叫
+  /// 老人发起紧急呼叫（带防重复提交保护）
   Future<EmergencyCall?> createCall() async {
+    if (_isCreatingCall) return null;
+    _isCreatingCall = true;
     try {
       final call = await _service.createCall();
       return call;
     } catch (e) {
       state = state.copyWith(error: e.toString());
       return null;
+    } finally {
+      _isCreatingCall = false;
     }
   }
 
