@@ -6,6 +6,9 @@ namespace CareForTheOld.Services.Hubs;
 
 /// <summary>
 /// 通知推送中心（需认证）
+///
+/// 支持心跳检测机制：前端定期调用 Heartbeat 方法更新最后活跃时间，
+/// 后台 HeartbeatMonitorService 检测长时间无心跳的老人并触发离线告警。
 /// </summary>
 [Authorize]
 public class NotificationHub : Hub
@@ -18,11 +21,23 @@ public class NotificationHub : Hub
     /// </summary>
     private static readonly ConcurrentDictionary<string, HashSet<string>> _onlineUsers = new();
 
+    /// <summary>
+    /// 用户最后活跃时间：UserId → 最后心跳时间
+    /// 用于离线检测，区分"已断开"和"已连接但长时间无响应"
+    /// </summary>
+    private static readonly ConcurrentDictionary<string, DateTime> _lastHeartbeat = new();
+
     /// <summary>当前在线用户数</summary>
     public static int OnlineUserCount => _onlineUsers.Count;
 
     /// <summary>当前总连接数</summary>
     public static int TotalConnectionCount => _onlineUsers.Values.Sum(c => c.Count);
+
+    /// <summary>
+    /// 获取所有在线用户的最后活跃时间（快照）
+    /// 供 HeartbeatMonitorService 使用
+    /// </summary>
+    public static IReadOnlyDictionary<string, DateTime> LastHeartbeats => _lastHeartbeat;
 
     public NotificationHub(ILogger<NotificationHub> logger)
     {
@@ -47,6 +62,9 @@ public class NotificationHub : Hub
             userId,
             _ => new HashSet<string> { Context.ConnectionId },
             (_, connections) => { lock (connections) { connections.Add(Context.ConnectionId); } return connections; });
+
+        // 记录连接时间作为初始心跳
+        _lastHeartbeat[userId] = DateTime.UtcNow;
 
         await Groups.AddToGroupAsync(Context.ConnectionId, $"user_{userId}");
 
@@ -76,6 +94,8 @@ public class NotificationHub : Hub
                 if (connections.Count == 0)
                 {
                     _onlineUsers.TryRemove(userId, out _);
+                    // 用户完全离线时清理心跳记录
+                    _lastHeartbeat.TryRemove(userId, out _);
                 }
             }
 
@@ -92,6 +112,23 @@ public class NotificationHub : Hub
         }
 
         await base.OnDisconnectedAsync(exception);
+    }
+
+    /// <summary>
+    /// 心跳方法（前端定期调用，建议每 60 秒一次）
+    ///
+    /// 更新用户最后活跃时间。当后台服务检测到老人端超过阈值
+    /// 未发送心跳时，自动触发离线告警通知子女。
+    /// </summary>
+    public async Task Heartbeat()
+    {
+        var userId = Context.UserIdentifier;
+        if (string.IsNullOrEmpty(userId)) return;
+
+        _lastHeartbeat[userId] = DateTime.UtcNow;
+        _logger.LogDebug("心跳: 用户 {UserId}", userId);
+
+        await Task.CompletedTask;
     }
 
     /// <summary>
