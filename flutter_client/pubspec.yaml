@@ -55,6 +55,9 @@ dependencies:
   # 网络连接检测
   connectivity_plus: ^6.0.0
 
+  # 错误监控
+  sentry_flutter: ^8.0.0
+
   # 语音识别
   speech_to_text: ^7.0.0
 

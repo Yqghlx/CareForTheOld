@@ -130,6 +130,7 @@ public class EmergencyService : IEmergencyService
 
         // 获取呼叫记录
         var call = await _context.EmergencyCalls
+            .AsTracking()
             .Include(c => c.Elder)
             .FirstOrDefaultAsync(c => c.Id == callId);
 

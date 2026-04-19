@@ -40,7 +40,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:5000
-      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=carefortheold;Username=carefortheold;Password=carefortheold_dev_2026;Pooling=true;Minimum Pool Size=5;Maximum Pool Size=100;"
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=carefortheold;Username=carefortheold;Password=carefortheold_dev_2026;Pooling=true;Minimum Pool Size=10;Maximum Pool Size=200;Connection Lifetime=300;"
       ConnectionStrings__Redis: "redis:6379"
       Jwt__Key: "CareForTheOld_Docker_SecretKey_2026_MustBe32Chars!"
       Jwt__Issuer: "CareForTheOld"

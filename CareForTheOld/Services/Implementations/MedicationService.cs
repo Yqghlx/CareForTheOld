@@ -70,6 +70,7 @@ public class MedicationService : IMedicationService
     public async Task<MedicationPlanResponse> UpdatePlanAsync(Guid planId, Guid operatorId, UpdateMedicationPlanRequest request)
     {
         var plan = await _context.MedicationPlans
+            .AsTracking()
             .Include(p => p.Elder)
             .FirstOrDefaultAsync(p => p.Id == planId)
             ?? throw new KeyNotFoundException("用药计划不存在");
@@ -109,6 +110,7 @@ public class MedicationService : IMedicationService
     public async Task<MedicationLogResponse> RecordLogAsync(Guid operatorId, RecordMedicationLogRequest request)
     {
         var plan = await _context.MedicationPlans
+            .AsTracking()
             .Include(p => p.Elder)
             .FirstOrDefaultAsync(p => p.Id == request.PlanId)
             ?? throw new KeyNotFoundException("用药计划不存在");
@@ -117,6 +119,7 @@ public class MedicationService : IMedicationService
 
         // 检查是否已有该时间点的日志
         var existingLog = await _context.MedicationLogs
+            .AsTracking()
             .FirstOrDefaultAsync(l => l.PlanId == request.PlanId && l.ScheduledAt == request.ScheduledAt);
 
         if (existingLog is not null)

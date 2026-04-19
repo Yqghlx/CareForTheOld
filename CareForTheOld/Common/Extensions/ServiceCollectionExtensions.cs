@@ -32,13 +32,15 @@ public static class ServiceCollectionExtensions
             // PostgreSQL 生产环境
             services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(connectionString)
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
                     .ConfigureWarnings(w => w.Log(RelationalEventId.PendingModelChangesWarning)));
         }
         else
         {
             // SQLite 开发环境
             services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlite(connectionString));
+                options.UseSqlite(connectionString)
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
         }
 
         // 启动时初始化数据库

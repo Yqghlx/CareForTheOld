@@ -173,6 +173,7 @@ public class HealthService : IHealthService
     public async Task DeleteRecordAsync(Guid userId, Guid recordId)
     {
         var record = await _context.HealthRecords
+            .AsTracking()
             .FirstOrDefaultAsync(r => r.Id == recordId && r.UserId == userId)
             ?? throw new KeyNotFoundException("记录不存在或无权删除");
 

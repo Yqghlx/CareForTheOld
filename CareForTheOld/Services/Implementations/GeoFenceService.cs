@@ -26,6 +26,7 @@ public class GeoFenceService : IGeoFenceService
 
         // 检查老人是否已存在围栏（一个老人只能有一个围栏）
         var existingFence = await _context.GeoFences
+            .AsTracking()
             .FirstOrDefaultAsync(f => f.ElderId == request.ElderId);
 
         if (existingFence != null)
@@ -79,6 +80,7 @@ public class GeoFenceService : IGeoFenceService
     public async Task<GeoFenceResponse> UpdateFenceAsync(Guid fenceId, Guid operatorId, CreateGeoFenceRequest request)
     {
         var fence = await _context.GeoFences
+            .AsTracking()
             .Include(f => f.Elder)
             .FirstOrDefaultAsync(f => f.Id == fenceId)
             ?? throw new KeyNotFoundException("围栏不存在");
@@ -106,6 +108,7 @@ public class GeoFenceService : IGeoFenceService
     public async Task DeleteFenceAsync(Guid fenceId, Guid operatorId)
     {
         var fence = await _context.GeoFences
+            .AsTracking()
             .FirstOrDefaultAsync(f => f.Id == fenceId)
             ?? throw new KeyNotFoundException("围栏不存在");
 
