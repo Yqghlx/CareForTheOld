@@ -64,7 +64,15 @@ public class FamilyService : IFamilyService
         });
 
         _context.Families.Add(family);
-        await _context.SaveChangesAsync();
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
+        {
+            throw new ArgumentException("您已加入家庭组，不能重复创建");
+        }
 
         return await GetFamilyResponse(family.Id);
     }
@@ -88,7 +96,15 @@ public class FamilyService : IFamilyService
             Relation = request.Relation,
         });
 
-        await _context.SaveChangesAsync();
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
+        {
+            throw new ArgumentException("该用户已加入其他家庭组");
+        }
+
         return await GetFamilyResponse(familyId);
     }
 
@@ -119,7 +135,15 @@ public class FamilyService : IFamilyService
             Relation = request.Relation,
         });
 
-        await _context.SaveChangesAsync();
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
+        {
+            throw new ArgumentException("您已加入家庭组，不能重复加入");
+        }
+
         return await GetFamilyResponse(family.Id);
     }
 
@@ -205,5 +229,18 @@ public class FamilyService : IFamilyService
                 AvatarUrl = fm.User.AvatarUrl,
             }).ToList()
         };
+    }
+
+    /// <summary>
+    /// 判断是否为唯一约束冲突异常（兼容 PostgreSQL 和 SQLite）
+    /// </summary>
+    private static bool IsUniqueConstraintViolation(DbUpdateException ex)
+    {
+        var inner = ex.InnerException;
+        if (inner == null) return false;
+        var msg = inner.Message.ToUpperInvariant();
+        // PostgreSQL: "23505" unique_violation
+        // SQLite: "UNIQUE constraint failed"
+        return msg.Contains("UNIQUE") || msg.Contains("23505");
     }
 }
