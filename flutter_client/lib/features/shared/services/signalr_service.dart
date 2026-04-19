@@ -151,5 +151,8 @@ class SignalRService {
 
 /// SignalR 服务 Provider
 final signalrServiceProvider = Provider<SignalRService>((ref) {
-  return SignalRService(ref);
+  final service = SignalRService(ref);
+  // Provider 销毁时自动断开连接，防止内存泄漏
+  ref.onDispose(() => service.disconnect());
+  return service;
 });

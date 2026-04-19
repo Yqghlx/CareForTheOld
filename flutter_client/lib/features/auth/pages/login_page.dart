@@ -81,17 +81,13 @@ class _LoginPageState extends ConsumerState<LoginPage>
 
     try {
       final apiClient = ref.read(apiClientProvider);
-      debugPrint('开始登录请求... 手机号: ${phoneController.text}');
       final response = await apiClient.dio.post('/auth/login', data: {
         'phoneNumber': phoneController.text,
         'password': passwordController.text,
       });
-      debugPrint('登录响应状态: ${response.statusCode}');
-      debugPrint('登录响应数据: ${response.data}');
 
       final data = response.data['data'];
       final user = User.fromJson(data['user']);
-      debugPrint('用户信息: ${user.realName}, 角色: ${user.role}');
 
       // 等待 login 完成，确保 token 已更新后再跳转
       await ref.read(authProvider.notifier).login(

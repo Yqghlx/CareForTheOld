@@ -51,8 +51,14 @@ public class MedicationService : IMedicationService
         return MapToPlanResponse(plan, elder.RealName);
     }
 
-    public async Task<List<MedicationPlanResponse>> GetPlansByElderAsync(Guid elderId)
+    public async Task<List<MedicationPlanResponse>> GetPlansByElderAsync(Guid elderId, Guid? operatorId = null)
     {
+        // 如果提供了 operatorId，验证是否为家庭成员
+        if (operatorId.HasValue)
+        {
+            await EnsureFamilyMemberAsync(elderId, operatorId.Value);
+        }
+
         return await _context.MedicationPlans
             .Include(p => p.Elder)
             .Where(p => p.ElderId == elderId && !p.IsDeleted)
@@ -139,8 +145,14 @@ public class MedicationService : IMedicationService
         return MapToLogResponse(log, plan.MedicineName, plan.Elder.RealName);
     }
 
-    public async Task<List<MedicationLogResponse>> GetLogsAsync(Guid elderId, DateOnly? date, int skip = 0, int limit = 50)
+    public async Task<List<MedicationLogResponse>> GetLogsAsync(Guid elderId, DateOnly? date, int skip = 0, int limit = 50, Guid? operatorId = null)
     {
+        // 如果提供了 operatorId，验证是否为家庭成员
+        if (operatorId.HasValue)
+        {
+            await EnsureFamilyMemberAsync(elderId, operatorId.Value);
+        }
+
         var query = _context.MedicationLogs
             .Include(l => l.Plan)
             .Include(l => l.Elder)
