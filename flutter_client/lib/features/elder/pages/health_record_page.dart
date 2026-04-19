@@ -825,10 +825,42 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
 
     if (success && mounted) {
       Navigator.pop(dialogContext);
+      // 带动画的成功提示
+      ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('${type.label}记录已保存'),
+          content: Row(
+            children: [
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0, end: 1),
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.elasticOut,
+                builder: (context, value, child) {
+                  return Transform.scale(
+                    scale: value,
+                    child: child,
+                  );
+                },
+                child: const Icon(
+                  Icons.check_circle_rounded,
+                  color: Colors.white,
+                  size: 28,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                '${type.label}记录已保存',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
           backgroundColor: AppTheme.successColor,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          duration: const Duration(seconds: 2),
         ),
       );
       // 保存成功后刷新统计
