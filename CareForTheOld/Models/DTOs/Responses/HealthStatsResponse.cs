@@ -22,4 +22,15 @@ public class HealthStatsResponse
 
     /// <summary>记录总数</summary>
     public int TotalCount { get; set; }
+
+    /// <summary>
+    /// 趋势方向："rising"(升高)、"falling"(降低)、"stable"(稳定)、null(数据不足)
+    /// 基于 7 天均值与 30 天均值的对比计算
+    /// </summary>
+    public string? Trend { get; set; }
+
+    /// <summary>
+    /// 趋势预警提示（如"近7天血压均值较30天均值升高约12%，请关注"），无异常时为 null
+    /// </summary>
+    public string? TrendWarning { get; set; }
 }

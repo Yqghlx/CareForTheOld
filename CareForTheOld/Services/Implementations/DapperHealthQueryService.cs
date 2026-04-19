@@ -113,10 +113,56 @@ public class DapperHealthQueryService : IHealthQueryService
                     break;
             }
 
+            // 计算趋势：7天均值 vs 30天均值
+            ComputeTrend(statsResponse, healthType);
+
             stats.Add(statsResponse);
         }
 
         return stats;
+    }
+
+    /// <summary>
+    /// 计算健康趋势：7天均值 vs 30天均值
+    /// 当7天均值相对30天均值变化超过阈值时标记趋势方向并生成预警提示
+    /// </summary>
+    private static void ComputeTrend(HealthStatsResponse stats, HealthType type)
+    {
+        if (!stats.Average7Days.HasValue || !stats.Average30Days.HasValue || stats.Average30Days.Value == 0)
+            return;
+
+        var diff = (double)(stats.Average7Days.Value - stats.Average30Days.Value);
+        var percentChange = Math.Abs(diff / (double)stats.Average30Days.Value * 100);
+
+        // 不同健康类型使用不同的变化阈值
+        var threshold = type switch
+        {
+            HealthType.BloodPressure => 8.0,   // 血压波动 8% 以上关注
+            HealthType.BloodSugar => 10.0,      // 血糖波动 10% 以上关注
+            HealthType.HeartRate => 10.0,        // 心率波动 10% 以上关注
+            HealthType.Temperature => 1.0,       // 体温变化 1% 以上关注（体温基数小，1%约0.36度）
+            _ => 10.0
+        };
+
+        if (percentChange < threshold)
+        {
+            stats.Trend = "stable";
+            return;
+        }
+
+        var typeName = GetTypeDisplayName(type);
+        var percentStr = Math.Round(percentChange, 1);
+
+        if (diff > 0)
+        {
+            stats.Trend = "rising";
+            stats.TrendWarning = $"近7天{typeName}均值较30天均值升高约{percentStr}%，请关注";
+        }
+        else
+        {
+            stats.Trend = "falling";
+            stats.TrendWarning = $"近7天{typeName}均值较30天均值降低约{percentStr}%，请关注";
+        }
     }
 
     /// <summary>

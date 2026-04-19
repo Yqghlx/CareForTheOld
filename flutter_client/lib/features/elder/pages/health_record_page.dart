@@ -128,61 +128,109 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
   Widget _buildStatsBar(List<HealthStats> stats) {
     if (stats.isEmpty) return const SizedBox.shrink();
 
-    return Container(
-      constraints: const BoxConstraints(minHeight: 48, maxHeight: 64),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppTheme.primaryColor.withValues(alpha: 0.08),
-            AppTheme.primaryLight.withValues(alpha: 0.04),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        itemCount: stats.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
-        itemBuilder: (context, index) {
-          final stat = stats[index];
-          final avg7 = stat.average7Days?.toStringAsFixed(1) ?? '--';
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+    // 检查是否有趋势预警
+    final warnings = stats.where((s) => s.hasWarning).toList();
+
+    return Column(
+      children: [
+        // 趋势预警横幅（有预警时显示）
+        if (warnings.isNotEmpty)
+          Container(
+            margin: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.8),
-              borderRadius: BorderRadius.circular(10),
+              color: Colors.orange.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
             ),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    stat.typeName,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey.shade600,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: warnings.map((w) => Row(
+                children: [
+                  Icon(w.trendIcon, size: 18, color: w.trendColor),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      w.trendWarning ?? '',
+                      style: TextStyle(fontSize: 14, color: Colors.orange.shade800),
                     ),
                   ),
-                ),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    avg7,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.primaryColor,
-                    ),
-                  ),
-                ),
+                ],
+              )).toList(),
+            ),
+          ),
+        // 统计概览卡片
+        Container(
+          constraints: const BoxConstraints(minHeight: 48, maxHeight: 64),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                AppTheme.primaryColor.withValues(alpha: 0.08),
+                AppTheme.primaryLight.withValues(alpha: 0.04),
               ],
             ),
-          );
-        },
-      ),
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            itemCount: stats.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 12),
+            itemBuilder: (context, index) {
+              final stat = stats[index];
+              final avg7 = stat.average7Days?.toStringAsFixed(1) ?? '--';
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.8),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            stat.typeName,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                          // 趋势指示小图标
+                          if (stat.trend != null && stat.trend != 'stable') ...[
+                            const SizedBox(width: 4),
+                            Icon(
+                              stat.trendIcon,
+                              size: 14,
+                              color: stat.trendColor,
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        avg7,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: stat.hasWarning ? stat.trendColor : AppTheme.primaryColor,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
