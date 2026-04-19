@@ -115,10 +115,19 @@ class SignalRService {
       // 根据通知类型处理
       switch (type) {
         case 'MedicationReminder':
+        case 'MedicationReminderUrgent':
           _showMedicationReminder(title, content);
           break;
         case 'MedicationReminderFamily':
           _showMedicationReminderFamily(title, content);
+          break;
+        case 'MedicationMissed':
+          // 老人未服药告警（高优先级通知）
+          LocalNotificationService.showNotification(
+            id: 3,
+            title: title,
+            body: content,
+          );
           break;
         default:
           _showGeneralNotification(title, content);

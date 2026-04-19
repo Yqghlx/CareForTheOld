@@ -1,7 +1,9 @@
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Models.Entities;
+using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Interfaces;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
@@ -10,6 +12,11 @@ namespace CareForTheOld.Services.Background;
 /// <summary>
 /// 用药提醒任务
 /// 既可作为 Hangfire RecurringJob 运行（生产环境），也可作为 IHostedService 运行（开发/回退）
+///
+/// 支持多级提醒：
+/// 1. 首次提醒：计划服药时间前 5 分钟推送通知
+/// 2. 二次提醒：首次提醒后 10 分钟未确认，再次强提醒
+/// 3. 子女介入：首次提醒后 30 分钟仍未确认，通知子女跟进
 /// </summary>
 public class MedicationReminderService : BackgroundService
 {
@@ -98,9 +105,121 @@ public class MedicationReminderService : BackgroundService
                     if (!existingLog)
                     {
                         await SendReminderAsync(notificationService, context, plan, scheduledAt, stoppingToken);
+
+                        // 调度延迟检查任务：10分钟后二次提醒，30分钟后通知子女
+                        ScheduleFollowUpChecks(plan, scheduledAt);
                     }
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// 调度延迟的跟进检查任务（Hangfire 延迟任务）
+    /// </summary>
+    private void ScheduleFollowUpChecks(MedicationPlan plan, DateTime scheduledAt)
+    {
+        try
+        {
+            // 10 分钟后检查是否已服药，未服则二次提醒
+            BackgroundJob.Schedule<MedicationReminderService>(
+                svc => svc.CheckAndSendFollowUpAsync(plan.ElderId, plan.Id, scheduledAt, isEscalation: false),
+                TimeSpan.FromMinutes(10));
+
+            // 30 分钟后检查是否已服药，未服则通知子女
+            BackgroundJob.Schedule<MedicationReminderService>(
+                svc => svc.CheckAndSendFollowUpAsync(plan.ElderId, plan.Id, scheduledAt, isEscalation: true),
+                TimeSpan.FromMinutes(30));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "调度用药跟进任务失败（非测试环境忽略）");
+        }
+    }
+
+    /// <summary>
+    /// Hangfire 延迟任务入口：检查用药状态并发送跟进提醒
+    ///
+    /// isEscalation=false → 二次提醒（发送给老人）
+    /// isEscalation=true  → 子女介入（发送给子女）
+    /// </summary>
+    public async Task CheckAndSendFollowUpAsync(Guid elderId, Guid planId, DateTime scheduledAt, bool isEscalation)
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
+
+        // 检查老人是否已服药
+        var hasTaken = await context.MedicationLogs
+            .AnyAsync(l => l.PlanId == planId && l.ScheduledAt == scheduledAt
+                         && (l.Status == MedicationStatus.Taken));
+
+        if (hasTaken)
+        {
+            _logger.LogDebug("[用药跟进] 老人 {ElderId} 已服药，跳过跟进", elderId);
+            return;
+        }
+
+        // 查询用药计划信息
+        var plan = await context.MedicationPlans
+            .Include(p => p.Elder)
+            .FirstOrDefaultAsync(p => p.Id == planId);
+
+        if (plan == null) return;
+
+        var elderName = plan.Elder?.RealName ?? "老人";
+
+        if (!isEscalation)
+        {
+            // 二次提醒：再次通知老人
+            await SendWithRetryAsync(
+                () => notificationService.SendToUserAsync(elderId, "MedicationReminderUrgent", new
+                {
+                    Title = "用药提醒（再次提醒）",
+                    Content = $"您还未服用 {plan.MedicineName}（{plan.Dosage}），请尽快服药。",
+                    PlanId = planId,
+                    MedicineName = plan.MedicineName,
+                    ScheduledAt = scheduledAt,
+                    ReminderLevel = "Secondary"
+                }),
+                $"二次用药提醒-{elderId}");
+
+            _logger.LogInformation("[用药跟进] 已发送二次提醒: 老人 {ElderId}, 药品 {Medicine}",
+                elderId, plan.MedicineName);
+        }
+        else
+        {
+            // 子女介入：通知子女老人未服药
+            var familyMembers = await context.FamilyMembers
+                .Where(fm => fm.UserId == elderId)
+                .ToListAsync();
+
+            foreach (var member in familyMembers)
+            {
+                var children = await context.FamilyMembers
+                    .Where(fm => fm.FamilyId == member.FamilyId && fm.UserId != elderId)
+                    .ToListAsync();
+
+                foreach (var child in children)
+                {
+                    await SendWithRetryAsync(
+                        () => notificationService.SendToUserAsync(child.UserId, "MedicationMissed", new
+                        {
+                            Title = "老人未服药提醒",
+                            Content = $"{elderName} 在 {scheduledAt:HH:mm} 的 {plan.MedicineName}（{plan.Dosage}）已超过 30 分钟未确认服药，请电话确认。",
+                            ElderId = elderId,
+                            ElderName = elderName,
+                            PlanId = planId,
+                            MedicineName = plan.MedicineName,
+                            ScheduledAt = scheduledAt,
+                            AlertLevel = "Warning"
+                        }),
+                        $"子女未服药通知-{child.UserId}");
+                }
+            }
+
+            _logger.LogWarning("[用药跟进] 已通知子女: 老人 {ElderId} 超过 30 分钟未服 {Medicine}",
+                elderId, plan.MedicineName);
         }
     }
 
