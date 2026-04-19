@@ -58,7 +58,7 @@ class _PrimaryButtonState extends State<PrimaryButton>
 
   @override
   Widget build(BuildContext context) {
-    final defaultGradient = const LinearGradient(
+    const defaultGradient = LinearGradient(
       colors: [Color(0xFFE86B4A), Color(0xFFF5A68A)],
       begin: Alignment.centerLeft,
       end: Alignment.centerRight,
@@ -270,7 +270,7 @@ class _PrimaryIconButtonState extends State<PrimaryIconButton>
 
   @override
   Widget build(BuildContext context) {
-    final defaultGradient = const LinearGradient(
+    const defaultGradient = LinearGradient(
       colors: [Color(0xFFE86B4A), Color(0xFFF5A68A)],
       begin: Alignment.centerLeft,
       end: Alignment.centerRight,

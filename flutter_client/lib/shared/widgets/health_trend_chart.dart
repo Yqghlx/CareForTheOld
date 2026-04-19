@@ -42,11 +42,11 @@ class HealthTrendChart extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(width: 12, height: 12, decoration: BoxDecoration(color: Colors.red, shape: BoxShape.circle)),
+                const _LegendDot(color: Colors.red),
                 const SizedBox(width: 4),
                 const Text('收缩压', style: TextStyle(fontSize: 13)),
                 const SizedBox(width: 20),
-                Container(width: 12, height: 12, decoration: BoxDecoration(color: Colors.blue, shape: BoxShape.circle)),
+                const _LegendDot(color: Colors.blue),
                 const SizedBox(width: 4),
                 const Text('舒张压', style: TextStyle(fontSize: 13)),
               ],
@@ -379,5 +379,20 @@ class HealthTrendChart extends StatelessWidget {
 
   double _getMaxValueSingle(List<HealthRecord> data) {
     return data.map((r) => _getValue(r)).reduce((a, b) => a > b ? a : b);
+  }
+}
+
+/// 图例圆点组件
+class _LegendDot extends StatelessWidget {
+  final Color color;
+  const _LegendDot({required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 12,
+      height: 12,
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+    );
   }
 }

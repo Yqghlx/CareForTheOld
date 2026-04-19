@@ -168,7 +168,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       : Switch(
                           value: _locationEnabled,
                           onChanged: (value) => _saveLocationSetting(value),
-                          activeColor: AppTheme.primaryColor,
+                          activeTrackColor: AppTheme.primaryColor,
+                          activeThumbColor: AppTheme.primaryColor,
                         ),
                 ),
               ),
