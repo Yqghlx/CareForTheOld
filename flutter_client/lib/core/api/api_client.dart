@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import '../../main.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../config/app_config.dart';
 
@@ -64,9 +66,25 @@ class ApiClient {
       },
     ));
 
-    // 请求拦截器 - 添加认证令牌
+    // 请求拦截器 - 添加认证令牌和网络检查
     _dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) {
+      onRequest: (options, handler) async {
+        // 网络状态检查：离线时直接拒绝请求，避免等待超时
+        try {
+          final results = await Connectivity().checkConnectivity();
+          final isOnline = results.any((r) => r != ConnectivityResult.none);
+          if (!isOnline) {
+            showGlobalSnackBar('网络未连接，请检查网络设置');
+            return handler.reject(DioException(
+              requestOptions: options,
+              error: '网络未连接，请检查网络设置',
+              type: DioExceptionType.connectionError,
+            ));
+          }
+        } catch (_) {
+          // 网络检查失败时不阻断请求，由后续逻辑处理
+        }
+
         final token = _tokenGetter?.call();
         // 调试日志（仅记录路径，不输出 Token 敏感信息）
         debugPrint('API请求: ${options.path}');
@@ -225,6 +243,9 @@ final apiClientProvider = Provider<ApiClient>((ref) {
             refreshToken: newRefreshToken,
           );
     },
-    onUnauthorized: () => ref.read(authProvider.notifier).logout(),
+    onUnauthorized: () {
+      showGlobalSnackBar('登录已过期，请重新登录');
+      ref.read(authProvider.notifier).logout();
+    },
   );
 });

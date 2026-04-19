@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Extensions;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Models.Entities;
@@ -48,7 +49,7 @@ public class EmergencyService : IEmergencyService
             Id = call.Id,
             ElderId = call.ElderId,
             ElderName = familyMember.User.RealName,
-            ElderPhoneNumber = familyMember.User.PhoneNumber,
+            ElderPhoneNumber = familyMember.User.PhoneNumber.MaskPhoneNumber(),
             FamilyId = call.FamilyId,
             CalledAt = call.CalledAt,
             Status = call.Status,
@@ -79,7 +80,7 @@ public class EmergencyService : IEmergencyService
             Id = c.Id,
             ElderId = c.ElderId,
             ElderName = c.Elder.RealName,
-            ElderPhoneNumber = c.Elder.PhoneNumber,
+            ElderPhoneNumber = c.Elder.PhoneNumber.MaskPhoneNumber(),
             FamilyId = c.FamilyId,
             CalledAt = c.CalledAt,
             Status = c.Status,
@@ -112,7 +113,7 @@ public class EmergencyService : IEmergencyService
             Id = c.Id,
             ElderId = c.ElderId,
             ElderName = c.Elder.RealName,
-            ElderPhoneNumber = c.Elder.PhoneNumber,
+            ElderPhoneNumber = c.Elder.PhoneNumber.MaskPhoneNumber(),
             FamilyId = c.FamilyId,
             CalledAt = c.CalledAt,
             Status = c.Status,
@@ -163,7 +164,7 @@ public class EmergencyService : IEmergencyService
             Id = call.Id,
             ElderId = call.ElderId,
             ElderName = call.Elder.RealName,
-            ElderPhoneNumber = call.Elder.PhoneNumber,
+            ElderPhoneNumber = call.Elder.PhoneNumber.MaskPhoneNumber(),
             FamilyId = call.FamilyId,
             CalledAt = call.CalledAt,
             Status = call.Status,
