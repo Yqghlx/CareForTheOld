@@ -367,6 +367,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
     bool isListening = false;
     String voiceText = '';
     double soundLevel = 0;
+    bool isSubmitting = false;
 
     showDialog(
       context: context,
@@ -679,7 +680,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
               ),
               actions: [
                 TextButton(
-                  onPressed: () {
+                  onPressed: isSubmitting ? null : () {
                     voiceService.dispose();
                     Navigator.pop(ctx);
                   },
@@ -687,15 +688,20 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                 ),
                 PrimaryButton(
                   text: '保存',
-                  onPressed: () async {
+                  isLoading: isSubmitting,
+                  onPressed: isSubmitting ? null : () async {
+                    setDialogState(() => isSubmitting = true);
                     await voiceService.dispose();
-                    _submitRecord(
+                    await _submitRecord(
                       ctx,
                       type,
                       valueController.text,
                       valueController2.text,
                       noteController.text,
                     );
+                    if (ctx.mounted) {
+                      setDialogState(() => isSubmitting = false);
+                    }
                   },
                   gradient: LinearGradient(
                     colors: [type.color, type.color.withValues(alpha: 0.7)],

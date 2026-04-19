@@ -304,6 +304,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
             ),
+            counterText: '',
           ),
           maxLength: 50,
         ),
@@ -364,62 +365,94 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        title: Row(
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: AppTheme.primaryColor.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(10),
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (ctx, setDialogState) {
+            // 密码强度检测
+            final newPwd = newPasswordController.text;
+            String strengthText = '';
+            Color strengthColor = Colors.grey;
+            if (newPwd.length >= 8 && newPwd.isNotEmpty) {
+              final hasLetter = RegExp(r'[a-zA-Z]').hasMatch(newPwd);
+              final hasDigit = RegExp(r'\d').hasMatch(newPwd);
+              final hasSpecial = RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(newPwd);
+              if (hasLetter && hasDigit && hasSpecial) {
+                strengthText = '密码强度：强';
+                strengthColor = Colors.green;
+              } else if (hasLetter && hasDigit) {
+                strengthText = '密码强度：中';
+                strengthColor = Colors.orange;
+              } else {
+                strengthText = '密码强度：弱';
+                strengthColor = Colors.red;
+              }
+            }
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
               ),
-              child: const Icon(Icons.lock, color: AppTheme.primaryColor),
-            ),
-            const SizedBox(width: 12),
-            const Text('修改密码'),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: oldPasswordController,
-              decoration: InputDecoration(
-                labelText: '旧密码',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+              title: Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryColor.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(Icons.lock, color: AppTheme.primaryColor),
+                  ),
+                  const SizedBox(width: 12),
+                  const Text('修改密码'),
+                ],
               ),
-              obscureText: true,
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: newPasswordController,
-              decoration: InputDecoration(
-                labelText: '新密码',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: oldPasswordController,
+                    decoration: InputDecoration(
+                      labelText: '旧密码',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    obscureText: true,
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: newPasswordController,
+                    decoration: InputDecoration(
+                      labelText: '新密码',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      helperText: '至少8位，需包含字母和数字',
+                    ),
+                    obscureText: true,
+                    onChanged: (_) => setDialogState(() {}),
+                  ),
+                  if (strengthText.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(strengthText, style: TextStyle(fontSize: 12, color: strengthColor)),
+                      ),
+                    ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: confirmPasswordController,
+                    decoration: InputDecoration(
+                      labelText: '确认新密码',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    obscureText: true,
+                  ),
+                ],
               ),
-              obscureText: true,
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: confirmPasswordController,
-              decoration: InputDecoration(
-                labelText: '确认新密码',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              obscureText: true,
-            ),
-          ],
-        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
@@ -490,8 +523,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             },
           ),
         ],
-      ),
-    );
+      );
+      });
+    },
+  );
   }
 
   /// 显示关于对话框

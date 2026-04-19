@@ -26,6 +26,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
   DateTime? _selectedBirthDate;
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -143,12 +144,20 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 // 密码
                 TextFormField(
                   controller: _passwordController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: '密码',
-                    prefixIcon: Icon(Icons.lock),
+                    prefixIcon: const Icon(Icons.lock),
                     helperText: '至少8位，需包含字母和数字',
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                        color: Colors.grey,
+                      ),
+                      onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                      tooltip: _obscurePassword ? '显示密码' : '隐藏密码',
+                    ),
                   ),
-                  obscureText: true,
+                  obscureText: _obscurePassword,
                   validator: FormValidators.password,
                 ),
                 const SizedBox(height: 16),
