@@ -267,6 +267,9 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
           margin: const EdgeInsets.only(bottom: 12),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
+            side: plan.isActive
+                ? BorderSide.none
+                : BorderSide(color: Colors.grey.shade300, width: 1),
           ),
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -279,10 +282,15 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: Colors.blue.withValues(alpha: 0.15),
+                        color: (plan.isActive ? Colors.blue : Colors.grey)
+                            .withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Icon(Icons.medication, color: Colors.blue, size: 28),
+                      child: Icon(
+                        Icons.medication,
+                        color: plan.isActive ? Colors.blue : Colors.grey,
+                        size: 28,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -291,8 +299,11 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                         children: [
                           Text(
                             plan.medicineName,
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: plan.isActive ? null : Colors.grey,
+                            ),
                           ),
                           Text(
                             '剂量: ${plan.dosage}',
@@ -301,9 +312,11 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                         ],
                       ),
                     ),
-                    StatusChip(
-                      label: plan.isActive ? '启用' : '停用',
-                      color: plan.isActive ? Colors.green : Colors.grey,
+                    // 启用/停用开关
+                    Switch(
+                      value: plan.isActive,
+                      activeColor: Colors.green,
+                      onChanged: (value) => _togglePlan(plan, value),
                     ),
                   ],
                 ),
@@ -319,21 +332,117 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     children: [
                       Text(
                         '频率: ${plan.frequency.label}',
-                        style: const TextStyle(fontSize: 14),
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: plan.isActive ? null : Colors.grey,
+                        ),
                       ),
                       Text(
                         '提醒时间: ${plan.reminderTimesText}',
-                        style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade600,
+                        ),
                       ),
                     ],
                   ),
                 ),
+                // 停用状态下显示删除按钮
+                if (!plan.isActive)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton.icon(
+                        onPressed: () => _deletePlan(plan),
+                        icon: const Icon(Icons.delete_outline, size: 18, color: Colors.red),
+                        label: const Text('删除计划', style: TextStyle(color: Colors.red)),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
         );
       }).toList(),
     );
+  }
+
+  /// 切换用药计划启用/停用状态
+  Future<void> _togglePlan(MedicationPlan plan, bool active) async {
+    try {
+      final service = MedicationService(ref.read(apiClientProvider).dio);
+      await service.updatePlan(planId: plan.id, isActive: active);
+      // 刷新计划列表
+      ref.invalidate(elderMedicationPlansProvider(widget.elderId));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(active ? '已启用 ${plan.medicineName} 的用药提醒' : '已停用 ${plan.medicineName} 的用药提醒'),
+            backgroundColor: active ? AppTheme.successColor : Colors.grey.shade700,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('操作失败: $e'),
+            backgroundColor: AppTheme.errorColor,
+          ),
+        );
+      }
+    }
+  }
+
+  /// 删除用药计划
+  Future<void> _deletePlan(MedicationPlan plan) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('确认删除'),
+        content: Text('确定删除 ${plan.medicineName} 的用药计划吗？此操作不可恢复。'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('取消'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('删除'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    try {
+      final service = MedicationService(ref.read(apiClientProvider).dio);
+      await service.deletePlan(plan.id);
+      ref.invalidate(elderMedicationPlansProvider(widget.elderId));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('已删除 ${plan.medicineName} 的用药计划'),
+            backgroundColor: Colors.grey.shade700,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('删除失败: $e'),
+            backgroundColor: AppTheme.errorColor,
+          ),
+        );
+      }
+    }
   }
 
   /// 健康记录列表
