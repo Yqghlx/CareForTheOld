@@ -96,7 +96,7 @@ public class MedicationReminderService : BackgroundService
                 // 检查是否在当前时间的1分钟窗口内
                 if (currentTime >= reminderTimeWithBuffer && currentTime < reminderTimeWithBuffer.AddMinutes(1))
                 {
-                    var scheduledAt = today.ToDateTime(reminderTime);
+                    var scheduledAt = DateTime.SpecifyKind(today.ToDateTime(reminderTime), DateTimeKind.Utc);
 
                     // 检查是否已发送过提醒（通过检查日志是否存在）
                     var existingLog = await context.MedicationLogs

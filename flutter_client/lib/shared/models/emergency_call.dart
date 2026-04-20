@@ -58,17 +58,23 @@ class EmergencyCall {
       elderName: json['elderName'] ?? '',
       elderPhoneNumber: json['elderPhoneNumber'],
       familyId: json['familyId'] ?? '',
-      calledAt: DateTime.parse(json['calledAt']),
+      calledAt: _parseUtcDateTime(json['calledAt']),
       status: EmergencyStatus.fromInt(json['status']),
       respondedBy: json['respondedBy'],
       respondedByRealName: json['respondedByRealName'],
       respondedAt: json['respondedAt'] != null
-          ? DateTime.parse(json['respondedAt'])
+          ? _parseUtcDateTime(json['respondedAt'])
           : null,
       latitude: (json['latitude'] as num?)?.toDouble(),
       longitude: (json['longitude'] as num?)?.toDouble(),
       batteryLevel: json['batteryLevel'] as int?,
     );
+  }
+
+  /// 统一将后端返回的时间字符串解析为 UTC
+  static DateTime _parseUtcDateTime(dynamic dateTimeStr) {
+    final dt = DateTime.parse(dateTimeStr.toString());
+    return dt.isUtc ? dt : DateTime.utc(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.millisecond, dt.microsecond);
   }
 
   /// 是否待处理
