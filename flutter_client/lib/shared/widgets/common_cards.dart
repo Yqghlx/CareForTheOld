@@ -5,6 +5,7 @@ class StatCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final String value;
+  final String? subtitle;
   final Color color;
   final VoidCallback? onTap;
 
@@ -13,6 +14,7 @@ class StatCard extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.value,
+    this.subtitle,
     required this.color,
     this.onTap,
   });
@@ -58,6 +60,19 @@ class StatCard extends StatelessWidget {
                   color: color,
                 ),
               ),
+              if (subtitle != null && subtitle!.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Text(
+                  subtitle!,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.grey.shade500,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ],
           ),
         ),

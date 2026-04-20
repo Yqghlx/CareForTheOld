@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -348,10 +349,23 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                 color: (member.role.isElder ? Colors.orange : Colors.blue).withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: Icon(
-                member.role.isElder ? Icons.elderly : Icons.person,
-                color: member.role.isElder ? Colors.orange : Colors.blue,
-                size: 28,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(14),
+                child: member.avatarUrl != null && member.avatarUrl!.isNotEmpty
+                    ? CachedNetworkImage(
+                        imageUrl: member.avatarUrl!,
+                        fit: BoxFit.cover,
+                        errorWidget: (_, __, ___) => Icon(
+                          member.role.isElder ? Icons.elderly : Icons.person,
+                          color: member.role.isElder ? Colors.orange : Colors.blue,
+                          size: 28,
+                        ),
+                      )
+                    : Icon(
+                        member.role.isElder ? Icons.elderly : Icons.person,
+                        color: member.role.isElder ? Colors.orange : Colors.blue,
+                        size: 28,
+                      ),
               ),
             ),
             const SizedBox(width: 16),

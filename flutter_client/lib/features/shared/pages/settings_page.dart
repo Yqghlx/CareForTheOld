@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -34,6 +35,18 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(userProvider.notifier).loadUser();
     });
+  }
+
+  /// 构建头像组件（有 URL 时显示网络图片，否则显示默认图标）
+  Widget _buildAvatar(String? avatarUrl, double iconSize) {
+    if (avatarUrl != null && avatarUrl.isNotEmpty) {
+      return CachedNetworkImage(
+        imageUrl: avatarUrl,
+        fit: BoxFit.cover,
+        errorWidget: (_, __, ___) => Icon(Icons.person, size: iconSize, color: Colors.white),
+      );
+    }
+    return Icon(Icons.person, size: iconSize, color: Colors.white);
   }
 
   /// 加载定位设置
@@ -89,7 +102,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: const Icon(Icons.person, size: 40, color: Colors.white),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: _buildAvatar(
+                          userState.user?.avatarUrl ?? authState.user?.avatarUrl,
+                          40,
+                        ),
+                      ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
@@ -515,12 +534,23 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
               if (mounted) {
                 if (success) {
+                  // 密码修改成功后强制重新登录，确保旧 JWT token 失效
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('密码修改成功'),
+                      content: Text('密码修改成功，请重新登录'),
                       backgroundColor: AppTheme.successColor,
                     ),
                   );
+                  // 清除业务状态
+                  ref.invalidate(healthRecordsProvider);
+                  ref.invalidate(healthStatsProvider);
+                  ref.invalidate(medicationProvider);
+                  ref.invalidate(emergencyProvider);
+                  ref.invalidate(userProvider);
+                  ref.invalidate(notificationListProvider);
+                  // 登出并跳转登录页
+                  ref.read(authProvider.notifier).logout();
+                  context.go('/login');
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(

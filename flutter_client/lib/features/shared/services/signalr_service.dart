@@ -7,6 +7,7 @@ import 'package:signalr_netcore/signalr_client.dart';
 
 import '../../../core/config/app_config.dart';
 import '../../../shared/providers/auth_provider.dart';
+import '../../shared/providers/emergency_provider.dart';
 import 'local_notification_service.dart';
 
 /// SignalR 连接服务
@@ -130,12 +131,13 @@ class SignalRService {
           );
           break;
         case 'EmergencyCall':
-          // 紧急呼叫（最高优先级通知）
+          // 紧急呼叫（最高优先级通知），同时刷新紧急呼叫列表
           LocalNotificationService.showNotification(
             id: 4,
             title: title,
             body: content,
           );
+          _ref.invalidate(emergencyProvider);
           break;
         case 'EmergencyCallReminder':
           // 紧急呼叫二次提醒（最高优先级）
@@ -144,6 +146,7 @@ class SignalRService {
             title: title,
             body: content,
           );
+          _ref.invalidate(emergencyProvider);
           break;
         case 'GeoFenceAlert':
           // 电子围栏告警（老人离开/进入围栏）
