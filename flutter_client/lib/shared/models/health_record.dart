@@ -106,9 +106,15 @@ class HealthRecord {
       heartRate: json['heartRate'] as int?,
       temperature: (json['temperature'] as num?)?.toDouble(),
       note: json['note'] as String?,
-      recordedAt: DateTime.parse(json['recordedAt'] as String),
-      createdAt: DateTime.parse(json['createdAt'] as String),
+      recordedAt: _parseUtcDateTime(json['recordedAt'] as String),
+      createdAt: _parseUtcDateTime(json['createdAt'] as String),
     );
+  }
+
+  /// 统一将后端返回的时间字符串解析为 UTC
+  static DateTime _parseUtcDateTime(String dateTimeStr) {
+    final dt = DateTime.parse(dateTimeStr);
+    return dt.isUtc ? dt : DateTime.utc(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.millisecond, dt.microsecond);
   }
 
   /// 获取格式化的显示值
