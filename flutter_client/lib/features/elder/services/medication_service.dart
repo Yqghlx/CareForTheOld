@@ -92,4 +92,32 @@ class MedicationService {
     final data = response.data['data'];
     return MedicationPlan.fromJson(data);
   }
+
+  /// 更新用药计划（子女操作，支持启用/停用等）
+  Future<MedicationPlan> updatePlan({
+    required String planId,
+    String? medicineName,
+    String? dosage,
+    int? frequency,
+    List<String>? reminderTimes,
+    String? endDate,
+    bool? isActive,
+  }) async {
+    final data = <String, dynamic>{};
+    if (medicineName != null) data['medicineName'] = medicineName;
+    if (dosage != null) data['dosage'] = dosage;
+    if (frequency != null) data['frequency'] = frequency;
+    if (reminderTimes != null) data['reminderTimes'] = reminderTimes;
+    if (endDate != null) data['endDate'] = endDate;
+    if (isActive != null) data['isActive'] = isActive;
+
+    final response = await _dio.put('/medication/plans/$planId', data: data);
+    final responseData = response.data['data'];
+    return MedicationPlan.fromJson(responseData);
+  }
+
+  /// 删除用药计划（子女操作，软删除）
+  Future<void> deletePlan(String planId) async {
+    await _dio.delete('/medication/plans/$planId');
+  }
 }
