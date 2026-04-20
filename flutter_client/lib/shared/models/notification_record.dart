@@ -34,9 +34,18 @@ class NotificationRecord {
     switch (type) {
       case 'MedicationReminder':
       case 'MedicationReminderFamily':
+      case 'MedicationReminderUrgent':
+      case 'MedicationMissed':
         return Icons.medication;
       case 'EmergencyCall':
+      case 'EmergencyCallReminder':
         return Icons.emergency;
+      case 'GeoFenceAlert':
+        return Icons.location_off;
+      case 'HealthAlert':
+        return Icons.warning_amber_rounded;
+      case 'HeartbeatAlert':
+        return Icons.phonelink_off;
       default:
         return Icons.notifications;
     }
@@ -48,8 +57,19 @@ class NotificationRecord {
       case 'MedicationReminder':
       case 'MedicationReminderFamily':
         return Colors.blue;
+      case 'MedicationReminderUrgent':
+        return Colors.orange;
+      case 'MedicationMissed':
+        return Colors.deepOrange;
       case 'EmergencyCall':
+      case 'EmergencyCallReminder':
         return Colors.red;
+      case 'GeoFenceAlert':
+        return Colors.purple;
+      case 'HealthAlert':
+        return Colors.orange;
+      case 'HeartbeatAlert':
+        return Colors.grey;
       default:
         return Colors.green;
     }

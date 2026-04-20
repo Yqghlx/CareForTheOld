@@ -399,6 +399,20 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       color: Colors.grey.shade600,
                     ),
                   ),
+                  // 显示备注信息
+                  if (record.note != null && record.note!.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      '备注: ${record.note}',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey.shade500,
+                        fontStyle: FontStyle.italic,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ],
               ),
             ),
