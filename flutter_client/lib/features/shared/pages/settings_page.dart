@@ -12,6 +12,7 @@ import '../providers/user_provider.dart';
 import '../providers/notification_record_provider.dart';
 import '../../elder/providers/health_provider.dart';
 import '../../elder/providers/medication_provider.dart';
+import '../../elder/services/location_reporter_service.dart';
 import '../../shared/providers/emergency_provider.dart';
 
 /// 设置页面
@@ -44,11 +45,19 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     });
   }
 
-  /// 保存定位设置
+  /// 保存定位设置并实际控制位置上报服务
   Future<void> _saveLocationSetting(bool enabled) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('location_enabled', enabled);
     setState(() => _locationEnabled = enabled);
+
+    // 根据开关状态启动或停止位置上报服务
+    final reporter = ref.read(locationReporterServiceProvider);
+    if (enabled) {
+      await reporter.start();
+    } else {
+      reporter.stop();
+    }
   }
 
   @override

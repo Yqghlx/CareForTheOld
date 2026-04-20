@@ -800,6 +800,17 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
+                      if (log.note != null && log.note!.isNotEmpty)
+                        Text(
+                          '备注: ${log.note}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade500,
+                            fontStyle: FontStyle.italic,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                     ],
                   ),
                 ),

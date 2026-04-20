@@ -145,6 +145,30 @@ class SignalRService {
             body: content,
           );
           break;
+        case 'GeoFenceAlert':
+          // 电子围栏告警（老人离开/进入围栏）
+          LocalNotificationService.showNotification(
+            id: 6,
+            title: title,
+            body: content,
+          );
+          break;
+        case 'HealthAlert':
+          // 健康数据异常告警
+          LocalNotificationService.showNotification(
+            id: 7,
+            title: title,
+            body: content,
+          );
+          break;
+        case 'HeartbeatAlert':
+          // 心跳超时告警（老人设备离线）
+          LocalNotificationService.showNotification(
+            id: 8,
+            title: title,
+            body: content,
+          );
+          break;
         default:
           _showGeneralNotification(title, content);
       }

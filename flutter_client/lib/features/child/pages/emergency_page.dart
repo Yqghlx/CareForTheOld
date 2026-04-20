@@ -336,6 +336,11 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                     '处理人: ${call.respondedByRealName}',
                     style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                   ),
+                if (call.respondedAt != null)
+                  Text(
+                    _formatRespondedAt(call.respondedAt!),
+                    style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
+                  ),
               ],
             ),
           ],
@@ -345,6 +350,12 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
   }
 
   /// 处理呼叫
+  /// 格式化响应时间
+  String _formatRespondedAt(DateTime respondedAt) {
+    final local = respondedAt.toLocal();
+    return '${local.month}/${local.day} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')} 处理';
+  }
+
   /// 拨打老人电话
   Future<void> _callElder(String phoneNumber) async {
     final uri = Uri.parse('tel:$phoneNumber');
