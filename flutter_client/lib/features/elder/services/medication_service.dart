@@ -59,12 +59,14 @@ class MedicationService {
     return dataList.map((json) => MedicationPlan.fromJson(json)).toList();
   }
 
-  /// 获取老人的用药日志（子女查看）
+  /// 获取老人的用药日志（子女查看，支持按日期筛选）
   Future<List<MedicationLog>> getElderLogs(String elderId,
-      {int limit = 50}) async {
+      {int limit = 50, String? date}) async {
+    final queryParams = <String, dynamic>{'limit': limit};
+    if (date != null) queryParams['date'] = date;
     final response = await _dio.get(
       '/medication/logs/elder/$elderId',
-      queryParameters: {'limit': limit},
+      queryParameters: queryParams,
     );
     final List<dynamic> dataList = response.data['data'];
     return dataList.map((json) => MedicationLog.fromJson(json)).toList();
