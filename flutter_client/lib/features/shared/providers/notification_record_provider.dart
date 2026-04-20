@@ -8,19 +8,30 @@ class NotificationListState {
   final List<NotificationRecord> notifications;
   final int unreadCount;
   final bool isLoading;
+  final bool isLoadingMore;
+  final bool hasMore;
+  final int _skip;
   final String? error;
+
+  static const int _pageSize = 20;
 
   const NotificationListState({
     this.notifications = const [],
     this.unreadCount = 0,
     this.isLoading = false,
+    this.isLoadingMore = false,
+    this.hasMore = true,
+    int skip = 0,
     this.error,
-  });
+  }) : _skip = skip;
 
   NotificationListState copyWith({
     List<NotificationRecord>? notifications,
     int? unreadCount,
     bool? isLoading,
+    bool? isLoadingMore,
+    bool? hasMore,
+    int? skip,
     String? error,
     bool clearError = false,
   }) {
@@ -28,9 +39,15 @@ class NotificationListState {
       notifications: notifications ?? this.notifications,
       unreadCount: unreadCount ?? this.unreadCount,
       isLoading: isLoading ?? this.isLoading,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      hasMore: hasMore ?? this.hasMore,
+      skip: skip ?? _skip,
       error: clearError ? null : (error ?? this.error),
     );
   }
+
+  int get skip => _skip;
+  int get pageSize => _pageSize;
 }
 
 /// 通知状态 Notifier
@@ -39,19 +56,47 @@ class NotificationListNotifier extends StateNotifier<NotificationListState> {
 
   NotificationListNotifier(this._service) : super(const NotificationListState());
 
-  /// 加载通知列表
+  /// 加载通知列表（首次加载/刷新）
   Future<void> loadNotifications() async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
-      final notifications = await _service.getMyNotifications();
+      final notifications = await _service.getMyNotifications(
+        skip: 0,
+        limit: NotificationListState._pageSize,
+      );
       final unreadCount = notifications.where((n) => !n.isRead).length;
       state = state.copyWith(
         notifications: notifications,
         unreadCount: unreadCount,
         isLoading: false,
+        hasMore: notifications.length >= NotificationListState._pageSize,
+        skip: notifications.length,
       );
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
+    }
+  }
+
+  /// 加载更多通知（滚动到底部时调用）
+  Future<void> loadMore() async {
+    if (state.isLoadingMore || !state.hasMore) return;
+    state = state.copyWith(isLoadingMore: true);
+    try {
+      final more = await _service.getMyNotifications(
+        skip: state.skip,
+        limit: state.pageSize,
+      );
+      final all = [...state.notifications, ...more];
+      final unreadCount = all.where((n) => !n.isRead).length;
+      state = state.copyWith(
+        notifications: all,
+        unreadCount: unreadCount,
+        isLoadingMore: false,
+        hasMore: more.length >= state.pageSize,
+        skip: all.length,
+      );
+    } catch (_) {
+      state = state.copyWith(isLoadingMore: false);
     }
   }
 

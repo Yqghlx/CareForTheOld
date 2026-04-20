@@ -39,11 +39,11 @@ final elderMedicationPlansProvider =
   return service.getElderPlans(elderId);
 });
 
-/// 老人用药记录 Provider
+/// 老人用药记录 Provider（支持日期筛选）
 final elderMedicationLogsProvider =
-    FutureProvider.family<List<MedicationLog>, String>((ref, elderId) async {
+    FutureProvider.family<List<MedicationLog>, ({String elderId, String? date})>((ref, args) async {
   final service = MedicationService(ref.read(apiClientProvider).dio);
-  return service.getElderLogs(elderId, limit: 10);
+  return service.getElderLogs(args.elderId, limit: 10, date: args.date);
 });
 
 /// 子女查看老人健康数据页面
@@ -57,6 +57,8 @@ class ElderHealthPage extends ConsumerStatefulWidget {
 }
 
 class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
+  String? _selectedLogDate; // 用药记录日期筛选
+
   @override
   Widget build(BuildContext context) {
     final familyState = ref.watch(familyProvider);
@@ -72,7 +74,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     final plansAsync =
         ref.watch(elderMedicationPlansProvider(widget.elderId));
     final logsAsync =
-        ref.watch(elderMedicationLogsProvider(widget.elderId));
+        ref.watch(elderMedicationLogsProvider((elderId: widget.elderId, date: _selectedLogDate)));
 
     return Scaffold(
       appBar: AppBar(
@@ -91,7 +93,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
           ref.invalidate(elderHealthStatsProvider(widget.elderId));
           ref.invalidate(elderHealthRecordsProvider(widget.elderId));
           ref.invalidate(elderMedicationPlansProvider(widget.elderId));
-          ref.invalidate(elderMedicationLogsProvider(widget.elderId));
+          ref.invalidate(elderMedicationLogsProvider((elderId: widget.elderId, date: _selectedLogDate)));
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -149,13 +151,46 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               ),
               const SizedBox(height: 24),
 
-              // 最近用药记录
-              const Text(
-                '最近用药记录',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+              // 最近用药记录（带日期筛选）
+              Row(
+                children: [
+                  const Text(
+                    '最近用药记录',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Spacer(),
+                  TextButton.icon(
+                    onPressed: () async {
+                      final picked = await showDatePicker(
+                        context: context,
+                        initialDate: _selectedLogDate != null
+                            ? DateTime.parse(_selectedLogDate!)
+                            : DateTime.now(),
+                        firstDate: DateTime(2024, 1, 1),
+                        lastDate: DateTime.now(),
+                      );
+                      if (picked != null) {
+                        setState(() {
+                          _selectedLogDate = '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
+                        });
+                      }
+                    },
+                    icon: const Icon(Icons.calendar_today, size: 16),
+                    label: Text(
+                      _selectedLogDate ?? '全部日期',
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ),
+                  if (_selectedLogDate != null)
+                    IconButton(
+                      icon: const Icon(Icons.close, size: 18),
+                      onPressed: () => setState(() => _selectedLogDate = null),
+                      tooltip: '清除日期筛选',
+                    ),
+                ],
               ),
               const SizedBox(height: 12),
               logsAsync.when(
@@ -347,7 +382,33 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     ],
                   ),
                 ),
-                // 停用状态下显示删除按钮
+                // 操作按钮行
+                Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton.icon(
+                        onPressed: () => _showEditPlanDialog(plan),
+                        icon: const Icon(Icons.edit_outlined, size: 18),
+                        label: const Text('编辑'),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                        ),
+                      ),
+                      if (!plan.isActive) ...[
+                        TextButton.icon(
+                          onPressed: () => _deletePlan(plan),
+                          icon: const Icon(Icons.delete_outline, size: 18, color: Colors.red),
+                          label: const Text('删除', style: TextStyle(color: Colors.red)),
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
                 if (!plan.isActive)
                   Padding(
                     padding: const EdgeInsets.only(top: 12),
@@ -368,6 +429,133 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
           ),
         );
       }).toList(),
+    );
+  }
+
+  /// 编辑用药计划对话框
+  Future<void> _showEditPlanDialog(MedicationPlan plan) async {
+    final nameController = TextEditingController(text: plan.medicineName);
+    final dosageController = TextEditingController(text: plan.dosage);
+    Frequency selectedFrequency = plan.frequency;
+    List<String> reminderTimes = List.from(plan.reminderTimes);
+    bool isSubmitting = false;
+
+    await showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Row(
+            children: [
+              Icon(Icons.edit, color: AppTheme.primaryColor),
+              const SizedBox(width: 12),
+              const Text('编辑用药计划'),
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: nameController,
+                  decoration: const InputDecoration(
+                    labelText: '药品名称',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: dosageController,
+                  decoration: const InputDecoration(
+                    labelText: '剂量（如：1片、10ml）',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                DropdownButtonFormField<Frequency>(
+                  value: selectedFrequency,
+                  decoration: const InputDecoration(
+                    labelText: '用药频率',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: Frequency.values.map((f) => DropdownMenuItem(
+                    value: f,
+                    child: Text(f.label),
+                  )).toList(),
+                  onChanged: (v) => setDialogState(() => selectedFrequency = v!),
+                ),
+                const SizedBox(height: 12),
+                // 提醒时间
+                Wrap(
+                  spacing: 8,
+                  children: [
+                    ...reminderTimes.asMap().entries.map((entry) => Chip(
+                      label: Text(entry.value),
+                      onDeleted: () => setDialogState(() => reminderTimes.removeAt(entry.key)),
+                    )),
+                    ActionChip(
+                      label: const Text('+ 添加时间'),
+                      onPressed: () async {
+                        final time = await showTimePicker(
+                          context: ctx,
+                          initialTime: TimeOfDay.now(),
+                        );
+                        if (time != null) {
+                          final timeStr = '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+                          setDialogState(() => reminderTimes.add(timeStr));
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('取消'),
+            ),
+            ElevatedButton(
+              onPressed: isSubmitting ? null : () async {
+                if (nameController.text.trim().isEmpty || dosageController.text.trim().isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('请填写药品名称和剂量'), backgroundColor: AppTheme.warningColor),
+                  );
+                  return;
+                }
+                setDialogState(() => isSubmitting = true);
+                try {
+                  final service = MedicationService(ref.read(apiClientProvider).dio);
+                  await service.updatePlan(
+                    planId: plan.id,
+                    medicineName: nameController.text.trim(),
+                    dosage: dosageController.text.trim(),
+                    frequency: selectedFrequency.value,
+                    reminderTimes: reminderTimes,
+                  );
+                  ref.invalidate(elderMedicationPlansProvider(widget.elderId));
+                  if (mounted) {
+                    Navigator.pop(ctx);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('用药计划已更新'), backgroundColor: AppTheme.successColor),
+                    );
+                  }
+                } catch (e) {
+                  setDialogState(() => isSubmitting = false);
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('更新失败: $e'), backgroundColor: AppTheme.errorColor),
+                    );
+                  }
+                }
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryColor),
+              child: const Text('保存', style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

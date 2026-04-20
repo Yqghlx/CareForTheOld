@@ -7,10 +7,12 @@ import 'package:go_router/go_router.dart';
 import '../../../shared/models/health_record.dart';
 import '../../../shared/models/health_stats.dart';
 import '../providers/health_provider.dart';
+import '../services/health_service.dart';
 import '../services/voice_input_service.dart';
 import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/api/api_client.dart';
 
 /// 健康记录页面
 class HealthRecordPage extends ConsumerStatefulWidget {
@@ -291,7 +293,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
     );
   }
 
-  /// 单条记录项
+  /// 单条记录项（支持滑动删除）
   Widget _buildRecordItem(HealthRecord record) {
     // 格式化时间为本地时间
     final localTime = record.recordedAt.toLocal();
@@ -303,7 +305,36 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
     final abnormalLabel = _getAbnormalLabel(record);
     final abnormal = abnormalLabel != null;
 
-    return Card(
+    return Dismissible(
+      key: ValueKey(record.id),
+      direction: DismissDirection.endToStart,
+      confirmDismiss: (_) => showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: const Text('确认删除'),
+          content: Text('确定删除 ${record.type.label} 记录（${record.displayValue}）吗？'),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('取消')),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              child: const Text('删除'),
+            ),
+          ],
+        ),
+      ),
+      onDismissed: (_) => _deleteRecord(record.id),
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        decoration: BoxDecoration(
+          color: Colors.red.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: const Icon(Icons.delete, color: Colors.red, size: 28),
+      ),
+      child: Card(
       elevation: 4,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
@@ -374,7 +405,34 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
           ],
         ),
       ),
+    ),
     );
+  }
+
+  /// 删除健康记录
+  Future<void> _deleteRecord(String recordId) async {
+    try {
+      final service = HealthService(ref.read(apiClientProvider).dio);
+      await service.deleteRecord(recordId);
+      ref.read(healthRecordsProvider.notifier).loadRecords();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('记录已删除'),
+            backgroundColor: Colors.grey,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('删除失败: $e'),
+            backgroundColor: AppTheme.errorColor,
+          ),
+        );
+      }
+    }
   }
 
   /// 判断健康数据是否超出正常范围，返回异常标签或 null

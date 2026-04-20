@@ -9,11 +9,11 @@ class NotificationRecordService {
 
   NotificationRecordService(this._dio);
 
-  /// 获取我的通知列表
-  Future<List<NotificationRecord>> getMyNotifications({int limit = 50}) async {
+  /// 获取我的通知列表（支持分页）
+  Future<List<NotificationRecord>> getMyNotifications({int skip = 0, int limit = 50}) async {
     final response = await _dio.get(
       '/notification/me',
-      queryParameters: {'limit': limit},
+      queryParameters: {'skip': skip, 'limit': limit},
     );
     final List<dynamic> dataList = response.data['data'];
     return dataList.map((json) => NotificationRecord.fromJson(json)).toList();

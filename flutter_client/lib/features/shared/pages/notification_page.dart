@@ -88,8 +88,18 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: state.notifications.length,
+      itemCount: state.notifications.length + (state.hasMore ? 1 : 0),
       itemBuilder: (context, index) {
+        if (index == state.notifications.length) {
+          // 滚动到底部，触发加载更多
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ref.read(notificationListProvider.notifier).loadMore();
+          });
+          return const Padding(
+            padding: EdgeInsets.all(16),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
         final notification = state.notifications[index];
         return _buildNotificationCard(notification);
       },
