@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -24,7 +25,6 @@ class ChildHomePage extends ConsumerStatefulWidget {
 }
 
 class _ChildHomePageState extends ConsumerState<ChildHomePage> {
-  Timer? _pollTimer;
 
   @override
   void initState() {
@@ -33,18 +33,6 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
       ref.read(familyProvider.notifier).loadFamily();
       ref.read(emergencyProvider.notifier).loadUnreadCalls();
     });
-    // 每 30 秒轮询紧急呼叫状态
-    _pollTimer = Timer.periodic(const Duration(seconds: 30), (_) {
-      if (mounted) {
-        ref.read(emergencyProvider.notifier).loadUnreadCalls();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _pollTimer?.cancel();
-    super.dispose();
   }
 
   @override
@@ -144,7 +132,16 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(14),
                       ),
-                      child: const Icon(Icons.person, size: 32, color: Colors.white),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(14),
+                        child: authState.user?.avatarUrl != null && authState.user!.avatarUrl!.isNotEmpty
+                            ? CachedNetworkImage(
+                                imageUrl: authState.user!.avatarUrl!,
+                                fit: BoxFit.cover,
+                                errorWidget: (_, __, ___) => const Icon(Icons.person, size: 32, color: Colors.white),
+                              )
+                            : const Icon(Icons.person, size: 32, color: Colors.white),
+                      ),
                     ),
                     const SizedBox(width: 16),
                     Column(
@@ -273,7 +270,16 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                           color: Colors.blue.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(14),
                         ),
-                        child: const Icon(Icons.person, size: 32, color: Colors.blue),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(14),
+                          child: elder.avatarUrl != null && elder.avatarUrl!.isNotEmpty
+                              ? CachedNetworkImage(
+                                  imageUrl: elder.avatarUrl!,
+                                  fit: BoxFit.cover,
+                                  errorWidget: (_, __, ___) => const Icon(Icons.elderly, size: 32, color: Colors.orange),
+                                )
+                              : const Icon(Icons.elderly, size: 32, color: Colors.orange),
+                        ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(

@@ -231,7 +231,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       crossAxisCount: 2,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      childAspectRatio: 1.0,
+      childAspectRatio: 0.85,
       mainAxisSpacing: 12,
       crossAxisSpacing: 12,
       children: [
@@ -239,24 +239,28 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
           icon: Icons.favorite,
           title: '血压',
           value: _getStatsValue(typeMap, '血压'),
+          subtitle: _getStatsSubtitle(typeMap, '血压'),
           color: Colors.red,
         ),
         StatCard(
           icon: Icons.water_drop,
           title: '血糖',
           value: _getStatsValue(typeMap, '血糖'),
+          subtitle: _getStatsSubtitle(typeMap, '血糖'),
           color: Colors.blue,
         ),
         StatCard(
           icon: Icons.monitor_heart,
           title: '心率',
           value: _getStatsValue(typeMap, '心率'),
+          subtitle: _getStatsSubtitle(typeMap, '心率'),
           color: Colors.purple,
         ),
         StatCard(
           icon: Icons.thermostat,
           title: '体温',
           value: _getStatsValue(typeMap, '体温'),
+          subtitle: _getStatsSubtitle(typeMap, '体温'),
           color: Colors.orange,
         ),
       ],
@@ -268,6 +272,14 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     if (stat == null || stat.latestValue == null) return '--';
     final unit = _getUnit(typeName);
     return '${stat.latestValue!.toStringAsFixed(1)} $unit';
+  }
+
+  /// 获取统计副标题（30天均值+记录数）
+  String _getStatsSubtitle(Map<String, HealthStats> map, String typeName) {
+    final stat = map[typeName];
+    if (stat == null) return '';
+    final avg30 = stat.average30Days?.toStringAsFixed(1) ?? '--';
+    return '30天均值: $avg30 | ${stat.totalCount}条';
   }
 
   String _getUnit(String typeName) {

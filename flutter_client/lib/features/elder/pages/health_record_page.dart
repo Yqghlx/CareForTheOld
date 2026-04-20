@@ -163,7 +163,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
           ),
         // 统计概览卡片
         Container(
-          constraints: const BoxConstraints(minHeight: 48, maxHeight: 64),
+          constraints: const BoxConstraints(minHeight: 48, maxHeight: 80),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
@@ -223,6 +223,17 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: stat.hasWarning ? stat.trendColor : AppTheme.primaryColor,
+                        ),
+                      ),
+                    ),
+                    // 30天均值和记录总数
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        '30天: ${stat.average30Days?.toStringAsFixed(1) ?? '--'} | 共${stat.totalCount}条',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.grey.shade500,
                         ),
                       ),
                     ),
