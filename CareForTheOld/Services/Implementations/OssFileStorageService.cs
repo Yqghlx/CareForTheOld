@@ -70,25 +70,25 @@ public class OssFileStorageService : IFileStorageService
     }
 
     /// <inheritdoc />
-    public Task<string?> GetUrlAsync(string directory, string fileName)
+    public async Task<string?> GetUrlAsync(string directory, string fileName)
     {
         // OSS 对象键格式
         var objectKey = $"{directory}/{fileName}";
 
         try
         {
-            // 检查对象是否存在
-            var exists = Task.Run(() => _client.DoesObjectExist(_bucketName, objectKey)).Result;
+            // 检查对象是否存在（使用 await 避免阻塞线程）
+            var exists = await Task.Run(() => _client.DoesObjectExist(_bucketName, objectKey));
             if (exists)
             {
-                return Task.FromResult<string?>($"{_baseUrl}{objectKey}");
+                return $"{_baseUrl}{objectKey}";
             }
-            return Task.FromResult<string?>(null);
+            return null;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "检查文件存在失败：{ObjectKey}", objectKey);
-            return Task.FromResult<string?>(null);
+            return null;
         }
     }
 

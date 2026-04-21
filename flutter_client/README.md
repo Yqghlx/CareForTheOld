@@ -38,7 +38,7 @@
 | 本地存储 | SharedPreferences, Hive (离线队列) |
 | 语音识别 | speech_to_text |
 | 定位 | geolocator |
-| 地图 | (待集成) |
+| 地图 | flutter_map + OpenStreetMap |
 | 通知 | flutter_local_notifications |
 | 文件分享 | share_plus |
 | 图表 | fl_chart |
