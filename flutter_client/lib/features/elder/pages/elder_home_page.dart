@@ -29,6 +29,11 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
   bool _isCalling = false;
   bool _isUploadingAvatar = false;
 
+  // 长按紧急呼叫相关状态
+  bool _isLongPressing = false;
+  double _longPressProgress = 0.0;
+  static const double _longPressDurationSeconds = 2.0;
+
   @override
   Widget build(BuildContext context) {
     // 老人端使用大字体主题
@@ -259,35 +264,34 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
     );
   }
 
-  /// 紧急呼叫按钮 - 长按 2 秒触发，防止误触
+  /// 紧急呼叫按钮 - 长按 2 秒触发，带进度指示器，松手取消
   Widget _buildEmergencyCallButton() {
     return GestureDetector(
-      onLongPressStart: (_) => setState(() => _isCalling = true),
-      onLongPressEnd: (_) {
-        if (_isCalling) {
-          // 长按完成，触发实际呼叫
-          _performEmergencyCall();
+      // 按下开始计时
+      onPanDown: (_) => _startLongPressTimer(),
+      // 松手或取消时停止计时
+      onPanEnd: (_) => _cancelLongPressTimer(),
+      onPanCancel: () => _cancelLongPressTimer(),
+      // 短按提示
+      onTap: () {
+        if (!_isLongPressing) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('请长按按钮 2 秒发起紧急呼叫'),
+              duration: Duration(seconds: 2),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
         }
       },
-      onLongPressCancel: () => setState(() => _isCalling = false),
-      onTap: () {
-        // 短按提示长按操作
-        ScaffoldMessenger.of(context).clearSnackBars();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('请长按按钮发起紧急呼叫'),
-            duration: Duration(seconds: 2),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      },
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 100),
         width: double.infinity,
         height: 80,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: _isCalling
+            colors: _isLongPressing
                 ? [Colors.redAccent, Colors.red]
                 : [Colors.red, Colors.redAccent],
             begin: Alignment.centerLeft,
@@ -296,116 +300,126 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.red.withValues(alpha: _isCalling ? 0.7 : 0.4),
-              blurRadius: _isCalling ? 24 : 16,
-              spreadRadius: _isCalling ? 4 : 0,
+              color: Colors.red.withValues(alpha: _isLongPressing ? 0.7 : 0.4),
+              blurRadius: _isLongPressing ? 24 : 16,
+              spreadRadius: _isLongPressing ? 4 : 0,
               offset: const Offset(0, 6),
             ),
           ],
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
+          alignment: Alignment.center,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  _isCalling ? Icons.phone_in_talk : Icons.emergency,
-                  color: Colors.white,
-                  size: 40,
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  _isCalling ? '正在呼叫...' : '长按紧急呼叫',
-                  style: const TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-            // 长按时显示进度提示
-            if (_isCalling)
-              Padding(
-                padding: const EdgeInsets.only(top: 4),
-                child: Text(
-                  '请保持按住...',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white.withValues(alpha: 0.9),
+            // 进度指示器（长按时显示）
+            if (_isLongPressing)
+              Positioned.fill(
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: CircularProgressIndicator(
+                    value: _longPressProgress,
+                    strokeWidth: 6,
+                    backgroundColor: Colors.white.withValues(alpha: 0.3),
+                    valueColor: const AlwaysStoppedAnimation(Colors.white),
                   ),
                 ),
               ),
+            // 内容
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      _isLongPressing ? Icons.phone_in_talk : Icons.emergency,
+                      color: Colors.white,
+                      size: 40,
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      _isLongPressing ? '正在呼叫...' : '长按紧急呼叫',
+                      style: const TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+                // 长按时显示进度提示
+                if (_isLongPressing)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      '松手取消',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white.withValues(alpha: 0.9),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ],
         ),
       ),
     );
   }
 
-  /// 执行紧急呼叫（长按完成后弹出大按钮确认对话框）
+  /// 开始长按计时器
+  void _startLongPressTimer() {
+    setState(() {
+      _isLongPressing = true;
+      _longPressProgress = 0.0;
+    });
+
+    // 使用动画驱动进度
+    Future<void> updateProgress() async {
+      const updateInterval = Duration(milliseconds: 50);
+      final totalSteps = (_longPressDurationSeconds * 1000 / updateInterval.inMilliseconds).round();
+      final progressIncrement = 1.0 / totalSteps;
+
+      for (int i = 0; i <= totalSteps && _isLongPressing; i++) {
+        await Future.delayed(updateInterval);
+        if (!_isLongPressing) return;
+
+        setState(() {
+          _longPressProgress = (i / totalSteps).clamp(0.0, 1.0);
+        });
+      }
+
+      // 进度到达 100%，触发呼叫
+      if (_isLongPressing && _longPressProgress >= 1.0) {
+        setState(() => _isLongPressing = false);
+        _performEmergencyCall();
+      }
+    }
+
+    updateProgress();
+  }
+
+  /// 取消长按计时器
+  void _cancelLongPressTimer() {
+    if (_isLongPressing && _longPressProgress < 1.0) {
+      setState(() {
+        _isLongPressing = false;
+        _longPressProgress = 0.0;
+      });
+      // 提示用户已取消
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('已取消，请长按 2 秒发起呼叫'),
+          duration: Duration(seconds: 1),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  /// 执行紧急呼叫（长按 2 秒后直接触发）
   Future<void> _performEmergencyCall() async {
-    setState(() => _isCalling = false);
-
-    // 二次确认：弹出大按钮确认对话框，防止误触
-    final confirmed = await showDialog<bool>(
-      context: context,
-      barrierDismissible: true,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
-        title: const Column(
-          children: [
-            Icon(Icons.emergency, color: Colors.red, size: 48),
-            SizedBox(height: 12),
-            Text('确认紧急呼叫？', textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-          ],
-        ),
-        content: const Text(
-          '将通知您的所有家庭成员',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 18, color: Colors.grey),
-        ),
-        actions: [
-          SizedBox(
-            width: double.infinity,
-            height: 56,
-            child: OutlinedButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Colors.grey),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-              ),
-              child: const Text('取消', style: TextStyle(fontSize: 20)),
-            ),
-          ),
-          const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            height: 56,
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(colors: [Colors.red, Colors.redAccent]),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: ElevatedButton(
-                onPressed: () => Navigator.pop(ctx, true),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                ),
-                child: const Text('确认呼叫', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed != true || !mounted) return;
+    setState(() => _isCalling = true);
 
     try {
       // 并行获取 GPS 位置和电池电量（不阻塞呼叫，获取失败也不影响）
@@ -432,6 +446,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
       );
 
       if (mounted) {
+        setState(() => _isCalling = false);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('紧急呼叫已发送，家人将尽快联系您'),
@@ -443,6 +458,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
       }
     } catch (e) {
       if (mounted) {
+        setState(() => _isCalling = false);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('呼叫失败，请直接拨打电话联系家人'),
