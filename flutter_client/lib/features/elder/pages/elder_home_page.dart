@@ -12,6 +12,7 @@ import '../../../shared/widgets/common_buttons.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/config/app_config.dart';
 import '../../shared/providers/user_provider.dart';
+import '../../shared/providers/notification_record_provider.dart';
 import '../../shared/services/emergency_service.dart';
 import '../../../core/api/api_client.dart';
 import 'health_record_page.dart';
@@ -36,6 +37,14 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
   static const double _longPressDurationSeconds = 2.0;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(notificationListProvider.notifier).loadNotifications();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     // 老人端使用大字体主题
     final theme = Theme.of(context).copyWith(
@@ -50,9 +59,32 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
           title: const Text('关爱老人'),
           automaticallyImplyLeading: false,
           actions: [
-            IconButton(
-              icon: const Icon(Icons.notifications),
-              onPressed: () => context.push('/notifications'),
+            Stack(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.notifications),
+                  onPressed: () => context.push('/notifications'),
+                ),
+                // 未读通知红点
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: Consumer(
+                    builder: (context, ref, _) {
+                      final notificationState = ref.watch(notificationListProvider);
+                      if (notificationState.unreadCount == 0) return const SizedBox.shrink();
+                      return Container(
+                        width: 10,
+                        height: 10,
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
             IconButton(
               icon: const Icon(Icons.settings),
