@@ -590,15 +590,14 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                               } else {
                                 // 初始化并开始录音
                                 final available = await voiceService.initialize();
+                                if (!mounted || !context.mounted) return;
                                 if (!available) {
-                                  if (ctx.mounted && context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('语音识别不可用，请检查设备设置'),
-                                        backgroundColor: AppTheme.warningColor,
-                                      ),
-                                    );
-                                  }
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('语音识别不可用，请检查设备设置'),
+                                      backgroundColor: AppTheme.warningColor,
+                                    ),
+                                  );
                                   return;
                                 }
                                 setDialogState(() {
@@ -823,6 +822,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                   onPressed: isSubmitting ? null : () async {
                     setDialogState(() => isSubmitting = true);
                     await voiceService.dispose();
+                    if (!mounted || !ctx.mounted) return;
                     await _submitRecord(
                       ctx,
                       type,
@@ -897,6 +897,9 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
     String valueText2,
     String note,
   ) async {
+    // 方法入口检查：确保 widget 仍然存在
+    if (!mounted) return;
+
     // 解析并验证输入值
     int? systolic, diastolic, heartRate;
     double? bloodSugar, temperature;

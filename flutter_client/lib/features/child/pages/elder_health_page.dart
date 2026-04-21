@@ -548,7 +548,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     reminderTimes: reminderTimes,
                   );
                   ref.invalidate(elderMedicationPlansProvider(widget.elderId));
-                  if (mounted) {
+                  if (mounted && context.mounted) {
                     Navigator.pop(ctx);
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('用药计划已更新'), backgroundColor: AppTheme.successColor),
@@ -556,7 +556,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   }
                 } catch (e) {
                   setDialogState(() => isSubmitting = false);
-                  if (mounted) {
+                  if (mounted && context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('更新失败: $e'), backgroundColor: AppTheme.errorColor),
                     );
