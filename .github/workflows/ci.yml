@@ -53,12 +53,24 @@ jobs:
         with:
           flutter-version: '3.41.x'
           channel: 'stable'
+          cache: true
 
       - name: 设置 Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
+          cache: 'gradle'
+
+      - name: Gradle 缓存
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
 
       - name: 安装依赖
         run: flutter pub get
@@ -68,6 +80,8 @@ jobs:
 
       - name: 构建 APK（仅 main 分支）
         if: github.ref == 'refs/heads/main'
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true"
         run: flutter build apk --release --dart-define=APP_ENV=production
 
       - name: 上传 APK
