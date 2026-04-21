@@ -28,7 +28,6 @@ class ElderHomePage extends ConsumerStatefulWidget {
 
 class _ElderHomePageState extends ConsumerState<ElderHomePage> {
   int _selectedIndex = 0;
-  bool _isCalling = false;
   bool _isUploadingAvatar = false;
 
   // 长按紧急呼叫相关状态
@@ -452,8 +451,6 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
 
   /// 执行紧急呼叫（长按 2 秒后直接触发）
   Future<void> _performEmergencyCall() async {
-    setState(() => _isCalling = true);
-
     try {
       // 并行获取 GPS 位置和电池电量（不阻塞呼叫，获取失败也不影响）
       double? latitude;
@@ -479,7 +476,6 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
       );
 
       if (mounted) {
-        setState(() => _isCalling = false);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('紧急呼叫已发送，家人将尽快联系您'),
@@ -491,7 +487,6 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
       }
     } catch (e) {
       if (mounted) {
-        setState(() => _isCalling = false);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('呼叫失败，请直接拨打电话联系家人'),
