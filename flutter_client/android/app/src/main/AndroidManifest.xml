@@ -35,11 +35,6 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-
-        <!-- 高德地图 API Key（开发环境使用占位符，生产环境需替换为真实 Key） -->
-        <meta-data
-            android:name="com.amap.api.v2.apikey"
-            android:value="YOUR_AMAP_ANDROID_KEY" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and
