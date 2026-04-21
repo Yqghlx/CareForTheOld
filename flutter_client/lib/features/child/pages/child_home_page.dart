@@ -14,6 +14,7 @@ import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../shared/providers/emergency_provider.dart';
+import '../../shared/providers/notification_record_provider.dart';
 import 'elder_health_page.dart';
 
 /// 子女端首页
@@ -32,6 +33,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(familyProvider.notifier).loadFamily();
       ref.read(emergencyProvider.notifier).loadUnreadCalls();
+      ref.read(notificationListProvider.notifier).loadNotifications();
     });
   }
 
@@ -83,10 +85,8 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                 top: 8,
                 child: Consumer(
                   builder: (context, ref, _) {
-                    final unreadCount = ref.watch(unreadEmergencyCountProvider);
-                    // 这里使用紧急呼叫未读数作为通知提示
-                    // TODO: 接入通知未读数
-                    if (unreadCount == 0) return const SizedBox.shrink();
+                    final notificationState = ref.watch(notificationListProvider);
+                    if (notificationState.unreadCount == 0) return const SizedBox.shrink();
                     return Container(
                       width: 10,
                       height: 10,
