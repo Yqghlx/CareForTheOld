@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../shared/providers/auth_provider.dart';
@@ -27,11 +28,13 @@ class SettingsPage extends ConsumerStatefulWidget {
 class _SettingsPageState extends ConsumerState<SettingsPage> {
   bool _locationEnabled = true;
   bool _isLoadingLocation = true;
+  String _appVersion = '';
 
   @override
   void initState() {
     super.initState();
     _loadLocationSetting();
+    _loadAppVersion();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(userProvider.notifier).loadUser();
     });
@@ -56,6 +59,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       _locationEnabled = prefs.getBool('location_enabled') ?? true;
       _isLoadingLocation = false;
     });
+  }
+
+  /// 加载应用版本信息
+  Future<void> _loadAppVersion() async {
+    final info = await PackageInfo.fromPlatform();
+    setState(() => _appVersion = '${info.version} (${info.buildNumber})');
   }
 
   /// 保存定位设置并实际控制位置上报服务
@@ -220,7 +229,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   _buildSettingItem(
                     icon: Icons.info_outline,
                     title: '关于我们',
-                    subtitle: '关爱老人 App v1.0.0',
+                    subtitle: '关爱老人 App ${_appVersion.isNotEmpty ? "v$_appVersion" : ""}',
                     onTap: () => _showAboutDialog(),
                   ),
                   const Divider(height: 1),

@@ -61,6 +61,12 @@ dependencies:
   # 网络连接检测
   connectivity_plus: ^6.0.0
 
+  # 应用信息（版本号等）
+  package_info_plus: ^8.0.0
+
+  # 设备电量
+  battery_plus: ^6.0.0
+
   # 错误监控
   sentry_flutter: ^9.0.0
 

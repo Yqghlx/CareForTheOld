@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:battery_plus/battery_plus.dart';
 
 import '../../../shared/providers/auth_provider.dart';
 import '../../../shared/widgets/common_cards.dart';
@@ -492,9 +493,9 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
   /// 获取电池电量百分比（获取失败返回 null）
   Future<int?> _getBatteryLevel() async {
     try {
-      // 使用 battery_plus 包获取电量
-      // 暂时返回 null，后续可引入 battery_plus 包
-      return null;
+      final battery = Battery();
+      final level = await battery.batteryLevel;
+      return level;
     } catch (_) {
       return null;
     }
