@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  # 后端：构建 + 测试
+  # 后端：构建 + 测试（排除 Testcontainers 集成测试，CI 环境无 Docker daemon）
   backend:
     runs-on: ubuntu-latest
     defaults:
@@ -28,8 +28,8 @@ jobs:
       - name: 构建
         run: dotnet build --no-restore --configuration Release
 
-      - name: 运行测试
-        run: dotnet test --no-build --configuration Release --collect:"XPlat Code Coverage" --results-directory ./coverage
+      - name: 运行测试（排除集成测试）
+        run: dotnet test --no-build --configuration Release --filter "FullyQualifiedName!~Integration" --collect:"XPlat Code Coverage" --results-directory ./coverage
 
       - name: 上传测试结果
         if: always()

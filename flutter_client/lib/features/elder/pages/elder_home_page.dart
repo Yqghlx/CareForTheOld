@@ -409,7 +409,6 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
     Future<void> updateProgress() async {
       const updateInterval = Duration(milliseconds: 50);
       final totalSteps = (_longPressDurationSeconds * 1000 / updateInterval.inMilliseconds).round();
-      final progressIncrement = 1.0 / totalSteps;
 
       for (int i = 0; i <= totalSteps && _isLongPressing; i++) {
         await Future.delayed(updateInterval);
