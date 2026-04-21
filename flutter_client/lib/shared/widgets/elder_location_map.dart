@@ -1,27 +1,9 @@
-import 'package:amap_flutter_map/amap_flutter_map.dart';
-import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
-
-/// 高德地图配置类
-class AMapConfig {
-  /// 是否已设置隐私合规
-  static bool _privacySet = false;
-
-  /// 设置隐私合规（高德 SDK 8.1.0+ 要求）
-  static AMapPrivacyStatement getPrivacyStatement() {
-    if (!_privacySet) {
-      _privacySet = true;
-    }
-    return const AMapPrivacyStatement(
-      hasContains: true,  // 隐私权政策是否包含高德开平隐私权政策
-      hasShow: true,      // 隐私权政策是否已展示给用户
-      hasAgree: true,     // 隐私权政策用户是否已同意
-    );
-  }
-}
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 /// 老人位置地图组件
+/// 使用 OpenStreetMap（免费，无需 API Key）
 class ElderLocationMap extends StatefulWidget {
   /// 老人当前位置纬度
   final double latitude;
@@ -60,6 +42,21 @@ class ElderLocationMap extends StatefulWidget {
 }
 
 class _ElderLocationMapState extends State<ElderLocationMap> {
+  final MapController _mapController = MapController();
+
+  @override
+  void didUpdateWidget(ElderLocationMap oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // 如果位置变化，重新定位地图中心
+    if (oldWidget.latitude != widget.latitude ||
+        oldWidget.longitude != widget.longitude) {
+      _mapController.move(
+        LatLng(widget.latitude, widget.longitude),
+        _mapController.camera.zoom,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // 如果坐标无效，显示提示
@@ -91,80 +88,69 @@ class _ElderLocationMapState extends State<ElderLocationMap> {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
-        child: AMapWidget(
-          initialCameraPosition: CameraPosition(
-            target: LatLng(widget.latitude, widget.longitude),
-            zoom: 15,
+        child: FlutterMap(
+          mapController: _mapController,
+          options: MapOptions(
+            initialCenter: LatLng(widget.latitude, widget.longitude),
+            initialZoom: 15,
+            minZoom: 10,
+            maxZoom: 18,
           ),
-          privacyStatement: AMapConfig.getPrivacyStatement(),
-          mapType: MapType.normal,
-          markers: _buildMarkers(),
-          polygons: _buildFencePolygon(),
+          children: [
+            // OpenStreetMap 图层
+            TileLayer(
+              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              userAgentPackageName: 'com.example.care_for_the_old_client',
+              maxZoom: 19,
+            ),
+            // 围栏圆圈图层
+            if (widget.fenceEnabled &&
+                widget.fenceCenterLat != null &&
+                widget.fenceCenterLon != null &&
+                widget.fenceRadius != null)
+              CircleLayer(
+                circles: [
+                  CircleMarker(
+                    point: LatLng(widget.fenceCenterLat!, widget.fenceCenterLon!),
+                    radius: widget.fenceRadius!.toDouble(),
+                    color: Colors.green.withValues(alpha: 0.2),
+                    borderStrokeWidth: 2.0,
+                    borderColor: Colors.green,
+                    useRadiusInMeter: true,
+                  ),
+                ],
+              ),
+            // 老人位置标记图层
+            MarkerLayer(
+              markers: [
+                Marker(
+                  point: LatLng(widget.latitude, widget.longitude),
+                  width: 40,
+                  height: 40,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.red.withValues(alpha: 0.4),
+                          blurRadius: 8,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.location_on,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
-  }
-
-  /// 构建标记点
-  Set<Marker> _buildMarkers() {
-    return {
-      // 老人当前位置标记
-      Marker(
-        position: LatLng(widget.latitude, widget.longitude),
-        infoWindow: InfoWindow(
-          title: widget.elderName,
-          snippet: '当前位置',
-        ),
-      ),
-    };
-  }
-
-  /// 构建围栏多边形（圆形近似）
-  Set<Polygon> _buildFencePolygon() {
-    if (!widget.fenceEnabled ||
-        widget.fenceCenterLat == null ||
-        widget.fenceCenterLon == null ||
-        widget.fenceRadius == null) {
-      return {};
-    }
-
-    // 用多边形近似圆形（36个点）
-    final points = _generateCirclePoints(
-      widget.fenceCenterLat!,
-      widget.fenceCenterLon!,
-      widget.fenceRadius!,
-      36,
-    );
-
-    return {
-      Polygon(
-        points: points,
-        strokeWidth: 2,
-        strokeColor: Colors.green,
-        fillColor: Colors.green.withValues(alpha: 0.2),
-      ),
-    };
-  }
-
-  /// 生成圆形多边形的点
-  List<LatLng> _generateCirclePoints(double centerLat, double centerLon, int radiusMeters, int segments) {
-    final points = <LatLng>[];
-    // 地球半径（米）
-    const earthRadius = 6371000.0;
-
-    for (int i = 0; i < segments; i++) {
-      final angle = (2 * math.pi * i) / segments;
-      // 计算纬度偏移
-      final latOffset = (radiusMeters / earthRadius) * math.sin(angle);
-      // 计算经度偏移（考虑纬度修正）
-      final lonOffset = (radiusMeters / earthRadius) * math.cos(angle) / math.cos(centerLat * math.pi / 180);
-
-      points.add(LatLng(
-        centerLat + latOffset * 180 / math.pi,
-        centerLon + lonOffset * 180 / math.pi,
-      ));
-    }
-
-    return points;
   }
 }

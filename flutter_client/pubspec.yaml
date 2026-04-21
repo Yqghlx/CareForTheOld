@@ -82,9 +82,9 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
 
-  # 高德地图
-  amap_flutter_map: ^3.0.0
-  amap_flutter_base: ^3.0.0
+  # 地图（使用 flutter_map + OpenStreetMap，免费无需 API Key）
+  flutter_map: ^7.0.0
+  latlong2: ^0.9.0
 
 dev_dependencies:
   flutter_test:
