@@ -182,7 +182,7 @@ class _SecondaryButtonState extends State<SecondaryButton>
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: Container(
-          height: 52,
+          height: 56,
           decoration: BoxDecoration(
             border: Border.all(color: widget.borderColor, width: 2),
             borderRadius: BorderRadius.circular(14),
