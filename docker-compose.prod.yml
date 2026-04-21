@@ -1,26 +1,45 @@
-# 生产环境 Docker Compose 配置
-# 使用方式: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
-
-version: '3.8'
+# CareForTheOld 生产环境 Docker Compose 配置
+# 包含 Nginx 反向代理 + HTTPS 支持
+#
+# 使用方式:
+#   1. 复制 .env.example 为 .env 并填入实际值
+#   2. 准备 SSL 证书：将证书文件放入 ./nginx/ssl/ 目录
+#      - cert.pem: SSL 证书
+#      - key.pem: SSL 私钥
+#   3. docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 
 services:
+  nginx:
+    image: nginx:alpine
+    container_name: carefortheold-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
   api:
     environment:
+      # 启用 HTTPS 重定向和 HSTS
       ASPNETCORE_ENVIRONMENT: Production
-    deploy:
-      resources:
-        limits:
-          cpus: '2'
-          memory: 1G
-        reservations:
-          cpus: '0.5'
-          memory: 256M
-    restart: always
+      # OSS 配置（从 .env 读取）
+      OSS_ENABLED: ${OSS_ENABLED:-false}
+      OSS_ENDPOINT: ${OSS_ENDPOINT:-}
+      OSS_ACCESS_KEY_ID: ${OSS_ACCESS_KEY_ID:-}
+      OSS_ACCESS_KEY_SECRET: ${OSS_ACCESS_KEY_SECRET:-}
+      OSS_BUCKET_NAME: ${OSS_BUCKET_NAME:-}
+    # 生产环境不再暴露端口，仅通过 nginx 访问
+    ports: []
 
-  postgres:
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 512M
-    restart: always
+volumes:
+  # 挂载 SSL 证书目录（需手动准备）
+  ssl_certs:

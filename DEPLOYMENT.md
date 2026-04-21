@@ -84,36 +84,51 @@ APK 输出位置: `build/app/outputs/flutter-apk/app-release.apk`
 
 - 修改默认数据库密码
 - 修改 JWT 密钥（至少32字符）
-- 使用 HTTPS（配置反向代理如 Nginx）
+- 使用 HTTPS（见下方 Nginx 配置）
 - 配置防火墙规则
+- 启用 OSS 文件存储（头像等文件存储到云端）
 
-### 2. Nginx 反向代理配置
+### 2. 使用 HTTPS + Nginx 反向代理
 
-```nginx
-server {
-    listen 80;
-    server_name your-domain.com;
+生产环境推荐使用 Nginx 反向代理，提供 HTTPS 加密和 WebSocket 支持。
 
-    location / {
-        proxy_pass http://localhost:5000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection keep-alive;
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
+```bash
+# 准备 SSL 证书
+mkdir -p nginx/ssl
+# 将 cert.pem 和 key.pem 放入 nginx/ssl/ 目录
 
-    # SignalR WebSocket 支持
-    location /hubs/ {
-        proxy_pass http://localhost:5000/hubs/;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-    }
-}
+# 生产环境部署
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 ```
 
-### 3. 数据持久化
+详细配置见：
+- `nginx/nginx.conf` - Nginx 反向代理配置
+- `nginx/ssl/README.md` - SSL 证书获取说明
+- `docker-compose.prod.yml` - 生产环境 Docker Compose 配置
+
+### 3. OSS 文件存储配置
+
+头像等用户文件默认存储在本地 `uploads/` 目录，生产环境建议切换到阿里云 OSS。
+
+**配置步骤**：
+
+1. 在阿里云 OSS 创建 Bucket，设置为公开读
+2. 在 `.env` 文件中配置：
+
+```bash
+# 启用 OSS
+OSS_ENABLED=true
+
+# OSS 配置
+OSS_ENDPOINT=https://oss-cn-hangzhou.aliyuncs.com  # 替换为实际 Endpoint
+OSS_ACCESS_KEY_ID=your_access_key_id
+OSS_ACCESS_KEY_SECRET=your_access_key_secret
+OSS_BUCKET_NAME=your-bucket-name
+```
+
+**注意**：Bucket 需设置为公开读，否则头像 URL 无法直接访问。
+
+### 4. 数据持久化
 
 Docker Compose 已配置数据卷：
 ```yaml
