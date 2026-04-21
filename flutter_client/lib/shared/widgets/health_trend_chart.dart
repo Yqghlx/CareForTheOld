@@ -85,7 +85,7 @@ class HealthTrendChart extends StatelessWidget {
             Text(
               '暂无数据',
               style: TextStyle(
-                color: Colors.grey.shade600,
+                color: Colors.grey.shade800,
                 fontSize: 16,
               ),
             ),
@@ -126,7 +126,7 @@ class HealthTrendChart extends StatelessWidget {
                 getTitlesWidget: (value, meta) => Text(
                   value.toInt().toString(),
                   style: TextStyle(
-                    color: Colors.grey.shade600,
+                    color: Colors.grey.shade800,
                     fontSize: 14,
                   ),
                 ),
@@ -145,7 +145,7 @@ class HealthTrendChart extends StatelessWidget {
                     child: Text(
                       '${date.month}/${date.day}',
                       style: TextStyle(
-                        color: Colors.grey.shade600,
+                        color: Colors.grey.shade800,
                         fontSize: 14,
                       ),
                     ),
@@ -227,7 +227,7 @@ class HealthTrendChart extends StatelessWidget {
               getTitlesWidget: (value, meta) => Text(
                 value.toStringAsFixed(1),
                 style: TextStyle(
-                  color: Colors.grey.shade600,
+                  color: Colors.grey.shade800,
                   fontSize: 14,
                 ),
               ),
@@ -246,7 +246,7 @@ class HealthTrendChart extends StatelessWidget {
                   child: Text(
                     '${date.month}/${date.day}',
                     style: TextStyle(
-                      color: Colors.grey.shade600,
+                      color: Colors.grey.shade800,
                       fontSize: 14,
                     ),
                   ),
