@@ -46,8 +46,8 @@
 - **通知**: flutter_local_notifications + SignalR 实时推送
 
 ### 测试覆盖
-- 后端: 160 个 xUnit 测试 (InMemory + Testcontainers PostgreSQL)
-- 前端: Widget 烟雾测试
+- 后端: 143 个 xUnit 单元测试 + Testcontainers PostgreSQL 集成测试
+- 前端: 36 个单元测试（表单验证、模型序列化、烟雾测试）
 
 ## 项目结构
 

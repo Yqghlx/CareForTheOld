@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/models/notification_record.dart';
@@ -105,7 +106,9 @@ class NotificationListNotifier extends StateNotifier<NotificationListState> {
     try {
       final count = await _service.getUnreadCount();
       state = state.copyWith(unreadCount: count);
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('加载未读数量失败: $e');
+    }
   }
 
   /// 标记已读
@@ -123,7 +126,9 @@ class NotificationListNotifier extends StateNotifier<NotificationListState> {
       }).toList();
       final unreadCount = updatedNotifications.where((n) => !n.isRead).length;
       state = state.copyWith(notifications: updatedNotifications, unreadCount: unreadCount);
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('标记已读失败: $e');
+    }
   }
 
   /// 全部标记已读
@@ -137,7 +142,9 @@ class NotificationListNotifier extends StateNotifier<NotificationListState> {
         );
       }).toList();
       state = state.copyWith(notifications: updatedNotifications, unreadCount: 0);
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('全部标记已读失败: $e');
+    }
   }
 }
 

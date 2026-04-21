@@ -62,7 +62,10 @@ class _LoginPageState extends ConsumerState<LoginPage>
       if (data is Map<String, dynamic> && data['message'] != null) {
         return data['message'] as String;
       }
-    } catch (_) {}
+    } catch (_) {
+      // 解析响应数据失败，使用默认错误信息
+      debugPrint('解析错误响应失败: ${e.response?.statusCode}');
+    }
     switch (e.type) {
       case DioExceptionType.connectionError:
       case DioExceptionType.connectionTimeout:
