@@ -4,6 +4,8 @@ using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Implementations;
 using CareForTheOld.Services.Interfaces;
 using FluentAssertions;
+using Hangfire;
+using Hangfire.MemoryStorage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -20,8 +22,14 @@ public class EmergencyServiceTests
     private readonly EmergencyService _service;
     private readonly Mock<INotificationService> _mockNotificationService;
 
+    /// <summary>
+    /// 初始化 Hangfire InMemory storage（测试环境需要）
+    /// </summary>
     public EmergencyServiceTests()
     {
+        // 配置 Hangfire 使用 InMemory storage
+        JobStorage.Current = new MemoryStorage();
+
         // 使用 InMemory 数据库，GUID 命名确保测试隔离
         var options = new DbContextOptionsBuilder<AppDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())

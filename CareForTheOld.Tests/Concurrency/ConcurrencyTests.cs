@@ -5,6 +5,8 @@ using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Implementations;
 using CareForTheOld.Services.Interfaces;
 using FluentAssertions;
+using Hangfire;
+using Hangfire.MemoryStorage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -18,6 +20,14 @@ namespace CareForTheOld.Tests.Concurrency;
 /// </summary>
 public class ConcurrencyTests
 {
+    /// <summary>
+    /// 初始化 Hangfire InMemory storage（测试环境需要）
+    /// </summary>
+    public ConcurrencyTests()
+    {
+        JobStorage.Current = new MemoryStorage();
+    }
+
     private AppDbContext CreateContext()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
