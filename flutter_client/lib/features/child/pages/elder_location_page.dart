@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/models/location_record.dart';
 import '../../../shared/widgets/common_buttons.dart';
+import '../../../shared/widgets/elder_location_map.dart';
 import '../../../core/theme/app_theme.dart';
 import '../providers/family_provider.dart';
 import '../providers/geo_fence_provider.dart';
@@ -422,85 +423,106 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
       );
     }
 
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+    // 获取围栏信息
+    final geoFenceState = ref.watch(elderGeoFenceProvider);
+    final fence = geoFenceState.fence;
+
+    return Column(
+      children: [
+        // 地图展示
+        ElderLocationMap(
+          latitude: location.latitude,
+          longitude: location.longitude,
+          elderName: elderName,
+          fenceCenterLat: fence?.centerLatitude,
+          fenceCenterLon: fence?.centerLongitude,
+          fenceRadius: fence?.radius,
+          fenceEnabled: fence?.isEnabled ?? false,
+        ),
+        const SizedBox(height: 16),
+
+        // 位置详情卡片
+        Card(
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryColor.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Icon(Icons.location_on, color: AppTheme.primaryColor, size: 28),
-                ),
-                const SizedBox(width: 16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
                   children: [
-                    Text(
-                      elderName,
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryColor.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(Icons.location_on, color: AppTheme.primaryColor, size: 28),
                     ),
-                    Text(
-                      '更新于 ${location.relativeTime}',
-                      style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                    const SizedBox(width: 16),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          elderName,
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          '更新于 ${location.relativeTime}',
+                          style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                        ),
+                      ],
                     ),
                   ],
                 ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade50,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.explore, size: 20, color: Colors.grey),
+                          const SizedBox(width: 8),
+                          Text(
+                            '纬度: ${location.latitude.toStringAsFixed(4)}',
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const Icon(Icons.explore, size: 20, color: Colors.grey),
+                          const SizedBox(width: 8),
+                          Text(
+                            '经度: ${location.longitude.toStringAsFixed(4)}',
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  '精确时间: ${location.formattedTime}',
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+                ),
               ],
             ),
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade50,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.explore, size: 20, color: Colors.grey),
-                      const SizedBox(width: 8),
-                      Text(
-                        '纬度: ${location.latitude.toStringAsFixed(4)}',
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      const Icon(Icons.explore, size: 20, color: Colors.grey),
-                      const SizedBox(width: 8),
-                      Text(
-                        '经度: ${location.longitude.toStringAsFixed(4)}',
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              '精确时间: ${location.formattedTime}',
-              style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
-            ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
