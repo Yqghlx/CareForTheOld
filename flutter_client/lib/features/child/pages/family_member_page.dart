@@ -516,6 +516,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                   ),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
+                    // ignore: deprecated_member_use - StatefulBuilder 中动态更新需要 value
                     value: selectedRelation,
                     decoration: InputDecoration(
                       labelText: '您与创建者的关系',
@@ -642,6 +643,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
+                    // ignore: deprecated_member_use - StatefulBuilder 中动态更新需要 value
                     value: selectedRole,
                     decoration: InputDecoration(
                       labelText: '角色',
@@ -658,6 +660,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
+                    // ignore: deprecated_member_use - StatefulBuilder 中动态更新需要 value
                     value: selectedRelation,
                     decoration: InputDecoration(
                       labelText: '称呼',

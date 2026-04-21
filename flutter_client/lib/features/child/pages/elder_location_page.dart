@@ -194,7 +194,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                 radius: radius,
               );
             },
-            activeColor: Colors.green,
+            activeThumbColor: Colors.green,
           ),
         ],
       ),

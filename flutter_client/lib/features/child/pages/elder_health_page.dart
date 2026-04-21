@@ -362,7 +362,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     // 启用/停用开关
                     Switch(
                       value: plan.isActive,
-                      activeColor: Colors.green,
+                      activeThumbColor: Colors.green,
                       onChanged: (value) => _togglePlan(plan, value),
                     ),
                   ],
@@ -485,6 +485,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<Frequency>(
+                  // ignore: deprecated_member_use - StatefulBuilder 中动态更新需要 value，initialValue 仅用于初始设置
                   value: selectedFrequency,
                   decoration: const InputDecoration(
                     labelText: '用药频率',

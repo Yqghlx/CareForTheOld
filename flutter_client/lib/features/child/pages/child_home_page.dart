@@ -410,6 +410,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: DropdownButtonFormField<String>(
+                        // ignore: deprecated_member_use - StatefulBuilder 中动态更新需要 value
                         value: selectedElderId,
                         decoration: const InputDecoration(
                           labelText: '选择老人',
@@ -464,6 +465,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: DropdownButtonFormField<int>(
+                        // ignore: deprecated_member_use - StatefulBuilder 中动态更新需要 value
                         value: selectedFrequency,
                         decoration: const InputDecoration(
                           labelText: '用药频率',
