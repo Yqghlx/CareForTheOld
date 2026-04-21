@@ -241,109 +241,87 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
+        side: log.status == MedicationStatus.taken
+            ? BorderSide(color: Colors.green.withValues(alpha: 0.3), width: 1.5)
+            : BorderSide.none,
       ),
       child: Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            // 药品信息行
-            Row(
-              children: [
-                Container(
-                  width: 56,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    gradient: log.status == MedicationStatus.taken
-                        ? const LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Color(0xFF66BB6A),
-                              Color(0xFFA5D6A7),
-                            ],
+            // 已服用时添加打勾弹出动画
+            TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0, end: 1),
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.elasticOut,
+              builder: (context, value, child) {
+                return Transform.scale(
+                  scale: log.status == MedicationStatus.taken ? value : 1.0,
+                  child: Container(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      gradient: log.status == MedicationStatus.taken
+                          ? const LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                Color(0xFF66BB6A),
+                                Color(0xFFA5D6A7),
+                              ],
+                            )
+                          : null,
+                      color: log.status == MedicationStatus.taken
+                          ? null
+                          : Colors.grey.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: log.status == MedicationStatus.taken
+                        ? const Icon(
+                            Icons.check_circle_rounded,
+                            color: Colors.white,
+                            size: 32,
                           )
-                        : null,
-                    color: log.status == MedicationStatus.taken
-                        ? null
-                        : log.isPending
-                            ? Colors.orange.withValues(alpha: 0.15)
-                            : Colors.grey.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(14),
+                        : Icon(
+                            Icons.skip_next,
+                            color: Colors.grey.shade600,
+                            size: 28,
+                          ),
                   ),
-                  child: log.status == MedicationStatus.taken
-                      ? const Icon(
-                          Icons.check_circle_rounded,
-                          color: Colors.white,
-                          size: 32,
-                        )
-                      : Icon(
-                          Icons.medication,
-                          color: log.isPending
-                              ? Colors.orange
-                              : Colors.grey,
-                          size: 28,
-                        ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        log.medicineName,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '计划时间: $timeStr',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey.shade600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // 状态标签
-                StatusChip(
-                  label: log.status.label,
-                  color: log.status.color,
-                ),
-              ],
+                );
+              },
             ),
-            // 待服用时显示操作按钮
-            if (log.isPending)
-              Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: PrimaryIconButton(
-                        text: '已服用',
-                        icon: Icons.check,
-                        onPressed: () => _markTaken(log),
-                        gradient: const LinearGradient(
-                          colors: [Colors.green, Colors.lightGreen],
-                        ),
-                      ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    log.medicineName,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: log.status == MedicationStatus.taken
+                          ? Colors.green.shade700
+                          : null,
                     ),
-                    const SizedBox(width: 12),
-                    SizedBox(
-                      width: 100,
-                      child: SecondaryButton(
-                        text: '跳过',
-                        onPressed: () => _markSkipped(log),
-                        borderColor: Colors.grey,
-                        textColor: Colors.grey.shade700,
-                      ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '计划时间: $timeStr',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey.shade600,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            ),
+            // 状态标签
+            StatusChip(
+              label: log.status.label,
+              color: log.status.color,
+            ),
           ],
         ),
       ),

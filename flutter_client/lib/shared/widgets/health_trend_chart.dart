@@ -341,8 +341,8 @@ class HealthTrendChart extends StatelessWidget {
         Text(
           type.unit,
           style: TextStyle(
-            fontSize: 12,
-            color: Colors.grey.shade600,
+            fontSize: 14,
+            color: Colors.grey.shade800,
           ),
         ),
       ],
