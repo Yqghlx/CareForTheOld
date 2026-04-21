@@ -78,14 +78,14 @@ jobs:
       - name: 静态分析（忽略 deprecated API warning，待后续修复）
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
-      - name: 构建 APK（仅 main 分支）
-        if: github.ref == 'refs/heads/main'
+      - name: 构建 APK（仅 develop 分支，main 分支暂不构建）
+        if: github.ref == 'refs/heads/develop'
         env:
           GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true"
         run: flutter build apk --release --dart-define=APP_ENV=production
 
       - name: 上传 APK
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/develop'
         uses: actions/upload-artifact@v4
         with:
           name: app-release
