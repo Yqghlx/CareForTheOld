@@ -46,8 +46,8 @@
 - **通知**: flutter_local_notifications + SignalR 实时推送
 
 ### 测试覆盖
-- 后端: 143 个 xUnit 单元测试 + Testcontainers PostgreSQL 集成测试
-- 前端: 36 个单元测试（表单验证、模型序列化、烟雾测试）
+- 后端: 194 个 xUnit 单元测试 + Testcontainers PostgreSQL 集成测试
+- 前端: 105 个单元测试（表单验证、全模型序列化覆盖、烟雾测试）
 
 ## 项目结构
 
@@ -112,7 +112,7 @@ docker-compose up -d --build
 ```
 
 后端 API 地址:
-- 开发: `http://localhost:5000`
+- 开发: `http://localhost:5001`（macOS 端口 5000 被 AirPlay 占用）
 - Docker: `http://localhost:5001`
 
 ### 前端启动
@@ -168,13 +168,16 @@ static const devConfig = AppConfig(
 
 ## 安全特性
 
-- **JWT 认证** - 带刷新 Token 轮换
+- **JWT 认证** - IKeyProvider 抽象，开发环境配置文件/生产环境变量，带刷新 Token 轮换
 - **角色权限** - 老人/子女角色分离
-- **API 限流** - 认证 10次/IP/分钟，通用 API 60次/IP/分钟
+- **API 限流** - 认证 10次/IP/分钟，通用 API 60次/IP/分钟，紧急呼叫 3次/用户/分钟
 - **密码策略** - 8位+字母+数字，修改后强制重登
 - **手机号脱敏** - 非本人手机号部分隐藏
 - **安全日志** - 审计中间件记录敏感操作
-- **HTTPS 支持** - 生产环境配置
+- **HTTPS 支持** - HSTS + Nginx 反向代理
+- **Docker 安全** - 非 root 用户运行、健康检查、日志轮转
+- **Outbox Pattern** - 通知写入与 SignalR 投递解耦，确保最终一致性
+- **生产验证** - 启动时强制检查 PostgreSQL/Redis/JWT 配置
 
 ## 主要 API 接口
 
