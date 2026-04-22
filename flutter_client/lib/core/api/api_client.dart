@@ -94,8 +94,19 @@ class ApiClient {
         return handler.next(options);
       },
       onError: (error, handler) async {
-        // 仅处理 401 错误
-        if (error.response?.statusCode != 401) {
+        final statusCode = error.response?.statusCode;
+
+        // 通用 HTTP 错误码提示（不影响调用方的错误处理逻辑）
+        if (statusCode == 403) {
+          showGlobalSnackBar('权限不足，无法执行此操作');
+        } else if (statusCode == 404) {
+          showGlobalSnackBar('请求的资源不存在');
+        } else if (statusCode != null && statusCode >= 500) {
+          showGlobalSnackBar('服务器繁忙，请稍后重试');
+        }
+
+        // 仅处理 401 错误的刷新逻辑
+        if (statusCode != 401) {
           return handler.next(error);
         }
 

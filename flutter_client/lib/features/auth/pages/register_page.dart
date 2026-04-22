@@ -118,7 +118,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
         );
       }
     } finally {
-      setState(() => _isLoading = false);
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
