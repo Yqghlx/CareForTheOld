@@ -164,7 +164,7 @@ public class CacheServiceTests
         // 执行
         var result = await _service.GetOrCreateAsync<TestData>(
             "cached_key",
-            () => { factoryCalled = true; return Task.FromResult(new TestData { Name = "新建", Value = 2 }); });
+            () => { factoryCalled = true; return Task.FromResult(new TestData { Name = "新建", Value = 2 })!; });
 
         // 验证：返回缓存值，factory 未调用
         result.Should().NotBeNull();
