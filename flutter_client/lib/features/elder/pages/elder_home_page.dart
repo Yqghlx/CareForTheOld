@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:battery_plus/battery_plus.dart';
 
+import '../../../shared/models/emergency_call.dart';
 import '../../../shared/providers/auth_provider.dart';
 import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
@@ -528,7 +529,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
   }
 
   /// 显示呼叫成功对话框
-  void _showCallSuccessDialog(call) {
+  void _showCallSuccessDialog(EmergencyCall call) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
