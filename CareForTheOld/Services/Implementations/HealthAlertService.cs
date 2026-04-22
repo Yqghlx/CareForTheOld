@@ -88,10 +88,10 @@ public class HealthAlertService : IHealthAlertService
         var typeLabel = GetTypeLabel(record.Type);
         var valueDisplay = GetDisplayValue(record);
 
-        foreach (var child in children)
+        if (children.Count > 0)
         {
-            await _notificationService.SendToUserAsync(
-                child.UserId,
+            await _notificationService.SendToUsersAsync(
+                children.Select(c => c.UserId),
                 "HealthAlert",
                 new
                 {

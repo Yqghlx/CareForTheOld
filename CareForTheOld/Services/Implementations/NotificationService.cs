@@ -66,6 +66,47 @@ public class NotificationService : INotificationService
         await _context.SaveChangesAsync();
     }
 
+    /// <inheritdoc />
+    public async Task SendToUsersAsync(IEnumerable<Guid> userIds, string type, object data)
+    {
+        var dict = JsonSerializer.Deserialize<Dictionary<string, object>>(
+            JsonSerializer.Serialize(data));
+
+        var title = dict?.GetValueOrDefault("Title")?.ToString() ?? "通知";
+        var content = dict?.GetValueOrDefault("Content")?.ToString() ?? "";
+        var now = DateTime.UtcNow;
+        var payload = JsonSerializer.Serialize(data);
+
+        foreach (var userId in userIds)
+        {
+            _context.NotificationRecords.Add(new NotificationRecord
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                Type = type,
+                Title = title,
+                Content = content,
+                IsRead = false,
+                CreatedAt = now
+            });
+
+            _context.NotificationOutboxes.Add(new NotificationOutbox
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                Type = type,
+                Title = title,
+                Content = content,
+                Payload = payload,
+                Status = OutboxStatus.Pending,
+                CreatedAt = now
+            });
+        }
+
+        // 所有记录一次写入，避免循环中多次 SaveChanges 的 N+1 问题
+        await _context.SaveChangesAsync();
+    }
+
     public async Task SendToFamilyAsync(Guid familyId, string type, object data)
     {
         await _hubContext.Clients.Group($"family_{familyId}")
