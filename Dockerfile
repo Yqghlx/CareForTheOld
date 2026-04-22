@@ -27,8 +27,14 @@ RUN dotnet publish "CareForTheOld.csproj" -c Release -o /app/publish /p:UseAppHo
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
 
+# 创建非 root 用户运行应用（安全最佳实践）
+RUN adduser --disabled-password --gecos "" appuser
+
 # 复制发布文件
 COPY --from=publish /app/publish .
+
+# 设置文件所有权
+RUN chown -R appuser:appuser /app
 
 # 设置环境变量
 ENV ASPNETCORE_URLS=http://+:5000
@@ -36,6 +42,9 @@ ENV ASPNETCORE_ENVIRONMENT=Production
 
 # 暴露端口
 EXPOSE 5000
+
+# 切换到非 root 用户
+USER appuser
 
 # 健康检查（使用 wget 替代 curl，aspnet 镜像自带）
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
