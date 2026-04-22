@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'core/router/app_router.dart';
+import 'core/services/app_logger.dart';
 import 'core/services/offline_queue_service.dart';
 import 'core/theme/app_theme.dart';
 import 'features/shared/services/local_notification_service.dart';
@@ -30,6 +33,9 @@ void showGlobalSnackBar(String message, {Color? backgroundColor}) {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // 初始化日志系统（生产环境仅输出 WARNING及以上级别）
+  AppLogger.init();
 
   // 初始化本地通知
   await LocalNotificationService.initialize();
@@ -89,6 +95,15 @@ class _CareForTheOldAppState extends ConsumerState<CareForTheOldApp> {
       theme: AppTheme.lightTheme,
       routerConfig: router,
       locale: const Locale('zh', 'CN'),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('zh', 'CN'),
+        Locale('en', 'US'),
+      ],
       scaffoldMessengerKey: scaffoldMessengerKey,
     );
   }

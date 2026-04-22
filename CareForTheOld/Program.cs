@@ -15,6 +15,26 @@ using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// 生产环境启动前强制检查必要配置
+if (builder.Environment.IsProduction())
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    if (string.IsNullOrWhiteSpace(connectionString) || !connectionString.Contains("Host="))
+    {
+        throw new InvalidOperationException(
+            "生产环境必须配置 PostgreSQL 连接字符串。" +
+            "请通过环境变量或 appsettings.Production.json 设置 ConnectionStrings:DefaultConnection。");
+    }
+
+    var redis = builder.Configuration.GetConnectionString("Redis");
+    if (string.IsNullOrWhiteSpace(redis))
+    {
+        throw new InvalidOperationException(
+            "生产环境必须配置 Redis 连接字符串。" +
+            "请通过环境变量 REDIS_CONNECTION 或 appsettings.Production.json 设置 ConnectionStrings:Redis。");
+    }
+}
+
 // 配置 Serilog
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
