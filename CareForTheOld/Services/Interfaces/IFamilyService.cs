@@ -12,4 +12,10 @@ public interface IFamilyService
     Task<FamilyResponse> RefreshInviteCodeAsync(Guid familyId, Guid operatorId);
     Task<List<FamilyMemberResponse>> GetMembersAsync(Guid familyId);
     Task RemoveMemberAsync(Guid familyId, Guid userId, Guid operatorId);
+
+    /// <summary>
+    /// 验证操作者是老人的家庭成员，否则抛出 UnauthorizedAccessException
+    /// 老人本人操作时自动通过验证
+    /// </summary>
+    Task EnsureFamilyMemberAsync(Guid elderId, Guid operatorId);
 }

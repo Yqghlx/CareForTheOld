@@ -35,7 +35,7 @@ public class GeoFenceServiceTests
             .Setup(c => c.RemoveAsync(It.IsAny<string>()))
             .Returns(Task.CompletedTask);
 
-        _service = new GeoFenceService(_context, _mockCacheService.Object);
+        _service = new GeoFenceService(_context, _mockCacheService.Object, new FamilyService(_context));
     }
 
     private async Task<Guid> CreateTestUserAsync(string realName = "测试老人", UserRole role = UserRole.Elder)

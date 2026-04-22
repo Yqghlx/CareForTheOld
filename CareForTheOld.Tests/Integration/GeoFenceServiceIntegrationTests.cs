@@ -42,7 +42,7 @@ public class GeoFenceServiceIntegrationTests : IAsyncLifetime
             .Setup(c => c.GetOrCreateAsync<GeoFenceCacheEntry>(It.IsAny<string>(), It.IsAny<Func<Task<GeoFenceCacheEntry?>>>(), It.IsAny<TimeSpan?>()))
             .Returns((string _, Func<Task<GeoFenceCacheEntry?>> factory, TimeSpan? _) => factory());
 
-        _service = new GeoFenceService(_context, _mockCacheService.Object);
+        _service = new GeoFenceService(_context, _mockCacheService.Object, new FamilyService(_context));
     }
 
     public Task DisposeAsync()
@@ -164,7 +164,7 @@ public class GeoFenceServiceIntegrationTests : IAsyncLifetime
             await ctx.Database.EnsureCreatedAsync();
             var cache = new Mock<ICacheService>();
             cache.Setup(c => c.RemoveAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
-            var svc = new GeoFenceService(ctx, cache.Object);
+            var svc = new GeoFenceService(ctx, cache.Object, new FamilyService(ctx));
             return await svc.CreateFenceAsync(child.Id, new CreateGeoFenceRequest
             {
                 ElderId = elder.Id,
@@ -180,7 +180,7 @@ public class GeoFenceServiceIntegrationTests : IAsyncLifetime
             await ctx.Database.EnsureCreatedAsync();
             var cache = new Mock<ICacheService>();
             cache.Setup(c => c.RemoveAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
-            var svc = new GeoFenceService(ctx, cache.Object);
+            var svc = new GeoFenceService(ctx, cache.Object, new FamilyService(ctx));
             return await svc.CreateFenceAsync(child.Id, new CreateGeoFenceRequest
             {
                 ElderId = elder.Id,

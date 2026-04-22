@@ -18,6 +18,7 @@ public class GeoFenceService : IGeoFenceService
 {
     private readonly AppDbContext _context;
     private readonly ICacheService _cacheService;
+    private readonly IFamilyService _familyService;
 
     /// <summary>
     /// 围栏缓存 key 前缀（格式：geofence:{elderId}）
@@ -29,10 +30,11 @@ public class GeoFenceService : IGeoFenceService
     /// </summary>
     private static readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(10);
 
-    public GeoFenceService(AppDbContext context, ICacheService cacheService)
+    public GeoFenceService(AppDbContext context, ICacheService cacheService, IFamilyService familyService)
     {
         _context = context;
         _cacheService = cacheService;
+        _familyService = familyService;
     }
 
     /// <summary>
@@ -41,7 +43,7 @@ public class GeoFenceService : IGeoFenceService
     public async Task<GeoFenceResponse> CreateFenceAsync(Guid creatorId, CreateGeoFenceRequest request)
     {
         // 验证创建者是否是老人的家庭成员
-        await EnsureFamilyMemberAsync(request.ElderId, creatorId);
+        await _familyService.EnsureFamilyMemberAsync(request.ElderId, creatorId);
 
         // 检查老人是否已存在围栏（一个老人只能有一个围栏）
         var existingFence = await _context.GeoFences
@@ -273,18 +275,6 @@ public class GeoFenceService : IGeoFenceService
 
         return await _context.FamilyMembers
             .AnyAsync(fm => fm.UserId == userId1 && fm.FamilyId == familyId);
-    }
-
-    /// <summary>
-    /// 验证操作者是老人的家庭成员，否则抛出异常
-    /// </summary>
-    private async Task EnsureFamilyMemberAsync(Guid elderId, Guid operatorId)
-    {
-        if (elderId == operatorId) return;
-
-        var isFamily = await IsInSameFamilyAsync(operatorId, elderId);
-        if (!isFamily)
-            throw new UnauthorizedAccessException("您不是该老人的家庭成员，无权操作");
     }
 
     /// <summary>
