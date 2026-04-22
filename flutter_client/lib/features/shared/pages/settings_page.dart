@@ -575,7 +575,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       );
       });
     },
-  );
+  ).then((_) {
+    // 对话框关闭后释放控制器，防止内存泄漏
+    oldPasswordController.dispose();
+    newPasswordController.dispose();
+    confirmPasswordController.dispose();
+  });
   }
 
   /// 显示关于对话框
