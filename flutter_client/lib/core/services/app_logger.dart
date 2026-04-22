@@ -20,7 +20,7 @@ class AppLogger {
     Logger.root.level = kReleaseMode ? Level.WARNING : Level.ALL;
 
     Logger.root.onRecord.listen((record) {
-      // 生产环境不输出 DEBUG和 INFO
+      // 生产环境不输出低级别日志
       if (kReleaseMode && record.level < Level.WARNING) return;
 
       final prefix = '${record.level.name}: ${record.loggerName}:';
@@ -37,21 +37,21 @@ class AppLogger {
 
   /// 调试日志（仅开发环境）
   static void debug(String message, [Object? error, StackTrace? stackTrace]) {
-    _logger.log(Level.DEBUG, message, error, stackTrace);
+    _logger.fine(message, error, stackTrace);
   }
 
   /// 信息日志（仅开发环境）
   static void info(String message, [Object? error, StackTrace? stackTrace]) {
-    _logger.log(Level.INFO, message, error, stackTrace);
+    _logger.info(message, error, stackTrace);
   }
 
   /// 警告日志（开发和生产环境）
   static void warning(String message, [Object? error, StackTrace? stackTrace]) {
-    _logger.log(Level.WARNING, message, error, stackTrace);
+    _logger.warning(message, error, stackTrace);
   }
 
   /// 错误日志（开发和生产环境）
   static void error(String message, [Object? error, StackTrace? stackTrace]) {
-    _logger.log(Level.SEVERE, message, error, stackTrace);
+    _logger.severe(message, error, stackTrace);
   }
 }
