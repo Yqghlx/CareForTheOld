@@ -127,3 +127,6 @@ Swagger → ExceptionHandlingMiddleware → SecurityHeadersMiddleware → AuditL
 
 后端通过 `.env` 文件注入（见 `.env.example`），必需变量：`POSTGRES_PASSWORD`、`JWT_SECRET_KEY`。
 前端 Sentry DSN 通过编译参数注入：`--dart-define=SENTRY_DSN=<value>`。
+
+**端口说明**：后端 API 默认使用端口 **5001**（而非 5000），因为 macOS Monterey+ 的 AirPlay Receiver 占用了 5000 端口。
+前端开发环境配置（`AppConfig.dev`）指向 `http://10.0.2.2:5001`，Android 模拟器通过该地址访问宿主机。
