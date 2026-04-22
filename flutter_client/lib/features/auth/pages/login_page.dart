@@ -114,7 +114,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
       debugPrint('登录未知异常: $e');
       if (mounted) setState(() => _errorMessage = '网络连接失败，请检查网络设置');
     } finally {
-      setState(() => isLoading = false);
+      if (mounted) setState(() => isLoading = false);
     }
   }
 
