@@ -115,7 +115,7 @@ Swagger → ExceptionHandlingMiddleware → SecurityHeadersMiddleware → AuditL
 ## 测试
 
 后端 194 个 xUnit 单元测试（143 Service + 51 Controller），覆盖全部 Service 和全部 9 个 Controller。测试项目：`CareForTheOld.Tests/`。
-前端 84 个 Flutter 测试（表单验证、全模型序列化、AuthState 测试、烟雾测试），测试目录：`flutter_client/test/`。
+前端 105 个 Flutter 测试（表单验证、全模型序列化覆盖、AuthState 测试、烟雾测试），测试目录：`flutter_client/test/`。
 
 - 使用 InMemory 数据库 + Moq + FluentAssertions
 - 每个 Service 测试文件中的 `CreateTestDataAsync()` 辅助方法创建完整家庭关系数据
