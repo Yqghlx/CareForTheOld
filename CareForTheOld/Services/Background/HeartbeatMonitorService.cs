@@ -6,6 +6,7 @@ using CareForTheOld.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
 
 namespace CareForTheOld.Services.Background;
 
@@ -40,8 +41,9 @@ public class HeartbeatMonitorService
 
     /// <summary>
     /// 最近一次告警时间：UserId → 上次告警时间
+    /// 使用 ConcurrentDictionary 防止多线程并发访问异常
     /// </summary>
-    private static readonly Dictionary<string, DateTime> _lastAlertTime = new();
+    private static readonly ConcurrentDictionary<string, DateTime> _lastAlertTime = new();
 
     public HeartbeatMonitorService(IServiceScopeFactory scopeFactory, ILogger<HeartbeatMonitorService> logger)
     {
@@ -95,10 +97,10 @@ public class HeartbeatMonitorService
             _logger.LogWarning("[心跳监控] 老人 {Name}({UserId}) 已 {Minutes} 分钟无心跳，触发离线告警",
                 user.RealName, userId, offlineMinutes);
 
-            foreach (var child in children)
+            if (children.Count > 0)
             {
-                await notificationService.SendToUserAsync(
-                    child.UserId,
+                await notificationService.SendToUsersAsync(
+                    children.Select(c => c.UserId),
                     "ElderOffline",
                     new
                     {
@@ -123,7 +125,7 @@ public class HeartbeatMonitorService
             .ToList();
         foreach (var key in offlineUsers)
         {
-            _lastAlertTime.Remove(key);
+            _lastAlertTime.TryRemove(key, out _);
         }
     }
 }
