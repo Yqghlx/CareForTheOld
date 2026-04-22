@@ -10,6 +10,9 @@ public interface ILocationService
     /// <summary>
     /// 上报位置
     /// </summary>
+    /// <param name="userId">用户 ID</param>
+    /// <param name="latitude">纬度</param>
+    /// <param name="longitude">经度</param>
     /// <param name="accuracy">GPS 定位精度（米），超过 100 米时跳过围栏检查</param>
     Task<LocationRecordResponse> ReportLocationAsync(Guid userId, double latitude, double longitude, double? accuracy = null);
 

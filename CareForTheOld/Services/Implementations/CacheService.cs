@@ -39,8 +39,9 @@ public class CacheService : ICacheService
     /// <summary>
     /// 带防击穿保护的获取或创建缓存
     /// 同一 key 的并发请求只触发一次重建，其余请求等待结果
+    /// factory 允许返回 null 表示无数据可缓存
     /// </summary>
-    public async Task<T?> GetOrCreateAsync<T>(string key, Func<Task<T>> factory, TimeSpan? expiration = null) where T : class
+    public async Task<T?> GetOrCreateAsync<T>(string key, Func<Task<T?>> factory, TimeSpan? expiration = null) where T : class
     {
         // 先尝试直接获取
         var cached = await GetAsync<T>(key);
