@@ -209,6 +209,28 @@ public class FamilyService : IFamilyService
             throw new UnauthorizedAccessException("您不是该家庭成员");
     }
 
+    /// <inheritdoc />
+    public async Task EnsureFamilyMemberAsync(Guid elderId, Guid operatorId)
+    {
+        // 老人本人可以操作
+        if (elderId == operatorId) return;
+
+        // 先查操作者所在家庭，再验证老人是否同家庭
+        var operatorFamilyId = await _context.FamilyMembers
+            .Where(fm => fm.UserId == operatorId)
+            .Select(fm => fm.FamilyId)
+            .FirstOrDefaultAsync();
+
+        if (operatorFamilyId == Guid.Empty)
+            throw new UnauthorizedAccessException("您不是该老人的家庭成员，无权操作");
+
+        var isInSameFamily = await _context.FamilyMembers
+            .AnyAsync(fm => fm.UserId == elderId && fm.FamilyId == operatorFamilyId);
+
+        if (!isInSameFamily)
+            throw new UnauthorizedAccessException("您不是该老人的家庭成员，无权操作");
+    }
+
     private async Task<FamilyResponse> GetFamilyResponse(Guid familyId)
     {
         var family = await _context.Families

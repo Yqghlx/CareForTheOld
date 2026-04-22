@@ -24,7 +24,7 @@ public class MedicationServiceTests
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
         _context = new AppDbContext(options);
-        _service = new MedicationService(_context);
+        _service = new MedicationService(_context, new FamilyService(_context));
     }
 
     /// <summary>

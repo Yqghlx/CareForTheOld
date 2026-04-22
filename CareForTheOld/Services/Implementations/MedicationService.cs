@@ -15,8 +15,13 @@ namespace CareForTheOld.Services.Implementations;
 public class MedicationService : IMedicationService
 {
     private readonly AppDbContext _context;
+    private readonly IFamilyService _familyService;
 
-    public MedicationService(AppDbContext context) => _context = context;
+    public MedicationService(AppDbContext context, IFamilyService familyService)
+    {
+        _context = context;
+        _familyService = familyService;
+    }
 
     public async Task<MedicationPlanResponse> CreatePlanAsync(Guid operatorId, CreateMedicationPlanRequest request)
     {
@@ -25,7 +30,7 @@ public class MedicationService : IMedicationService
             ?? throw new KeyNotFoundException("老人用户不存在");
 
         // 验证操作者权限（必须是老人的家庭成员）
-        await EnsureFamilyMemberAsync(request.ElderId, operatorId);
+        await _familyService.EnsureFamilyMemberAsync(request.ElderId, operatorId);
 
         // 验证时间格式
         ValidateReminderTimes(request.ReminderTimes);
@@ -56,7 +61,7 @@ public class MedicationService : IMedicationService
         // 如果提供了 operatorId，验证是否为家庭成员
         if (operatorId.HasValue)
         {
-            await EnsureFamilyMemberAsync(elderId, operatorId.Value);
+            await _familyService.EnsureFamilyMemberAsync(elderId, operatorId.Value);
         }
 
         return await _context.MedicationPlans
@@ -76,7 +81,7 @@ public class MedicationService : IMedicationService
             ?? throw new KeyNotFoundException("用药计划不存在");
 
         // 验证操作者权限
-        await EnsureFamilyMemberAsync(plan.ElderId, operatorId);
+        await _familyService.EnsureFamilyMemberAsync(plan.ElderId, operatorId);
 
         if (request.MedicineName is not null) plan.MedicineName = request.MedicineName;
         if (request.Dosage is not null) plan.Dosage = request.Dosage;
@@ -99,7 +104,7 @@ public class MedicationService : IMedicationService
         var plan = await _context.MedicationPlans.FindAsync(planId)
             ?? throw new KeyNotFoundException("用药计划不存在");
 
-        await EnsureFamilyMemberAsync(plan.ElderId, operatorId);
+        await _familyService.EnsureFamilyMemberAsync(plan.ElderId, operatorId);
 
         // 软删除：标记为已删除，保留数据
         plan.IsDeleted = true;
@@ -115,7 +120,7 @@ public class MedicationService : IMedicationService
             .FirstOrDefaultAsync(p => p.Id == request.PlanId)
             ?? throw new KeyNotFoundException("用药计划不存在");
 
-        await EnsureFamilyMemberAsync(plan.ElderId, operatorId);
+        await _familyService.EnsureFamilyMemberAsync(plan.ElderId, operatorId);
 
         // 检查是否已有该时间点的日志
         var existingLog = await _context.MedicationLogs
@@ -153,7 +158,7 @@ public class MedicationService : IMedicationService
         // 如果提供了 operatorId，验证是否为家庭成员
         if (operatorId.HasValue)
         {
-            await EnsureFamilyMemberAsync(elderId, operatorId.Value);
+            await _familyService.EnsureFamilyMemberAsync(elderId, operatorId.Value);
         }
 
         var query = _context.MedicationLogs
@@ -245,30 +250,6 @@ public class MedicationService : IMedicationService
         }
 
         return pendingLogs.OrderBy(l => l.ScheduledAt).ToList();
-    }
-
-    /// <summary>
-    /// 验证操作者是老人的家庭成员（拆分子查询为两次独立查询，提升性能）
-    /// </summary>
-    private async Task EnsureFamilyMemberAsync(Guid elderId, Guid operatorId)
-    {
-        // 老人本人可以操作
-        if (elderId == operatorId) return;
-
-        // 先查操作者所在家庭，再验证老人是否同家庭
-        var operatorFamilyId = await _context.FamilyMembers
-            .Where(fm => fm.UserId == operatorId)
-            .Select(fm => fm.FamilyId)
-            .FirstOrDefaultAsync();
-
-        if (operatorFamilyId == Guid.Empty)
-            throw new UnauthorizedAccessException("您不是该老人的家庭成员，无权操作");
-
-        var isInSameFamily = await _context.FamilyMembers
-            .AnyAsync(fm => fm.UserId == elderId && fm.FamilyId == operatorFamilyId);
-
-        if (!isInSameFamily)
-            throw new UnauthorizedAccessException("您不是该老人的家庭成员，无权操作");
     }
 
     /// <summary>
