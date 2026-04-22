@@ -164,8 +164,8 @@ public class LocationServiceTests
 
         // 验证：通知服务被调用以发送预警
         _mockNotificationService.Verify(
-            n => n.SendToUserAsync(
-                child.Id,
+            n => n.SendToUsersAsync(
+                It.IsAny<IEnumerable<Guid>>(),
                 "GeoFenceAlert",
                 It.IsAny<object>()),
             Times.AtLeastOnce);
@@ -190,7 +190,7 @@ public class LocationServiceTests
 
         // 验证：通知服务未被调用
         _mockNotificationService.Verify(
-            n => n.SendToUserAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<object>()),
+            n => n.SendToUsersAsync(It.IsAny<IEnumerable<Guid>>(), It.IsAny<string>(), It.IsAny<object>()),
             Times.Never);
     }
 
@@ -315,8 +315,8 @@ public class LocationServiceTests
 
         // 验证：通知包含 Critical 级别（距离 > 半径 * 2）
         _mockNotificationService.Verify(
-            n => n.SendToUserAsync(
-                child.Id,
+            n => n.SendToUsersAsync(
+                It.IsAny<IEnumerable<Guid>>(),
                 "GeoFenceAlert",
                 It.IsAny<object>()),
             Times.Once);
@@ -349,8 +349,8 @@ public class LocationServiceTests
 
         // 验证：通知包含 Warning 级别（距离 <= 半径 * 2）
         _mockNotificationService.Verify(
-            n => n.SendToUserAsync(
-                child.Id,
+            n => n.SendToUsersAsync(
+                It.IsAny<IEnumerable<Guid>>(),
                 "GeoFenceAlert",
                 It.IsAny<object>()),
             Times.Once);

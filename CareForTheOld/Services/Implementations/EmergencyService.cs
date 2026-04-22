@@ -129,10 +129,10 @@ public class EmergencyService : IEmergencyService
             .Where(fm => fm.FamilyId == familyMember.FamilyId && fm.Role == UserRole.Child)
             .ToListAsync();
 
-        foreach (var child in children)
+        if (children.Count > 0)
         {
-            await _notificationService.SendToUserAsync(
-                child.UserId,
+            await _notificationService.SendToUsersAsync(
+                children.Select(c => c.UserId),
                 isReminder ? "EmergencyCallReminder" : "EmergencyCall",
                 new
                 {

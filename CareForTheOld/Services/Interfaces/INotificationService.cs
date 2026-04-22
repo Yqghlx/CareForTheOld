@@ -13,6 +13,11 @@ public interface INotificationService
     Task SendToUserAsync(Guid userId, string type, object data);
 
     /// <summary>
+    /// 批量向多个用户发送同一类型通知（一次数据库写入，避免循环中的 N+1 问题）
+    /// </summary>
+    Task SendToUsersAsync(IEnumerable<Guid> userIds, string type, object data);
+
+    /// <summary>
     /// 向家庭成员发送通知
     /// </summary>
     Task SendToFamilyAsync(Guid familyId, string type, object data);

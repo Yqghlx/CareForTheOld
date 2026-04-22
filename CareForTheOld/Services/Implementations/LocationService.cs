@@ -196,10 +196,10 @@ public class LocationService : ILocationService
             ? $"{(distance / 1000):.1}公里"
             : $"{(int)distance}米";
 
-        foreach (var child in children)
+        if (children.Count > 0)
         {
-            await _notificationService.SendToUserAsync(
-                child.UserId,
+            await _notificationService.SendToUsersAsync(
+                children.Select(c => c.UserId),
                 "GeoFenceAlert",
                 new
                 {
