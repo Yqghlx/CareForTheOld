@@ -472,7 +472,9 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
           ),
         ],
       ),
-    );
+    ).then((_) {
+      nameController.dispose();
+    });
   }
 
   /// 加入家庭对话框（老人端）
@@ -577,7 +579,9 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
           },
         );
       },
-    );
+    ).then((_) {
+      codeController.dispose();
+    });
   }
 
   /// 添加成员对话框（子女端）
@@ -713,7 +717,9 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
           },
         );
       },
-    );
+    ).then((_) {
+      phoneController.dispose();
+    });
   }
 
   /// 确认移除成员

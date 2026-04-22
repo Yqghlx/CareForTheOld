@@ -640,7 +640,14 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
           },
         );
       },
-    );
+    ).then((_) {
+      // 对话框关闭后释放控制器，防止内存泄漏
+      nameCtl.dispose();
+      dosageCtl.dispose();
+      for (final c in timeControllers) {
+        c.dispose();
+      }
+    });
   }
 }
 

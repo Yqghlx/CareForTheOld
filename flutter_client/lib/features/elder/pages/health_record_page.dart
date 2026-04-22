@@ -844,8 +844,11 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
         );
       },
     ).then((_) {
-      // 对话框关闭时释放语音资源
+      // 对话框关闭时释放语音资源和控制器，防止内存泄漏
       voiceService.dispose();
+      valueController.dispose();
+      valueController2.dispose();
+      noteController.dispose();
     });
   }
 
