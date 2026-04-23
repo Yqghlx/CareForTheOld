@@ -2,7 +2,9 @@ using CareForTheOld.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Net.Http.Json;
 using FluentAssertions;
 using System.Text.Json;
@@ -24,6 +26,18 @@ public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
             builder.UseEnvironment("Testing");
             builder.ConfigureServices(services =>
             {
+                // 注入 JWT 配置，确保 Token 签发和验证使用同一密钥
+                // Testing 环境的 Program.cs 会使用默认密钥，此处同步 ConfigurationKeyProvider 的配置
+                var config = new ConfigurationBuilder()
+                    .AddInMemoryCollection(new Dictionary<string, string?>
+                    {
+                        ["Jwt:Key"] = "CareForTheOld_DevSecretKey_2026_MustBe32Chars!",
+                        ["Jwt:Issuer"] = "CareForTheOld",
+                        ["Jwt:Audience"] = "CareForTheOld",
+                    })
+                    .Build();
+                services.AddSingleton<IConfiguration>(config);
+
                 // 注册 InMemory 数据库（AddDatabaseServices 在 Testing 环境已跳过）
                 services.AddDbContext<AppDbContext>(options =>
                     options.UseInMemoryDatabase($"TestDb_{Guid.NewGuid()}"));
