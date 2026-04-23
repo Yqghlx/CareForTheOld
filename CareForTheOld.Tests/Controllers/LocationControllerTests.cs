@@ -158,9 +158,13 @@ public class LocationControllerTests
         var familyId = Guid.NewGuid();
         var elderId = Guid.NewGuid();
 
+        // Mock 返回家庭成员列表（包含当前用户和被查询的老人）
         _mockFamilyService
             .Setup(s => s.GetMembersAsync(familyId))
-            .ReturnsAsync([new FamilyMemberResponse { UserId = _childId }]);
+            .ReturnsAsync([
+                new FamilyMemberResponse { UserId = _childId },
+                new FamilyMemberResponse { UserId = elderId }
+            ]);
 
         var expected = new LocationRecordResponse
         {
