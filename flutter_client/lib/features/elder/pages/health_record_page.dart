@@ -587,6 +587,16 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                             );
                           }
                         }
+                      } on OcrException catch (e) {
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(e.message),
+                              backgroundColor: AppTheme.errorColor,
+                              duration: const Duration(seconds: 3),
+                            ),
+                          );
+                        }
                       } catch (e) {
                         if (mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(

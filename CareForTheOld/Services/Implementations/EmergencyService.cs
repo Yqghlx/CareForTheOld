@@ -19,16 +19,21 @@ public class EmergencyService : IEmergencyService
     private readonly ISmsService _smsService;
     private readonly ILogger<EmergencyService> _logger;
 
+    /// <summary>二次提醒延迟时间（默认 3 分钟）</summary>
+    private readonly int _followUpDelayMinutes;
+
     public EmergencyService(
         AppDbContext context,
         INotificationService notificationService,
         ISmsService smsService,
-        ILogger<EmergencyService> logger)
+        ILogger<EmergencyService> logger,
+        IConfiguration? configuration = null)
     {
         _context = context;
         _notificationService = notificationService;
         _smsService = smsService;
         _logger = logger;
+        _followUpDelayMinutes = configuration?.GetValue("Emergency:FollowUpDelayMinutes", 3) ?? 3;
     }
 
     /// <summary>
@@ -73,10 +78,10 @@ public class EmergencyService : IEmergencyService
             }
         });
 
-        // 安排 3 分钟后的二次提醒检查（如果无人响应则再次通知）
+        // 安排二次提醒检查（如果无人响应则再次通知）
         BackgroundJob.Schedule<EmergencyService>(
             svc => svc.CheckAndSendFollowUpAsync(call.Id),
-            TimeSpan.FromMinutes(3));
+            TimeSpan.FromMinutes(_followUpDelayMinutes));
 
         // 返回响应
         return new EmergencyCallResponse
