@@ -21,6 +21,7 @@ public class EmergencyServiceTests
     private readonly AppDbContext _context;
     private readonly EmergencyService _service;
     private readonly Mock<INotificationService> _mockNotificationService;
+    private readonly Mock<ISmsService> _mockSmsService;
 
     /// <summary>
     /// 初始化 Hangfire InMemory storage（测试环境需要）
@@ -36,8 +37,13 @@ public class EmergencyServiceTests
             .Options;
         _context = new AppDbContext(options);
         _mockNotificationService = new Mock<INotificationService>();
+        _mockSmsService = new Mock<ISmsService>();
+        // 设置 SMS 服务模拟返回成功
+        _mockSmsService.Setup(s => s.SendAsync(It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync((true, null));
+        _mockSmsService.SetupGet(s => s.ServiceName).Returns("MockSms");
         var mockLogger = new Mock<ILogger<EmergencyService>>();
-        _service = new EmergencyService(_context, _mockNotificationService.Object, mockLogger.Object);
+        _service = new EmergencyService(_context, _mockNotificationService.Object, _mockSmsService.Object, mockLogger.Object);
     }
 
     /// <summary>

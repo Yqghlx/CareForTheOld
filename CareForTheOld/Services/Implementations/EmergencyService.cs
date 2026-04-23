@@ -16,15 +16,18 @@ public class EmergencyService : IEmergencyService
 {
     private readonly AppDbContext _context;
     private readonly INotificationService _notificationService;
+    private readonly ISmsService _smsService;
     private readonly ILogger<EmergencyService> _logger;
 
     public EmergencyService(
         AppDbContext context,
         INotificationService notificationService,
+        ISmsService smsService,
         ILogger<EmergencyService> logger)
     {
         _context = context;
         _notificationService = notificationService;
+        _smsService = smsService;
         _logger = logger;
     }
 
@@ -115,7 +118,7 @@ public class EmergencyService : IEmergencyService
     }
 
     /// <summary>
-    /// 发送紧急呼叫通知给子女
+    /// 发送紧急呼叫通知给子女（SignalR + SMS 多通道）
     /// </summary>
     private async Task SendEmergencyNotificationAsync(Guid elderId, string elderName, Guid callId, bool isReminder = false)
     {
@@ -131,6 +134,7 @@ public class EmergencyService : IEmergencyService
 
         if (children.Count > 0)
         {
+            // SignalR 推送通知
             await _notificationService.SendToUsersAsync(
                 children.Select(c => c.UserId),
                 isReminder ? "EmergencyCallReminder" : "EmergencyCall",
@@ -146,6 +150,65 @@ public class EmergencyService : IEmergencyService
                     IsReminder = isReminder,
                 }
             );
+
+            // SMS 多通道告警（异步发送，不阻塞主流程）
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await SendSmsAlertToChildrenAsync(children, elderName, callId, isReminder);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "紧急呼叫 SMS 告警发送失败，呼叫 {CallId}", callId);
+                }
+            });
+        }
+    }
+
+    /// <summary>
+    /// 发送 SMS 告警给子女（多通道告警）
+    /// </summary>
+    private async Task SendSmsAlertToChildrenAsync(
+        List<FamilyMember> children,
+        string elderName,
+        Guid callId,
+        bool isReminder)
+    {
+        foreach (var child in children)
+        {
+            var content = isReminder
+                ? $"【紧急提醒】{elderName}的紧急呼叫已超过3分钟未响应，请尽快处理！"
+                : $"【紧急呼叫】{elderName}发起了紧急呼叫，请立即查看并处理！";
+
+            var (success, errorMessage) = await _smsService.SendAsync(child.User.PhoneNumber, content);
+
+            // 记录短信发送结果
+            var smsRecord = new SmsRecord
+            {
+                Id = Guid.NewGuid(),
+                PhoneNumber = child.User.PhoneNumber,
+                Content = content,
+                ServiceName = _smsService.ServiceName,
+                Success = success,
+                ErrorMessage = errorMessage,
+                RelatedEmergencyCallId = callId,
+                CreatedAt = DateTime.UtcNow,
+            };
+
+            _context.SmsRecords.Add(smsRecord);
+            await _context.SaveChangesAsync();
+
+            if (success)
+            {
+                _logger.LogInformation("紧急呼叫 SMS 已发送: 呼叫={CallId}, 子女={ChildId}, 服务={Service}",
+                    callId, child.UserId, _smsService.ServiceName);
+            }
+            else
+            {
+                _logger.LogWarning("紧急呼叫 SMS 发送失败: 呼叫={CallId}, 子女={ChildId}, 错误={Error}",
+                    callId, child.UserId, errorMessage);
+            }
         }
     }
 

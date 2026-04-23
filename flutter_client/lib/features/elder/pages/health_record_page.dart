@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../shared/models/health_record.dart';
 import '../../../shared/models/health_stats.dart';
@@ -13,6 +15,7 @@ import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/api/api_client.dart';
+import '../../../core/services/ocr_parser_service.dart';
 
 /// 健康记录页面
 class HealthRecordPage extends ConsumerStatefulWidget {
@@ -500,6 +503,10 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
     double soundLevel = 0;
     bool isSubmitting = false;
 
+    // OCR 相关状态
+    final ocrService = OcrParserService();
+    final imagePicker = ImagePicker();
+
     showDialog(
       context: context,
       builder: (ctx) {
@@ -522,6 +529,84 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                   ),
                   const SizedBox(width: 12),
                   Text('记录${type.label}'),
+                  const Spacer(),
+                  // OCR 拍照识别按钮
+                  IconButton(
+                    onPressed: () async {
+                      final image = await imagePicker.pickImage(
+                        source: ImageSource.camera,
+                        maxWidth: 1024,
+                        maxHeight: 1024,
+                        imageQuality: 85,
+                      );
+                      if (image == null) return;
+
+                      try {
+                        final result = await ocrService.parseHealthData(File(image.path));
+
+                        if (result.hasAnyData()) {
+                          // 根据健康类型填充对应的识别结果
+                          if (type == HealthType.bloodPressure) {
+                            if (result.systolic != null) {
+                              valueController.text = result.systolic.toString();
+                            }
+                            if (result.diastolic != null) {
+                              valueController2.text = result.diastolic.toString();
+                            }
+                          } else if (type == HealthType.bloodSugar) {
+                            if (result.bloodSugar != null) {
+                              valueController.text = result.bloodSugar!.toStringAsFixed(1);
+                            }
+                          } else if (type == HealthType.heartRate) {
+                            if (result.heartRate != null) {
+                              valueController.text = result.heartRate.toString();
+                            }
+                          } else if (type == HealthType.temperature) {
+                            if (result.temperature != null) {
+                              valueController.text = result.temperature!.toStringAsFixed(1);
+                            }
+                          }
+
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('识别成功，已自动填充${type.label}数值'),
+                                backgroundColor: AppTheme.successColor,
+                                duration: const Duration(seconds: 2),
+                              ),
+                            );
+                          }
+                        } else {
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('未能识别到有效数值，请手动输入'),
+                                backgroundColor: AppTheme.warningColor,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          }
+                        }
+                      } catch (e) {
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('识别失败: $e'),
+                              backgroundColor: AppTheme.errorColor,
+                            ),
+                          );
+                        }
+                      }
+                    },
+                    icon: Icon(Icons.camera_alt, color: type.color),
+                    tooltip: '拍照识别',
+                    style: IconButton.styleFrom(
+                      backgroundColor: type.color.withValues(alpha: 0.1),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
                 ],
               ),
               content: SingleChildScrollView(
@@ -844,8 +929,9 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
         );
       },
     ).then((_) {
-      // 对话框关闭时释放语音资源和控制器，防止内存泄漏
+      // 对话框关闭时释放语音资源和 OCR 资源，防止内存泄漏
       voiceService.dispose();
+      ocrService.dispose();
       valueController.dispose();
       valueController2.dispose();
       noteController.dispose();

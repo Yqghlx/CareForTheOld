@@ -124,7 +124,11 @@ public class ConcurrencyTests
     public async Task EmergencyCall_ShouldHandleConcurrentCreation()
     {
         var context = CreateContext();
-        var service = new EmergencyService(context, new Mock<INotificationService>().Object, new Mock<ILogger<EmergencyService>>().Object);
+        var mockSmsService = new Mock<ISmsService>();
+        mockSmsService.Setup(s => s.SendAsync(It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync((true, null));
+        mockSmsService.SetupGet(s => s.ServiceName).Returns("MockSms");
+        var service = new EmergencyService(context, new Mock<INotificationService>().Object, mockSmsService.Object, new Mock<ILogger<EmergencyService>>().Object);
 
         var elderId = Guid.NewGuid();
         var familyId = Guid.NewGuid();

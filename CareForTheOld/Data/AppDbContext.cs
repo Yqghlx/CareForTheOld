@@ -19,6 +19,7 @@ public class AppDbContext : DbContext
     public DbSet<NotificationRecord> NotificationRecords => Set<NotificationRecord>();
     public DbSet<NotificationOutbox> NotificationOutboxes => Set<NotificationOutbox>();
     public DbSet<GeoFence> GeoFences => Set<GeoFence>();
+    public DbSet<SmsRecord> SmsRecords => Set<SmsRecord>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
