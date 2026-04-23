@@ -24,6 +24,9 @@ public class TrendAnomalyDetectionResponse
 
     /// <summary>最近7天统计摘要</summary>
     public RecentStatsSummary RecentStats { get; set; } = new();
+
+    /// <summary>正向激励反馈（数据平稳时生成积极鼓励信息）</summary>
+    public PositiveFeedback? PositiveFeedback { get; set; }
 }
 
 /// <summary>
@@ -78,6 +81,9 @@ public class AnomalyEvent
 
     /// <summary>偏离百分比（如 +40%）</summary>
     public double? DeviationPercent { get; set; }
+
+    /// <summary>行动建议（如"建议今晚清淡饮食，若明早仍高请及时就医"）</summary>
+    public string? RecommendedAction { get; set; }
 }
 
 /// <summary>
@@ -126,4 +132,25 @@ public class RecentStatsSummary
 
     /// <summary>与基线对比的偏离百分比</summary>
     public double? BaselineDeviationPercent { get; set; }
+}
+
+/// <summary>
+/// 正向激励反馈（数据平稳时给予积极鼓励）
+///
+/// 产品设计意图：算法不应只找"坏数据"，当数据平稳时
+/// 应主动生成积极反馈，提升老人成就感和子女安心感。
+/// </summary>
+public class PositiveFeedback
+{
+    /// <summary>控制质量评价：极佳/良好/平稳</summary>
+    public string Quality { get; set; } = string.Empty;
+
+    /// <summary>鼓励信息（如"过去一周血压控制极佳"）</summary>
+    public string Message { get; set; } = string.Empty;
+
+    /// <summary>连续平稳天数</summary>
+    public int DaysStable { get; set; }
+
+    /// <summary>变异系数百分比（越小越稳定）</summary>
+    public double CoefficientOfVariation { get; set; }
 }

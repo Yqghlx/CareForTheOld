@@ -103,6 +103,8 @@ builder.Services.AddScoped<IGeoFenceService, GeoFenceService>();
 builder.Services.AddScoped<IHealthReportService, HealthReportService>();
 builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped<HealthAnomalyDetector>();
+builder.Services.Configure<AnomalyDetectionOptions>(
+    builder.Configuration.GetSection("AnomalyDetection"));
 
 // 注册文件存储服务：根据环境变量 OSS_ENABLED 选择实现
 var ossEnabled = Environment.GetEnvironmentVariable("OSS_ENABLED")?.ToLower() == "true";
