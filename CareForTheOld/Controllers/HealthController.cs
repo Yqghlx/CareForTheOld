@@ -5,6 +5,7 @@ using CareForTheOld.Models.DTOs.Requests.Health;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Interfaces;
+using CareForTheOld.Services.Implementations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -25,17 +26,20 @@ public class HealthController : ControllerBase
     private readonly IHealthQueryService _healthQueryService;
     private readonly IFamilyService _familyService;
     private readonly IHealthReportService _reportService;
+    private readonly HealthAnomalyDetector _anomalyDetector;
 
     public HealthController(
         IHealthService healthService,
         IHealthQueryService healthQueryService,
         IFamilyService familyService,
-        IHealthReportService reportService)
+        IHealthReportService reportService,
+        HealthAnomalyDetector anomalyDetector)
     {
         _healthService = healthService;
         _healthQueryService = healthQueryService;
         _familyService = familyService;
         _reportService = reportService;
+        _anomalyDetector = anomalyDetector;
     }
 
     /// <summary>
@@ -165,5 +169,96 @@ public class HealthController : ControllerBase
         var pdfBytes = await _reportService.GeneratePdfReportAsync(memberId, days);
         var fileName = $"健康报告_{DateTime.UtcNow:yyyyMMdd}.pdf";
         return File(pdfBytes, "application/pdf", fileName);
+    }
+
+    /// <summary>
+    /// 获取自己的健康趋势异常检测（老人查看）
+    /// </summary>
+    [HttpGet("me/anomaly-detection")]
+    public async Task<ApiResponse<TrendAnomalyDetectionResponse>> GetMyAnomalyDetection(
+        [FromQuery] HealthType? type)
+    {
+        var userId = this.GetUserId();
+
+        // 如果未指定类型，默认返回血压异常检测（最常见的关注点）
+        var healthType = type ?? HealthType.BloodPressure;
+
+        // 获取最近60天的健康记录用于异常检测
+        var records = await _healthService.GetUserRecordsAsync(userId, healthType, 0, 100);
+
+        if (records.Count < 5)
+        {
+            return ApiResponse<TrendAnomalyDetectionResponse>.Ok(
+                new TrendAnomalyDetectionResponse
+                {
+                    Type = healthType,
+                    TypeName = healthType.ToString(),
+                },
+                "健康记录数不足，无法进行异常检测");
+        }
+
+        // 转换为检测器需要的格式
+        var healthRecords = records
+            .Select(r => (RecordedAt: r.RecordedAt, Value: GetValueForType(r, healthType)))
+            .Where(r => r.Value > 0)
+            .ToList();
+
+        var result = _anomalyDetector.DetectAnomalies(healthRecords, healthType);
+        return ApiResponse<TrendAnomalyDetectionResponse>.Ok(result);
+    }
+
+    /// <summary>
+    /// 获取家庭成员的健康趋势异常检测（子女查看老人）
+    /// </summary>
+    [HttpGet("family/{familyId:guid}/member/{memberId:guid}/anomaly-detection")]
+    [Authorize(Roles = "Child")]
+    public async Task<ApiResponse<TrendAnomalyDetectionResponse>> GetFamilyMemberAnomalyDetection(
+        Guid familyId,
+        Guid memberId,
+        [FromQuery] HealthType? type)
+    {
+        var userId = this.GetUserId();
+
+        // 验证当前用户是否是该家庭成员
+        var members = await _familyService.GetMembersAsync(familyId);
+        if (!members.Any(m => m.UserId == userId))
+            return ApiResponse<TrendAnomalyDetectionResponse>.Fail("您不是该家庭成员");
+
+        var healthType = type ?? HealthType.BloodPressure;
+        var records = await _healthService.GetFamilyMemberRecordsAsync(familyId, memberId, healthType, 0, 100);
+
+        if (records.Count < 5)
+        {
+            return ApiResponse<TrendAnomalyDetectionResponse>.Ok(
+                new TrendAnomalyDetectionResponse
+                {
+                    Type = healthType,
+                    TypeName = healthType.ToString(),
+                },
+                "健康记录数不足，无法进行异常检测");
+        }
+
+        var healthRecords = records
+            .Select(r => (RecordedAt: r.RecordedAt, Value: GetValueForType(r, healthType)))
+            .Where(r => r.Value > 0)
+            .ToList();
+
+        var result = _anomalyDetector.DetectAnomalies(healthRecords, healthType);
+        return ApiResponse<TrendAnomalyDetectionResponse>.Ok(result);
+    }
+
+    /// <summary>
+    /// 根据健康类型提取对应的数值（转换为 double）
+    /// </summary>
+    private static double GetValueForType(HealthRecordResponse record, HealthType type)
+    {
+        return type switch
+        {
+            HealthType.BloodPressure => record.Systolic ?? 0,
+            HealthType.BloodSugar => (double)(record.BloodSugar ?? 0),
+            HealthType.HeartRate => record.HeartRate ?? 0,
+            HealthType.Temperature => (double)(record.Temperature ?? 0),
+            _ => 0,
+        };
     }
 }

@@ -4,9 +4,11 @@ using CareForTheOld.Models.DTOs.Requests.Health;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Interfaces;
+using CareForTheOld.Services.Implementations;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -22,6 +24,7 @@ public class HealthControllerTests
     private readonly Mock<IHealthQueryService> _mockQueryService;
     private readonly Mock<IFamilyService> _mockFamilyService;
     private readonly Mock<IHealthReportService> _mockReportService;
+    private readonly HealthAnomalyDetector _anomalyDetector;
     private readonly HealthController _controller;
     private readonly Guid _elderId = Guid.NewGuid();
     private readonly Guid _childId = Guid.NewGuid();
@@ -32,12 +35,14 @@ public class HealthControllerTests
         _mockQueryService = new Mock<IHealthQueryService>();
         _mockFamilyService = new Mock<IFamilyService>();
         _mockReportService = new Mock<IHealthReportService>();
+        _anomalyDetector = new HealthAnomalyDetector(new Mock<ILogger<HealthAnomalyDetector>>().Object);
 
         _controller = new HealthController(
             _mockHealthService.Object,
             _mockQueryService.Object,
             _mockFamilyService.Object,
-            _mockReportService.Object
+            _mockReportService.Object,
+            _anomalyDetector
         );
     }
 

@@ -102,6 +102,7 @@ builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IGeoFenceService, GeoFenceService>();
 builder.Services.AddScoped<IHealthReportService, HealthReportService>();
 builder.Services.AddScoped<ICacheService, CacheService>();
+builder.Services.AddScoped<HealthAnomalyDetector>();
 
 // 注册文件存储服务：根据环境变量 OSS_ENABLED 选择实现
 var ossEnabled = Environment.GetEnvironmentVariable("OSS_ENABLED")?.ToLower() == "true";
@@ -112,6 +113,17 @@ if (ossEnabled)
 else
 {
     builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
+}
+
+// 注册短信服务：根据配置 Sms:Provider 选择服务商（Aliyun 国内 / Twilio 国际）
+var smsProvider = builder.Configuration["Sms:Provider"]?.ToLower() ?? "aliyun";
+if (smsProvider == "twilio")
+{
+    builder.Services.AddScoped<ISmsService, TwilioSmsService>();
+}
+else
+{
+    builder.Services.AddScoped<ISmsService, AliyunSmsService>();
 }
 
 // 注册分布式缓存：优先使用 Redis，未配置时回退到内存缓存
