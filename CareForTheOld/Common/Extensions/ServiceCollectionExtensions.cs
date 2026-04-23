@@ -52,11 +52,18 @@ public static class ServiceCollectionExtensions
         using var scope = serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        // 迁移文件由 SQLite 提供商生成，其中 bool 列类型为 INTEGER，
-        // PostgreSQL 要求严格的 boolean 类型。使用 EnsureCreated() 让各提供商
-        // 根据模型自动生成正确的列类型，避免跨提供商类型不兼容问题。
-        // 待后续统一生成 PostgreSQL 专属迁移后可切换回 Migrate()
-        context.Database.EnsureCreated();
+        // 数据库初始化策略：
+        // - PostgreSQL（生产）：使用 Migrate()，支持增量迁移和版本管理
+        // - SQLite（开发）：使用 EnsureCreated()，避免迁移文件跨提供商类型不兼容
+        //   （SQLite 迁移中 bool 为 INTEGER，PostgreSQL 要求严格的 boolean 类型）
+        if (isPostgres)
+        {
+            context.Database.Migrate();
+        }
+        else
+        {
+            context.Database.EnsureCreated();
+        }
 
         return services;
     }
