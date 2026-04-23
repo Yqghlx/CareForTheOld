@@ -67,6 +67,9 @@ class AnomalyEvent {
   final double? baselineValue;
   final double? deviationPercent;
 
+  /// 行动建议（如"建议今晚清淡饮食，若明早仍高请及时就医"）
+  final String? recommendedAction;
+
   const AnomalyEvent({
     required this.detectedAt,
     required this.type,
@@ -75,6 +78,7 @@ class AnomalyEvent {
     this.anomalyValue,
     this.baselineValue,
     this.deviationPercent,
+    this.recommendedAction,
   });
 
   factory AnomalyEvent.fromJson(Map<String, dynamic> json) =>
@@ -115,6 +119,33 @@ class RecentStatsSummary {
   Map<String, dynamic> toJson() => _$RecentStatsSummaryToJson(this);
 }
 
+/// 正向激励反馈（数据平稳时给予积极鼓励）
+@JsonSerializable()
+class PositiveFeedback {
+  /// 控制质量评价：极佳/良好/平稳
+  final String quality;
+
+  /// 鼓励信息（如"过去一周血压控制极佳"）
+  final String message;
+
+  /// 连续平稳天数
+  final int daysStable;
+
+  /// 变异系数百分比（越小越稳定）
+  final double coefficientOfVariation;
+
+  const PositiveFeedback({
+    required this.quality,
+    required this.message,
+    required this.daysStable,
+    required this.coefficientOfVariation,
+  });
+
+  factory PositiveFeedback.fromJson(Map<String, dynamic> json) =>
+      _$PositiveFeedbackFromJson(json);
+  Map<String, dynamic> toJson() => _$PositiveFeedbackToJson(this);
+}
+
 /// 异常检测响应
 @JsonSerializable()
 class TrendAnomalyDetectionResponse {
@@ -124,12 +155,16 @@ class TrendAnomalyDetectionResponse {
   final List<AnomalyEvent> anomalies;
   final RecentStatsSummary recentStats;
 
+  /// 正向激励反馈（数据平稳时生成积极鼓励信息）
+  final PositiveFeedback? positiveFeedback;
+
   const TrendAnomalyDetectionResponse({
     required this.type,
     required this.typeName,
     required this.baseline,
     this.anomalies = const [],
     required this.recentStats,
+    this.positiveFeedback,
   });
 
   factory TrendAnomalyDetectionResponse.fromJson(Map<String, dynamic> json) =>

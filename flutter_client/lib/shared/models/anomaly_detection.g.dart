@@ -36,6 +36,7 @@ AnomalyEvent _$AnomalyEventFromJson(Map<String, dynamic> json) => AnomalyEvent(
       anomalyValue: (json['anomalyValue'] as num?)?.toDouble(),
       baselineValue: (json['baselineValue'] as num?)?.toDouble(),
       deviationPercent: (json['deviationPercent'] as num?)?.toDouble(),
+      recommendedAction: json['recommendedAction'] as String?,
     );
 
 Map<String, dynamic> _$AnomalyEventToJson(AnomalyEvent instance) =>
@@ -47,6 +48,7 @@ Map<String, dynamic> _$AnomalyEventToJson(AnomalyEvent instance) =>
       'anomalyValue': instance.anomalyValue,
       'baselineValue': instance.baselineValue,
       'deviationPercent': instance.deviationPercent,
+      'recommendedAction': instance.recommendedAction,
     };
 
 const _$AnomalyTypeEnumMap = {
@@ -80,6 +82,23 @@ Map<String, dynamic> _$RecentStatsSummaryToJson(RecentStatsSummary instance) =>
       'baselineDeviationPercent': instance.baselineDeviationPercent,
     };
 
+PositiveFeedback _$PositiveFeedbackFromJson(Map<String, dynamic> json) =>
+    PositiveFeedback(
+      quality: json['quality'] as String,
+      message: json['message'] as String,
+      daysStable: (json['daysStable'] as num).toInt(),
+      coefficientOfVariation:
+          (json['coefficientOfVariation'] as num).toDouble(),
+    );
+
+Map<String, dynamic> _$PositiveFeedbackToJson(PositiveFeedback instance) =>
+    <String, dynamic>{
+      'quality': instance.quality,
+      'message': instance.message,
+      'daysStable': instance.daysStable,
+      'coefficientOfVariation': instance.coefficientOfVariation,
+    };
+
 TrendAnomalyDetectionResponse _$TrendAnomalyDetectionResponseFromJson(
         Map<String, dynamic> json) =>
     TrendAnomalyDetectionResponse(
@@ -93,6 +112,10 @@ TrendAnomalyDetectionResponse _$TrendAnomalyDetectionResponseFromJson(
           const [],
       recentStats: RecentStatsSummary.fromJson(
           json['recentStats'] as Map<String, dynamic>),
+      positiveFeedback: json['positiveFeedback'] == null
+          ? null
+          : PositiveFeedback.fromJson(
+              json['positiveFeedback'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$TrendAnomalyDetectionResponseToJson(
@@ -103,4 +126,5 @@ Map<String, dynamic> _$TrendAnomalyDetectionResponseToJson(
       'baseline': instance.baseline,
       'anomalies': instance.anomalies,
       'recentStats': instance.recentStats,
+      'positiveFeedback': instance.positiveFeedback,
     };

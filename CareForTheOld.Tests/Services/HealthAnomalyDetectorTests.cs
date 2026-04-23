@@ -428,4 +428,179 @@ public class HealthAnomalyDetectorTests
     }
 
     #endregion
+
+    #region RecommendedAction 行动建议
+
+    [Fact]
+    public void DetectAnomalies_SpikeAnomaly_HasRecommendedAction()
+    {
+        // Arrange：构造血压峰值
+        var records = GenerateRecords(30, 120, spikeOnDay: 5, spikeValue: 200);
+
+        // Act
+        var result = _detector.DetectAnomalies(records, HealthType.BloodPressure);
+
+        // Assert：异常事件应有行动建议
+        var spike = result.Anomalies.FirstOrDefault(a => a.Type == AnomalyType.Spike);
+        Assert.NotNull(spike);
+        Assert.False(string.IsNullOrEmpty(spike.RecommendedAction));
+        Assert.Contains("建议", spike.RecommendedAction);
+    }
+
+    [Fact]
+    public void DetectAnomalies_ContinuousHigh_HasRecommendedAction()
+    {
+        // Arrange：构造持续偏高的血糖
+        var records = new List<(DateTime, double)>();
+        for (int i = 30; i >= 4; i--)
+        {
+            records.Add((DateTime.UtcNow.AddDays(-i), 5.5));
+        }
+        for (int i = 3; i >= 1; i--)
+        {
+            records.Add((DateTime.UtcNow.AddDays(-i), 8.0)); // 持续偏高 >20%
+        }
+
+        // Act
+        var result = _detector.DetectAnomalies(records, HealthType.BloodSugar);
+
+        // Assert
+        var continuous = result.Anomalies.FirstOrDefault(a => a.Type == AnomalyType.ContinuousHigh);
+        Assert.NotNull(continuous);
+        Assert.False(string.IsNullOrEmpty(continuous.RecommendedAction));
+        Assert.Contains("碳水", continuous.RecommendedAction); // 血糖相关建议
+    }
+
+    [Fact]
+    public void DetectAnomalies_BloodSugarSpike_RecommendsRetest()
+    {
+        // Arrange：血糖突增
+        var records = GenerateRecords(30, 5.5, spikeOnDay: 3, spikeValue: 12.0);
+
+        // Act
+        var result = _detector.DetectAnomalies(records, HealthType.BloodSugar);
+
+        // Assert：血糖峰值建议应提到复测
+        var spike = result.Anomalies.FirstOrDefault(a => a.Type == AnomalyType.Spike);
+        Assert.NotNull(spike);
+        Assert.Contains("复测", spike.RecommendedAction);
+    }
+
+    #endregion
+
+    #region 正向激励（Positive Reinforcement）
+
+    [Fact]
+    public void DetectAnomalies_StableData_GeneratesPositiveFeedback()
+    {
+        // Arrange：40 天稳定数据（确保覆盖基线+近期窗口边界）
+        var records = GenerateRecords(40, 120);
+
+        // Act
+        var result = _detector.DetectAnomalies(records, HealthType.BloodPressure);
+
+        // Assert：无异常时应有正向激励
+        Assert.Empty(result.Anomalies);
+        Assert.NotNull(result.PositiveFeedback);
+        Assert.False(string.IsNullOrEmpty(result.PositiveFeedback.Message));
+        Assert.True(result.PositiveFeedback.DaysStable > 0);
+    }
+
+    [Fact]
+    public void DetectAnomalies_StableData_PositiveFeedbackContainsEncouragement()
+    {
+        // Arrange：40 天稳定数据
+        var records = GenerateRecords(40, 75);
+
+        // Act
+        var result = _detector.DetectAnomalies(records, HealthType.HeartRate);
+
+        // Assert：正向信息应包含鼓励性文字
+        Assert.NotNull(result.PositiveFeedback);
+        Assert.Contains("心率", result.PositiveFeedback.Message);
+    }
+
+    [Fact]
+    public void DetectAnomalies_WithAnomalies_NoPositiveFeedback()
+    {
+        // Arrange：有峰值异常
+        var records = GenerateRecords(30, 100, spikeOnDay: 5, spikeValue: 200);
+
+        // Act
+        var result = _detector.DetectAnomalies(records, HealthType.HeartRate);
+
+        // Assert：有异常时不生成正向激励
+        Assert.NotEmpty(result.Anomalies);
+        Assert.Null(result.PositiveFeedback);
+    }
+
+    [Fact]
+    public void DetectAnomalies_FewRecords_NoPositiveFeedback()
+    {
+        // Arrange：数据不足
+        var records = GenerateRecords(10, 100);
+
+        // Act
+        var result = _detector.DetectAnomalies(records, HealthType.HeartRate);
+
+        // Assert：数据不足不应有正向激励（也不应有异常）
+        Assert.Null(result.PositiveFeedback);
+    }
+
+    #endregion
+
+    #region 可配置阈值
+
+    [Fact]
+    public void DetectAnomalies_CustomThresholds_Respected()
+    {
+        // Arrange：使用自定义阈值（峰值阈值 50%，更宽松）
+        var options = new AnomalyDetectionOptions { SpikeThresholdPercent = 50 };
+        var logger = new Mock<ILogger<HealthAnomalyDetector>>();
+        var optionsWrapper = Microsoft.Extensions.Options.Options.Create(options);
+        var detector = new HealthAnomalyDetector(logger.Object, optionsWrapper);
+
+        // 构造 40% 偏差的数据（默认阈值 30% 会触发，50% 不会）
+        var records = GenerateRecords(30, 100, spikeOnDay: 5, spikeValue: 140);
+
+        // Act
+        var result = detector.DetectAnomalies(records, HealthType.HeartRate);
+
+        // Assert：50% 阈值下不应检测到 40% 的偏差
+        Assert.DoesNotContain(result.Anomalies, a => a.Type == AnomalyType.Spike);
+    }
+
+    #endregion
+
+    #region 时区感知
+
+    [Fact]
+    public void DetectAnomalies_WithTimezoneOffset_GroupsByLocalDate()
+    {
+        // Arrange：UTC+8 时区，构造跨 UTC 午夜的记录
+        var records = new List<(DateTime, double)>();
+        // 前 28 天正常
+        for (int i = 30; i >= 3; i--)
+        {
+            records.Add((DateTime.UtcNow.AddDays(-i), 100));
+        }
+
+        // 构造两条在 UTC 凌晨但在本地同一天的记录（UTC+8）
+        var utcDate1 = DateTime.UtcNow.AddDays(-2).Date.AddHours(18); // UTC 18:00 = 本地 02:00
+        var utcDate2 = DateTime.UtcNow.AddDays(-2).Date.AddHours(20); // UTC 20:00 = 本地 04:00
+
+        records.Add((utcDate1, 100));
+        records.Add((utcDate2, 100));
+
+        // Act：使用 UTC+8
+        var result = _detector.DetectAnomalies(records, HealthType.HeartRate, timezoneOffsetHours: 8);
+
+        // Assert：不应产生异常（两条记录在本地同一天，取平均后正常）
+        Assert.All(result.Anomalies, a =>
+        {
+            Assert.NotEqual(utcDate1.Date, a.DetectedAt.Date);
+        });
+    }
+
+    #endregion
 }
