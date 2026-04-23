@@ -51,4 +51,29 @@ class MedicationLog {
 
   /// 是否待服用（未记录状态）
   bool get isPending => status == MedicationStatus.missed && takenAt == null;
+
+  /// 复制并修改部分字段
+  MedicationLog copyWith({
+    String? id,
+    String? planId,
+    String? medicineName,
+    String? elderId,
+    String? elderName,
+    MedicationStatus? status,
+    DateTime? scheduledAt,
+    DateTime? takenAt,
+    String? note,
+  }) {
+    return MedicationLog(
+      id: id ?? this.id,
+      planId: planId ?? this.planId,
+      medicineName: medicineName ?? this.medicineName,
+      elderId: elderId ?? this.elderId,
+      elderName: elderName ?? this.elderName,
+      status: status ?? this.status,
+      scheduledAt: scheduledAt ?? this.scheduledAt,
+      takenAt: takenAt ?? this.takenAt,
+      note: note ?? this.note,
+    );
+  }
 }
