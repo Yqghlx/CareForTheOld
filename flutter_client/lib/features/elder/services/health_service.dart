@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import '../../../shared/models/health_record.dart';
 import '../../../shared/models/health_stats.dart';
+import '../../../shared/models/anomaly_detection.dart';
 
 /// 健康记录 API 服务类
 class HealthService {
@@ -88,5 +89,35 @@ class HealthService {
     );
     final List<dynamic> dataList = response.data['data'];
     return dataList.map((json) => HealthStats.fromJson(json)).toList();
+  }
+
+  /// 获取我的健康趋势异常检测
+  /// [type] 可选健康类型，默认为血压
+  Future<TrendAnomalyDetectionResponse> getMyAnomalyDetection({
+    HealthType? type,
+  }) async {
+    final queryParams = <String, dynamic>{};
+    if (type != null) queryParams['type'] = type.value;
+    final response = await _dio.get(
+      '/health/me/anomaly-detection',
+      queryParameters: queryParams,
+    );
+    return TrendAnomalyDetectionResponse.fromJson(response.data['data']);
+  }
+
+  /// 获取家庭成员的健康趋势异常检测（子女查看老人）
+  /// [type] 可选健康类型，默认为血压
+  Future<TrendAnomalyDetectionResponse> getFamilyMemberAnomalyDetection({
+    required String familyId,
+    required String memberId,
+    HealthType? type,
+  }) async {
+    final queryParams = <String, dynamic>{};
+    if (type != null) queryParams['type'] = type.value;
+    final response = await _dio.get(
+      '/health/family/$familyId/member/$memberId/anomaly-detection',
+      queryParameters: queryParams,
+    );
+    return TrendAnomalyDetectionResponse.fromJson(response.data['data']);
   }
 }
