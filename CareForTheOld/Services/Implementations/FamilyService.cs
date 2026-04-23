@@ -154,7 +154,7 @@ public class FamilyService : IFamilyService
     {
         await EnsureMemberAsync(familyId, operatorId);
 
-        var family = await _context.Families.FindAsync(familyId)
+        var family = await _context.Families.AsTracking().FirstOrDefaultAsync(f => f.Id == familyId)
             ?? throw new KeyNotFoundException("家庭组不存在");
 
         if (family.CreatorId != operatorId)

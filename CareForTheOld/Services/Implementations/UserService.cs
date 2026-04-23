@@ -20,7 +20,7 @@ public class UserService : IUserService
 
     public async Task<UserResponse> UpdateUserAsync(Guid userId, UpdateUserRequest request)
     {
-        var user = await _context.Users.FindAsync(userId)
+        var user = await _context.Users.AsTracking().FirstOrDefaultAsync(u => u.Id == userId)
             ?? throw new KeyNotFoundException("用户不存在");
 
         if (request.RealName is not null) user.RealName = request.RealName;
@@ -33,7 +33,7 @@ public class UserService : IUserService
 
     public async Task<bool> ChangePasswordAsync(Guid userId, ChangePasswordRequest request)
     {
-        var user = await _context.Users.FindAsync(userId)
+        var user = await _context.Users.AsTracking().FirstOrDefaultAsync(u => u.Id == userId)
             ?? throw new KeyNotFoundException("用户不存在");
 
         // 验证旧密码
@@ -55,7 +55,7 @@ public class UserService : IUserService
     /// </summary>
     public async Task UpdateAvatarUrlAsync(Guid userId, string avatarUrl)
     {
-        var user = await _context.Users.FindAsync(userId)
+        var user = await _context.Users.AsTracking().FirstOrDefaultAsync(u => u.Id == userId)
             ?? throw new KeyNotFoundException("用户不存在");
 
         user.AvatarUrl = avatarUrl;

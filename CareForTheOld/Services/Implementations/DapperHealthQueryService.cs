@@ -38,26 +38,27 @@ public class DapperHealthQueryService : IHealthQueryService
         var thirtyDaysAgo = now.AddDays(-30);
 
         // 按类型聚合统计（一次 SQL 查询完成所有计算）
+        // 使用 LIMIT 1 代替 TOP 1，兼容 SQLite 和 PostgreSQL
         const string sql = @"
             SELECT
                 Type,
                 COUNT(*) AS TotalCount,
                 MAX(RecordedAt) AS LatestRecordedAt,
-                (SELECT TOP 1 hr2.Systolic FROM HealthRecords hr2
+                (SELECT hr2.Systolic FROM HealthRecords hr2
                  WHERE hr2.UserId = @UserId AND hr2.Type = hr.Type AND hr2.IsDeleted = 0
-                 ORDER BY hr2.RecordedAt DESC) AS LatestSystolic,
-                (SELECT TOP 1 hr2.Diastolic FROM HealthRecords hr2
+                 ORDER BY hr2.RecordedAt DESC LIMIT 1) AS LatestSystolic,
+                (SELECT hr2.Diastolic FROM HealthRecords hr2
                  WHERE hr2.UserId = @UserId AND hr2.Type = hr.Type AND hr2.IsDeleted = 0
-                 ORDER BY hr2.RecordedAt DESC) AS LatestDiastolic,
-                (SELECT TOP 1 hr2.BloodSugar FROM HealthRecords hr2
+                 ORDER BY hr2.RecordedAt DESC LIMIT 1) AS LatestDiastolic,
+                (SELECT hr2.BloodSugar FROM HealthRecords hr2
                  WHERE hr2.UserId = @UserId AND hr2.Type = hr.Type AND hr2.IsDeleted = 0
-                 ORDER BY hr2.RecordedAt DESC) AS LatestBloodSugar,
-                (SELECT TOP 1 hr2.HeartRate FROM HealthRecords hr2
+                 ORDER BY hr2.RecordedAt DESC LIMIT 1) AS LatestBloodSugar,
+                (SELECT hr2.HeartRate FROM HealthRecords hr2
                  WHERE hr2.UserId = @UserId AND hr2.Type = hr.Type AND hr2.IsDeleted = 0
-                 ORDER BY hr2.RecordedAt DESC) AS LatestHeartRate,
-                (SELECT TOP 1 hr2.Temperature FROM HealthRecords hr2
+                 ORDER BY hr2.RecordedAt DESC LIMIT 1) AS LatestHeartRate,
+                (SELECT hr2.Temperature FROM HealthRecords hr2
                  WHERE hr2.UserId = @UserId AND hr2.Type = hr.Type AND hr2.IsDeleted = 0
-                 ORDER BY hr2.RecordedAt DESC) AS LatestTemperature,
+                 ORDER BY hr2.RecordedAt DESC LIMIT 1) AS LatestTemperature,
                 AVG(CASE WHEN hr.RecordedAt >= @SevenDaysAgo THEN CAST(hr.Systolic AS FLOAT) END) AS Avg7Systolic,
                 AVG(CASE WHEN hr.RecordedAt >= @SevenDaysAgo THEN CAST(hr.BloodSugar AS FLOAT) END) AS Avg7BloodSugar,
                 AVG(CASE WHEN hr.RecordedAt >= @SevenDaysAgo THEN CAST(hr.HeartRate AS FLOAT) END) AS Avg7HeartRate,
