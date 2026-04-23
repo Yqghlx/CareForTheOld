@@ -5,6 +5,7 @@ import '../../../shared/models/health_record.dart';
 import '../../../shared/models/health_stats.dart';
 import '../../../shared/models/medication_plan.dart';
 import '../../../shared/models/medication_log.dart';
+import '../../../shared/models/anomaly_detection.dart';
 import '../../elder/services/health_service.dart';
 import '../../elder/services/medication_service.dart';
 import '../../../core/api/api_client.dart';
@@ -46,6 +47,26 @@ final elderMedicationLogsProvider =
   return service.getElderLogs(args.elderId, limit: 10, date: args.date);
 });
 
+/// 老人健康异常检测 Provider（按 elderId + healthType 区分）
+final elderAnomalyDetectionProvider =
+    FutureProvider.family<TrendAnomalyDetectionResponse, ({String elderId, HealthType? type})>((ref, args) async {
+  final familyId = ref.watch(familyProvider).familyId;
+  if (familyId == null) {
+    return TrendAnomalyDetectionResponse(
+      type: 'BloodPressure',
+      typeName: '血压',
+      baseline: PersonalBaseline(),
+      recentStats: RecentStatsSummary(),
+    );
+  }
+  final service = HealthService(ref.read(apiClientProvider).dio);
+  return service.getFamilyMemberAnomalyDetection(
+    familyId: familyId,
+    memberId: args.elderId,
+    type: args.type,
+  );
+});
+
 /// 子女查看老人健康数据页面
 class ElderHealthPage extends ConsumerStatefulWidget {
   final String elderId;
@@ -75,6 +96,8 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         ref.watch(elderMedicationPlansProvider(widget.elderId));
     final logsAsync =
         ref.watch(elderMedicationLogsProvider((elderId: widget.elderId, date: _selectedLogDate)));
+    final anomalyAsync =
+        ref.watch(elderAnomalyDetectionProvider((elderId: widget.elderId, type: null)));
 
     return Scaffold(
       appBar: AppBar(
@@ -94,6 +117,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
           ref.invalidate(elderHealthRecordsProvider(widget.elderId));
           ref.invalidate(elderMedicationPlansProvider(widget.elderId));
           ref.invalidate(elderMedicationLogsProvider((elderId: widget.elderId, date: _selectedLogDate)));
+          ref.invalidate(elderAnomalyDetectionProvider((elderId: widget.elderId, type: null)));
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -112,6 +136,38 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text('加载统计失败: $e',
+                      style: const TextStyle(color: AppTheme.errorColor)),
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // AI 健康异常检测卡片
+              anomalyAsync.when(
+                data: (anomaly) => _buildAnomalyDetectionCard(anomaly, elderName),
+                loading: () => Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: const Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
+                        SizedBox(width: 12),
+                        Text('正在分析健康趋势...', style: TextStyle(color: Colors.grey)),
+                      ],
+                    ),
+                  ),
+                ),
+                error: (e, _) => Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppTheme.errorColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text('异常检测加载失败: $e',
                       style: const TextStyle(color: AppTheme.errorColor)),
                 ),
               ),
@@ -964,5 +1020,432 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         ),
       );
     }
+  }
+
+  /// 构建 AI 健康异常检测卡片
+  Widget _buildAnomalyDetectionCard(TrendAnomalyDetectionResponse anomaly, String elderName) {
+    // 判断是否有异常
+    final hasAnomalies = anomaly.hasAnomalies();
+    final maxSeverity = anomaly.maxSeverity();
+
+    // 根据严重度选择颜色
+    Color severityColor;
+    String severityText;
+    IconData severityIcon;
+    if (!hasAnomalies) {
+      severityColor = Colors.green;
+      severityText = '健康状态良好';
+      severityIcon = Icons.check_circle;
+    } else if (maxSeverity < 33) {
+      severityColor = Colors.orange.shade600;
+      severityText = '轻度关注';
+      severityIcon = Icons.info_outline;
+    } else if (maxSeverity < 66) {
+      severityColor = Colors.orange.shade800;
+      severityText = '需要关注';
+      severityIcon = Icons.warning_amber;
+    } else {
+      severityColor = Colors.red.shade700;
+      severityText = '需要重视';
+      severityIcon = Icons.error_outline;
+    }
+
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: hasAnomalies && maxSeverity >= 66
+            ? BorderSide(color: severityColor.withValues(alpha: 0.5), width: 2)
+            : BorderSide.none,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 标题行
+            Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: severityColor.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(severityIcon, color: severityColor, size: 26),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Text(
+                            'AI 健康趋势分析',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: severityColor.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              severityText,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: severityColor,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        '基于 ${anomaly.baseline.baselineDays} 天数据分析',
+                        style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+                      ),
+                    ],
+                  ),
+                ),
+                // 查看详情按钮
+                IconButton(
+                  icon: const Icon(Icons.arrow_forward_ios, size: 18),
+                  onPressed: () => _showAnomalyDetailDialog(anomaly, elderName),
+                  tooltip: '查看详情',
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+
+            // 个人基线对比
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade50,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.person_outline, size: 18, color: Colors.grey.shade700),
+                      const SizedBox(width: 8),
+                      Text(
+                        '个人基线',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  _buildBaselineRow(anomaly),
+                ],
+              ),
+            ),
+
+            // 异常事件列表（如果有）
+            if (hasAnomalies) ...[
+              const SizedBox(height: 16),
+              const Text(
+                '检测到的异常',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+              ...anomaly.anomalies.take(3).map((event) => _buildAnomalyEventItem(event)),
+            ] else ...[
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.green.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.check_circle_outline, color: Colors.green.shade600, size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        '$elderName 的健康数据趋势稳定，未发现异常',
+                        style: TextStyle(fontSize: 14, color: Colors.green.shade700),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 构建基线数据行
+  Widget _buildBaselineRow(TrendAnomalyDetectionResponse anomaly) {
+    String baselineText;
+    String unit;
+    IconData icon;
+
+    switch (anomaly.type) {
+      case 'BloodPressure':
+        final systolic = anomaly.baseline.avgSystolic?.toStringAsFixed(0) ?? '--';
+        final diastolic = anomaly.baseline.avgDiastolic?.toStringAsFixed(0) ?? '--';
+        baselineText = '$systolic/$diastolic';
+        unit = 'mmHg';
+        icon = Icons.favorite;
+      case 'BloodSugar':
+        baselineText = anomaly.baseline.avgBloodSugar?.toStringAsFixed(1) ?? '--';
+        unit = 'mmol/L';
+        icon = Icons.water_drop;
+      case 'HeartRate':
+        baselineText = anomaly.baseline.avgHeartRate?.toStringAsFixed(0) ?? '--';
+        unit = '次/分';
+        icon = Icons.monitor_heart;
+      case 'Temperature':
+        baselineText = anomaly.baseline.avgTemperature?.toStringAsFixed(1) ?? '--';
+        unit = '°C';
+        icon = Icons.thermostat;
+      default:
+        baselineText = '--';
+        unit = '';
+        icon = Icons.analytics;
+    }
+
+    return Row(
+      children: [
+        Icon(icon, size: 16, color: Colors.grey.shade600),
+        const SizedBox(width: 8),
+        Text(
+          '${anomaly.typeName}: ',
+          style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+        ),
+        Text(
+          baselineText,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          unit,
+          style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+        ),
+        const Spacer(),
+        Text(
+          '(${anomaly.baseline.baselineRecordCount} 条记录)',
+          style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+        ),
+      ],
+    );
+  }
+
+  /// 构建单个异常事件项
+  Widget _buildAnomalyEventItem(AnomalyEvent event) {
+    // 根据严重度选择颜色
+    Color color;
+    if (event.severityScore < 33) {
+      color = Colors.orange.shade600;
+    } else if (event.severityScore < 66) {
+      color = Colors.orange.shade800;
+    } else {
+      color = Colors.red.shade700;
+    }
+
+    final time = event.detectedAt.toLocal();
+    final timeStr = '${time.month}/${time.day}';
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
+      ),
+      child: Row(
+        children: [
+          // 时间标签
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade200,
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              timeStr,
+              style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
+            ),
+          ),
+          const SizedBox(width: 12),
+          // 异常类型图标
+          Icon(
+            _getAnomalyTypeIcon(event.type),
+            color: color,
+            size: 20,
+          ),
+          const SizedBox(width: 8),
+          // 异常描述
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  event.type.label,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: color,
+                  ),
+                ),
+                Text(
+                  event.description,
+                  style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+          // 严重度评分
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              event.severityScore.toStringAsFixed(0),
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 获取异常类型图标
+  IconData _getAnomalyTypeIcon(AnomalyType type) {
+    return switch (type) {
+      AnomalyType.spike => Icons.arrow_upward,
+      AnomalyType.continuousHigh => Icons.trending_up,
+      AnomalyType.continuousLow => Icons.trending_down,
+      AnomalyType.acceleration => Icons.speed,
+      AnomalyType.volatility => Icons.show_chart,
+    };
+  }
+
+  /// 显示异常检测详情对话框
+  void _showAnomalyDetailDialog(TrendAnomalyDetectionResponse anomaly, String elderName) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: AppTheme.primaryColor.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(Icons.analytics, color: AppTheme.primaryColor),
+            ),
+            const SizedBox(width: 12),
+            const Text('健康趋势详情'),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 最近7天统计
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '最近7天统计',
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 8),
+                    _buildRecentStatsRow('平均值', anomaly.recentStats.avg7Days),
+                    _buildRecentStatsRow('最高值', anomaly.recentStats.max7Days),
+                    _buildRecentStatsRow('最低值', anomaly.recentStats.min7Days),
+                    _buildRecentStatsRow('波动性', anomaly.recentStats.stdDev7Days),
+                    if (anomaly.recentStats.baselineDeviationPercent != null)
+                      _buildRecentStatsRow(
+                        '偏离基线',
+                        anomaly.recentStats.baselineDeviationPercent,
+                        isPercent: true,
+                      ),
+                  ],
+                ),
+              ),
+
+              // 异常事件列表
+              if (anomaly.hasAnomalies()) ...[
+                const SizedBox(height: 16),
+                Text(
+                  '异常事件时间线',
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 8),
+                ...anomaly.anomalies.map((event) => _buildAnomalyEventItem(event)),
+              ],
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('关闭'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 构建最近统计行
+  Widget _buildRecentStatsRow(String label, double? value, {bool isPercent = false}) {
+    if (value == null) return const SizedBox.shrink();
+    final displayValue = isPercent
+        ? '${value > 0 ? "+" : ""}${value.toStringAsFixed(1)}%'
+        : value.toStringAsFixed(1);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Text(
+            '$label: ',
+            style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+          ),
+          Text(
+            displayValue,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+          ),
+        ],
+      ),
+    );
   }
 }
