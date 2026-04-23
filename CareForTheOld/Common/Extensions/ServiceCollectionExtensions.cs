@@ -65,11 +65,15 @@ public static class ServiceCollectionExtensions
     /// 注册 JWT 认证服务
     /// 通过 IKeyProvider 抽象获取签名密钥，支持多种密钥来源
     /// </summary>
+    /// <param name="services">服务集合</param>
+    /// <param name="configuration">配置</param>
+    /// <param name="environment">环境信息</param>
+    /// <param name="signingKey">JWT 签名密钥（预先异步获取，避免启动时同步阻塞）</param>
     public static IServiceCollection AddJwtAuthentication(
         this IServiceCollection services, IConfiguration configuration,
-        IWebHostEnvironment environment)
+        IWebHostEnvironment environment, byte[] signingKey)
     {
-        // 根据环境选择密钥提供者实现
+        // 根据环境选择密钥提供者实现（用于后续 Token 签发）
         if (environment.IsDevelopment() || environment.IsEnvironment("Testing"))
         {
             services.AddSingleton<IKeyProvider, ConfigurationKeyProvider>();
@@ -78,10 +82,6 @@ public static class ServiceCollectionExtensions
         {
             services.AddSingleton<IKeyProvider, EnvironmentKeyProvider>();
         }
-
-        // 从 IKeyProvider 获取密钥（启动时立即校验）
-        var keyProvider = services.BuildServiceProvider().GetRequiredService<IKeyProvider>();
-        var key = keyProvider.GetSigningKeyAsync().GetAwaiter().GetResult();
 
         services.AddAuthentication(options =>
         {
@@ -98,7 +98,7 @@ public static class ServiceCollectionExtensions
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = configuration["Jwt:Issuer"] ?? "CareForTheOld",
                 ValidAudience = configuration["Jwt:Audience"] ?? "CareForTheOld",
-                IssuerSigningKey = new SymmetricSecurityKey(key),
+                IssuerSigningKey = new SymmetricSecurityKey(signingKey),
                 ClockSkew = TimeSpan.FromMinutes(5),
                 // SignalR 的 Context.UserIdentifier 依赖此配置
                 NameClaimType = System.Security.Claims.ClaimTypes.NameIdentifier

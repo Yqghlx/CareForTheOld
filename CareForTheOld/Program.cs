@@ -46,13 +46,28 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // JWT 密钥配置：开发/测试环境确保配置文件中有默认密钥
+// 生产环境从环境变量获取，启动时异步加载避免同步阻塞
+byte[] jwtSigningKey;
 if (builder.Environment.IsDevelopment() || builder.Environment.IsEnvironment("Testing"))
 {
     var jwtKey = builder.Configuration["Jwt:Key"];
     if (string.IsNullOrWhiteSpace(jwtKey))
     {
-        builder.Configuration["Jwt:Key"] = "CareForTheOld_DevSecretKey_2026_MustBe32Chars!";
+        jwtKey = "CareForTheOld_DevSecretKey_2026_MustBe32Chars!";
     }
+    jwtSigningKey = System.Text.Encoding.UTF8.GetBytes(jwtKey);
+}
+else
+{
+    // 生产环境从环境变量获取 JWT 密钥
+    var jwtKey = builder.Configuration["Jwt:Key"] ?? Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
+    if (string.IsNullOrWhiteSpace(jwtKey))
+    {
+        throw new InvalidOperationException(
+            "生产环境必须配置 JWT 密钥。" +
+            "请通过环境变量 JWT_SECRET_KEY 设置（至少 32 字符）。");
+    }
+    jwtSigningKey = System.Text.Encoding.UTF8.GetBytes(jwtKey);
 }
 
 // 注册服务
@@ -68,7 +83,7 @@ builder.Services.AddApiVersioning(options =>
     options.SubstituteApiVersionInUrl = true;
 });
 builder.Services.AddDatabaseServices(builder.Configuration, builder.Environment);
-builder.Services.AddJwtAuthentication(builder.Configuration, builder.Environment);
+builder.Services.AddJwtAuthentication(builder.Configuration, builder.Environment, jwtSigningKey);
 builder.Services.AddSwaggerServices();
 builder.Services.AddHealthCheckServices(builder.Configuration);
 builder.Services.AddSignalR();

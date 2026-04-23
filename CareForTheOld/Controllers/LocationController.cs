@@ -73,10 +73,12 @@ public class LocationController : ControllerBase
     {
         var userId = this.GetUserId();
 
-        // 验证当前用户是否是该家庭成员
+        // 验证当前用户和被查询成员都是该家庭成员
         var members = await _familyService.GetMembersAsync(familyId);
         if (!members.Any(m => m.UserId == userId))
             return ApiResponse<LocationRecordResponse?>.Fail("您不是该家庭成员");
+        if (!members.Any(m => m.UserId == memberId))
+            return ApiResponse<LocationRecordResponse?>.Fail("该成员不在您的家庭中");
 
         var record = await _locationService.GetFamilyMemberLatestLocationAsync(familyId, memberId);
         return ApiResponse<LocationRecordResponse?>.Ok(record);
@@ -93,10 +95,12 @@ public class LocationController : ControllerBase
         limit = Math.Clamp(limit, 1, 100);
         var userId = this.GetUserId();
 
-        // 验证当前用户是否是该家庭成员
+        // 验证当前用户和被查询成员都是该家庭成员
         var members = await _familyService.GetMembersAsync(familyId);
         if (!members.Any(m => m.UserId == userId))
             return ApiResponse<List<LocationRecordResponse>>.Fail("您不是该家庭成员");
+        if (!members.Any(m => m.UserId == memberId))
+            return ApiResponse<List<LocationRecordResponse>>.Fail("该成员不在您的家庭中");
 
         var records = await _locationService.GetFamilyMemberLocationHistoryAsync(familyId, memberId, skip, limit);
         return ApiResponse<List<LocationRecordResponse>>.Ok(records);

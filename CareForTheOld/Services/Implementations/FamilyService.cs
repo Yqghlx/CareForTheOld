@@ -12,6 +12,9 @@ public class FamilyService : IFamilyService
 {
     private readonly AppDbContext _context;
 
+    /// <summary>邀请码有效期（7天）</summary>
+    private static readonly TimeSpan _inviteCodeExpiration = TimeSpan.FromDays(7);
+
     public FamilyService(AppDbContext context) => _context = context;
 
     /// <summary>
@@ -51,6 +54,7 @@ public class FamilyService : IFamilyService
             FamilyName = request.FamilyName,
             CreatorId = creatorId,
             InviteCode = GenerateInviteCode(),
+            InviteCodeExpiresAt = DateTime.UtcNow.Add(_inviteCodeExpiration),
             CreatedAt = DateTime.UtcNow
         };
 
@@ -81,8 +85,10 @@ public class FamilyService : IFamilyService
     {
         await EnsureMemberAsync(familyId, operatorId);
 
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber)
-            ?? throw new KeyNotFoundException($"未找到手机号为 {request.PhoneNumber} 的用户");
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
+        // 使用模糊错误消息，防止用户枚举攻击
+        if (user == null)
+            throw new KeyNotFoundException("无法添加该用户，请确认手机号正确且用户已注册");
 
         if (await _context.FamilyMembers.AnyAsync(fm => fm.FamilyId == familyId && fm.UserId == user.Id))
             throw new ArgumentException("该用户已在家庭组中");
@@ -125,6 +131,10 @@ public class FamilyService : IFamilyService
             .FirstOrDefaultAsync(f => f.InviteCode == request.InviteCode)
             ?? throw new KeyNotFoundException("邀请码无效，请检查后重试");
 
+        // 验证邀请码是否过期
+        if (family.InviteCodeExpiresAt.HasValue && family.InviteCodeExpiresAt.Value < DateTime.UtcNow)
+            throw new ArgumentException("邀请码已过期，请联系家庭创建者获取新邀请码");
+
         // 添加用户到家庭
         _context.FamilyMembers.Add(new FamilyMember
         {
@@ -161,6 +171,7 @@ public class FamilyService : IFamilyService
             throw new UnauthorizedAccessException("仅家庭创建者可以刷新邀请码");
 
         family.InviteCode = GenerateInviteCode();
+        family.InviteCodeExpiresAt = DateTime.UtcNow.Add(_inviteCodeExpiration);
         await _context.SaveChangesAsync();
 
         return await GetFamilyResponse(familyId);
@@ -242,6 +253,7 @@ public class FamilyService : IFamilyService
             Id = family.Id,
             FamilyName = family.FamilyName,
             InviteCode = family.InviteCode,
+            InviteCodeExpiresAt = family.InviteCodeExpiresAt,
             Members = family.Members.Select(fm => new FamilyMemberResponse
             {
                 UserId = fm.UserId,

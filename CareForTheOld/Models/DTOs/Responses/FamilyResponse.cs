@@ -7,6 +7,8 @@ public class FamilyResponse
     public Guid Id { get; set; }
     public string FamilyName { get; set; } = string.Empty;
     public string InviteCode { get; set; } = string.Empty;
+    /// <summary>邀请码过期时间</summary>
+    public DateTime? InviteCodeExpiresAt { get; set; }
     public List<FamilyMemberResponse> Members { get; set; } = [];
 }
 
