@@ -1,6 +1,32 @@
 import 'dart:io';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
+/// OCR 错误类型
+enum OcrErrorType {
+  /// 文件不存在
+  fileNotFound,
+
+  /// 权限被拒绝
+  permissionDenied,
+
+  /// 不支持的图片格式
+  unsupportedFormat,
+
+  /// 识别引擎失败
+  recognitionFailed,
+}
+
+/// OCR 异常
+class OcrException implements Exception {
+  final String message;
+  final OcrErrorType type;
+
+  const OcrException(this.message, this.type);
+
+  @override
+  String toString() => 'OcrException: $message';
+}
+
 /// OCR 解析出的健康数据结果
 class OcrHealthResult {
   /// 血压收缩压（mmHg）
@@ -53,21 +79,45 @@ class OcrParserService {
   ///
   /// [imageFile] 图片文件路径
   /// 返回识别结果，包含解析出的健康数值
+  /// 可能抛出 [OcrException]：权限被拒绝、图片格式不支持、识别失败等
   Future<OcrHealthResult> parseHealthData(File imageFile) async {
-    final inputImage = InputImage.fromFile(imageFile);
-    final recognizedText = await _textRecognizer.processImage(inputImage);
+    // 验证文件存在且可读
+    if (!await imageFile.exists()) {
+      throw OcrException('图片文件不存在', OcrErrorType.fileNotFound);
+    }
 
-    final rawText = recognizedText.text;
-    final result = _parseText(rawText);
+    try {
+      final inputImage = InputImage.fromFile(imageFile);
+      final recognizedText = await _textRecognizer.processImage(inputImage);
 
-    return OcrHealthResult(
-      systolic: result['systolic'] as int?,
-      diastolic: result['diastolic'] as int?,
-      bloodSugar: result['bloodSugar'] as double?,
-      heartRate: result['heartRate'] as int?,
-      temperature: result['temperature'] as double?,
-      rawText: rawText,
-    );
+      final rawText = recognizedText.text;
+      // 识别文本为空时直接返回空结果
+      if (rawText.trim().isEmpty) {
+        return const OcrHealthResult(rawText: '');
+      }
+      final result = _parseText(rawText);
+
+      return OcrHealthResult(
+        systolic: result['systolic'] as int?,
+        diastolic: result['diastolic'] as int?,
+        bloodSugar: result['bloodSugar'] as double?,
+        heartRate: result['heartRate'] as int?,
+        temperature: result['temperature'] as double?,
+        rawText: rawText,
+      );
+    } on OcrException {
+      rethrow;
+    } catch (e) {
+      // 处理 ML Kit 异常（权限拒绝、不支持格式、识别引擎错误等）
+      final errorStr = e.toString();
+      if (errorStr.contains('permission') || errorStr.contains('Permission')) {
+        throw OcrException('相机权限被拒绝，请在设置中开启', OcrErrorType.permissionDenied);
+      }
+      if (errorStr.contains('format') || errorStr.contains('unsupported')) {
+        throw OcrException('不支持的图片格式', OcrErrorType.unsupportedFormat);
+      }
+      throw OcrException('图片识别失败：$e', OcrErrorType.recognitionFailed);
+    }
   }
 
   /// 解析文本，提取健康数值

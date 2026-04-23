@@ -19,5 +19,8 @@ public class MedicationPlanConfiguration : IEntityTypeConfiguration<MedicationPl
             .WithMany(u => u.MedicationPlans)
             .HasForeignKey(m => m.ElderId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // 复合索引：优化"查询某老人活跃用药计划"和"今日待服药"场景
+        builder.HasIndex(m => new { m.ElderId, m.IsActive, m.StartDate });
     }
 }
