@@ -104,10 +104,14 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         title: Text('$elderName - 健康数据'),
         actions: [
           // 导出报告按钮
-          IconButton(
-            icon: const Icon(Icons.picture_as_pdf),
-            onPressed: () => _showExportDialog(context, elderName),
-            tooltip: '导出报告',
+          Semantics(
+            label: '导出$elderName的健康报告为PDF文件',
+            button: true,
+            child: IconButton(
+              icon: const Icon(Icons.picture_as_pdf),
+              onPressed: () => _showExportDialog(context, elderName),
+              tooltip: '导出报告',
+            ),
           ),
         ],
       ),
@@ -291,33 +295,45 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       mainAxisSpacing: 12,
       crossAxisSpacing: 12,
       children: [
-        StatCard(
-          icon: Icons.favorite,
-          title: '血压',
-          value: _getStatsValue(typeMap, '血压'),
-          subtitle: _getStatsSubtitle(typeMap, '血压'),
-          color: Colors.red,
+        Semantics(
+          label: '血压: ${_getStatsValue(typeMap, '血压')}',
+          child: StatCard(
+            icon: Icons.favorite,
+            title: '血压',
+            value: _getStatsValue(typeMap, '血压'),
+            subtitle: _getStatsSubtitle(typeMap, '血压'),
+            color: Colors.red,
+          ),
         ),
-        StatCard(
-          icon: Icons.water_drop,
-          title: '血糖',
-          value: _getStatsValue(typeMap, '血糖'),
-          subtitle: _getStatsSubtitle(typeMap, '血糖'),
-          color: Colors.blue,
+        Semantics(
+          label: '血糖: ${_getStatsValue(typeMap, '血糖')}',
+          child: StatCard(
+            icon: Icons.water_drop,
+            title: '血糖',
+            value: _getStatsValue(typeMap, '血糖'),
+            subtitle: _getStatsSubtitle(typeMap, '血糖'),
+            color: Colors.blue,
+          ),
         ),
-        StatCard(
-          icon: Icons.monitor_heart,
-          title: '心率',
-          value: _getStatsValue(typeMap, '心率'),
-          subtitle: _getStatsSubtitle(typeMap, '心率'),
-          color: Colors.purple,
+        Semantics(
+          label: '心率: ${_getStatsValue(typeMap, '心率')}',
+          child: StatCard(
+            icon: Icons.monitor_heart,
+            title: '心率',
+            value: _getStatsValue(typeMap, '心率'),
+            subtitle: _getStatsSubtitle(typeMap, '心率'),
+            color: Colors.purple,
+          ),
         ),
-        StatCard(
-          icon: Icons.thermostat,
-          title: '体温',
-          value: _getStatsValue(typeMap, '体温'),
-          subtitle: _getStatsSubtitle(typeMap, '体温'),
-          color: Colors.orange,
+        Semantics(
+          label: '体温: ${_getStatsValue(typeMap, '体温')}',
+          child: StatCard(
+            icon: Icons.thermostat,
+            title: '体温',
+            value: _getStatsValue(typeMap, '体温'),
+            subtitle: _getStatsSubtitle(typeMap, '体温'),
+            color: Colors.orange,
+          ),
         ),
       ],
     );
@@ -1050,15 +1066,19 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       severityIcon = Icons.error_outline;
     }
 
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: hasAnomalies && maxSeverity >= 66
-            ? BorderSide(color: severityColor.withValues(alpha: 0.5), width: 2)
-            : BorderSide.none,
-      ),
-      child: Padding(
+    return Semantics(
+      label: hasAnomalies
+          ? 'AI健康趋势分析: 检测到${anomaly.anomalies.length}个异常，$severityText'
+          : 'AI健康趋势分析: 健康状态良好',
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: hasAnomalies && maxSeverity >= 66
+              ? BorderSide(color: severityColor.withValues(alpha: 0.5), width: 2)
+              : BorderSide.none,
+        ),
+        child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1115,10 +1135,14 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   ),
                 ),
                 // 查看详情按钮
-                IconButton(
-                  icon: const Icon(Icons.arrow_forward_ios, size: 18),
-                  onPressed: () => _showAnomalyDetailDialog(anomaly, elderName),
-                  tooltip: '查看详情',
+                Semantics(
+                  label: '查看$elderName的健康趋势分析详情',
+                  button: true,
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_forward_ios, size: 18),
+                    onPressed: () => _showAnomalyDetailDialog(anomaly, elderName),
+                    tooltip: '查看详情',
+                  ),
                 ),
               ],
             ),
@@ -1165,30 +1189,90 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               ...anomaly.anomalies.take(3).map((event) => _buildAnomalyEventItem(event)),
             ] else ...[
               const SizedBox(height: 16),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.green.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.check_circle_outline, color: Colors.green.shade600, size: 20),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        '$elderName 的健康数据趋势稳定，未发现异常',
-                        style: TextStyle(fontSize: 14, color: Colors.green.shade700),
+              // 正向激励反馈（数据平稳时展示）
+              if (anomaly.positiveFeedback != null) ...[
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: Colors.green.withValues(alpha: 0.06),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.green.withValues(alpha: 0.15)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.emoji_events_outlined, color: Colors.green.shade600, size: 22),
+                          const SizedBox(width: 8),
+                          Text(
+                            anomaly.positiveFeedback!.quality,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green.shade700,
+                            ),
+                          ),
+                          const Spacer(),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                            decoration: BoxDecoration(
+                              color: Colors.green.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              '连续${anomaly.positiveFeedback!.daysStable}天平稳',
+                              style: TextStyle(fontSize: 12, color: Colors.green.shade600),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 10),
+                      Text(
+                        anomaly.positiveFeedback!.message,
+                        style: TextStyle(fontSize: 14, color: Colors.green.shade700, height: 1.4),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(Icons.show_chart, size: 14, color: Colors.green.shade500),
+                          const SizedBox(width: 4),
+                          Text(
+                            '变异系数: ${anomaly.positiveFeedback!.coefficientOfVariation.toStringAsFixed(1)}%',
+                            style: TextStyle(fontSize: 12, color: Colors.green.shade500),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+              ] else ...[
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.green.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.check_circle_outline, color: Colors.green.shade600, size: 20),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          '$elderName 的健康数据趋势稳定，未发现异常',
+                          style: TextStyle(fontSize: 14, color: Colors.green.shade700),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ],
           ],
         ),
       ),
-    );
+    ),
+  );
   }
 
   /// 构建基线数据行
@@ -1271,66 +1355,97 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 时间标签
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Text(
-              timeStr,
-              style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
-            ),
-          ),
-          const SizedBox(width: 12),
-          // 异常类型图标
-          Icon(
-            _getAnomalyTypeIcon(event.type),
-            color: color,
-            size: 20,
-          ),
-          const SizedBox(width: 8),
-          // 异常描述
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  event.type.label,
+          Row(
+            children: [
+              // 时间标签
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade200,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  timeStr,
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
+                ),
+              ),
+              const SizedBox(width: 12),
+              // 异常类型图标
+              Icon(
+                _getAnomalyTypeIcon(event.type),
+                color: color,
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              // 异常描述
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      event.type.label,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: color,
+                      ),
+                    ),
+                    Text(
+                      event.description,
+                      style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              // 严重度评分
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  event.severityScore.toStringAsFixed(0),
                   style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
                     color: color,
                   ),
                 ),
-                Text(
-                  event.description,
-                  style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-          // 严重度评分
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Text(
-              event.severityScore.toStringAsFixed(0),
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: color,
+          // 行动建议
+          if (event.recommendedAction != null && event.recommendedAction!.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade50,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.blue.shade100),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.lightbulb_outline, size: 16, color: Colors.blue.shade600),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      event.recommendedAction!,
+                      style: TextStyle(fontSize: 13, color: Colors.blue.shade700),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
+          ],
         ],
       ),
     );

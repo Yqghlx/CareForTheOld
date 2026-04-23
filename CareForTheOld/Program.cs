@@ -35,7 +35,8 @@ if (builder.Environment.IsProduction())
     }
 }
 
-// 配置 Serilog
+// 配置 Serilog：从 appsettings.json 读取（生产环境在 appsettings.Production.json 中覆盖）
+// 开发环境未配置 Serilog 节点时，使用最小默认配置（Console + File）
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .Enrich.FromLogContext()
