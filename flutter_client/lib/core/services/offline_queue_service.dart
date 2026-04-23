@@ -10,7 +10,7 @@ import 'connectivity_service.dart';
 /// 离线队列中的待上传项
 class OfflineQueueItem {
   final String id;
-  final String type; // 'location' 或 'health'
+  final String type; // 'location', 'health', 'medication'
   final Map<String, dynamic> data;
   final DateTime createdAt;
 
@@ -134,10 +134,13 @@ class OfflineQueueService {
     try {
       switch (item.type) {
         case 'location':
-          await _dio.post('/location/report', data: item.data);
+          await _dio.post('/location', data: item.data);
           return true;
         case 'health':
-          await _dio.post('/health/records', data: item.data);
+          await _dio.post('/health', data: item.data);
+          return true;
+        case 'medication':
+          await _dio.post('/medication/logs', data: item.data);
           return true;
         default:
           debugPrint('[离线队列] 未知类型: ${item.type}，跳过');

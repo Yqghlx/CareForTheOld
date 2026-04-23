@@ -181,6 +181,8 @@ static const devConfig = AppConfig(
 
 ## 主要 API 接口
 
+开发环境可通过 Swagger UI 查看完整 API 文档：`http://localhost:5001/swagger`
+
 | 模块 | 接口 | 说明 |
 |------|------|------|
 | 认证 | `/auth/login`, `/auth/register` | 登录注册 |

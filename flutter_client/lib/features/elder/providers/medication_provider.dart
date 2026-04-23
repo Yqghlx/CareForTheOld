@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
+import '../../../core/services/offline_queue_service.dart';
+import '../../../core/services/connectivity_service.dart';
 import '../services/medication_service.dart';
 import '../../../shared/models/medication_plan.dart';
 import '../../../shared/models/medication_log.dart';
@@ -61,8 +63,10 @@ class MedicationState {
 /// 用药状态 Notifier
 class MedicationNotifier extends StateNotifier<MedicationState> {
   final MedicationService _service;
+  final OfflineQueueService _offlineQueue;
+  final ConnectivityService _connectivity;
 
-  MedicationNotifier(this._service) : super(const MedicationState());
+  MedicationNotifier(this._service, this._offlineQueue, this._connectivity) : super(const MedicationState());
 
   /// 生成防重复提交的 key
   String logKey(MedicationLog log) => '${log.planId}_${log.scheduledAt.toIso8601String()}';
@@ -100,11 +104,32 @@ class MedicationNotifier extends StateNotifier<MedicationState> {
     }).toList();
   }
 
-  /// 标记已服用（带防重复提交保护 + loading 状态）
+  /// 标记已服用（带防重复提交保护 + loading 状态 + 离线支持）
   Future<bool> markAsTaken(MedicationLog log) async {
     final key = logKey(log);
     if (state.isSubmitting(key)) return false;
     state = state.copyWith(submittingKeys: {...state.submittingKeys, key});
+
+    // 构建用药日志数据
+    final medicationData = {
+      'planId': log.planId,
+      'status': MedicationStatus.taken.value,
+      'scheduledAt': log.scheduledAt.toIso8601String(),
+      'takenAt': DateTime.now().toUtc().toIso8601String(),
+    };
+
+    // 离线时直接入队，乐观更新 UI
+    if (!_connectivity.isOnline) {
+      await _offlineQueue.enqueue('medication', medicationData);
+      final updated = log.copyWith(status: MedicationStatus.taken);
+      final newList = _replaceByPlanAndTime(state.todayPending, updated);
+      state = state.copyWith(
+        todayPending: newList,
+        submittingKeys: {...state.submittingKeys}..remove(key),
+      );
+      return true;
+    }
+
     try {
       final updated = await _service.recordLog(
         planId: log.planId,
@@ -118,19 +143,43 @@ class MedicationNotifier extends StateNotifier<MedicationState> {
       );
       return true;
     } catch (e) {
+      // 网络请求失败，入队离线队列，乐观更新 UI
+      await _offlineQueue.enqueue('medication', medicationData);
+      final updated = log.copyWith(status: MedicationStatus.taken);
+      final newList = _replaceByPlanAndTime(state.todayPending, updated);
       state = state.copyWith(
-        error: e.toString(),
+        todayPending: newList,
         submittingKeys: {...state.submittingKeys}..remove(key),
       );
-      return false;
+      return true;
     }
   }
 
-  /// 标记跳过（带防重复提交保护 + loading 状态）
+  /// 标记跳过（带防重复提交保护 + loading 状态 + 离线支持）
   Future<bool> markAsSkipped(MedicationLog log) async {
     final key = logKey(log);
     if (state.isSubmitting(key)) return false;
     state = state.copyWith(submittingKeys: {...state.submittingKeys, key});
+
+    // 构建用药日志数据
+    final medicationData = {
+      'planId': log.planId,
+      'status': MedicationStatus.skipped.value,
+      'scheduledAt': log.scheduledAt.toIso8601String(),
+    };
+
+    // 离线时直接入队，乐观更新 UI
+    if (!_connectivity.isOnline) {
+      await _offlineQueue.enqueue('medication', medicationData);
+      final updated = log.copyWith(status: MedicationStatus.skipped);
+      final newList = _replaceByPlanAndTime(state.todayPending, updated);
+      state = state.copyWith(
+        todayPending: newList,
+        submittingKeys: {...state.submittingKeys}..remove(key),
+      );
+      return true;
+    }
+
     try {
       final updated = await _service.recordLog(
         planId: log.planId,
@@ -144,11 +193,15 @@ class MedicationNotifier extends StateNotifier<MedicationState> {
       );
       return true;
     } catch (e) {
+      // 网络请求失败，入队离线队列，乐观更新 UI
+      await _offlineQueue.enqueue('medication', medicationData);
+      final updated = log.copyWith(status: MedicationStatus.skipped);
+      final newList = _replaceByPlanAndTime(state.todayPending, updated);
       state = state.copyWith(
-        error: e.toString(),
+        todayPending: newList,
         submittingKeys: {...state.submittingKeys}..remove(key),
       );
-      return false;
+      return true;
     }
   }
 }
@@ -157,5 +210,7 @@ class MedicationNotifier extends StateNotifier<MedicationState> {
 final medicationProvider =
     StateNotifierProvider<MedicationNotifier, MedicationState>((ref) {
   final service = ref.watch(medicationServiceProvider);
-  return MedicationNotifier(service);
+  final offlineQueue = ref.watch(offlineQueueServiceProvider);
+  final connectivity = ref.watch(connectivityServiceProvider);
+  return MedicationNotifier(service, offlineQueue, connectivity);
 });
