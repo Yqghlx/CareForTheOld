@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import '../../main.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../config/app_config.dart';
@@ -103,6 +104,14 @@ class ApiClient {
           showGlobalSnackBar('请求的资源不存在');
         } else if (statusCode != null && statusCode >= 500) {
           showGlobalSnackBar('服务器繁忙，请稍后重试');
+        }
+
+        // 上报服务端错误到 Sentry（4xx/5xx）
+        if (statusCode != null && statusCode >= 400) {
+          Sentry.captureException(
+            Exception('API ${statusCode}: ${error.requestOptions.path}'),
+            stackTrace: StackTrace.current,
+          );
         }
 
         // 仅处理 401 错误的刷新逻辑

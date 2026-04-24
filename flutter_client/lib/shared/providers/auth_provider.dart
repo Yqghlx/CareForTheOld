@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/user_role.dart';
@@ -102,6 +103,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
     // 登录成功后连接 SignalR
     _connectSignalR();
+
+    // 设置 Sentry 用户上下文（便于错误追踪时定位用户）
+    Sentry.configureScope((scope) {
+      scope.setUser(SentryUser(id: user.id, username: user.realName));
+    });
   }
 
   /// 登出
@@ -116,6 +122,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('userRole');
     await prefs.remove('userId');
+
+    // 清除 Sentry 用户上下文
+    Sentry.configureScope((scope) => scope.setUser(null));
 
     state = const AuthState();
   }
