@@ -135,7 +135,9 @@ builder.Services.AddScoped<IEmergencyService, EmergencyService>();
 builder.Services.AddScoped<INeighborCircleService, NeighborCircleService>();
 builder.Services.AddScoped<INeighborHelpService, NeighborHelpService>();
 builder.Services.AddScoped<ITrustScoreService, TrustScoreService>();
+builder.Services.AddScoped<TrustScoreService>();
 builder.Services.AddScoped<IAutoRescueService, AutoRescueService>();
+builder.Services.AddScoped<AutoRescueService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IGeoFenceService, GeoFenceService>();
 builder.Services.AddScoped<IHealthReportService, HealthReportService>();
@@ -380,39 +382,42 @@ if (app.Environment.IsDevelopment())
 }
 
 // 配置 Hangfire 定时任务（非测试环境）
+// 使用 IRecurringJobManager 从 DI 容器获取，避免静态 API 初始化顺序问题
 if (!app.Environment.IsEnvironment("Testing"))
 {
-    RecurringJob.AddOrUpdate<MedicationReminderService>(
+    var recurringJobManager = app.Services.GetRequiredService<IRecurringJobManager>();
+
+    recurringJobManager.AddOrUpdate<MedicationReminderService>(
         "medication-reminder",
         service => service.ExecuteHangfireJobAsync(),
         Cron.Minutely);
 
     // Outbox 通知投递：每 10 秒检查一次待投递消息
-    RecurringJob.AddOrUpdate<OutboxDispatchService>(
+    recurringJobManager.AddOrUpdate<OutboxDispatchService>(
         "outbox-dispatch",
         service => service.DispatchOutboxMessagesAsync(),
         "*/10 * * * * *");
 
     // 心跳监控：每分钟检查老人端心跳状态
-    RecurringJob.AddOrUpdate<HeartbeatMonitorService>(
+    recurringJobManager.AddOrUpdate<HeartbeatMonitorService>(
         "heartbeat-monitor",
         service => service.CheckHeartbeatsAsync(),
         Cron.Minutely);
 
     // 邻里互助过期清理：每 2 分钟清理超时的求助请求
-    RecurringJob.AddOrUpdate<NeighborHelpService>(
+    recurringJobManager.AddOrUpdate<NeighborHelpService>(
         "neighbor-help-cleanup",
         service => service.CleanupExpiredRequestsAsync(),
         "*/2 * * * *");
 
     // 信任评分每日重算：凌晨 3:00 执行
-    RecurringJob.AddOrUpdate<TrustScoreService>(
+    recurringJobManager.AddOrUpdate<TrustScoreService>(
         "trust-score-recalculate",
         service => service.RecalculateAllScoresAsync(),
         Cron.Daily(3));
 
     // 自动救援检查：每分钟检查待处理的自动救援记录
-    RecurringJob.AddOrUpdate<AutoRescueService>(
+    recurringJobManager.AddOrUpdate<AutoRescueService>(
         "auto-rescue-check",
         service => service.CheckPendingRescuesAsync(),
         Cron.Minutely);
