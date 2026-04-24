@@ -20,6 +20,10 @@ public class AppDbContext : DbContext
     public DbSet<NotificationOutbox> NotificationOutboxes => Set<NotificationOutbox>();
     public DbSet<GeoFence> GeoFences => Set<GeoFence>();
     public DbSet<SmsRecord> SmsRecords => Set<SmsRecord>();
+    public DbSet<NeighborCircle> NeighborCircles => Set<NeighborCircle>();
+    public DbSet<NeighborCircleMember> NeighborCircleMembers => Set<NeighborCircleMember>();
+    public DbSet<NeighborHelpRequest> NeighborHelpRequests => Set<NeighborHelpRequest>();
+    public DbSet<NeighborHelpRating> NeighborHelpRatings => Set<NeighborHelpRating>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
