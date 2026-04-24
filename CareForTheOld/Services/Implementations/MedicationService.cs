@@ -148,7 +148,24 @@ public class MedicationService : IMedicationService
         };
 
         _context.MedicationLogs.Add(log);
-        await _context.SaveChangesAsync();
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
+        {
+            // 并发场景：另一个请求已创建了相同记录，改为更新
+            _context.MedicationLogs.Remove(log);
+            var concurrentLog = await _context.MedicationLogs
+                .AsTracking()
+                .FirstAsync(l => l.PlanId == request.PlanId && l.ScheduledAt == request.ScheduledAt);
+            concurrentLog.Status = request.Status;
+            concurrentLog.TakenAt = request.TakenAt ?? DateTime.UtcNow;
+            concurrentLog.Note = request.Note;
+            await _context.SaveChangesAsync();
+            return MapToLogResponse(concurrentLog, plan.MedicineName, plan.Elder.RealName);
+        }
 
         return MapToLogResponse(log, plan.MedicineName, plan.Elder.RealName);
     }
@@ -332,5 +349,18 @@ public class MedicationService : IMedicationService
             TakenAt = l.TakenAt,
             Note = l.Note
         };
+    }
+
+    /// <summary>
+    /// 判断是否为唯一约束冲突异常（兼容 PostgreSQL 和 SQLite）
+    /// </summary>
+    private static bool IsUniqueConstraintViolation(DbUpdateException ex)
+    {
+        var inner = ex.InnerException;
+        if (inner == null) return false;
+        var msg = inner.Message.ToUpperInvariant();
+        // PostgreSQL: "23505" unique_violation
+        // SQLite: "UNIQUE constraint failed"
+        return msg.Contains("UNIQUE") || msg.Contains("23505");
     }
 }
