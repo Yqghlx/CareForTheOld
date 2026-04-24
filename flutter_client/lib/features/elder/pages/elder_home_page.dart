@@ -135,9 +135,14 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
   Widget _buildHomeContent() {
     final authState = ref.watch(authProvider);
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
-      child: Column(
+    return RefreshIndicator(
+      onRefresh: () async {
+        ref.read(notificationListProvider.notifier).loadNotifications();
+      },
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(20),
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // 紧急呼叫按钮 - 醒目的红色大按钮
@@ -307,6 +312,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
             ],
           ),
         ],
+      ),
       ),
     );
   }

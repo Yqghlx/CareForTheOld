@@ -58,8 +58,11 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
   /// 已加入邻里圈的展示
   Widget _buildMyCircle(BuildContext context, NeighborCircleState state) {
     final circle = state.circle!;
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+    return RefreshIndicator(
+      onRefresh: () => ref.read(neighborCircleProvider.notifier).loadMyCircle(),
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -151,6 +154,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
             ],
           ),
         ],
+      ),
       ),
     );
   }
