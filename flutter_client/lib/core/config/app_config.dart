@@ -36,6 +36,12 @@ class AppConfig {
     environment: 'production',
   );
 
-  /// 当前生效的配置（切换环境只需改此处）
-  static const current = dev;
+  /// 当前生效的配置
+  /// 通过编译参数选择环境：--dart-define=APP_ENV=production|staging
+  /// 未指定时默认使用开发环境
+  static const current = String.fromEnvironment('APP_ENV') == 'production'
+      ? production
+      : String.fromEnvironment('APP_ENV') == 'staging'
+          ? staging
+          : dev;
 }
