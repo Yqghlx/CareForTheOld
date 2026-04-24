@@ -192,6 +192,32 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                 const SizedBox(width: 16),
                 Expanded(
                   child: PrimaryIconButton(
+                    text: '邻里互助',
+                    icon: Icons.volunteer_activism,
+                    onPressed: () => context.push('/neighbor-help'),
+                    gradient: const LinearGradient(
+                      colors: [Colors.orange, Colors.deepOrange],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: PrimaryIconButton(
+                    text: '邻里圈',
+                    icon: Icons.diversity_3,
+                    onPressed: () => context.push('/neighbor-circle'),
+                    gradient: const LinearGradient(
+                      colors: [Colors.teal, Colors.cyan],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: PrimaryIconButton(
                     text: '添加用药计划',
                     icon: Icons.add,
                     onPressed: () => _showAddPlanDialog(context),
