@@ -327,6 +327,10 @@ public class NeighborHelpService : INeighborHelpService
         if (!isRequester && !isChild)
             throw new UnauthorizedAccessException("只有求助者或其子女可以评价");
 
+        // 应用层检查：同一用户对同一请求不能重复评价
+        if (await _context.NeighborHelpRatings.AnyAsync(r => r.HelpRequestId == requestId && r.RaterId == raterId))
+            throw new ArgumentException("您已评价过该求助请求");
+
         var rating = new NeighborHelpRating
         {
             Id = Guid.NewGuid(),
