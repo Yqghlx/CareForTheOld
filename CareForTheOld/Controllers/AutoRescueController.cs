@@ -1,0 +1,70 @@
+using Asp.Versioning;
+using CareForTheOld.Common.Extensions;
+using CareForTheOld.Common.Helpers;
+using CareForTheOld.Data;
+using CareForTheOld.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.EntityFrameworkCore;
+
+namespace CareForTheOld.Controllers;
+
+[ApiController]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/auto-rescue")]
+[Authorize(Roles = "Child")]
+[EnableRateLimiting("GeneralPolicy")]
+public class AutoRescueController : ControllerBase
+{
+    private readonly IAutoRescueService _autoRescueService;
+    private readonly AppDbContext _context;
+
+    public AutoRescueController(
+        IAutoRescueService autoRescueService,
+        AppDbContext context)
+    {
+        _autoRescueService = autoRescueService;
+        _context = context;
+    }
+
+    /// <summary>
+    /// 子女主动响应自动救援告警
+    /// </summary>
+    [HttpPost("{recordId:guid}/respond")]
+    public async Task<ApiResponse<object>> ChildRespond(Guid recordId)
+    {
+        var userId = this.GetUserId();
+        await _autoRescueService.ChildRespondAsync(recordId, userId);
+        return ApiResponse<object>.Ok(null!, "已确认响应");
+    }
+
+    /// <summary>
+    /// 获取自动救援历史记录
+    /// </summary>
+    [HttpGet("history")]
+    public async Task<ApiResponse<object>> GetHistory([FromQuery] int skip = 0, [FromQuery] int limit = 20)
+    {
+        var userId = this.GetUserId();
+        var familyMember = await _context.FamilyMembers
+            .FirstOrDefaultAsync(fm => fm.UserId == userId);
+        if (familyMember == null)
+            return ApiResponse<object>.Fail("未加入家庭");
+
+        var records = await _autoRescueService.GetHistoryAsync(familyMember.FamilyId, skip, limit);
+        var result = records.Select(r => new
+        {
+            r.Id,
+            r.ElderId,
+            ElderName = r.Elder.RealName,
+            TriggerType = r.TriggerType.ToString(),
+            Status = r.Status.ToString(),
+            r.TriggeredAt,
+            r.ChildNotifiedAt,
+            r.ChildRespondedAt,
+            r.BroadcastAt,
+            r.ResolvedAt,
+        });
+        return ApiResponse<object>.Ok(result);
+    }
+}

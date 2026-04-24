@@ -123,6 +123,24 @@ public class HeartbeatMonitorService
                 );
             }
 
+            // 检查老人是否在邻里圈中，若在则启动自动救援计时器
+            var circleMembership = await context.NeighborCircleMembers
+                .FirstOrDefaultAsync(m => m.UserId == userId);
+            if (circleMembership != null)
+            {
+                try
+                {
+                    var autoRescueService = scope.ServiceProvider.GetRequiredService<IAutoRescueService>();
+                    await autoRescueService.StartRescueTimerAsync(
+                        userId, familyMember.FamilyId, circleMembership.CircleId,
+                        RescueTriggerType.HeartbeatTimeout);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "启动自动救援计时器失败，老人 {UserId}", userId);
+                }
+            }
+
             // 记录告警时间
             _lastAlertTime[userIdStr] = now;
         }
