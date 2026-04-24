@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import '../../../shared/widgets/common_states.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 import '../providers/neighbor_circle_provider.dart';
+import 'trust_ranking_page.dart';
 
 /// 邻里圈管理页面（创建/搜索/加入/退出）
 class NeighborCirclePage extends ConsumerStatefulWidget {
@@ -153,6 +154,24 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                 ),
               ),
             ],
+          ),
+          const SizedBox(height: 12),
+
+          // 信任排行榜入口
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              icon: const Icon(Icons.emoji_events),
+              label: const Text('信任排行榜'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => TrustRankingPage(circleId: circle.id),
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),
