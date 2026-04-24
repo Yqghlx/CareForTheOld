@@ -13,7 +13,8 @@ public class MedicationLogConfiguration : IEntityTypeConfiguration<MedicationLog
 
         builder.Property(ml => ml.Note).HasMaxLength(500);
 
-        builder.HasIndex(ml => new { ml.PlanId, ml.ScheduledAt });
+        // 同一计划同一时间点只允许一条记录，防止并发产生重复用药日志
+        builder.HasIndex(ml => new { ml.PlanId, ml.ScheduledAt }).IsUnique();
 
         builder.HasOne(ml => ml.Plan)
             .WithMany(p => p.MedicationLogs)
