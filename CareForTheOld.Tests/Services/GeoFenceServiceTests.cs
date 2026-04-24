@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Helpers;
 using CareForTheOld.Data;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
@@ -228,7 +229,7 @@ public class GeoFenceServiceTests
     public void CalculateDistance_ShouldCalculateCorrectly_ForNearbyPoints()
     {
         // 北京天安门到故宫（约1公里）
-        var distance = GeoFenceService.CalculateDistance(
+        var distance = GeoHelper.HaversineDistance(
             39.9042, 116.4074,  // 天安门
             39.9163, 116.3972   // 故宫
         );
@@ -241,7 +242,7 @@ public class GeoFenceServiceTests
     [Fact]
     public void CalculateDistance_ShouldReturnZero_ForSamePoint()
     {
-        var distance = GeoFenceService.CalculateDistance(39.9042, 116.4074, 39.9042, 116.4074);
+        var distance = GeoHelper.HaversineDistance(39.9042, 116.4074, 39.9042, 116.4074);
 
         distance.Should().BeApproximately(0, 1);
     }

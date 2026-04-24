@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Helpers;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.GeoFences;
 using CareForTheOld.Models.DTOs.Responses;
@@ -188,7 +189,7 @@ public class GeoFenceService : IGeoFenceService
         if (cachedFence == null) return null;
 
         // 计算当前位置与围栏中心的距离
-        var distance = CalculateDistance(latitude, longitude, cachedFence.CenterLatitude, cachedFence.CenterLongitude);
+        var distance = GeoHelper.HaversineDistance(latitude, longitude, cachedFence.CenterLatitude, cachedFence.CenterLongitude);
 
         // 超出围栏
         if (distance > cachedFence.Radius)
@@ -212,34 +213,6 @@ public class GeoFenceService : IGeoFenceService
         return null;
     }
 
-    /// <summary>
-    /// 使用 Haversine 公式计算两点间距离（米）
-    /// </summary>
-    /// <param name="lat1">点1纬度</param>
-    /// <param name="lon1">点1经度</param>
-    /// <param name="lat2">点2纬度</param>
-    /// <param name="lon2">点2经度</param>
-    /// <returns>距离（米）</returns>
-    public static double CalculateDistance(double lat1, double lon1, double lat2, double lon2)
-    {
-        // 地球半径（米）
-        const double EarthRadius = 6371000;
-
-        // 将角度转换为弧度
-        var lat1Rad = lat1 * Math.PI / 180;
-        var lat2Rad = lat2 * Math.PI / 180;
-        var deltaLat = (lat2 - lat1) * Math.PI / 180;
-        var deltaLon = (lon2 - lon1) * Math.PI / 180;
-
-        // Haversine 公式
-        var a = Math.Sin(deltaLat / 2) * Math.Sin(deltaLat / 2) +
-                Math.Cos(lat1Rad) * Math.Cos(lat2Rad) *
-                Math.Sin(deltaLon / 2) * Math.Sin(deltaLon / 2);
-
-        var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-
-        return EarthRadius * c;
-    }
 
     /// <summary>
     /// 映射到响应对象
