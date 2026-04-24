@@ -161,7 +161,10 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
               child: Row(
                 children: [
                   // 头像区域：点击可上传新头像
-                  GestureDetector(
+                  Semantics(
+                    button: true,
+                    label: '更换头像，点击上传新照片',
+                    child: GestureDetector(
                     onTap: _isUploadingAvatar ? null : _pickAndUploadAvatar,
                     child: Stack(
                       children: [
@@ -228,6 +231,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                           ),
                       ],
                     ),
+                  ),
                   ),
                   const SizedBox(width: 20),
                   Column(
@@ -327,7 +331,10 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
 
   /// 紧急呼叫按钮 - 长按 2 秒触发，带进度指示器，松手取消
   Widget _buildEmergencyCallButton() {
-    return GestureDetector(
+    return Semantics(
+      button: true,
+      label: _isLongPressing ? '正在呼叫中，松手取消' : '紧急呼叫按钮，长按2秒发起呼叫',
+      child: GestureDetector(
       // 按下开始计时
       onPanDown: (_) => _startLongPressTimer(),
       // 松手或取消时停止计时
@@ -417,6 +424,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
             ),
           ],
         ),
+      ),
       ),
     );
   }
