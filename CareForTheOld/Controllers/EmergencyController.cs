@@ -41,7 +41,7 @@ public class EmergencyController : ControllerBase
             request?.Latitude,
             request?.Longitude,
             request?.BatteryLevel);
-        return ApiResponse<EmergencyCallResponse>.Ok(call, "紧急呼叫已发送");
+        return ApiResponse<EmergencyCallResponse>.Ok(call, "紧急呼叫已发送，已通知家人和附近邻居");
     }
 
     /// <summary>
