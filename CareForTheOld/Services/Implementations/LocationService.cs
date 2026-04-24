@@ -16,6 +16,7 @@ public class LocationService : ILocationService
     private readonly AppDbContext _context;
     private readonly IGeoFenceService _geoFenceService;
     private readonly INotificationService _notificationService;
+    private readonly IAutoRescueService _autoRescueService;
     private readonly ILogger<LocationService> _logger;
     private readonly double _accuracyThreshold;
 
@@ -23,6 +24,7 @@ public class LocationService : ILocationService
         AppDbContext context,
         IGeoFenceService geoFenceService,
         INotificationService notificationService,
+        IAutoRescueService autoRescueService,
         ILogger<LocationService> logger,
         IConfiguration? configuration = null)
     {
@@ -30,6 +32,7 @@ public class LocationService : ILocationService
         _context = context;
         _geoFenceService = geoFenceService;
         _notificationService = notificationService;
+        _autoRescueService = autoRescueService;
         _logger = logger;
     }
 
@@ -216,6 +219,23 @@ public class LocationService : ILocationService
                     AlertLevel = distance > fence.Radius * 2 ? "Critical" : "Warning"
                 }
             );
+        }
+
+        // 检查老人是否在邻里圈中，若在则启动自动救援计时器
+        var circleMembership = await _context.NeighborCircleMembers
+            .FirstOrDefaultAsync(m => m.UserId == elderId);
+        if (circleMembership != null)
+        {
+            try
+            {
+                await _autoRescueService.StartRescueTimerAsync(
+                    elderId, familyMember.FamilyId, circleMembership.CircleId,
+                    RescueTriggerType.GeoFenceBreach);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "启动自动救援计时器失败，老人 {ElderId}", elderId);
+            }
         }
     }
 }
