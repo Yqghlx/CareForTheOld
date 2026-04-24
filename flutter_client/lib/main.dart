@@ -52,7 +52,8 @@ void main() async {
       (options) {
         options.dsn = sentryDsn;
         // 采样率：开发环境 100%，生产环境 20%
-        options.tracesSampleRate = 1.0;
+        final env = const String.fromEnvironment('APP_ENV', defaultValue: 'development');
+        options.tracesSampleRate = env == 'production' ? 0.2 : 1.0;
         // 上报环境
         options.environment = const String.fromEnvironment('APP_ENV', defaultValue: 'development');
         // 启用用户交互面包屑（按钮点击等）
@@ -104,6 +105,15 @@ class _CareForTheOldAppState extends ConsumerState<CareForTheOldApp> {
         Locale('en', 'US'),
       ],
       scaffoldMessengerKey: scaffoldMessengerKey,
+      // 限制字体缩放上限 1.5 倍，防止老人设置过大系统字体导致布局崩坏
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.5),
+          ),
+          child: child!,
+        );
+      },
     );
   }
 }
