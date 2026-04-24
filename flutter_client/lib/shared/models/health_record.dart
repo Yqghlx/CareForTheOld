@@ -14,7 +14,20 @@ enum HealthType {
 
   const HealthType(this.value, this.label, this.icon, this.color);
 
-  /// 从后端返回的整数值解析（C# 枚举默认序列化为 int）
+  /// 从后端返回的值解析（支持字符串 "bloodPressure" 和整数 0 两种格式）
+  static HealthType fromDynamic(dynamic value) {
+    if (value == null) return HealthType.bloodPressure;
+    if (value is int) return fromInt(value);
+    if (value is String) {
+      return HealthType.values.firstWhere(
+        (e) => e.name == value,
+        orElse: () => HealthType.bloodPressure,
+      );
+    }
+    return HealthType.bloodPressure;
+  }
+
+  /// 从后端返回的整数值解析（C# 枚举序列化为 int 时使用）
   static HealthType fromInt(int? value) {
     if (value == null) return HealthType.bloodPressure;
     return HealthType.values.firstWhere(
@@ -98,7 +111,7 @@ class HealthRecord {
       id: json['id'] as String,
       userId: json['userId'] as String,
       realName: json['realName'] as String?,
-      type: HealthType.fromInt(json['type'] as int?),
+      type: HealthType.fromDynamic(json['type']),
       systolic: json['systolic'] as int?,
       diastolic: json['diastolic'] as int?,
       // 后端 decimal 类型 → Dart double
