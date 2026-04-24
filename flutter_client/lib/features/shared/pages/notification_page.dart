@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/models/notification_record.dart';
-import '../../../shared/widgets/common_buttons.dart';
+import '../../../shared/widgets/common_states.dart';
 import '../../../core/theme/app_theme.dart';
 import '../providers/notification_record_provider.dart';
 
@@ -48,24 +48,17 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
 
   Widget _buildContent(NotificationListState state) {
     if (state.isLoading && state.notifications.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+      return ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: 5,
+        itemBuilder: (_, __) => const SkeletonListTile(),
+      );
     }
 
     if (state.error != null && state.notifications.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error_outline, size: 48, color: AppTheme.errorColor),
-            const SizedBox(height: 12),
-            Text('加载失败: ${state.error}', style: const TextStyle(color: AppTheme.errorColor)),
-            const SizedBox(height: 12),
-            PrimaryButton(
-              text: '重试',
-              onPressed: () => ref.read(notificationListProvider.notifier).loadNotifications(),
-            ),
-          ],
-        ),
+      return ErrorStateWidget(
+        message: ErrorStateWidget.friendlyMessage(state.error),
+        onRetry: () => ref.read(notificationListProvider.notifier).loadNotifications(),
       );
     }
 
@@ -73,14 +66,9 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
       return ListView(
         children: [
           SizedBox(height: MediaQuery.of(context).size.height * 0.3),
-          Center(
-            child: Column(
-              children: [
-                Icon(Icons.notifications_none, size: 64, color: Colors.grey.shade400),
-                const SizedBox(height: 16),
-                const Text('暂无通知', style: TextStyle(fontSize: 18, color: Colors.grey)),
-              ],
-            ),
+          const EmptyStateWidget(
+            icon: Icons.notifications_none,
+            title: '暂无通知',
           ),
         ],
       );

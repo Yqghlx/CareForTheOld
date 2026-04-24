@@ -13,6 +13,7 @@ import '../services/health_service.dart';
 import '../services/voice_input_service.dart';
 import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
+import '../../../shared/widgets/common_states.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/services/ocr_parser_service.dart';
@@ -253,48 +254,21 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
   /// 记录列表
   Widget _buildRecordList(HealthRecordsState state) {
     if (state.isLoading && state.records.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+      return Column(children: List.generate(3, (_) => const SkeletonCard()));
     }
 
     if (state.error != null && state.records.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error_outline, size: 48, color: AppTheme.errorColor),
-            const SizedBox(height: 12),
-            Text(
-              '加载失败: ${state.error}',
-              style: const TextStyle(color: AppTheme.errorColor),
-            ),
-            const SizedBox(height: 12),
-            PrimaryButton(
-              text: '重试',
-              onPressed: () => ref.read(healthRecordsProvider.notifier).loadRecords(),
-            ),
-          ],
-        ),
+      return ErrorStateWidget(
+        message: ErrorStateWidget.friendlyMessage(state.error),
+        onRetry: () => ref.read(healthRecordsProvider.notifier).loadRecords(),
       );
     }
 
     if (state.records.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.note_add_outlined,
-              size: 64,
-              color: Colors.grey.shade400,
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              '暂无健康记录\n点击上方卡片开始记录',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, color: Colors.grey),
-            ),
-          ],
-        ),
+      return const EmptyStateWidget(
+        icon: Icons.note_add_outlined,
+        title: '暂无健康记录',
+        subtitle: '点击上方卡片开始记录',
       );
     }
 
