@@ -8,6 +8,7 @@ import 'package:signalr_netcore/signalr_client.dart';
 import '../../../core/config/app_config.dart';
 import '../../../shared/providers/auth_provider.dart';
 import '../../shared/providers/emergency_provider.dart';
+import '../../shared/providers/neighbor_help_provider.dart';
 import 'local_notification_service.dart';
 
 /// SignalR 连接服务
@@ -171,6 +172,34 @@ class SignalRService {
             title: title,
             body: content,
           );
+          break;
+        case 'NeighborHelpRequest':
+          // 邻里求助广播（附近老人发起紧急求助）
+          LocalNotificationService.showNotification(
+            id: 9,
+            title: title,
+            body: content,
+          );
+          _ref.invalidate(neighborHelpProvider);
+          break;
+        case 'NeighborHelpAccepted':
+          // 邻里求助已被接受（通知老人/子女）
+          LocalNotificationService.showNotification(
+            id: 10,
+            title: title,
+            body: content,
+          );
+          _ref.invalidate(neighborHelpProvider);
+          break;
+        case 'NeighborHelpCancelled':
+        case 'NeighborHelpResolved':
+          // 邻里求助已取消/已解决
+          LocalNotificationService.showNotification(
+            id: 11,
+            title: title,
+            body: content,
+          );
+          _ref.invalidate(neighborHelpProvider);
           break;
         default:
           _showGeneralNotification(title, content);
