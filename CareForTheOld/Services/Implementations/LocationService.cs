@@ -4,6 +4,7 @@ using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace CareForTheOld.Services.Implementations;
 
@@ -16,13 +17,16 @@ public class LocationService : ILocationService
     private readonly IGeoFenceService _geoFenceService;
     private readonly INotificationService _notificationService;
     private readonly ILogger<LocationService> _logger;
+    private readonly double _accuracyThreshold;
 
     public LocationService(
         AppDbContext context,
         IGeoFenceService geoFenceService,
         INotificationService notificationService,
-        ILogger<LocationService> logger)
+        ILogger<LocationService> logger,
+        IConfiguration? configuration = null)
     {
+        _accuracyThreshold = configuration?.GetValue("Location:AccuracyThresholdMeters", 100.0) ?? 100.0;
         _context = context;
         _geoFenceService = geoFenceService;
         _notificationService = notificationService;
@@ -49,14 +53,13 @@ public class LocationService : ILocationService
         _context.LocationRecords.Add(record);
         await _context.SaveChangesAsync();
 
-        // GPS 精度过滤：精度超过 100 米时跳过围栏检查，防止室内飘移误报
-        const double accuracyThreshold = 100.0;
-        var shouldCheckFence = accuracy == null || accuracy.Value <= accuracyThreshold;
+        // GPS 精度过滤：精度超过阈值时跳过围栏检查，防止室内飘移误报
+        var shouldCheckFence = accuracy == null || accuracy.Value <= _accuracyThreshold;
 
         if (!shouldCheckFence)
         {
             _logger.LogDebug("[位置上报] GPS 精度 {Accuracy:F0}m 超过阈值 {Threshold}m，跳过围栏检查",
-                accuracy, accuracyThreshold);
+                accuracy, _accuracyThreshold);
         }
 
         // 检查是否超出电子围栏

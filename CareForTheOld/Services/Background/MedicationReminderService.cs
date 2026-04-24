@@ -5,6 +5,7 @@ using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Interfaces;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System.Text.Json;
 
 namespace CareForTheOld.Services.Background;
@@ -14,7 +15,7 @@ namespace CareForTheOld.Services.Background;
 /// 既可作为 Hangfire RecurringJob 运行（生产环境），也可作为 IHostedService 运行（开发/回退）
 ///
 /// 支持多级提醒：
-/// 1. 首次提醒：计划服药时间前 5 分钟推送通知
+/// 1. 首次提醒：计划服药时间前 N 分钟推送通知（默认 5 分钟）
 /// 2. 二次提醒：首次提醒后 10 分钟未确认，再次强提醒
 /// 3. 子女介入：首次提醒后 30 分钟仍未确认，通知子女跟进
 /// </summary>
@@ -22,11 +23,16 @@ public class MedicationReminderService : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<MedicationReminderService> _logger;
+    private readonly int _advanceMinutes;
 
-    public MedicationReminderService(IServiceProvider serviceProvider, ILogger<MedicationReminderService> logger)
+    public MedicationReminderService(
+        IServiceProvider serviceProvider,
+        ILogger<MedicationReminderService> logger,
+        IConfiguration configuration)
     {
         _serviceProvider = serviceProvider;
         _logger = logger;
+        _advanceMinutes = configuration.GetValue("MedicationReminder:AdvanceMinutes", 5);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -90,8 +96,8 @@ public class MedicationReminderService : BackgroundService
             {
                 if (!TimeOnly.TryParse(timeStr, out var reminderTime)) continue;
 
-                // 计算提醒时间（提前5分钟提醒）
-                var reminderTimeWithBuffer = reminderTime.AddMinutes(-5);
+                // 计算提醒时间（提前配置的分钟数提醒）
+                var reminderTimeWithBuffer = reminderTime.AddMinutes(-_advanceMinutes);
 
                 // 检查是否在当前时间的1分钟窗口内
                 if (currentTime >= reminderTimeWithBuffer && currentTime < reminderTimeWithBuffer.AddMinutes(1))

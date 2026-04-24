@@ -4,6 +4,7 @@ using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Hubs;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
@@ -32,12 +33,12 @@ public class HeartbeatMonitorService
     /// <summary>
     /// 心跳超时阈值（超过此时间无心跳视为离线）
     /// </summary>
-    private static readonly TimeSpan _heartbeatTimeout = TimeSpan.FromMinutes(5);
+    private readonly TimeSpan _heartbeatTimeout;
 
     /// <summary>
     /// 告警冷却时间（同一用户两次告警的最小间隔）
     /// </summary>
-    private static readonly TimeSpan _alertCooldown = TimeSpan.FromMinutes(15);
+    private readonly TimeSpan _alertCooldown;
 
     /// <summary>
     /// 最近一次告警时间：UserId → 上次告警时间
@@ -45,10 +46,17 @@ public class HeartbeatMonitorService
     /// </summary>
     private static readonly ConcurrentDictionary<string, DateTime> _lastAlertTime = new();
 
-    public HeartbeatMonitorService(IServiceScopeFactory scopeFactory, ILogger<HeartbeatMonitorService> logger)
+    public HeartbeatMonitorService(
+        IServiceScopeFactory scopeFactory,
+        ILogger<HeartbeatMonitorService> logger,
+        IConfiguration configuration)
     {
         _scopeFactory = scopeFactory;
         _logger = logger;
+        _heartbeatTimeout = TimeSpan.FromMinutes(
+            configuration.GetValue("Heartbeat:TimeoutMinutes", 5));
+        _alertCooldown = TimeSpan.FromMinutes(
+            configuration.GetValue("Heartbeat:AlertCooldownMinutes", 15));
     }
 
     /// <summary>
