@@ -131,7 +131,7 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// 注册健康检查服务
+    /// 注册健康检查服务（数据库 + Redis）
     /// </summary>
     public static IServiceCollection AddHealthCheckServices(
         this IServiceCollection services, IConfiguration configuration)
@@ -141,6 +141,7 @@ public static class ServiceCollectionExtensions
 
         var healthChecksBuilder = services.AddHealthChecks();
 
+        // 数据库健康检查
         if (connectionString.Contains("Host=") || connectionString.Contains("Server="))
         {
             healthChecksBuilder.AddNpgSql(connectionString, name: "postgresql");
@@ -148,6 +149,13 @@ public static class ServiceCollectionExtensions
         else
         {
             healthChecksBuilder.AddSqlite(connectionString, name: "sqlite");
+        }
+
+        // Redis 健康检查（生产环境必需）
+        var redisConnection = configuration.GetConnectionString("Redis");
+        if (!string.IsNullOrWhiteSpace(redisConnection))
+        {
+            healthChecksBuilder.AddRedis(redisConnection, name: "redis");
         }
 
         return services;
