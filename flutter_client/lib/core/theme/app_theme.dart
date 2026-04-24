@@ -59,7 +59,7 @@ class AppTheme {
       ),
     ),
     appBarTheme: AppBarTheme(
-      backgroundColor: primaryColor,
+      backgroundColor: primaryDark,
       foregroundColor: Colors.white,
       centerTitle: true,
       elevation: 0,

@@ -76,6 +76,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
             children: [
               IconButton(
                 icon: const Icon(Icons.notifications),
+                tooltip: '通知',
                 onPressed: () => context.push('/notifications'),
               ),
               // 未读通知红点
@@ -101,6 +102,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
           ),
           IconButton(
             icon: const Icon(Icons.settings),
+            tooltip: '设置',
             onPressed: () => context.push('/settings'),
           ),
         ],
@@ -581,6 +583,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                             if (timeControllers.length > 1)
                               IconButton(
                                 icon: const Icon(Icons.remove_circle, color: Colors.red),
+                                tooltip: '移除时间点',
                                 onPressed: () => setDialogState(
                                     () => timeControllers.removeAt(entry.key)),
                               ),
