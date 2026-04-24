@@ -258,16 +258,16 @@ public class MedicationReminderService : BackgroundService
         await SendWithRetryAsync(() => notificationService.SendToUserAsync(plan.ElderId, message.Type, message),
             $"老人用药提醒-{plan.ElderId}");
 
-        // 获取老人的家庭，通知家庭成员
-        var familyMembers = await context.FamilyMembers
+        // 批量查询老人所在的所有家庭，然后一次性查出所有需要通知的子女
+        var familyIds = await context.FamilyMembers
             .Where(fm => fm.UserId == plan.ElderId)
+            .Select(fm => fm.FamilyId)
             .ToListAsync(stoppingToken);
 
-        foreach (var member in familyMembers)
+        if (familyIds.Count > 0)
         {
-            // 通知其他家庭成员（子女）
             var otherMembers = await context.FamilyMembers
-                .Where(fm => fm.FamilyId == member.FamilyId && fm.UserId != plan.ElderId)
+                .Where(fm => familyIds.Contains(fm.FamilyId) && fm.UserId != plan.ElderId)
                 .ToListAsync(stoppingToken);
 
             foreach (var other in otherMembers)
