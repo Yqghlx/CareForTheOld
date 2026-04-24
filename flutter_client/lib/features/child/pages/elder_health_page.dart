@@ -18,7 +18,7 @@ import '../../shared/services/health_report_service.dart';
 /// 老人健康数据 Provider（按 elderId 区分）
 final elderHealthStatsProvider =
     FutureProvider.family<List<HealthStats>, String>((ref, elderId) async {
-  final familyId = ref.watch(familyProvider).familyId;
+  final familyId = ref.watch(familyProvider.select((s) => s.familyId));
   if (familyId == null) return [];
   final service = HealthService(ref.read(apiClientProvider).dio);
   return service.getFamilyMemberStats(
@@ -27,7 +27,7 @@ final elderHealthStatsProvider =
 
 final elderHealthRecordsProvider =
     FutureProvider.family<List<HealthRecord>, String>((ref, elderId) async {
-  final familyId = ref.watch(familyProvider).familyId;
+  final familyId = ref.watch(familyProvider.select((s) => s.familyId));
   if (familyId == null) return [];
   final service = HealthService(ref.read(apiClientProvider).dio);
   return service.getFamilyMemberRecords(
@@ -51,7 +51,7 @@ final elderMedicationLogsProvider =
 /// 老人健康异常检测 Provider（按 elderId + healthType 区分）
 final elderAnomalyDetectionProvider =
     FutureProvider.family<TrendAnomalyDetectionResponse, ({String elderId, HealthType? type})>((ref, args) async {
-  final familyId = ref.watch(familyProvider).familyId;
+  final familyId = ref.watch(familyProvider.select((s) => s.familyId));
   if (familyId == null) {
     return TrendAnomalyDetectionResponse(
       type: 'BloodPressure',
@@ -83,11 +83,8 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
 
   @override
   Widget build(BuildContext context) {
-    final familyState = ref.watch(familyProvider);
-    final elder = familyState.members
-        .where((m) => m.userId == widget.elderId)
-        .firstOrNull;
-    final elderName = elder?.realName ?? '老人';
+    final elderName = ref.watch(familyProvider
+        .select((s) => s.members.where((m) => m.userId == widget.elderId).firstOrNull?.realName)) ?? '老人';
 
     final statsAsync =
         ref.watch(elderHealthStatsProvider(widget.elderId));

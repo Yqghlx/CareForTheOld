@@ -83,8 +83,8 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                 top: 8,
                 child: Consumer(
                   builder: (context, ref, _) {
-                    final notificationState = ref.watch(notificationListProvider);
-                    if (notificationState.unreadCount == 0) return const SizedBox.shrink();
+                    final unreadCount = ref.watch(notificationListProvider.select((s) => s.unreadCount));
+                    if (unreadCount == 0) return const SizedBox.shrink();
                     return Container(
                       width: 10,
                       height: 10,
@@ -136,6 +136,10 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                             ? CachedNetworkImage(
                                 imageUrl: authState.user!.avatarUrl!,
                                 fit: BoxFit.cover,
+                                memCacheWidth: 256,
+                                memCacheHeight: 256,
+                                maxWidthDiskCache: 512,
+                                maxHeightDiskCache: 512,
                                 errorWidget: (_, __, ___) => const Icon(Icons.person, size: 32, color: Colors.white),
                               )
                             : const Icon(Icons.person, size: 32, color: Colors.white),
@@ -268,6 +272,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
     }
 
     return ListView.builder(
+      cacheExtent: 800,
       itemCount: elders.length,
       itemBuilder: (context, index) {
         final elder = elders[index];
@@ -300,6 +305,10 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                               ? CachedNetworkImage(
                                   imageUrl: elder.avatarUrl!,
                                   fit: BoxFit.cover,
+                                  memCacheWidth: 256,
+                                  memCacheHeight: 256,
+                                  maxWidthDiskCache: 512,
+                                  maxHeightDiskCache: 512,
                                   errorWidget: (_, __, ___) => const Icon(Icons.elderly, size: 32, color: Colors.orange),
                                 )
                               : const Icon(Icons.elderly, size: 32, color: Colors.orange),

@@ -75,6 +75,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
     }
 
     return ListView.builder(
+      cacheExtent: 800,
       padding: const EdgeInsets.all(16),
       itemCount: state.notifications.length + (state.hasMore ? 1 : 0),
       itemBuilder: (context, index) {
