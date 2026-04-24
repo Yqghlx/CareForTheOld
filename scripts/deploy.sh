@@ -12,7 +12,8 @@
 set -euo pipefail
 
 COMPOSE_FILES="-f docker-compose.yml -f docker-compose.prod.yml"
-HEALTH_URL="http://localhost:5001/health"
+# 生产环境通过 Nginx HTTPS 检查健康状态（-k 跳过自签名证书验证）
+HEALTH_URL="https://localhost/health"
 MAX_RETRIES=30
 RETRY_INTERVAL=5
 
@@ -62,7 +63,7 @@ docker compose $COMPOSE_FILES up -d --build --remove-orphans
 echo "[4/5] 等待服务就绪..."
 retry=0
 while [ $retry -lt $MAX_RETRIES ]; do
-    if curl -sf "$HEALTH_URL" > /dev/null 2>&1; then
+    if curl -sfk "$HEALTH_URL" > /dev/null 2>&1; then
         echo "服务已就绪！"
         break
     fi
@@ -84,9 +85,9 @@ docker image prune -f 2>/dev/null || true
 echo ""
 echo "===== 部署完成 ====="
 echo "时间: $(date '+%Y-%m-%d %H:%M:%S')"
-echo "健康检查: $HEALTH_URL"
-echo "详细状态: http://localhost:5001/health/detail"
-echo "Prometheus: http://localhost:5001/metrics"
+echo "健康检查: https://localhost/health"
+echo "详细状态: https://localhost/health/detail"
+echo "Prometheus: https://localhost/metrics"
 echo ""
 echo "常用命令："
 echo "  查看日志: docker compose $COMPOSE_FILES logs -f api"
