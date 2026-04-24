@@ -13,6 +13,7 @@ import '../../../core/api/api_client.dart';
 import '../providers/family_provider.dart';
 import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_states.dart';
+import '../../../shared/widgets/confirm_dialog.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../shared/services/health_report_service.dart';
 
@@ -669,24 +670,11 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
 
   /// 删除用药计划
   Future<void> _deletePlan(MedicationPlan plan) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('确认删除'),
-        content: Text('确定删除 ${plan.medicineName} 的用药计划吗？此操作不可恢复。'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('取消'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('删除'),
-          ),
-        ],
-      ),
+    final confirmed = await showConfirmDialog(
+      context,
+      title: '确认删除',
+      message: '确定删除 ${plan.medicineName} 的用药计划吗？此操作不可恢复。',
+      confirmText: '删除',
     );
     if (confirmed != true) return;
 

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/api/api_client.dart';
+import '../../../core/extensions/api_error_extension.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 import '../../../core/validators/form_validators.dart';
 import '../../../shared/providers/auth_provider.dart';
@@ -34,33 +35,6 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     _passwordController.dispose();
     _nameController.dispose();
     super.dispose();
-  }
-
-  /// 从后端响应中提取验证错误信息
-  String _extractErrorMessage(DioException e) {
-    try {
-      final data = e.response?.data;
-      if (data is Map<String, dynamic>) {
-        // 优先提取 validation errors
-        final errors = data['errors'];
-        if (errors is Map) {
-          return errors.values.expand((v) => v is List ? v : [v]).join('\n');
-        }
-        if (data['message'] != null) {
-          return data['message'] as String;
-        }
-      }
-    } catch (_) {
-      // 解析响应数据失败，使用默认错误信息
-      debugPrint('解析错误响应失败: ${e.response?.statusCode}');
-    }
-    switch (e.type) {
-      case DioExceptionType.connectionError:
-      case DioExceptionType.connectionTimeout:
-        return '无法连接服务器，请检查网络';
-      default:
-        return '注册失败，请检查输入信息';
-    }
   }
 
   Future<void> _register() async {
@@ -98,7 +72,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
         context.go('/child/home');
       }
     } on DioException catch (e) {
-      final msg = _extractErrorMessage(e);
+      final msg = e.toDisplayMessage(fallback: '注册失败，请检查输入信息');
       if (mounted) {
         context.showErrorSnackBar(msg);
       }

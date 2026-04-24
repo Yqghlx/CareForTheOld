@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,6 +48,22 @@ void main() async {
   // 初始化 Sentry 错误监控
   // DSN 从环境变量或编译配置注入，未配置时自动禁用
   const sentryDsn = String.fromEnvironment('SENTRY_DSN');
+
+  // 全局 Flutter 框架错误捕获（Widget 构建异常、布局溢出等）
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+    if (sentryDsn.isNotEmpty) {
+      Sentry.captureException(details.exception, stackTrace: details.stack);
+    }
+  };
+
+  // 全局平台错误捕获（异步未捕获异常）
+  PlatformDispatcher.instance.onError = (error, stack) {
+    if (sentryDsn.isNotEmpty) {
+      Sentry.captureException(error, stackTrace: stack);
+    }
+    return true;
+  };
 
   if (sentryDsn.isNotEmpty) {
     await SentryFlutter.init(

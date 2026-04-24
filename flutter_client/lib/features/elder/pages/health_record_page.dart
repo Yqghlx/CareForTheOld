@@ -18,6 +18,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/services/ocr_parser_service.dart';
 import '../../../core/extensions/snackbar_extension.dart';
+import '../../../shared/widgets/confirm_dialog.dart';
 
 /// 健康记录页面
 class HealthRecordPage extends ConsumerStatefulWidget {
@@ -298,21 +299,11 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
     return Dismissible(
       key: ValueKey(record.id),
       direction: DismissDirection.endToStart,
-      confirmDismiss: (_) => showDialog<bool>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Text('确认删除'),
-          content: Text('确定删除 ${record.type.label} 记录（${record.displayValue}）吗？'),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('取消')),
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              style: TextButton.styleFrom(foregroundColor: Colors.red),
-              child: const Text('删除'),
-            ),
-          ],
-        ),
+      confirmDismiss: (_) => showConfirmDialog(
+        context,
+        title: '确认删除',
+        message: '确定删除 ${record.type.label} 记录（${record.displayValue}）吗？',
+        confirmText: '删除',
       ),
       onDismissed: (_) => _deleteRecord(record.id),
       background: Container(
