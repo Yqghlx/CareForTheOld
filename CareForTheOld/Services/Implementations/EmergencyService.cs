@@ -196,6 +196,9 @@ public class EmergencyService : IEmergencyService
         Guid callId,
         bool isReminder)
     {
+        // 批量收集 SmsRecord，循环结束后一次性写入数据库（避免 N+1）
+        var smsRecords = new List<SmsRecord>();
+
         foreach (var child in children)
         {
             var content = isReminder
@@ -205,7 +208,7 @@ public class EmergencyService : IEmergencyService
             var (success, errorMessage) = await _smsService.SendAsync(child.User.PhoneNumber, content);
 
             // 记录短信发送结果
-            var smsRecord = new SmsRecord
+            smsRecords.Add(new SmsRecord
             {
                 Id = Guid.NewGuid(),
                 PhoneNumber = child.User.PhoneNumber,
@@ -215,10 +218,7 @@ public class EmergencyService : IEmergencyService
                 ErrorMessage = errorMessage,
                 RelatedEmergencyCallId = callId,
                 CreatedAt = DateTime.UtcNow,
-            };
-
-            _context.SmsRecords.Add(smsRecord);
-            await _context.SaveChangesAsync();
+            });
 
             if (success)
             {
@@ -230,6 +230,13 @@ public class EmergencyService : IEmergencyService
                 _logger.LogWarning("紧急呼叫 SMS 发送失败: 呼叫={CallId}, 子女={ChildId}, 错误={Error}",
                     callId, child.UserId, errorMessage);
             }
+        }
+
+        // 一次性批量写入所有短信记录
+        if (smsRecords.Count > 0)
+        {
+            _context.SmsRecords.AddRange(smsRecords);
+            await _context.SaveChangesAsync();
         }
     }
 

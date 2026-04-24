@@ -255,7 +255,7 @@ public class NeighborCircleService : INeighborCircleService
 
     /// <inheritdoc />
     public async Task<List<NeighborCircleResponse>> SearchNearbyCirclesAsync(
-        double latitude, double longitude, double radiusMeters = 2000)
+        double latitude, double longitude, double radiusMeters = 2000, int maxResults = 20)
     {
         // 只搜索活跃的圈子
         var circles = await _context.NeighborCircles
@@ -289,15 +289,21 @@ public class NeighborCircleService : INeighborCircleService
             }
         }
 
+        // 按距离排序后取 Top N，避免返回过多结果
+        var topResults = results
+            .OrderBy(r => r.Distance)
+            .Take(maxResults)
+            .ToList();
+
         // 查询成员数并构建响应
-        var circleIds = results.Select(r => r.Circle.Id).ToList();
+        var circleIds = topResults.Select(r => r.Circle.Id).ToList();
         var memberCounts = await _context.NeighborCircleMembers
             .Where(m => circleIds.Contains(m.CircleId))
             .GroupBy(m => m.CircleId)
             .Select(g => new { CircleId = g.Key, Count = g.Count() })
             .ToDictionaryAsync(x => x.CircleId, x => x.Count);
 
-        return results.Select(r => new NeighborCircleResponse
+        return topResults.Select(r => new NeighborCircleResponse
         {
             Id = r.Circle.Id,
             CircleName = r.Circle.CircleName,
@@ -311,7 +317,7 @@ public class NeighborCircleService : INeighborCircleService
             IsActive = r.Circle.IsActive,
             CreatedAt = r.Circle.CreatedAt,
             DistanceMeters = r.Distance
-        }).OrderBy(c => c.DistanceMeters).ToList();
+        }).ToList();
     }
 
     /// <inheritdoc />
