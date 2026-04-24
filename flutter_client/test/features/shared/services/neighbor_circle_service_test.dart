@@ -3,7 +3,6 @@ import 'package:mocktail/mocktail.dart';
 
 import '../../../core/helpers/mock_dio_helper.dart';
 import 'package:care_for_the_old_client/features/shared/services/neighbor_circle_service.dart';
-import 'package:care_for_the_old_client/shared/models/neighbor_circle.dart';
 
 void main() {
   late MockDio mockDio;

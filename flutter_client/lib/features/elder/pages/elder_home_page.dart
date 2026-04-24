@@ -284,6 +284,20 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                 onTap: () => context.push('/elder/family'),
               ),
               AnimatedQuickCard(
+                icon: Icons.diversity_3,
+                title: '邻里圈',
+                subtitle: '附近邻居互助',
+                color: Colors.teal,
+                onTap: () => context.push('/neighbor-circle'),
+              ),
+              AnimatedQuickCard(
+                icon: Icons.volunteer_activism,
+                title: '邻里互助',
+                subtitle: '求助与帮助邻居',
+                color: Colors.orange,
+                onTap: () => context.push('/neighbor-help'),
+              ),
+              AnimatedQuickCard(
                 icon: Icons.settings,
                 title: '设置',
                 subtitle: '个人信息设置',
