@@ -22,4 +22,5 @@ public class User
     public ICollection<HealthRecord> HealthRecords { get; set; } = [];
     public ICollection<MedicationPlan> MedicationPlans { get; set; } = [];
     public ICollection<RefreshToken> RefreshTokens { get; set; } = [];
+    public ICollection<NeighborCircleMember> NeighborCircleMemberships { get; set; } = [];
 }
