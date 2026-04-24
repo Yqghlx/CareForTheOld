@@ -233,7 +233,7 @@ public class NeighborCircleService : INeighborCircleService
             return [];
 
         // 查询成员详情并附加距离
-        return await _context.NeighborCircleMembers
+        var members = await _context.NeighborCircleMembers
             .Include(m => m.User)
             .Where(m => m.CircleId == circleId && nearbyUserIds.Contains(m.UserId))
             .Select(m => new NeighborMemberResponse
@@ -245,12 +245,14 @@ public class NeighborCircleService : INeighborCircleService
                 AvatarUrl = m.User.AvatarUrl,
                 JoinedAt = m.JoinedAt
             })
-            .ToListAsync()
-            .ContinueWith(task => task.Result.Select(m =>
-            {
-                m.DistanceMeters = distanceMap[m.UserId];
-                return m;
-            }).ToList());
+            .ToListAsync();
+
+        // 附加距离信息
+        foreach (var m in members)
+        {
+            m.DistanceMeters = distanceMap[m.UserId];
+        }
+        return members;
     }
 
     /// <inheritdoc />

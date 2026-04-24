@@ -65,6 +65,7 @@ if (builder.Environment.IsDevelopment() || builder.Environment.IsEnvironment("Te
     if (string.IsNullOrWhiteSpace(jwtKey))
     {
         jwtKey = "CareForTheOld_DevSecretKey_2026_MustBe32Chars!";
+        Log.Warning("使用不安全的默认 JWT 密钥，请勿在生产环境使用");
     }
     jwtSigningKey = System.Text.Encoding.UTF8.GetBytes(jwtKey);
 }

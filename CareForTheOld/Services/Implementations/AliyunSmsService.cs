@@ -52,7 +52,6 @@ public class AliyunSmsService : ISmsService
             _logger.LogInformation("[阿里云短信] 模拟发送: 手机号={Phone}, 内容={Content}", phoneNumber, content);
 
             // 模拟成功发送
-            await Task.Delay(100); // 模拟网络延迟
             return (true, null);
         }
         catch (Exception ex)
