@@ -27,7 +27,7 @@ public interface INeighborCircleService
     Task<List<NeighborMemberResponse>> GetNearbyMembersAsync(Guid circleId, double latitude, double longitude, double radiusMeters = 500);
 
     /// <summary>搜索附近的邻里圈</summary>
-    Task<List<NeighborCircleResponse>> SearchNearbyCirclesAsync(double latitude, double longitude, double radiusMeters = 2000);
+    Task<List<NeighborCircleResponse>> SearchNearbyCirclesAsync(double latitude, double longitude, double radiusMeters = 2000, int maxResults = 20);
 
     /// <summary>刷新邀请码（仅创建者可操作）</summary>
     Task<NeighborCircleResponse> RefreshInviteCodeAsync(Guid circleId, Guid operatorId);

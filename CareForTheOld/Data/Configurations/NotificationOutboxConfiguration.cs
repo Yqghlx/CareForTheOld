@@ -18,6 +18,9 @@ public class NotificationOutboxConfiguration : IEntityTypeConfiguration<Notifica
         // 按状态+创建时间索引，后台 Job 高效查询待投递消息
         builder.HasIndex(o => new { o.Status, o.CreatedAt });
 
+        // 按用户索引，查询某用户的通知历史
+        builder.HasIndex(o => o.UserId);
+
         builder.Property(o => o.Type).HasMaxLength(50).IsRequired();
         builder.Property(o => o.Title).HasMaxLength(200).IsRequired();
         builder.Property(o => o.Content).HasMaxLength(1000).IsRequired();
