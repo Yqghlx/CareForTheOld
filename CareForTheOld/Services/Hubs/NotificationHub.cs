@@ -148,4 +148,22 @@ public class NotificationHub : Hub
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"family_{familyId}");
         _logger.LogDebug("用户 {UserId} 离开家庭组 {FamilyId}", Context.UserIdentifier, familyId);
     }
+
+    /// <summary>
+    /// 加入邻里圈组（用于邻里互助实时消息）
+    /// </summary>
+    public async Task JoinCircleGroup(Guid circleId)
+    {
+        await Groups.AddToGroupAsync(Context.ConnectionId, $"circle_{circleId}");
+        _logger.LogDebug("用户 {UserId} 加入邻里圈组 {CircleId}", Context.UserIdentifier, circleId);
+    }
+
+    /// <summary>
+    /// 离开邻里圈组
+    /// </summary>
+    public async Task LeaveCircleGroup(Guid circleId)
+    {
+        await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"circle_{circleId}");
+        _logger.LogDebug("用户 {UserId} 离开邻里圈组 {CircleId}", Context.UserIdentifier, circleId);
+    }
 }
