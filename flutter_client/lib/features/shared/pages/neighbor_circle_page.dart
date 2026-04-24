@@ -1,0 +1,307 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../providers/neighbor_circle_provider.dart';
+
+/// 邻里圈管理页面（创建/搜索/加入/退出）
+class NeighborCirclePage extends ConsumerStatefulWidget {
+  const NeighborCirclePage({super.key});
+
+  @override
+  ConsumerState<NeighborCirclePage> createState() => _NeighborCirclePageState();
+}
+
+class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
+  final _inviteCodeController = TextEditingController();
+  final _circleNameController = TextEditingController();
+  bool _isSearching = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // 页面加载时获取我的邻里圈
+    Future.microtask(() => ref.read(neighborCircleProvider.notifier).loadMyCircle());
+  }
+
+  @override
+  void dispose() {
+    _inviteCodeController.dispose();
+    _circleNameController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(neighborCircleProvider);
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('邻里圈')),
+      body: state.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : state.hasCircle
+              ? _buildMyCircle(context, state)
+              : _buildNoCircle(context),
+    );
+  }
+
+  /// 已加入邻里圈的展示
+  Widget _buildMyCircle(BuildContext context, NeighborCircleState state) {
+    final circle = state.circle!;
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 圈子信息卡片
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(circle.circleName,
+                      style: Theme.of(context).textTheme.titleLarge),
+                  const SizedBox(height: 8),
+                  Text('圈主：${circle.creatorName}'),
+                  Text('成员数：${circle.memberCount} 人'),
+                  Text('覆盖半径：${circle.radiusMeters.toInt()} 米'),
+                  if (circle.inviteCode.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('邀请码：${circle.inviteCode}',
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18)),
+                          const SizedBox(width: 8),
+                          IconButton(
+                            icon: const Icon(Icons.refresh, size: 20),
+                            tooltip: '刷新邀请码',
+                            onPressed: () => _refreshInviteCode(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // 成员列表
+          Text('圈内成员', style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 8),
+          ...state.members.map((m) => ListTile(
+                leading: CircleAvatar(
+                  child: Text(m.realName[0]),
+                ),
+                title: Text(m.realName),
+                subtitle: Text(m.nickname ?? ''),
+                trailing: m.distanceMeters != null
+                    ? Text('${m.distanceMeters!.toInt()} 米')
+                    : null,
+              )),
+
+          if (state.members.isEmpty)
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Text('暂无成员信息'),
+            ),
+
+          const SizedBox(height: 16),
+
+          // 操作按钮
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  icon: const Icon(Icons.people),
+                  label: const Text('查看成员'),
+                  onPressed: () =>
+                      ref.read(neighborCircleProvider.notifier).loadMembers(),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: OutlinedButton.icon(
+                  icon: const Icon(Icons.exit_to_app),
+                  label: const Text('退出圈子'),
+                  style: OutlinedButton.styleFrom(foregroundColor: Colors.red),
+                  onPressed: () => _leaveCircle(),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 未加入任何邻里圈的展示
+  Widget _buildNoCircle(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // 加入邻里圈
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('加入邻里圈', style: Theme.of(context).textTheme.titleMedium),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: _inviteCodeController,
+                    decoration: const InputDecoration(
+                      labelText: '邀请码',
+                      hintText: '输入 6 位数字邀请码',
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.number,
+                    maxLength: 6,
+                  ),
+                  const SizedBox(height: 8),
+                  ElevatedButton(
+                    onPressed: () => _joinCircle(),
+                    child: const Text('加入'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // 创建邻里圈
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('创建邻里圈', style: Theme.of(context).textTheme.titleMedium),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: _circleNameController,
+                    decoration: const InputDecoration(
+                      labelText: '圈子名称',
+                      hintText: '例如：阳光小区互助群',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  ElevatedButton(
+                    onPressed: () => _createCircle(),
+                    child: const Text('创建'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // 搜索附近
+          OutlinedButton.icon(
+            icon: const Icon(Icons.search),
+            label: const Text('搜索附近的邻里圈'),
+            onPressed: () => _searchNearby(),
+          ),
+          if (_isSearching)
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Center(child: CircularProgressIndicator()),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _joinCircle() async {
+    final code = _inviteCodeController.text.trim();
+    if (code.length != 6) {
+      _showSnackBar('请输入 6 位邀请码');
+      return;
+    }
+    final success =
+        await ref.read(neighborCircleProvider.notifier).joinCircle(code);
+    if (mounted) {
+      _showSnackBar(success ? '加入成功' : ref.read(neighborCircleProvider).error ?? '加入失败');
+    }
+  }
+
+  Future<void> _createCircle() async {
+    final name = _circleNameController.text.trim();
+    if (name.isEmpty) {
+      _showSnackBar('请输入圈子名称');
+      return;
+    }
+    // TODO: 获取当前位置作为中心坐标
+    final success =
+        await ref.read(neighborCircleProvider.notifier).createCircle(
+              circleName: name,
+              latitude: 39.9042, // 默认北京坐标，实际应获取当前位置
+              longitude: 116.4074,
+            );
+    if (mounted) {
+      _showSnackBar(success ? '创建成功' : ref.read(neighborCircleProvider).error ?? '创建失败');
+    }
+  }
+
+  Future<void> _leaveCircle() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('确认退出'),
+        content: const Text('确定要退出邻里圈吗？如果您是圈主，退出后圈子将解散。'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('取消')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('退出'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    final success =
+        await ref.read(neighborCircleProvider.notifier).leaveCircle();
+    if (mounted) {
+      _showSnackBar(success ? '已退出' : ref.read(neighborCircleProvider).error ?? '退出失败');
+    }
+  }
+
+  Future<void> _refreshInviteCode() async {
+    final success =
+        await ref.read(neighborCircleProvider.notifier).refreshInviteCode();
+    if (mounted) {
+      _showSnackBar(success ? '邀请码已刷新' : ref.read(neighborCircleProvider).error ?? '刷新失败');
+    }
+  }
+
+  Future<void> _searchNearby() async {
+    setState(() => _isSearching = true);
+    await ref.read(neighborCircleProvider.notifier).searchNearby(
+          latitude: 39.9042,
+          longitude: 116.4074,
+        );
+    if (mounted) setState(() => _isSearching = false);
+    final nearby = ref.read(neighborCircleProvider).nearbyCircles;
+    if (nearby.isEmpty && mounted) {
+      _showSnackBar('附近没有找到邻里圈');
+    }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  }
+}

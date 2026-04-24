@@ -15,6 +15,9 @@ import '../../features/child/pages/elder_location_page.dart';
 import '../../features/child/pages/emergency_page.dart';
 import '../../features/shared/pages/settings_page.dart';
 import '../../features/shared/pages/notification_page.dart';
+import '../../features/shared/pages/neighbor_circle_page.dart';
+import '../../features/shared/pages/neighbor_help_page.dart';
+import '../../features/shared/pages/neighbor_help_rating_page.dart';
 import '../../shared/providers/auth_provider.dart';
 
 /// 认证状态变化监听器，用于触发 GoRouter 重新执行 redirect
@@ -129,6 +132,21 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/notifications',
         builder: (context, state) => const NotificationPage(),
+      ),
+      GoRoute(
+        path: '/neighbor-circle',
+        builder: (context, state) => const NeighborCirclePage(),
+      ),
+      GoRoute(
+        path: '/neighbor-help',
+        builder: (context, state) => const NeighborHelpPage(),
+      ),
+      GoRoute(
+        path: '/neighbor-help/:id/rate',
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return NeighborHelpRatingPage(requestId: id);
+        },
       ),
     ],
   );
