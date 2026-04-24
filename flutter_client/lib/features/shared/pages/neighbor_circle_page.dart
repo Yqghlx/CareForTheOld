@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../providers/neighbor_circle_provider.dart';
 
@@ -15,6 +16,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
   final _inviteCodeController = TextEditingController();
   final _circleNameController = TextEditingController();
   bool _isSearching = false;
+  bool _isGettingLocation = false;
 
   @override
   void initState() {
@@ -200,8 +202,13 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                   ),
                   const SizedBox(height: 8),
                   ElevatedButton(
-                    onPressed: () => _createCircle(),
-                    child: const Text('创建'),
+                    onPressed: _isGettingLocation ? null : () => _createCircle(),
+                    child: _isGettingLocation
+                        ? const SizedBox(
+                            width: 20, height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Text('创建'),
                   ),
                 ],
               ),
@@ -213,7 +220,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
           OutlinedButton.icon(
             icon: const Icon(Icons.search),
             label: const Text('搜索附近的邻里圈'),
-            onPressed: () => _searchNearby(),
+            onPressed: _isGettingLocation ? null : () => _searchNearby(),
           ),
           if (_isSearching)
             const Padding(
@@ -244,12 +251,12 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
       _showSnackBar('请输入圈子名称');
       return;
     }
-    // TODO: 获取当前位置作为中心坐标
+    final position = await _getCurrentPosition();
     final success =
         await ref.read(neighborCircleProvider.notifier).createCircle(
               circleName: name,
-              latitude: 39.9042, // 默认北京坐标，实际应获取当前位置
-              longitude: 116.4074,
+              latitude: position?.latitude ?? 39.9042,
+              longitude: position?.longitude ?? 116.4074,
             );
     if (mounted) {
       _showSnackBar(success ? '创建成功' : ref.read(neighborCircleProvider).error ?? '创建失败');
@@ -290,14 +297,52 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
 
   Future<void> _searchNearby() async {
     setState(() => _isSearching = true);
+    final position = await _getCurrentPosition();
     await ref.read(neighborCircleProvider.notifier).searchNearby(
-          latitude: 39.9042,
-          longitude: 116.4074,
+          latitude: position?.latitude ?? 39.9042,
+          longitude: position?.longitude ?? 116.4074,
         );
     if (mounted) setState(() => _isSearching = false);
     final nearby = ref.read(neighborCircleProvider).nearbyCircles;
     if (nearby.isEmpty && mounted) {
       _showSnackBar('附近没有找到邻里圈');
+    }
+  }
+
+  /// 获取当前位置（权限拒绝或获取失败返回 null，不阻塞主流程）
+  Future<Position?> _getCurrentPosition() async {
+    setState(() => _isGettingLocation = true);
+    try {
+      // 检查定位服务是否开启
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        if (mounted) _showSnackBar('定位服务未开启，将使用默认位置');
+        return null;
+      }
+
+      // 检查权限
+      var permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          if (mounted) _showSnackBar('定位权限被拒绝，将使用默认位置');
+          return null;
+        }
+      }
+      if (permission == LocationPermission.deniedForever) {
+        if (mounted) _showSnackBar('定位权限被永久拒绝，将使用默认位置');
+        return null;
+      }
+
+      return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.medium,
+        timeLimit: const Duration(seconds: 5),
+      );
+    } catch (_) {
+      if (mounted) _showSnackBar('获取位置失败，将使用默认位置');
+      return null;
+    } finally {
+      if (mounted) setState(() => _isGettingLocation = false);
     }
   }
 
