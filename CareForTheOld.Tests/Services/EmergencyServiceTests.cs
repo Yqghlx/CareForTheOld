@@ -43,7 +43,8 @@ public class EmergencyServiceTests
             .ReturnsAsync((true, null));
         _mockSmsService.SetupGet(s => s.ServiceName).Returns("MockSms");
         var mockLogger = new Mock<ILogger<EmergencyService>>();
-        _service = new EmergencyService(_context, _mockNotificationService.Object, _mockSmsService.Object, mockLogger.Object);
+        var mockNeighborHelpService = new Mock<INeighborHelpService>();
+        _service = new EmergencyService(_context, _mockNotificationService.Object, _mockSmsService.Object, mockNeighborHelpService.Object, mockLogger.Object);
     }
 
     /// <summary>

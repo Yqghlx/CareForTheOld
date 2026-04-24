@@ -17,6 +17,7 @@ public class EmergencyService : IEmergencyService
     private readonly AppDbContext _context;
     private readonly INotificationService _notificationService;
     private readonly ISmsService _smsService;
+    private readonly INeighborHelpService _neighborHelpService;
     private readonly ILogger<EmergencyService> _logger;
 
     /// <summary>二次提醒延迟时间（默认 3 分钟）</summary>
@@ -26,12 +27,14 @@ public class EmergencyService : IEmergencyService
         AppDbContext context,
         INotificationService notificationService,
         ISmsService smsService,
+        INeighborHelpService neighborHelpService,
         ILogger<EmergencyService> logger,
         IConfiguration? configuration = null)
     {
         _context = context;
         _notificationService = notificationService;
         _smsService = smsService;
+        _neighborHelpService = neighborHelpService;
         _logger = logger;
         _followUpDelayMinutes = configuration?.GetValue("Emergency:FollowUpDelayMinutes", 3) ?? 3;
     }
@@ -75,6 +78,19 @@ public class EmergencyService : IEmergencyService
             catch (Exception ex)
             {
                 _logger.LogError(ex, "紧急呼叫通知发送失败，老人 {ElderId}", elderId);
+            }
+        });
+
+        // 异步广播给邻里圈附近邻居（不阻塞主流程）
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await _neighborHelpService.BroadcastHelpRequestAsync(call.Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "邻里互助广播失败，呼叫 {CallId}", call.Id);
             }
         });
 

@@ -108,6 +108,7 @@ builder.Services.AddScoped<IMedicationService, MedicationService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IEmergencyService, EmergencyService>();
 builder.Services.AddScoped<INeighborCircleService, NeighborCircleService>();
+builder.Services.AddScoped<INeighborHelpService, NeighborHelpService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IGeoFenceService, GeoFenceService>();
 builder.Services.AddScoped<IHealthReportService, HealthReportService>();
@@ -362,6 +363,12 @@ if (!app.Environment.IsEnvironment("Testing"))
         "heartbeat-monitor",
         service => service.CheckHeartbeatsAsync(),
         Cron.Minutely);
+
+    // 邻里互助过期清理：每 2 分钟清理超时的求助请求
+    RecurringJob.AddOrUpdate<NeighborHelpService>(
+        "neighbor-help-cleanup",
+        service => service.CleanupExpiredRequestsAsync(),
+        "*/2 * * * *");
 }
 
 // 提供上传文件的静态访问（头像等）

@@ -1,0 +1,565 @@
+using CareForTheOld.Data;
+using CareForTheOld.Models.DTOs.Requests.Neighbor;
+using CareForTheOld.Models.DTOs.Responses;
+using CareForTheOld.Models.Entities;
+using CareForTheOld.Models.Enums;
+using CareForTheOld.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+
+namespace CareForTheOld.Services.Implementations;
+
+/// <summary>
+/// 邻里互助服务实现
+/// </summary>
+public class NeighborHelpService : INeighborHelpService
+{
+    private readonly AppDbContext _context;
+    private readonly INotificationService _notificationService;
+    private readonly ILogger<NeighborHelpService> _logger;
+
+    /// <summary>求助请求默认过期时间（15 分钟）</summary>
+    private static readonly TimeSpan _defaultExpiration = TimeSpan.FromMinutes(15);
+
+    /// <summary>广播距离阈值（500 米）</summary>
+    private const double BroadcastRadiusMeters = 500;
+
+    /// <summary>地球半径（米），用于 Haversine 公式</summary>
+    private const double EarthRadiusMeters = 6_371_000;
+
+    public NeighborHelpService(
+        AppDbContext context,
+        INotificationService notificationService,
+        ILogger<NeighborHelpService> logger)
+    {
+        _context = context;
+        _notificationService = notificationService;
+        _logger = logger;
+    }
+
+    /// <inheritdoc />
+    public async Task BroadcastHelpRequestAsync(Guid emergencyCallId)
+    {
+        // 获取紧急呼叫记录
+        var call = await _context.EmergencyCalls
+            .Include(c => c.Elder)
+            .FirstOrDefaultAsync(c => c.Id == emergencyCallId);
+
+        if (call == null)
+        {
+            _logger.LogWarning("广播邻里求助失败：紧急呼叫 {CallId} 不存在", emergencyCallId);
+            return;
+        }
+
+        // 查找老人加入的邻里圈
+        var membership = await _context.NeighborCircleMembers
+            .FirstOrDefaultAsync(m => m.UserId == call.ElderId);
+
+        if (membership == null)
+        {
+            _logger.LogInformation("老人 {ElderId} 未加入任何邻里圈，跳过邻里广播", call.ElderId);
+            return;
+        }
+
+        var circleId = membership.CircleId;
+
+        // 如果没有位置信息，无法计算距离，广播给全圈成员
+        if (!call.Latitude.HasValue || !call.Longitude.HasValue)
+        {
+            _logger.LogInformation("紧急呼叫 {CallId} 无位置信息，广播给全圈成员", emergencyCallId);
+            await BroadcastToAllMembersAsync(call, circleId);
+            return;
+        }
+
+        // 获取圈子成员（排除求助者本人）
+        var memberIds = await _context.NeighborCircleMembers
+            .Where(m => m.CircleId == circleId && m.UserId != call.ElderId)
+            .Select(m => m.UserId)
+            .ToListAsync();
+
+        if (memberIds.Count == 0)
+        {
+            _logger.LogInformation("邻里圈 {CircleId} 无其他成员", circleId);
+            return;
+        }
+
+        // 获取成员最近位置记录
+        var recentLocations = await _context.LocationRecords
+            .Where(l => memberIds.Contains(l.UserId))
+            .GroupBy(l => l.UserId)
+            .Select(g => g.OrderByDescending(l => l.RecordedAt).First())
+            .ToListAsync();
+
+        // 粗筛 + Haversine 精算，筛选 500 米内的邻居
+        var nearbyUserIds = new List<Guid>();
+        var lat = call.Latitude.Value;
+        var lng = call.Longitude.Value;
+        var latThreshold = BroadcastRadiusMeters / 111_000.0;
+        var lngThreshold = BroadcastRadiusMeters / (111_000.0 * Math.Cos(lat * Math.PI / 180.0));
+
+        foreach (var loc in recentLocations)
+        {
+            if (Math.Abs(loc.Latitude - lat) > latThreshold ||
+                Math.Abs(loc.Longitude - lng) > lngThreshold)
+                continue;
+
+            var distance = Haversine(lat, lng, loc.Latitude, loc.Longitude);
+            if (distance <= BroadcastRadiusMeters)
+                nearbyUserIds.Add(loc.UserId);
+        }
+
+        // 如果附近没有邻居，广播给全圈作为兜底
+        if (nearbyUserIds.Count == 0)
+        {
+            _logger.LogInformation("紧急呼叫 {CallId} 附近 500 米无邻居，广播给全圈成员", emergencyCallId);
+            nearbyUserIds = memberIds;
+        }
+
+        // 创建求助请求记录
+        var helpRequest = new NeighborHelpRequest
+        {
+            Id = Guid.NewGuid(),
+            EmergencyCallId = emergencyCallId,
+            CircleId = circleId,
+            RequesterId = call.ElderId,
+            Status = HelpRequestStatus.Pending,
+            Latitude = call.Latitude,
+            Longitude = call.Longitude,
+            RequestedAt = DateTime.UtcNow,
+            ExpiresAt = DateTime.UtcNow.Add(_defaultExpiration),
+        };
+
+        _context.NeighborHelpRequests.Add(helpRequest);
+        await _context.SaveChangesAsync();
+
+        // Outbox Pattern 推送通知给附近邻居
+        await _notificationService.SendToUsersAsync(
+            nearbyUserIds,
+            "NeighborHelpRequest",
+            new
+            {
+                Title = "邻居紧急求助",
+                Content = $"{call.Elder.RealName}发起紧急求助，您是附近邻居，请帮忙！",
+                HelpRequestId = helpRequest.Id,
+                EmergencyCallId = emergencyCallId,
+                RequesterId = call.ElderId,
+                RequesterName = call.Elder.RealName,
+                Latitude = call.Latitude,
+                Longitude = call.Longitude,
+                ExpiresAt = helpRequest.ExpiresAt,
+            });
+
+        _logger.LogInformation(
+            "已广播邻里求助：呼叫={CallId}, 请求={RequestId}, 通知邻居数={Count}",
+            emergencyCallId, helpRequest.Id, nearbyUserIds.Count);
+    }
+
+    /// <inheritdoc />
+    public async Task<NeighborHelpRequestResponse> AcceptHelpRequestAsync(Guid requestId, Guid responderId)
+    {
+        var request = await _context.NeighborHelpRequests
+            .AsTracking()
+            .Include(r => r.Requester)
+            .FirstOrDefaultAsync(r => r.Id == requestId)
+            ?? throw new KeyNotFoundException("求助请求不存在");
+
+        if (request.Status != HelpRequestStatus.Pending)
+            throw new InvalidOperationException($"求助请求当前状态为 {request.Status}，无法接受");
+
+        if (request.ExpiresAt < DateTime.UtcNow)
+            throw new InvalidOperationException("求助请求已过期");
+
+        if (request.RequesterId == responderId)
+            throw new ArgumentException("不能接受自己发起的求助");
+
+        // 原子锁定：更新状态和响应者
+        request.Status = HelpRequestStatus.Accepted;
+        request.ResponderId = responderId;
+        request.RespondedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+
+        // 查询响应者信息
+        var responder = await _context.Users.FindAsync(responderId)
+            ?? throw new KeyNotFoundException("响应者不存在");
+
+        // 通知老人："邻居XX正在赶来"
+        await _notificationService.SendToUserAsync(
+            request.RequesterId,
+            "NeighborHelpAccepted",
+            new
+            {
+                Title = "邻居正在赶来",
+                Content = $"邻居{responder.RealName}已接受您的求助，正在赶来！",
+                HelpRequestId = requestId,
+                ResponderName = responder.RealName,
+            });
+
+        // 通知老人的子女："邻居已响应紧急呼叫"
+        var familyMember = await _context.FamilyMembers
+            .FirstOrDefaultAsync(fm => fm.UserId == request.RequesterId);
+        if (familyMember != null)
+        {
+            var childIds = await _context.FamilyMembers
+                .Where(fm => fm.FamilyId == familyMember.FamilyId && fm.Role == UserRole.Child)
+                .Select(fm => fm.UserId)
+                .ToListAsync();
+
+            if (childIds.Count > 0)
+            {
+                await _notificationService.SendToUsersAsync(
+                    childIds,
+                    "NeighborHelpAccepted",
+                    new
+                    {
+                        Title = "邻居已响应紧急呼叫",
+                        Content = $"邻居{responder.RealName}已响应{request.Requester.RealName}的紧急呼叫",
+                        HelpRequestId = requestId,
+                        EmergencyCallId = request.EmergencyCallId,
+                        ResponderName = responder.RealName,
+                    });
+            }
+        }
+
+        // 通知其他邻居："该求助已被接受"
+        var otherMemberIds = await _context.NeighborCircleMembers
+            .Where(m => m.CircleId == request.CircleId &&
+                        m.UserId != responderId &&
+                        m.UserId != request.RequesterId)
+            .Select(m => m.UserId)
+            .ToListAsync();
+
+        if (otherMemberIds.Count > 0)
+        {
+            await _notificationService.SendToUsersAsync(
+                otherMemberIds,
+                "NeighborHelpResolved",
+                new
+                {
+                    Title = "求助已被响应",
+                    Content = $"{request.Requester.RealName}的紧急求助已被{responder.RealName}接受",
+                    HelpRequestId = requestId,
+                });
+        }
+
+        return await BuildHelpRequestResponse(request.Id);
+    }
+
+    /// <inheritdoc />
+    public async Task CancelHelpRequestAsync(Guid requestId, Guid operatorId)
+    {
+        var request = await _context.NeighborHelpRequests
+            .AsTracking()
+            .Include(r => r.Requester)
+            .FirstOrDefaultAsync(r => r.Id == requestId)
+            ?? throw new KeyNotFoundException("求助请求不存在");
+
+        if (request.Status != HelpRequestStatus.Pending && request.Status != HelpRequestStatus.Accepted)
+            throw new InvalidOperationException($"求助请求当前状态为 {request.Status}，无法取消");
+
+        // 验证操作者：老人本人或其子女
+        var isRequester = request.RequesterId == operatorId;
+        var isChild = false;
+        if (!isRequester)
+        {
+            var familyMember = await _context.FamilyMembers
+                .FirstOrDefaultAsync(fm => fm.UserId == request.RequesterId);
+            if (familyMember != null)
+            {
+                isChild = await _context.FamilyMembers
+                    .AnyAsync(fm => fm.FamilyId == familyMember.FamilyId &&
+                                    fm.UserId == operatorId && fm.Role == UserRole.Child);
+            }
+        }
+
+        if (!isRequester && !isChild)
+            throw new UnauthorizedAccessException("只有求助者或其子女可以取消求助");
+
+        request.Status = HelpRequestStatus.Cancelled;
+        request.CancelledAt = DateTime.UtcNow;
+        request.CancelledBy = operatorId;
+        await _context.SaveChangesAsync();
+
+        // 通知已响应的邻居
+        if (request.ResponderId.HasValue)
+        {
+            await _notificationService.SendToUserAsync(
+                request.ResponderId.Value,
+                "NeighborHelpCancelled",
+                new
+                {
+                    Title = "求助已取消",
+                    Content = $"{request.Requester.RealName}的紧急求助已被取消",
+                    HelpRequestId = requestId,
+                });
+        }
+
+        _logger.LogInformation("求助请求 {RequestId} 已被用户 {OperatorId} 取消", requestId, operatorId);
+    }
+
+    /// <inheritdoc />
+    public async Task<NeighborHelpRatingResponse> RateHelpRequestAsync(
+        Guid requestId, Guid raterId, RateHelpRequest request)
+    {
+        var helpRequest = await _context.NeighborHelpRequests
+            .FirstOrDefaultAsync(r => r.Id == requestId)
+            ?? throw new KeyNotFoundException("求助请求不存在");
+
+        if (helpRequest.Status != HelpRequestStatus.Accepted)
+            throw new InvalidOperationException("只能评价已接受的求助请求");
+
+        if (helpRequest.ResponderId == null)
+            throw new InvalidOperationException("该求助请求未被响应，无法评价");
+
+        // 验证评价者：老人本人或其子女
+        var isRequester = helpRequest.RequesterId == raterId;
+        var isChild = false;
+        if (!isRequester)
+        {
+            var familyMember = await _context.FamilyMembers
+                .FirstOrDefaultAsync(fm => fm.UserId == helpRequest.RequesterId);
+            if (familyMember != null)
+            {
+                isChild = await _context.FamilyMembers
+                    .AnyAsync(fm => fm.FamilyId == familyMember.FamilyId &&
+                                    fm.UserId == raterId && fm.Role == UserRole.Child);
+            }
+        }
+
+        if (!isRequester && !isChild)
+            throw new UnauthorizedAccessException("只有求助者或其子女可以评价");
+
+        var rating = new NeighborHelpRating
+        {
+            Id = Guid.NewGuid(),
+            HelpRequestId = requestId,
+            RaterId = raterId,
+            RateeId = helpRequest.ResponderId.Value,
+            Rating = request.Rating,
+            Comment = request.Comment,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        _context.NeighborHelpRatings.Add(rating);
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
+        {
+            throw new ArgumentException("您已评价过该求助请求");
+        }
+
+        return new NeighborHelpRatingResponse
+        {
+            Id = rating.Id,
+            HelpRequestId = rating.HelpRequestId,
+            RaterId = rating.RaterId,
+            RateeId = rating.RateeId,
+            Rating = rating.Rating,
+            Comment = rating.Comment,
+            CreatedAt = rating.CreatedAt
+        };
+    }
+
+    /// <inheritdoc />
+    public async Task<List<NeighborHelpRequestResponse>> GetPendingRequestsAsync(Guid userId)
+    {
+        // 查找用户加入的邻里圈
+        var membership = await _context.NeighborCircleMembers
+            .FirstOrDefaultAsync(m => m.UserId == userId);
+
+        if (membership == null)
+            return [];
+
+        var now = DateTime.UtcNow;
+
+        return await _context.NeighborHelpRequests
+            .Include(r => r.Requester)
+            .Include(r => r.Responder)
+            .Where(r => r.CircleId == membership.CircleId &&
+                        r.Status == HelpRequestStatus.Pending &&
+                        r.ExpiresAt > now &&
+                        r.RequesterId != userId)
+            .OrderByDescending(r => r.RequestedAt)
+            .Select(r => new NeighborHelpRequestResponse
+            {
+                Id = r.Id,
+                EmergencyCallId = r.EmergencyCallId,
+                CircleId = r.CircleId,
+                RequesterId = r.RequesterId,
+                RequesterName = r.Requester.RealName,
+                ResponderId = r.ResponderId,
+                ResponderName = r.Responder != null ? r.Responder.RealName : null,
+                Status = r.Status,
+                Latitude = r.Latitude,
+                Longitude = r.Longitude,
+                RequestedAt = r.RequestedAt,
+                RespondedAt = r.RespondedAt,
+                ExpiresAt = r.ExpiresAt,
+            })
+            .ToListAsync();
+    }
+
+    /// <inheritdoc />
+    public async Task<List<NeighborHelpRequestResponse>> GetHistoryAsync(Guid userId, int skip = 0, int limit = 20)
+    {
+        // 查找用户加入的邻里圈
+        var membership = await _context.NeighborCircleMembers
+            .FirstOrDefaultAsync(m => m.UserId == userId);
+
+        if (membership == null)
+            return [];
+
+        return await _context.NeighborHelpRequests
+            .Include(r => r.Requester)
+            .Include(r => r.Responder)
+            .Where(r => r.CircleId == membership.CircleId &&
+                        (r.RequesterId == userId || r.ResponderId == userId))
+            .OrderByDescending(r => r.RequestedAt)
+            .Skip(skip)
+            .Take(limit)
+            .Select(r => new NeighborHelpRequestResponse
+            {
+                Id = r.Id,
+                EmergencyCallId = r.EmergencyCallId,
+                CircleId = r.CircleId,
+                RequesterId = r.RequesterId,
+                RequesterName = r.Requester.RealName,
+                ResponderId = r.ResponderId,
+                ResponderName = r.Responder != null ? r.Responder.RealName : null,
+                Status = r.Status,
+                Latitude = r.Latitude,
+                Longitude = r.Longitude,
+                RequestedAt = r.RequestedAt,
+                RespondedAt = r.RespondedAt,
+                ExpiresAt = r.ExpiresAt,
+            })
+            .ToListAsync();
+    }
+
+    /// <inheritdoc />
+    public async Task<NeighborHelpRequestResponse> GetRequestAsync(Guid requestId)
+    {
+        return await BuildHelpRequestResponse(requestId);
+    }
+
+    /// <inheritdoc />
+    public async Task CleanupExpiredRequestsAsync()
+    {
+        var now = DateTime.UtcNow;
+        var expiredRequests = await _context.NeighborHelpRequests
+            .AsTracking()
+            .Where(r => r.Status == HelpRequestStatus.Pending && r.ExpiresAt < now)
+            .ToListAsync();
+
+        if (expiredRequests.Count == 0)
+            return;
+
+        foreach (var request in expiredRequests)
+        {
+            request.Status = HelpRequestStatus.Expired;
+        }
+
+        await _context.SaveChangesAsync();
+
+        _logger.LogInformation("已清理 {Count} 个过期邻里求助请求", expiredRequests.Count);
+    }
+
+    /// <summary>
+    /// 无位置信息时，广播给全圈成员
+    /// </summary>
+    private async Task BroadcastToAllMembersAsync(EmergencyCall call, Guid circleId)
+    {
+        var memberIds = await _context.NeighborCircleMembers
+            .Where(m => m.CircleId == circleId && m.UserId != call.ElderId)
+            .Select(m => m.UserId)
+            .ToListAsync();
+
+        if (memberIds.Count == 0) return;
+
+        var helpRequest = new NeighborHelpRequest
+        {
+            Id = Guid.NewGuid(),
+            EmergencyCallId = call.Id,
+            CircleId = circleId,
+            RequesterId = call.ElderId,
+            Status = HelpRequestStatus.Pending,
+            Latitude = call.Latitude,
+            Longitude = call.Longitude,
+            RequestedAt = DateTime.UtcNow,
+            ExpiresAt = DateTime.UtcNow.Add(_defaultExpiration),
+        };
+
+        _context.NeighborHelpRequests.Add(helpRequest);
+        await _context.SaveChangesAsync();
+
+        await _notificationService.SendToUsersAsync(
+            memberIds,
+            "NeighborHelpRequest",
+            new
+            {
+                Title = "邻居紧急求助",
+                Content = $"{call.Elder.RealName}发起紧急求助，请帮忙！",
+                HelpRequestId = helpRequest.Id,
+                EmergencyCallId = call.Id,
+                RequesterId = call.ElderId,
+                RequesterName = call.Elder.RealName,
+                Latitude = call.Latitude,
+                Longitude = call.Longitude,
+                ExpiresAt = helpRequest.ExpiresAt,
+            });
+    }
+
+    /// <summary>
+    /// 构建求助请求响应
+    /// </summary>
+    private async Task<NeighborHelpRequestResponse> BuildHelpRequestResponse(Guid requestId)
+    {
+        var request = await _context.NeighborHelpRequests
+            .Include(r => r.Requester)
+            .Include(r => r.Responder)
+            .FirstAsync(r => r.Id == requestId);
+
+        return new NeighborHelpRequestResponse
+        {
+            Id = request.Id,
+            EmergencyCallId = request.EmergencyCallId,
+            CircleId = request.CircleId,
+            RequesterId = request.RequesterId,
+            RequesterName = request.Requester.RealName,
+            ResponderId = request.ResponderId,
+            ResponderName = request.Responder?.RealName,
+            Status = request.Status,
+            Latitude = request.Latitude,
+            Longitude = request.Longitude,
+            RequestedAt = request.RequestedAt,
+            RespondedAt = request.RespondedAt,
+            ExpiresAt = request.ExpiresAt,
+        };
+    }
+
+    /// <summary>
+    /// Haversine 公式计算两个经纬度点之间的球面距离（米）
+    /// </summary>
+    private static double Haversine(double lat1, double lng1, double lat2, double lng2)
+    {
+        var dLat = (lat2 - lat1) * Math.PI / 180.0;
+        var dLng = (lng2 - lng1) * Math.PI / 180.0;
+        var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+                Math.Cos(lat1 * Math.PI / 180.0) * Math.Cos(lat2 * Math.PI / 180.0) *
+                Math.Sin(dLng / 2) * Math.Sin(dLng / 2);
+        var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+        return EarthRadiusMeters * c;
+    }
+
+    /// <summary>
+    /// 判断是否为唯一约束冲突异常（兼容 PostgreSQL 和 SQLite）
+    /// </summary>
+    private static bool IsUniqueConstraintViolation(DbUpdateException ex)
+    {
+        var inner = ex.InnerException;
+        if (inner == null) return false;
+        var msg = inner.Message.ToUpperInvariant();
+        return msg.Contains("UNIQUE") || msg.Contains("23505");
+    }
+}

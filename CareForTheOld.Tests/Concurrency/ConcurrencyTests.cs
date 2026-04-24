@@ -128,7 +128,7 @@ public class ConcurrencyTests
         mockSmsService.Setup(s => s.SendAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync((true, null));
         mockSmsService.SetupGet(s => s.ServiceName).Returns("MockSms");
-        var service = new EmergencyService(context, new Mock<INotificationService>().Object, mockSmsService.Object, new Mock<ILogger<EmergencyService>>().Object);
+        var service = new EmergencyService(context, new Mock<INotificationService>().Object, mockSmsService.Object, new Mock<INeighborHelpService>().Object, new Mock<ILogger<EmergencyService>>().Object);
 
         var elderId = Guid.NewGuid();
         var familyId = Guid.NewGuid();
