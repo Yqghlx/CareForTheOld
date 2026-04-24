@@ -177,6 +177,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
     }
 
     return ListView.builder(
+      cacheExtent: 800,
       itemCount: state.todayPending.length,
       itemBuilder: (context, index) {
         final log = state.todayPending[index];

@@ -46,6 +46,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       return CachedNetworkImage(
         imageUrl: avatarUrl,
         fit: BoxFit.cover,
+        memCacheWidth: 256,
+        memCacheHeight: 256,
+        maxWidthDiskCache: 512,
+        maxHeightDiskCache: 512,
         errorWidget: (_, __, ___) => Icon(Icons.person, size: iconSize, color: Colors.white),
       );
     }

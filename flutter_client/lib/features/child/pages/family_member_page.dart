@@ -355,6 +355,10 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     ? CachedNetworkImage(
                         imageUrl: member.avatarUrl!,
                         fit: BoxFit.cover,
+                        memCacheWidth: 256,
+                        memCacheHeight: 256,
+                        maxWidthDiskCache: 512,
+                        maxHeightDiskCache: 512,
                         errorWidget: (_, __, ___) => Icon(
                           member.role.isElder ? Icons.elderly : Icons.person,
                           color: member.role.isElder ? Colors.orange : Colors.blue,

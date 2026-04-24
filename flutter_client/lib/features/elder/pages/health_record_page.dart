@@ -273,6 +273,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
     }
 
     return ListView.builder(
+      cacheExtent: 800,
       itemCount: state.records.length,
       itemBuilder: (context, index) {
         final record = state.records[index];
