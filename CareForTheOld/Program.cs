@@ -1,7 +1,9 @@
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using CareForTheOld.Common.Extensions;
+using CareForTheOld.Common.Helpers;
 using CareForTheOld.Common.Middleware;
+using Microsoft.AspNetCore.Mvc;
 using CareForTheOld.Data;
 using CareForTheOld.Services.Background;
 using Hangfire;
@@ -14,6 +16,12 @@ using StackExchange.Redis;
 using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// 限制请求体大小为 10MB，防止大载荷 DoS 攻击
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.Limits.MaxRequestBodySize = 10 * 1024 * 1024;
+});
 
 // 生产环境启动前强制检查必要配置
 if (builder.Environment.IsProduction())
@@ -80,6 +88,20 @@ builder.Services.AddControllers()
         // 将枚举序列化为字符串（而非整数），使用 camelCase 命名
         options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter(
             System.Text.Json.JsonNamingPolicy.CamelCase));
+    })
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        // 统一模型验证失败响应为 ApiResponse 格式，替代默认的 ValidationProblemDetails
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var errors = context.ModelState
+                .Where(e => e.Value?.Errors.Count > 0)
+                .SelectMany(e => e.Value!.Errors.Select(err => err.ErrorMessage))
+                .ToList();
+
+            return new BadRequestObjectResult(
+                ApiResponse<object>.Fail("请求参数验证失败", errors));
+        };
     });
 builder.Services.AddApiVersioning(options =>
 {
