@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using CareForTheOld.Common.Extensions;
+using CareForTheOld.Common.Filters;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Models.DTOs.Requests.Location;
 using CareForTheOld.Models.DTOs.Responses;
@@ -45,6 +46,7 @@ public class LocationController : ControllerBase
     /// 获取我的最新位置
     /// </summary>
     [HttpGet("me/latest")]
+    [CacheControl(MaxAgeSeconds = 30)]
     public async Task<ApiResponse<LocationRecordResponse?>> GetMyLatestLocation()
     {
         var userId = this.GetUserId();
