@@ -12,6 +12,7 @@ import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/config/app_config.dart';
+import '../../../core/extensions/snackbar_extension.dart';
 import '../../shared/providers/user_provider.dart';
 import '../../shared/providers/notification_record_provider.dart';
 import '../../shared/services/emergency_service.dart';
@@ -333,13 +334,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
       onTap: () {
         if (!_isLongPressing) {
           ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('请长按按钮 2 秒发起紧急呼叫'),
-              duration: Duration(seconds: 2),
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
+          context.showSnackBar('请长按按钮 2 秒发起紧急呼叫');
         }
       },
       child: AnimatedContainer(
@@ -463,13 +458,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
       });
       // 提示用户已取消
       ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('已取消，请长按 2 秒发起呼叫'),
-          duration: Duration(seconds: 1),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      context.showSnackBar('已取消，请长按 2 秒发起呼叫');
     }
   }
 
@@ -500,23 +489,12 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
       );
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('紧急呼叫已发送，已通知家人和附近邻居'),
-            backgroundColor: AppTheme.successColor,
-            duration: Duration(seconds: 3),
-          ),
-        );
+        context.showSuccessSnackBar('紧急呼叫已发送，已通知家人和附近邻居');
         _showCallSuccessDialog(call);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('呼叫失败，请直接拨打电话联系家人'),
-            backgroundColor: AppTheme.errorColor,
-          ),
-        );
+        context.showErrorSnackBar('呼叫失败，请直接拨打电话联系家人');
       }
     }
   }
@@ -665,32 +643,17 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                 refreshToken: ref.read(authProvider).refreshToken!,
               );
           if (mounted && context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('头像更新成功'),
-                backgroundColor: AppTheme.successColor,
-              ),
-            );
+            context.showSuccessSnackBar('头像更新成功');
           }
         } else {
           if (mounted && context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('头像上传失败，请重试'),
-                backgroundColor: AppTheme.errorColor,
-              ),
-            );
+            context.showErrorSnackBar('头像上传失败，请重试');
           }
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('头像上传失败: $e'),
-            backgroundColor: AppTheme.errorColor,
-          ),
-        );
+        context.showErrorSnackBar('头像上传失败: $e');
       }
     } finally {
       if (mounted) {

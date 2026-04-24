@@ -7,6 +7,7 @@ import '../../shared/providers/emergency_provider.dart';
 import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../shared/widgets/common_states.dart';
+import '../../../core/extensions/snackbar_extension.dart';
 import '../../../core/theme/app_theme.dart';
 
 /// 子女端紧急呼叫页面
@@ -356,12 +357,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('无法拨打电话，请手动拨打'),
-          backgroundColor: AppTheme.warningColor,
-        ),
-      );
+      context.showWarningSnackBar('无法拨打电话，请手动拨打');
     }
   }
 
@@ -390,12 +386,11 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
     if (confirmed == true) {
       final success = await ref.read(emergencyProvider.notifier).respondCall(call.id);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(success ? '已标记为处理' : '操作失败'),
-            backgroundColor: success ? AppTheme.successColor : AppTheme.errorColor,
-          ),
-        );
+        if (success) {
+          context.showSuccessSnackBar('已标记为处理');
+        } else {
+          context.showErrorSnackBar('操作失败');
+        }
         // 处理后自动刷新列表，保持数据最新
         if (success) {
           ref.read(emergencyProvider.notifier).loadAll();

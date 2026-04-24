@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/api/api_client.dart';
-import '../../../core/theme/app_theme.dart';
+import '../../../core/extensions/snackbar_extension.dart';
 import '../../../core/validators/form_validators.dart';
 import '../../../shared/providers/auth_provider.dart';
 import '../../../shared/models/user.dart';
@@ -100,22 +100,11 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     } on DioException catch (e) {
       final msg = _extractErrorMessage(e);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(msg),
-            backgroundColor: AppTheme.errorColor,
-            duration: const Duration(seconds: 4),
-          ),
-        );
+        context.showErrorSnackBar(msg);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('注册失败: $e'),
-            backgroundColor: AppTheme.errorColor,
-          ),
-        );
+        context.showErrorSnackBar('注册失败: $e');
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);

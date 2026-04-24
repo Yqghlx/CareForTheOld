@@ -6,6 +6,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../shared/providers/auth_provider.dart';
+import '../../../core/extensions/snackbar_extension.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../shared/widgets/common_cards.dart';
 import '../../../core/theme/app_theme.dart';
@@ -377,19 +378,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       refreshToken: authState.refreshToken!,
                     );
                   }
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('姓名修改成功'),
-                      backgroundColor: AppTheme.successColor,
-                    ),
-                  );
+                  context.showSuccessSnackBar('姓名修改成功');
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('修改失败: ${ref.read(userProvider).error}'),
-                      backgroundColor: AppTheme.errorColor,
-                    ),
-                  );
+                  context.showErrorSnackBar('修改失败: ${ref.read(userProvider).error}');
                 }
               }
             },
@@ -508,34 +499,19 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               final confirmPassword = confirmPasswordController.text.trim();
 
               if (oldPassword.isEmpty || newPassword.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('密码不能为空'),
-                    backgroundColor: AppTheme.warningColor,
-                  ),
-                );
+                context.showWarningSnackBar('密码不能为空');
                 return;
               }
 
               if (newPassword != confirmPassword) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('两次输入的新密码不一致'),
-                    backgroundColor: AppTheme.warningColor,
-                  ),
-                );
+                context.showWarningSnackBar('两次输入的新密码不一致');
                 return;
               }
 
               // 使用统一的密码验证规则（与注册一致）
               final passwordError = FormValidators.password(newPassword);
               if (passwordError != null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(passwordError),
-                    backgroundColor: AppTheme.warningColor,
-                  ),
-                );
+                context.showWarningSnackBar(passwordError);
                 return;
               }
 
@@ -548,12 +524,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               if (mounted) {
                 if (success) {
                   // 密码修改成功后强制重新登录，确保旧 JWT token 失效
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('密码修改成功，请重新登录'),
-                      backgroundColor: AppTheme.successColor,
-                    ),
-                  );
+                  context.showSuccessSnackBar('密码修改成功，请重新登录');
                   // 清除业务状态
                   ref.invalidate(healthRecordsProvider);
                   ref.invalidate(healthStatsProvider);
@@ -565,12 +536,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   ref.read(authProvider.notifier).logout();
                   context.go('/login');
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('修改失败: ${ref.read(userProvider).error ?? "旧密码不正确"}'),
-                      backgroundColor: AppTheme.errorColor,
-                    ),
-                  );
+                  context.showErrorSnackBar('修改失败: ${ref.read(userProvider).error ?? "旧密码不正确"}');
                 }
               }
             },

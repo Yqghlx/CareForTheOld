@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../shared/models/location_record.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../shared/widgets/elder_location_map.dart';
+import '../../../core/extensions/snackbar_extension.dart';
 import '../../../core/theme/app_theme.dart';
 import '../providers/family_provider.dart';
 import '../providers/geo_fence_provider.dart';
@@ -346,12 +347,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                       final success = await ref.read(elderGeoFenceProvider.notifier).deleteFence();
                       if (success && ctx.mounted) {
                         Navigator.pop(ctx);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('安全区域已删除'),
-                            backgroundColor: AppTheme.successColor,
-                          ),
-                        );
+                        context.showSuccessSnackBar('安全区域已删除');
                       }
                     },
                     child: const Text('删除', style: TextStyle(color: Colors.red)),
@@ -374,19 +370,9 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                           );
                           if (success && ctx.mounted) {
                             Navigator.pop(ctx);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('安全区域已保存'),
-                                backgroundColor: AppTheme.successColor,
-                              ),
-                            );
+                            context.showSuccessSnackBar('安全区域已保存');
                           } else if (ctx.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('保存失败: ${fenceState.error}'),
-                                backgroundColor: AppTheme.errorColor,
-                              ),
-                            );
+                            context.showErrorSnackBar('保存失败: ${fenceState.error}');
                           }
                         },
                   gradient: const LinearGradient(

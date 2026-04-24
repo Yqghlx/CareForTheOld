@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../shared/models/neighbor_help_request.dart';
 import '../providers/neighbor_help_provider.dart';
+import '../../../core/extensions/snackbar_extension.dart';
 
 /// 邻里互助页面（待响应求助 + 历史列表）
 class NeighborHelpPage extends ConsumerStatefulWidget {
@@ -115,9 +116,7 @@ class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
     final success =
         await ref.read(neighborHelpProvider.notifier).acceptRequest(requestId);
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(success ? '已接受求助，请尽快前往帮助' : '该求助已被其他邻居接受')),
-      );
+      context.showSnackBar(success ? '已接受求助，请尽快前往帮助' : '该求助已被其他邻居接受');
     }
   }
 }

@@ -9,6 +9,7 @@ import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../shared/widgets/common_states.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/extensions/snackbar_extension.dart';
 
 /// 用药提醒页面
 class MedicationPage extends ConsumerStatefulWidget {
@@ -302,12 +303,11 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
     final success =
         await ref.read(medicationProvider.notifier).markAsTaken(log);
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(success ? '已标记为已服用' : '操作失败'),
-          backgroundColor: success ? AppTheme.successColor : AppTheme.errorColor,
-        ),
-      );
+      if (success) {
+          context.showSuccessSnackBar('已标记为已服用');
+        } else {
+          context.showErrorSnackBar('操作失败');
+        }
     }
   }
 
@@ -334,12 +334,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
     final success =
         await ref.read(medicationProvider.notifier).markAsSkipped(log);
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(success ? '已跳过本次用药' : '操作失败'),
-          backgroundColor: Colors.grey.shade700,
-        ),
-      );
+      context.showSnackBar(success ? '已跳过本次用药' : '操作失败');
     }
   }
 
@@ -355,12 +350,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
     final available = await _voiceService.initialize();
     if (!available) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('语音识别不可用，请检查设备设置'),
-            backgroundColor: AppTheme.warningColor,
-          ),
-        );
+        context.showWarningSnackBar('语音识别不可用，请检查设备设置');
       }
       return;
     }
@@ -378,12 +368,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
     if (!started) {
       setState(() => _isListening = false);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('语音识别启动失败，请手动操作'),
-            backgroundColor: AppTheme.warningColor,
-          ),
-        );
+        context.showWarningSnackBar('语音识别启动失败，请手动操作');
       }
     }
   }
@@ -398,12 +383,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
 
     if (pendingLogs.isEmpty) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('当前没有待服用的药物'),
-            backgroundColor: AppTheme.warningColor,
-          ),
-        );
+        context.showWarningSnackBar('当前没有待服用的药物');
       }
       return;
     }
@@ -426,13 +406,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
       _markSkipped(log);
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('未能识别指令"$text"，请说"已服药"或"跳过"'),
-            backgroundColor: AppTheme.warningColor,
-            duration: const Duration(seconds: 3),
-          ),
-        );
+        context.showWarningSnackBar('未能识别指令"$text"，请说"已服药"或"跳过"');
       }
     }
   }

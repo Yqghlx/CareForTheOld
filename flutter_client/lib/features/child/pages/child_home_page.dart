@@ -10,6 +10,7 @@ import '../../../core/api/api_client.dart';
 import '../providers/family_provider.dart';
 import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
+import '../../../core/extensions/snackbar_extension.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../shared/providers/emergency_provider.dart';
 import '../../shared/providers/notification_record_provider.dart';
@@ -393,12 +394,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
   void _showAddPlanDialog(BuildContext context) {
     final elders = ref.read(familyProvider).elders;
     if (elders.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('请先添加老人到家庭成员'),
-          backgroundColor: AppTheme.warningColor,
-        ),
-      );
+      context.showWarningSnackBar('请先添加老人到家庭成员');
       return;
     }
 
@@ -612,22 +608,16 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     final name = nameCtl.text.trim();
                     final dosage = dosageCtl.text.trim();
                     if (name.isEmpty || name.length > 50) {
-                      ScaffoldMessenger.of(ctx).showSnackBar(
-                        const SnackBar(content: Text('请输入有效的药品名称（1-50字符）')),
-                      );
+                      ctx.showSnackBar('请输入有效的药品名称（1-50字符）');
                       return;
                     }
                     if (dosage.isEmpty || dosage.length > 30) {
-                      ScaffoldMessenger.of(ctx).showSnackBar(
-                        const SnackBar(content: Text('请输入有效的剂量（1-30字符）')),
-                      );
+                      ctx.showSnackBar('请输入有效的剂量（1-30字符）');
                       return;
                     }
                     final validTimes = timeControllers.map((c) => c.text.trim()).where((t) => t.isNotEmpty).toList();
                     if (validTimes.isEmpty) {
-                      ScaffoldMessenger.of(ctx).showSnackBar(
-                        const SnackBar(content: Text('请至少添加一个提醒时间')),
-                      );
+                      ctx.showSnackBar('请至少添加一个提醒时间');
                       return;
                     }
                     Navigator.pop(ctx);
@@ -651,21 +641,11 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         // 刷新子女端老人健康页面的用药计划/记录
                         ref.invalidate(elderMedicationPlansProvider);
                         ref.invalidate(elderMedicationLogsProvider);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('用药计划创建成功'),
-                            backgroundColor: AppTheme.successColor,
-                          ),
-                        );
+                        context.showSuccessSnackBar('用药计划创建成功');
                       }
                     } catch (e) {
                       if (mounted && context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('创建失败: $e'),
-                            backgroundColor: AppTheme.errorColor,
-                          ),
-                        );
+                        context.showErrorSnackBar('创建失败: $e');
                       }
                     }
                   },
