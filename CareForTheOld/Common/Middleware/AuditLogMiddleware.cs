@@ -4,8 +4,9 @@ namespace CareForTheOld.Common.Middleware;
 
 /// <summary>
 /// 审计日志中间件
-/// 记录所有写操作（POST/PUT/PATCH/DELETE），用于安全审计和问题追溯
+/// 记录所有写操作（POST/PUT/PATCH/DELETE）和安全事件，用于安全审计和问题追溯
 /// 读取操作（GET）不记录，避免性能影响
+/// 特殊关注：403 权限校验失败（安全事件）
 /// </summary>
 public class AuditLogMiddleware
 {
@@ -29,6 +30,7 @@ public class AuditLogMiddleware
         }
 
         var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userRole = context.User.FindFirstValue(ClaimTypes.Role);
         var path = context.Request.Path;
         var timestamp = DateTime.UtcNow;
 
@@ -36,6 +38,16 @@ public class AuditLogMiddleware
         await _next(context);
 
         var statusCode = context.Response.StatusCode;
+
+        // 403 权限校验失败是重要的安全事件，需要单独记录
+        if (statusCode == StatusCodes.Status403Forbidden)
+        {
+            _logger.LogWarning(
+                "权限校验失败 | 时间: {Timestamp:O} | 方法: {Method} | 路径: {Path} | 用户: {UserId} | 角色: {UserRole}",
+                timestamp, method, path, userId ?? "匿名", userRole ?? "无");
+            return;
+        }
+
         var logLevel = statusCode >= 400 ? LogLevel.Warning : LogLevel.Information;
 
         _logger.Log(logLevel,

@@ -267,6 +267,26 @@ builder.Services.AddRateLimiter(options =>
             }));
 
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    // 限流触发时记录安全事件日志
+    options.OnRejected = async (context, cancellationToken) =>
+    {
+        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+        var clientIp = GetClientIp(context.HttpContext);
+        var path = context.HttpContext.Request.Path;
+        var method = context.HttpContext.Request.Method;
+        var userId = context.HttpContext.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "匿名";
+
+        logger.LogWarning(
+            "限流触发 | IP: {ClientIp} | 用户: {UserId} | 方法: {Method} | 路径: {Path} | 时间: {Timestamp:O}",
+            clientIp, userId, method, path, DateTime.UtcNow);
+
+        // 返回 JSON 格式的错误响应
+        context.HttpContext.Response.ContentType = "application/json";
+        await context.HttpContext.Response.WriteAsync(
+            "{\"success\":false,\"message\":\"请求过于频繁，请稍后再试\",\"data\":null}",
+            cancellationToken);
+    };
 });
 
 var app = builder.Build();
