@@ -70,11 +70,12 @@
 ### 3.2 安全事件日志
 - **现状**: 缺少登录失败、权限异常等审计日志
 - **方案**: 在关键节点添加 Serilog 结构化日志
-  - 登录成功/失败（含 IP）
-  - 限流触发
-  - 权限校验失败
-  - Token 刷新异常
-- **修改文件**: `AuthService.cs`, `Program.cs`
+  - 登录成功/失败（含 IP）✅ AuthService 已实现
+  - 限流触发 ✅ Program.cs OnRejected 回调
+  - 权限校验失败 ✅ AuditLogMiddleware 403 单独记录
+  - Token 刷新异常 ✅ AuthService 已实现
+- **修改文件**: `AuthService.cs`（已有）、`Program.cs`、`AuditLogMiddleware.cs`
+- **状态**: ✅ 已完成
 
 ## 文件变更清单
 
