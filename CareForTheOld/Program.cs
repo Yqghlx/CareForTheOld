@@ -72,7 +72,15 @@ else
 }
 
 // 注册服务
-builder.Services.AddControllers();
+// 配置 JSON 序列化：枚举值序列化为 camelCase 字符串，与前端 Dart 枚举映射一致
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+        // 将枚举序列化为字符串（而非整数），使用 camelCase 命名
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter(
+            System.Text.Json.JsonNamingPolicy.CamelCase));
+    });
 builder.Services.AddApiVersioning(options =>
 {
     options.DefaultApiVersion = new ApiVersion(1, 0);
