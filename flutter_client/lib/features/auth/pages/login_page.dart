@@ -8,6 +8,7 @@ import '../../../core/api/api_client.dart';
 import '../../../shared/models/user.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/extensions/api_error_extension.dart';
 import '../../../core/validators/form_validators.dart';
 
 /// 登录页面
@@ -55,26 +56,6 @@ class _LoginPageState extends ConsumerState<LoginPage>
     super.dispose();
   }
 
-  /// 从 DioException 中提取后端返回的错误信息
-  String _extractErrorMessage(DioException e) {
-    try {
-      final data = e.response?.data;
-      if (data is Map<String, dynamic> && data['message'] != null) {
-        return data['message'] as String;
-      }
-    } catch (_) {
-      // 解析响应数据失败，使用默认错误信息
-      debugPrint('解析错误响应失败: ${e.response?.statusCode}');
-    }
-    switch (e.type) {
-      case DioExceptionType.connectionError:
-      case DioExceptionType.connectionTimeout:
-        return '无法连接服务器，请检查网络';
-      default:
-        return '手机号或密码错误';
-    }
-  }
-
   Future<void> login() async {
     if (!formKey.currentState!.validate()) return;
 
@@ -108,7 +89,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
       }
     } on DioException catch (e) {
       debugPrint('登录异常: $e');
-      final serverMessage = _extractErrorMessage(e);
+      final serverMessage = e.toDisplayMessage(fallback: '手机号或密码错误');
       if (mounted) setState(() => _errorMessage = serverMessage);
     } catch (e) {
       debugPrint('登录未知异常: $e');
