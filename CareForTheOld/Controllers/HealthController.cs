@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using CareForTheOld.Common.Extensions;
+using CareForTheOld.Common.Filters;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Models.DTOs.Requests.Health;
 using CareForTheOld.Models.DTOs.Responses;
@@ -97,6 +98,7 @@ public class HealthController : ControllerBase
     /// 获取健康数据统计
     /// </summary>
     [HttpGet("me/stats")]
+    [CacheControl(MaxAgeSeconds = 300)]
     public async Task<ApiResponse<List<HealthStatsResponse>>> GetMyStats()
     {
         var userId = this.GetUserId();
@@ -175,6 +177,7 @@ public class HealthController : ControllerBase
     /// 获取自己的健康趋势异常检测（老人查看）
     /// </summary>
     [HttpGet("me/anomaly-detection")]
+    [CacheControl(MaxAgeSeconds = 300)]
     public async Task<ApiResponse<TrendAnomalyDetectionResponse>> GetMyAnomalyDetection(
         [FromQuery] HealthType? type)
     {

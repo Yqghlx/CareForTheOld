@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using CareForTheOld.Common.Filters;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Services.Interfaces;
@@ -37,6 +38,7 @@ public class NotificationController : ControllerBase
     /// 获取未读通知数量
     /// </summary>
     [HttpGet("me/unread-count")]
+    [CacheControl(MaxAgeSeconds = 30)]
     public async Task<ApiResponse<object>> GetUnreadCount()
     {
         var count = await _notificationService.GetUnreadCountAsync(this.GetUserId());
