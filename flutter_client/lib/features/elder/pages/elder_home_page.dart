@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
@@ -64,6 +65,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.notifications),
+                  tooltip: '通知',
                   onPressed: () => context.push('/notifications'),
                 ),
                 // 未读通知红点
@@ -89,6 +91,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
             ),
             IconButton(
               icon: const Icon(Icons.settings),
+              tooltip: '设置',
               onPressed: () => context.push('/settings'),
             ),
           ],
@@ -420,6 +423,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
 
   /// 开始长按计时器
   void _startLongPressTimer() {
+    HapticFeedback.mediumImpact();
     setState(() {
       _isLongPressing = true;
       _longPressProgress = 0.0;
@@ -452,6 +456,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
   /// 取消长按计时器
   void _cancelLongPressTimer() {
     if (_isLongPressing && _longPressProgress < 1.0) {
+      HapticFeedback.lightImpact();
       setState(() {
         _isLongPressing = false;
         _longPressProgress = 0.0;
@@ -464,6 +469,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
 
   /// 执行紧急呼叫（长按 2 秒后直接触发）
   Future<void> _performEmergencyCall() async {
+    HapticFeedback.heavyImpact();
     try {
       // 并行获取 GPS 位置和电池电量（不阻塞呼叫，获取失败也不影响）
       double? latitude;
