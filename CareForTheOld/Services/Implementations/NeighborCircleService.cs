@@ -357,8 +357,6 @@ public class NeighborCircleService : INeighborCircleService
     }
 
     /// <summary>
-
-    /// <summary>
     /// 构建邻里圈响应（含创建者名称和成员数）
     /// </summary>
     private async Task<NeighborCircleResponse> BuildCircleResponse(Guid circleId)
