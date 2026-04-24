@@ -134,6 +134,8 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IEmergencyService, EmergencyService>();
 builder.Services.AddScoped<INeighborCircleService, NeighborCircleService>();
 builder.Services.AddScoped<INeighborHelpService, NeighborHelpService>();
+builder.Services.AddScoped<ITrustScoreService, TrustScoreService>();
+builder.Services.AddScoped<IAutoRescueService, AutoRescueService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IGeoFenceService, GeoFenceService>();
 builder.Services.AddScoped<IHealthReportService, HealthReportService>();
@@ -402,6 +404,18 @@ if (!app.Environment.IsEnvironment("Testing"))
         "neighbor-help-cleanup",
         service => service.CleanupExpiredRequestsAsync(),
         "*/2 * * * *");
+
+    // 信任评分每日重算：凌晨 3:00 执行
+    RecurringJob.AddOrUpdate<TrustScoreService>(
+        "trust-score-recalculate",
+        service => service.RecalculateAllScoresAsync(),
+        Cron.Daily(3));
+
+    // 自动救援检查：每分钟检查待处理的自动救援记录
+    RecurringJob.AddOrUpdate<AutoRescueService>(
+        "auto-rescue-check",
+        service => service.CheckPendingRescuesAsync(),
+        Cron.Minutely);
 }
 
 // 提供上传文件的静态访问（头像等）
