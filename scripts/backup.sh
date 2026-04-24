@@ -36,9 +36,9 @@ echo "数据库: ${DB_NAME}@${DB_HOST}:${DB_PORT}"
 echo ""
 
 # 判断是 Docker 环境还是直接连接
-if docker ps --format '{{.Names}}' 2>/dev/null | grep -q 'carefortheold-postgres'; then
+if docker ps --format '{{.Names}}' 2>/dev/null | grep -q 'carefortheold-db'; then
     echo "检测到 Docker PostgreSQL 容器，使用 docker exec 备份..."
-    docker exec carefortheold-postgres pg_dump -U "$DB_USER" -d "$DB_NAME" \
+    docker exec carefortheold-db pg_dump -U "$DB_USER" -d "$DB_NAME" \
         --no-owner --no-privileges --clean --if-exists | gzip > "$BACKUP_FILE"
 else
     echo "使用 pg_dump 直接备份..."
@@ -59,4 +59,4 @@ fi
 echo ""
 echo "===== 备份完成 ====="
 echo "恢复命令："
-echo "  gunzip < $BACKUP_FILE | docker exec -i carefortheold-postgres psql -U $DB_USER -d $DB_NAME"
+echo "  gunzip < $BACKUP_FILE | docker exec -i carefortheold-db psql -U $DB_USER -d $DB_NAME"

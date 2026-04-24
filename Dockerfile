@@ -28,7 +28,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
 
 # 创建非 root 用户运行应用（安全最佳实践）
-RUN adduser --disabled-password --gecos "" appuser
+RUN groupadd -r appuser && useradd -r -g appuser -s /sbin/nologin appuser
 
 # 复制发布文件
 COPY --from=publish /app/publish .
