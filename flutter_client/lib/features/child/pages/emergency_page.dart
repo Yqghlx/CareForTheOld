@@ -6,6 +6,7 @@ import '../../../shared/models/emergency_call.dart';
 import '../../shared/providers/emergency_provider.dart';
 import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
+import '../../../shared/widgets/common_states.dart';
 import '../../../core/theme/app_theme.dart';
 
 /// 子女端紧急呼叫页面
@@ -47,7 +48,11 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: emergencyState.isLoading && emergencyState.unreadCalls.isEmpty
-            ? const Center(child: CircularProgressIndicator())
+            ? ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: 3,
+                itemBuilder: (_, __) => const SkeletonListTile(),
+              )
             : _buildContent(emergencyState),
       ),
     );
@@ -55,20 +60,9 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
 
   Widget _buildContent(EmergencyState state) {
     if (state.error != null && state.unreadCalls.isEmpty && state.historyCalls.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error_outline, size: 48, color: AppTheme.errorColor),
-            const SizedBox(height: 12),
-            Text('加载失败: ${state.error}', style: const TextStyle(color: AppTheme.errorColor)),
-            const SizedBox(height: 12),
-            PrimaryButton(
-              text: '重试',
-              onPressed: () => ref.read(emergencyProvider.notifier).loadAll(),
-            ),
-          ],
-        ),
+      return ErrorStateWidget(
+        message: ErrorStateWidget.friendlyMessage(state.error),
+        onRetry: () => ref.read(emergencyProvider.notifier).loadAll(),
       );
     }
 

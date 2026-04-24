@@ -7,6 +7,7 @@ import '../providers/medication_provider.dart';
 import '../services/voice_input_service.dart';
 import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
+import '../../../shared/widgets/common_states.dart';
 import '../../../core/theme/app_theme.dart';
 
 /// 用药提醒页面
@@ -157,54 +158,21 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
   /// 内容区域
   Widget _buildContent(MedicationState state) {
     if (state.isLoading && state.todayPending.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+      return Column(children: List.generate(3, (_) => const SkeletonCard()));
     }
 
     if (state.error != null && state.todayPending.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error_outline, size: 48, color: AppTheme.errorColor),
-            const SizedBox(height: 12),
-            Text(
-              '加载失败: ${state.error}',
-              style: const TextStyle(color: AppTheme.errorColor),
-            ),
-            const SizedBox(height: 12),
-            PrimaryButton(
-              text: '重试',
-              onPressed: () => ref.read(medicationProvider.notifier).loadAll(),
-            ),
-          ],
-        ),
+      return ErrorStateWidget(
+        message: ErrorStateWidget.friendlyMessage(state.error),
+        onRetry: () => ref.read(medicationProvider.notifier).loadAll(),
       );
     }
 
     if (state.todayPending.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.check_circle_outline,
-              size: 64,
-              color: Colors.grey.shade400,
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              '今日暂无用药计划',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 20, color: Colors.grey),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              '请让子女帮忙添加用药计划',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, color: Colors.grey.shade500),
-            ),
-          ],
-        ),
+      return const EmptyStateWidget(
+        icon: Icons.check_circle_outline,
+        title: '今日暂无用药计划',
+        subtitle: '请让子女帮忙添加用药计划',
       );
     }
 

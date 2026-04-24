@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../../shared/widgets/common_states.dart';
 import '../providers/neighbor_circle_provider.dart';
 
 /// 邻里圈管理页面（创建/搜索/加入/退出）
@@ -39,10 +40,18 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
     return Scaffold(
       appBar: AppBar(title: const Text('邻里圈')),
       body: state.isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : state.hasCircle
-              ? _buildMyCircle(context, state)
-              : _buildNoCircle(context),
+          ? SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(children: List.generate(3, (_) => const SkeletonCard())),
+            )
+          : state.error != null
+              ? ErrorStateWidget(
+                  message: ErrorStateWidget.friendlyMessage(state.error),
+                  onRetry: () => ref.read(neighborCircleProvider.notifier).loadMyCircle(),
+                )
+              : state.hasCircle
+                  ? _buildMyCircle(context, state)
+                  : _buildNoCircle(context),
     );
   }
 

@@ -11,6 +11,7 @@ import '../../elder/services/medication_service.dart';
 import '../../../core/api/api_client.dart';
 import '../providers/family_provider.dart';
 import '../../../shared/widgets/common_cards.dart';
+import '../../../shared/widgets/common_states.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../shared/services/health_report_service.dart';
 
@@ -132,15 +133,18 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               // 健康概览卡片
               statsAsync.when(
                 data: (stats) => _buildStatsGrid(stats),
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) => Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: AppTheme.errorColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text('加载统计失败: $e',
-                      style: const TextStyle(color: AppTheme.errorColor)),
+                loading: () => GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  childAspectRatio: 0.85,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 12,
+                  children: List.generate(4, (_) => const SkeletonCard()),
+                ),
+                error: (e, _) => ErrorStateWidget(
+                  message: ErrorStateWidget.friendlyMessage(e.toString()),
+                  onRetry: () => ref.invalidate(elderHealthStatsProvider(widget.elderId)),
                 ),
               ),
               const SizedBox(height: 24),
@@ -188,9 +192,11 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               const SizedBox(height: 12),
               recordsAsync.when(
                 data: (records) => _buildRecordsList(records),
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) => Text('加载记录失败: $e',
-                    style: const TextStyle(color: AppTheme.errorColor)),
+                loading: () => Column(children: List.generate(3, (_) => const SkeletonCard())),
+                error: (e, _) => ErrorStateWidget(
+                  message: ErrorStateWidget.friendlyMessage(e.toString()),
+                  onRetry: () => ref.invalidate(elderHealthRecordsProvider(widget.elderId)),
+                ),
               ),
               const SizedBox(height: 24),
 
@@ -205,9 +211,11 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               const SizedBox(height: 12),
               plansAsync.when(
                 data: (plans) => _buildPlansList(plans),
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) => Text('加载计划失败: $e',
-                    style: const TextStyle(color: AppTheme.errorColor)),
+                loading: () => Column(children: List.generate(2, (_) => const SkeletonCard())),
+                error: (e, _) => ErrorStateWidget(
+                  message: ErrorStateWidget.friendlyMessage(e.toString()),
+                  onRetry: () => ref.invalidate(elderMedicationPlansProvider(widget.elderId)),
+                ),
               ),
               const SizedBox(height: 24),
 
@@ -255,9 +263,11 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               const SizedBox(height: 12),
               logsAsync.when(
                 data: (logs) => _buildMedicationList(logs),
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) => Text('加载用药记录失败: $e',
-                    style: const TextStyle(color: AppTheme.errorColor)),
+                loading: () => Column(children: List.generate(3, (_) => const SkeletonCard())),
+                error: (e, _) => ErrorStateWidget(
+                  message: ErrorStateWidget.friendlyMessage(e.toString()),
+                  onRetry: () => ref.invalidate(elderMedicationLogsProvider((elderId: widget.elderId, date: _selectedLogDate))),
+                ),
               ),
             ],
           ),
