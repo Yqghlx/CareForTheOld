@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Helpers;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.Neighbor;
 using CareForTheOld.Models.DTOs.Responses;
@@ -22,9 +23,6 @@ public class NeighborHelpService : INeighborHelpService
 
     /// <summary>广播距离阈值（500 米）</summary>
     private const double BroadcastRadiusMeters = 500;
-
-    /// <summary>地球半径（米），用于 Haversine 公式</summary>
-    private const double EarthRadiusMeters = 6_371_000;
 
     public NeighborHelpService(
         AppDbContext context,
@@ -102,7 +100,7 @@ public class NeighborHelpService : INeighborHelpService
                 Math.Abs(loc.Longitude - lng) > lngThreshold)
                 continue;
 
-            var distance = Haversine(lat, lng, loc.Latitude, loc.Longitude);
+            var distance = GeoHelper.HaversineDistance(lat, lng, loc.Latitude, loc.Longitude);
             if (distance <= BroadcastRadiusMeters)
                 nearbyUserIds.Add(loc.UserId);
         }
@@ -540,20 +538,6 @@ public class NeighborHelpService : INeighborHelpService
             RespondedAt = request.RespondedAt,
             ExpiresAt = request.ExpiresAt,
         };
-    }
-
-    /// <summary>
-    /// Haversine 公式计算两个经纬度点之间的球面距离（米）
-    /// </summary>
-    private static double Haversine(double lat1, double lng1, double lat2, double lng2)
-    {
-        var dLat = (lat2 - lat1) * Math.PI / 180.0;
-        var dLng = (lng2 - lng1) * Math.PI / 180.0;
-        var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
-                Math.Cos(lat1 * Math.PI / 180.0) * Math.Cos(lat2 * Math.PI / 180.0) *
-                Math.Sin(dLng / 2) * Math.Sin(dLng / 2);
-        var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-        return EarthRadiusMeters * c;
     }
 
     /// <summary>

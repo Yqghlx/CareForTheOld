@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using CareForTheOld.Common.Helpers;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.Neighbor;
 using CareForTheOld.Models.DTOs.Responses;
@@ -18,9 +19,6 @@ public class NeighborCircleService : INeighborCircleService
 
     /// <summary>邀请码有效期（7天）</summary>
     private static readonly TimeSpan _inviteCodeExpiration = TimeSpan.FromDays(7);
-
-    /// <summary>地球半径（米），用于 Haversine 公式</summary>
-    private const double EarthRadiusMeters = 6_371_000;
 
     public NeighborCircleService(AppDbContext context) => _context = context;
 
@@ -221,7 +219,7 @@ public class NeighborCircleService : INeighborCircleService
                 continue;
 
             // Haversine 精算
-            var distance = Haversine(latitude, longitude, loc.Latitude, loc.Longitude);
+            var distance = GeoHelper.HaversineDistance(latitude, longitude, loc.Latitude, loc.Longitude);
             if (distance <= radiusMeters)
             {
                 nearbyUserIds.Add(loc.UserId);
@@ -282,7 +280,7 @@ public class NeighborCircleService : INeighborCircleService
                 continue;
 
             // Haversine 精算：搜索点到圈子中心距离
-            var distToCenter = Haversine(latitude, longitude, circle.CenterLatitude, circle.CenterLongitude);
+            var distToCenter = GeoHelper.HaversineDistance(latitude, longitude, circle.CenterLatitude, circle.CenterLongitude);
 
             // 搜索点在圈子覆盖范围内，或搜索半径与圈子范围有交集
             if (distToCenter <= radiusMeters + circle.RadiusMeters)
@@ -359,18 +357,6 @@ public class NeighborCircleService : INeighborCircleService
     }
 
     /// <summary>
-    /// Haversine 公式计算两个经纬度点之间的球面距离（米）
-    /// </summary>
-    private static double Haversine(double lat1, double lng1, double lat2, double lng2)
-    {
-        var dLat = (lat2 - lat1) * Math.PI / 180.0;
-        var dLng = (lng2 - lng1) * Math.PI / 180.0;
-        var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
-                Math.Cos(lat1 * Math.PI / 180.0) * Math.Cos(lat2 * Math.PI / 180.0) *
-                Math.Sin(dLng / 2) * Math.Sin(dLng / 2);
-        var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-        return EarthRadiusMeters * c;
-    }
 
     /// <summary>
     /// 构建邻里圈响应（含创建者名称和成员数）
