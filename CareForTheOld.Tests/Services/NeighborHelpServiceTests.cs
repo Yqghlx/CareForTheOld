@@ -33,7 +33,10 @@ public class NeighborHelpServiceTests
         _mockNotification.Setup(n => n.SendToUsersAsync(It.IsAny<IEnumerable<Guid>>(), It.IsAny<string>(), It.IsAny<object>()))
             .Returns(Task.CompletedTask);
         var mockLogger = new Mock<ILogger<NeighborHelpService>>();
-        _service = new NeighborHelpService(_context, _mockNotification.Object, mockLogger.Object);
+        var mockTrustScore = new Mock<ITrustScoreService>();
+        mockTrustScore.Setup(t => t.GetUserScoreAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .ReturnsAsync(0m);
+        _service = new NeighborHelpService(_context, _mockNotification.Object, mockTrustScore.Object, mockLogger.Object);
     }
 
     /// <summary>

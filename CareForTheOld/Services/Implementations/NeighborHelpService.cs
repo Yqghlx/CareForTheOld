@@ -16,6 +16,7 @@ public class NeighborHelpService : INeighborHelpService
 {
     private readonly AppDbContext _context;
     private readonly INotificationService _notificationService;
+    private readonly ITrustScoreService _trustScoreService;
     private readonly ILogger<NeighborHelpService> _logger;
 
     /// <summary>求助请求默认过期时间（15 分钟）</summary>
@@ -27,10 +28,12 @@ public class NeighborHelpService : INeighborHelpService
     public NeighborHelpService(
         AppDbContext context,
         INotificationService notificationService,
+        ITrustScoreService trustScoreService,
         ILogger<NeighborHelpService> logger)
     {
         _context = context;
         _notificationService = notificationService;
+        _trustScoreService = trustScoreService;
         _logger = logger;
     }
 
@@ -112,6 +115,18 @@ public class NeighborHelpService : INeighborHelpService
             nearbyUserIds = memberIds;
         }
 
+        // 按信任评分降序排序，高信用邻居优先推送
+        var nearbyWithScores = new Dictionary<Guid, decimal>();
+        foreach (var uid in nearbyUserIds)
+        {
+            var s = await _trustScoreService.GetUserScoreAsync(uid, circleId);
+            nearbyWithScores[uid] = s;
+        }
+        nearbyUserIds = nearbyWithScores
+            .OrderByDescending(kv => kv.Value)
+            .Select(kv => kv.Key)
+            .ToList();
+
         // 创建求助请求记录
         var helpRequest = new NeighborHelpRequest
         {
@@ -127,6 +142,19 @@ public class NeighborHelpService : INeighborHelpService
         };
 
         _context.NeighborHelpRequests.Add(helpRequest);
+        await _context.SaveChangesAsync();
+
+        // 记录通知日志（用于后续计算响应率）
+        foreach (var neighborId in nearbyUserIds)
+        {
+            _context.HelpNotificationLogs.Add(new HelpNotificationLog
+            {
+                Id = Guid.NewGuid(),
+                HelpRequestId = helpRequest.Id,
+                UserId = neighborId,
+                NotifiedAt = DateTime.UtcNow,
+            });
+        }
         await _context.SaveChangesAsync();
 
         // Outbox Pattern 推送通知给附近邻居
@@ -173,6 +201,16 @@ public class NeighborHelpService : INeighborHelpService
         request.Status = HelpRequestStatus.Accepted;
         request.ResponderId = responderId;
         request.RespondedAt = DateTime.UtcNow;
+
+        // 更新通知日志：标记该邻居已响应
+        var notificationLog = await _context.HelpNotificationLogs
+            .AsTracking()
+            .FirstOrDefaultAsync(h => h.HelpRequestId == requestId && h.UserId == responderId);
+        if (notificationLog != null)
+        {
+            notificationLog.RespondedAt = DateTime.UtcNow;
+        }
+
         await _context.SaveChangesAsync();
 
         // 查询响应者信息
@@ -274,6 +312,18 @@ public class NeighborHelpService : INeighborHelpService
         request.Status = HelpRequestStatus.Cancelled;
         request.CancelledAt = DateTime.UtcNow;
         request.CancelledBy = operatorId;
+
+        // 关闭该请求所有未响应的通知日志
+        var pendingLogs = await _context.HelpNotificationLogs
+            .AsTracking()
+            .Where(h => h.HelpRequestId == requestId && h.RespondedAt == null)
+            .ToListAsync();
+        foreach (var log in pendingLogs)
+        {
+            // 设为取消时间表示未响应（保持 RespondedAt 为 null，统计时视为未响应）
+            log.RespondedAt = null;
+        }
+
         await _context.SaveChangesAsync();
 
         // 通知已响应的邻居
@@ -457,10 +507,19 @@ public class NeighborHelpService : INeighborHelpService
         if (expiredRequests.Count == 0)
             return;
 
+        var expiredIds = expiredRequests.Select(r => r.Id).ToList();
+
         foreach (var request in expiredRequests)
         {
             request.Status = HelpRequestStatus.Expired;
         }
+
+        // 关闭过期请求的未响应通知日志
+        var pendingLogs = await _context.HelpNotificationLogs
+            .AsTracking()
+            .Where(h => expiredIds.Contains(h.HelpRequestId) && h.RespondedAt == null)
+            .ToListAsync();
+        // 过期的通知日志保持 RespondedAt 为 null，表示未响应
 
         await _context.SaveChangesAsync();
 
@@ -493,6 +552,19 @@ public class NeighborHelpService : INeighborHelpService
         };
 
         _context.NeighborHelpRequests.Add(helpRequest);
+        await _context.SaveChangesAsync();
+
+        // 记录通知日志
+        foreach (var memberId in memberIds)
+        {
+            _context.HelpNotificationLogs.Add(new HelpNotificationLog
+            {
+                Id = Guid.NewGuid(),
+                HelpRequestId = helpRequest.Id,
+                UserId = memberId,
+                NotifiedAt = DateTime.UtcNow,
+            });
+        }
         await _context.SaveChangesAsync();
 
         await _notificationService.SendToUsersAsync(

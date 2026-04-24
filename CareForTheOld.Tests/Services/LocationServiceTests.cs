@@ -21,6 +21,7 @@ public class LocationServiceTests
     private readonly LocationService _service;
     private readonly Mock<IGeoFenceService> _mockGeoFenceService;
     private readonly Mock<INotificationService> _mockNotificationService;
+    private readonly Mock<IAutoRescueService> _mockAutoRescueService;
 
     public LocationServiceTests()
     {
@@ -33,11 +34,13 @@ public class LocationServiceTests
         // Mock 依赖服务
         _mockGeoFenceService = new Mock<IGeoFenceService>();
         _mockNotificationService = new Mock<INotificationService>();
+        _mockAutoRescueService = new Mock<IAutoRescueService>();
 
         _service = new LocationService(
             _context,
             _mockGeoFenceService.Object,
             _mockNotificationService.Object,
+            _mockAutoRescueService.Object,
             new Mock<ILogger<LocationService>>().Object);
     }
 

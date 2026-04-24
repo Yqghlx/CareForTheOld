@@ -24,6 +24,9 @@ public class AppDbContext : DbContext
     public DbSet<NeighborCircleMember> NeighborCircleMembers => Set<NeighborCircleMember>();
     public DbSet<NeighborHelpRequest> NeighborHelpRequests => Set<NeighborHelpRequest>();
     public DbSet<NeighborHelpRating> NeighborHelpRatings => Set<NeighborHelpRating>();
+    public DbSet<TrustScore> TrustScores => Set<TrustScore>();
+    public DbSet<HelpNotificationLog> HelpNotificationLogs => Set<HelpNotificationLog>();
+    public DbSet<AutoRescueRecord> AutoRescueRecords => Set<AutoRescueRecord>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
