@@ -187,6 +187,14 @@ builder.Services.AddSingleton<OutboxDispatchService>();
 // 注册心跳监控服务（检测老人端离线并触发告警）
 builder.Services.AddSingleton<HeartbeatMonitorService>();
 
+// HSTS 配置：生产环境强制 HTTPS，1 年有效期
+builder.Services.AddHsts(options =>
+{
+    options.MaxAge = TimeSpan.FromDays(365);
+    options.IncludeSubDomains = true;
+    options.Preload = true;
+});
+
 // CORS 配置：从配置读取允许的来源
 builder.Services.AddCors(options =>
 {
