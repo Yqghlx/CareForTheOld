@@ -3,8 +3,10 @@ using Asp.Versioning.ApiExplorer;
 using CareForTheOld.Common.Extensions;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Common.Middleware;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
 using CareForTheOld.Data;
+using Prometheus;
 using CareForTheOld.Services.Background;
 using Hangfire;
 using CareForTheOld.Services.Hubs;
@@ -403,7 +405,34 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 // 健康检查端点（无需认证，供容器编排和负载均衡器使用）
+// 简单端点：供负载均衡器使用，只返回 200/503
 app.MapHealthChecks("/health");
+
+// 详细端点：供运维监控使用，返回各组件状态和响应时间
+app.MapHealthChecks("/health/detail", new HealthCheckOptions
+{
+    ResponseWriter = async (context, report) =>
+    {
+        context.Response.ContentType = "application/json; charset=utf-8";
+        var result = System.Text.Json.JsonSerializer.Serialize(new
+        {
+            status = report.Status.ToString(),
+            duration = report.TotalDuration.TotalMilliseconds,
+            checks = report.Entries.Select(e => new
+            {
+                name = e.Key,
+                status = e.Value.Status.ToString(),
+                duration = e.Value.Duration.TotalMilliseconds,
+                description = e.Value.Description ?? e.Value.Status.ToString(),
+            }),
+            timestamp = DateTime.UtcNow,
+        }, new System.Text.Json.JsonSerializerOptions
+        {
+            PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase,
+        });
+        await context.Response.WriteAsync(result);
+    }
+});
 
 // SignalR 连接状态端点（供运维监控使用）
 app.MapGet("/health/signalr", (HttpContext _) =>
@@ -418,6 +447,10 @@ app.MapGet("/health/signalr", (HttpContext _) =>
 
 app.MapControllers();
 app.MapHub<NotificationHub>("/hubs/notification");
+
+// Prometheus 监控指标：自动采集 HTTP 请求总数/延迟/错误率
+app.UseHttpMetrics();
+app.MapMetrics("/metrics");
 
 app.Run();
 
