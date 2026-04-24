@@ -51,7 +51,8 @@ public class OssFileStorageService : IFileStorageService
 
         try
         {
-            // 上传文件到 OSS
+            // 阿里云 OSS SDK 仅提供同步 API，使用 Task.Run 避免阻塞调用线程
+            // 注意：stream 的生命周期由调用方管理，确保在此方法返回前不会 Dispose
             var result = await Task.Run(() => _client.PutObject(_bucketName, objectKey, stream, new ObjectMetadata
             {
                 ContentType = contentType
