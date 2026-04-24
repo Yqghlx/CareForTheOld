@@ -63,4 +63,22 @@ class NeighborHelpService {
     final data = response.data['data'];
     return NeighborHelpRating.fromJson(data);
   }
+
+  /// 子女响应自动救援告警
+  Future<void> respondAutoRescue(String recordId) async {
+    await _dio.post('/auto-rescue/$recordId/respond');
+  }
+
+  /// 获取自动救援历史记录
+  Future<List<Map<String, dynamic>>> getAutoRescueHistory({
+    int skip = 0,
+    int limit = 20,
+  }) async {
+    final response = await _dio.get(
+      '/auto-rescue/history',
+      queryParameters: {'skip': skip, 'limit': limit},
+    );
+    final List<dynamic> dataList = response.data['data'];
+    return dataList.cast<Map<String, dynamic>>();
+  }
 }
