@@ -7,6 +7,7 @@ import '../../../shared/models/family.dart';
 import '../../../shared/models/user_role.dart';
 import '../../../shared/providers/auth_provider.dart';
 import '../../../shared/widgets/common_buttons.dart';
+import '../../../core/extensions/snackbar_extension.dart';
 import '../../../core/theme/app_theme.dart';
 import '../providers/family_provider.dart';
 
@@ -183,13 +184,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                 icon: const Icon(Icons.copy, color: Colors.white),
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: family.inviteCode));
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('邀请码已复制'),
-                      backgroundColor: AppTheme.successColor,
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
+                  context.showSuccessSnackBar('邀请码已复制');
                 },
                 tooltip: '复制邀请码',
               ),
@@ -218,12 +213,11 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                   if (confirmed != true) return;
                   final success = await ref.read(familyProvider.notifier).refreshInviteCode();
                   if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(success ? '邀请码已刷新' : '刷新失败'),
-                        backgroundColor: success ? AppTheme.successColor : AppTheme.errorColor,
-                      ),
-                    );
+                    if (success) {
+                      context.showSuccessSnackBar('邀请码已刷新');
+                    } else {
+                      context.showErrorSnackBar('刷新失败');
+                    }
                   }
                 },
                 tooltip: '刷新邀请码',
@@ -465,12 +459,11 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               Navigator.pop(ctx);
               final success = await ref.read(familyProvider.notifier).createFamily(name);
               if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(success ? '创建成功！邀请码已生成' : '创建失败'),
-                    backgroundColor: success ? AppTheme.successColor : AppTheme.errorColor,
-                  ),
-                );
+                if (success) {
+                  context.showSuccessSnackBar('创建成功！邀请码已生成');
+                } else {
+                  context.showErrorSnackBar('创建失败');
+                }
               }
             },
           ),
@@ -555,12 +548,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                   onPressed: () async {
                     final code = codeController.text.trim();
                     if (code.length != 6 || selectedRelation == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('请输入6位邀请码并选择关系'),
-                          backgroundColor: AppTheme.warningColor,
-                        ),
-                      );
+                      context.showWarningSnackBar('请输入6位邀请码并选择关系');
                       return;
                     }
                     Navigator.pop(ctx);
@@ -569,12 +557,11 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                       relation: selectedRelation!,
                     );
                     if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(success ? '加入家庭成功！' : '加入失败，请检查邀请码'),
-                          backgroundColor: success ? AppTheme.successColor : AppTheme.errorColor,
-                        ),
-                      );
+                      if (success) {
+                        context.showSuccessSnackBar('加入家庭成功！');
+                      } else {
+                        context.showErrorSnackBar('加入失败，请检查邀请码');
+                      }
                     }
                   },
                 ),
@@ -692,12 +679,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     if (phone.isEmpty || selectedRelation == null) return;
                     // 前端手机号格式校验（11 位中国手机号）
                     if (!RegExp(r'^1[3-9]\d{9}$').hasMatch(phone)) {
-                      ScaffoldMessenger.of(ctx).showSnackBar(
-                        const SnackBar(
-                          content: Text('请输入正确的手机号格式'),
-                          backgroundColor: AppTheme.errorColor,
-                        ),
-                      );
+                      ctx.showErrorSnackBar('请输入正确的手机号格式');
                       return;
                     }
                     Navigator.pop(ctx);
@@ -707,12 +689,11 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                       relation: selectedRelation!,
                     );
                     if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(success ? '添加成功' : '添加失败'),
-                          backgroundColor: success ? AppTheme.successColor : AppTheme.errorColor,
-                        ),
-                      );
+                      if (success) {
+                        context.showSuccessSnackBar('添加成功');
+                      } else {
+                        context.showErrorSnackBar('添加失败');
+                      }
                     }
                   },
                 ),
@@ -746,12 +727,11 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               Navigator.pop(ctx);
               final success = await ref.read(familyProvider.notifier).removeMember(member.userId);
               if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(success ? '已移除' : '移除失败'),
-                    backgroundColor: success ? AppTheme.successColor : AppTheme.errorColor,
-                  ),
-                );
+                if (success) {
+                  context.showSuccessSnackBar('已移除');
+                } else {
+                  context.showErrorSnackBar('移除失败');
+                }
               }
             },
           ),

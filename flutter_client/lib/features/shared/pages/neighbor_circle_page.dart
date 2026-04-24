@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../shared/widgets/common_states.dart';
+import '../../../core/extensions/snackbar_extension.dart';
 import '../providers/neighbor_circle_provider.dart';
 
 /// 邻里圈管理页面（创建/搜索/加入/退出）
@@ -360,6 +361,6 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
   }
 
   void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    context.showSnackBar(message);
   }
 }

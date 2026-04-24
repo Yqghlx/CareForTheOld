@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/neighbor_help_provider.dart';
+import '../../../core/extensions/snackbar_extension.dart';
 
 /// 邻里互助评价页面（1-5 星 + 评语）
 class NeighborHelpRatingPage extends ConsumerStatefulWidget {
@@ -119,14 +120,10 @@ class _NeighborHelpRatingPageState
     if (mounted) {
       setState(() => _isSubmitting = false);
       if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('评价成功，感谢您的反馈')),
-        );
+        context.showSnackBar('评价成功，感谢您的反馈');
         Navigator.of(context).pop();
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(ref.read(neighborHelpProvider).error ?? '评价失败')),
-        );
+        context.showErrorSnackBar(ref.read(neighborHelpProvider).error ?? '评价失败');
       }
     }
   }

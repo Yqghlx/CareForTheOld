@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/extensions/snackbar_extension.dart';
 import '../../../shared/models/health_record.dart';
 import '../../../shared/models/health_stats.dart';
 import '../../../shared/models/medication_plan.dart';
@@ -611,9 +612,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
             ElevatedButton(
               onPressed: isSubmitting ? null : () async {
                 if (nameController.text.trim().isEmpty || dosageController.text.trim().isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('请填写药品名称和剂量'), backgroundColor: AppTheme.warningColor),
-                  );
+                  context.showWarningSnackBar('请填写药品名称和剂量');
                   return;
                 }
                 setDialogState(() => isSubmitting = true);
@@ -629,16 +628,12 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   ref.invalidate(elderMedicationPlansProvider(widget.elderId));
                   if (mounted && context.mounted) {
                     Navigator.pop(ctx);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('用药计划已更新'), backgroundColor: AppTheme.successColor),
-                    );
+                    context.showSuccessSnackBar('用药计划已更新');
                   }
                 } catch (e) {
                   setDialogState(() => isSubmitting = false);
                   if (mounted && context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('更新失败: $e'), backgroundColor: AppTheme.errorColor),
-                    );
+                    context.showErrorSnackBar('更新失败: $e');
                   }
                 }
               },
@@ -659,21 +654,15 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       // 刷新计划列表
       ref.invalidate(elderMedicationPlansProvider(widget.elderId));
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(active ? '已启用 ${plan.medicineName} 的用药提醒' : '已停用 ${plan.medicineName} 的用药提醒'),
-            backgroundColor: active ? AppTheme.successColor : Colors.grey.shade700,
-          ),
-        );
+        if (active) {
+          context.showSuccessSnackBar('已启用 ${plan.medicineName} 的用药提醒');
+        } else {
+          context.showSnackBar('已停用 ${plan.medicineName} 的用药提醒');
+        }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('操作失败: $e'),
-            backgroundColor: AppTheme.errorColor,
-          ),
-        );
+        context.showErrorSnackBar('操作失败: $e');
       }
     }
   }
@@ -706,21 +695,11 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       await service.deletePlan(plan.id);
       ref.invalidate(elderMedicationPlansProvider(widget.elderId));
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('已删除 ${plan.medicineName} 的用药计划'),
-            backgroundColor: Colors.grey.shade700,
-          ),
-        );
+        context.showSnackBar('已删除 ${plan.medicineName} 的用药计划');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('删除失败: $e'),
-            backgroundColor: AppTheme.errorColor,
-          ),
-        );
+        context.showErrorSnackBar('删除失败: $e');
       }
     }
   }
@@ -1036,12 +1015,11 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     // 关闭加载对话框
     if (mounted && context.mounted) {
       Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(success ? '报告已生成，请选择分享方式' : '导出失败，请稍后重试'),
-          backgroundColor: success ? AppTheme.successColor : AppTheme.errorColor,
-        ),
-      );
+      if (success) {
+        context.showSuccessSnackBar('报告已生成，请选择分享方式');
+      } else {
+        context.showErrorSnackBar('导出失败，请稍后重试');
+      }
     }
   }
 

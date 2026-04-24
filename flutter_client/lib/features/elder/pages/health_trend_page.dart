@@ -5,6 +5,7 @@ import '../../../shared/models/health_record.dart';
 import '../providers/health_provider.dart';
 import '../../../shared/widgets/health_trend_chart.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/extensions/snackbar_extension.dart';
 import '../../shared/services/health_report_service.dart';
 
 /// 按类型过滤的健康记录 Provider（用于趋势页面）
@@ -332,12 +333,11 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
     final success = await service.downloadAndShareReport(days: days);
 
     if (mounted && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(success ? '报告已生成，请选择分享方式' : '导出失败，请稍后重试'),
-          backgroundColor: success ? AppTheme.successColor : AppTheme.errorColor,
-        ),
-      );
+      if (success) {
+        context.showSuccessSnackBar('报告已生成，请选择分享方式');
+      } else {
+        context.showErrorSnackBar('导出失败，请稍后重试');
+      }
     }
   }
 }

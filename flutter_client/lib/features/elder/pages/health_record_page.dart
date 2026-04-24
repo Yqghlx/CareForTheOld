@@ -17,6 +17,7 @@ import '../../../shared/widgets/common_states.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/services/ocr_parser_service.dart';
+import '../../../core/extensions/snackbar_extension.dart';
 
 /// 健康记录页面
 class HealthRecordPage extends ConsumerStatefulWidget {
@@ -419,21 +420,11 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
       await service.deleteRecord(recordId);
       ref.read(healthRecordsProvider.notifier).loadRecords();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('记录已删除'),
-            backgroundColor: Colors.grey,
-          ),
-        );
+        context.showSnackBar('记录已删除');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('删除失败: $e'),
-            backgroundColor: AppTheme.errorColor,
-          ),
-        );
+        context.showErrorSnackBar('删除失败: $e');
       }
     }
   }
@@ -543,43 +534,20 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                           }
 
                           if (mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('识别成功，已自动填充${type.label}数值'),
-                                backgroundColor: AppTheme.successColor,
-                                duration: const Duration(seconds: 2),
-                              ),
-                            );
+                            context.showSuccessSnackBar('识别成功，已自动填充${type.label}数值');
                           }
                         } else {
                           if (mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('未能识别到有效数值，请手动输入'),
-                                backgroundColor: AppTheme.warningColor,
-                                duration: Duration(seconds: 2),
-                              ),
-                            );
+                            context.showWarningSnackBar('未能识别到有效数值，请手动输入');
                           }
                         }
                       } on OcrException catch (e) {
                         if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(e.message),
-                              backgroundColor: AppTheme.errorColor,
-                              duration: const Duration(seconds: 3),
-                            ),
-                          );
+                          context.showErrorSnackBar(e.message);
                         }
                       } catch (e) {
                         if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('识别失败: $e'),
-                              backgroundColor: AppTheme.errorColor,
-                            ),
-                          );
+                          context.showErrorSnackBar('识别失败: $e');
                         }
                       }
                     },
@@ -662,12 +630,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                 final available = await voiceService.initialize();
                                 if (!mounted || !context.mounted) return;
                                 if (!available) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('语音识别不可用，请检查设备设置'),
-                                      backgroundColor: AppTheme.warningColor,
-                                    ),
-                                  );
+                                  context.showWarningSnackBar('语音识别不可用，请检查设备设置');
                                   return;
                                 }
                                 setDialogState(() {
@@ -697,12 +660,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                 if (!started) {
                                   setDialogState(() => isListening = false);
                                   if (mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('语音识别启动失败，请手动输入'),
-                                        backgroundColor: AppTheme.warningColor,
-                                      ),
-                                    );
+                                    context.showWarningSnackBar('语音识别启动失败，请手动输入');
                                   }
                                 } else {
                                   setDialogState(() => isListening = voiceService.isListening);
@@ -1025,20 +983,10 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
           }
       }
     } on FormatException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.message),
-          backgroundColor: AppTheme.errorColor,
-        ),
-      );
+      context.showErrorSnackBar(e.message);
       return;
     } catch (_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('请输入有效的数值'),
-          backgroundColor: AppTheme.errorColor,
-        ),
-      );
+      context.showErrorSnackBar('请输入有效的数值');
       return;
     }
 
@@ -1101,12 +1049,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
       ref.invalidate(healthStatsProvider);
     } else if (mounted && dialogContext.mounted) {
       // 提交失败，保持对话框打开，让用户可以重试
-      ScaffoldMessenger.of(dialogContext).showSnackBar(
-        const SnackBar(
-          content: Text('保存失败，请重试'),
-          backgroundColor: AppTheme.errorColor,
-        ),
-      );
+      dialogContext.showErrorSnackBar('保存失败，请重试');
     }
   }
 }
