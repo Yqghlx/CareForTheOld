@@ -30,7 +30,12 @@ public class LocalFileStorageService : IFileStorageService
         var targetDir = Path.Combine(_env.ContentRootPath, _baseDirectory, directory);
         Directory.CreateDirectory(targetDir);
 
-        var filePath = Path.Combine(targetDir, fileName);
+        var filePath = Path.GetFullPath(Path.Combine(targetDir, fileName));
+
+        // 防止路径遍历攻击：确保最终路径在预期目录内
+        var basePath = Path.GetFullPath(targetDir);
+        if (!filePath.StartsWith(basePath, StringComparison.OrdinalIgnoreCase))
+            throw new UnauthorizedAccessException("非法的文件路径");
 
         // 覆盖写入（头像场景下同一用户只保留一个文件）
         using var fileStream = new FileStream(filePath, FileMode.Create);
@@ -42,7 +47,13 @@ public class LocalFileStorageService : IFileStorageService
     /// <inheritdoc />
     public Task<string?> GetUrlAsync(string directory, string fileName)
     {
-        var filePath = Path.Combine(_env.ContentRootPath, _baseDirectory, directory, fileName);
+        var filePath = Path.GetFullPath(Path.Combine(_env.ContentRootPath, _baseDirectory, directory, fileName));
+        var basePath = Path.GetFullPath(Path.Combine(_env.ContentRootPath, _baseDirectory));
+
+        // 防止路径遍历：确保解析后的路径在 uploads 目录内
+        if (!filePath.StartsWith(basePath, StringComparison.OrdinalIgnoreCase))
+            return Task.FromResult<string?>(null);
+
         if (File.Exists(filePath))
         {
             return Task.FromResult<string?>($"/{_baseDirectory}/{directory}/{fileName}");
@@ -59,7 +70,12 @@ public class LocalFileStorageService : IFileStorageService
 
         // 移除开头的 / 分隔符
         var relativePath = fileUrl.TrimStart('/');
-        var filePath = Path.Combine(_env.ContentRootPath, relativePath);
+        var filePath = Path.GetFullPath(Path.Combine(_env.ContentRootPath, relativePath));
+        var basePath = Path.GetFullPath(Path.Combine(_env.ContentRootPath, _baseDirectory));
+
+        // 防止路径遍历攻击：确保解析后的路径在 uploads 目录内
+        if (!filePath.StartsWith(basePath, StringComparison.OrdinalIgnoreCase))
+            return Task.CompletedTask;
 
         if (File.Exists(filePath))
         {
