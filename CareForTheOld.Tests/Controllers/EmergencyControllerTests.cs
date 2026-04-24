@@ -88,7 +88,7 @@ public class EmergencyControllerTests
         result.Success.Should().BeTrue();
         result.Data!.Status.Should().Be(EmergencyStatus.Pending);
         result.Data.BatteryLevel.Should().Be(85);
-        result.Message.Should().Be("紧急呼叫已发送");
+        result.Message.Should().Be("紧急呼叫已发送，已通知家人和附近邻居");
     }
 
     [Fact]

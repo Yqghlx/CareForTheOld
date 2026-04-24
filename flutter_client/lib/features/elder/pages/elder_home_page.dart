@@ -492,7 +492,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('紧急呼叫已发送，家人将尽快联系您'),
+            content: Text('紧急呼叫已发送，已通知家人和附近邻居'),
             backgroundColor: AppTheme.successColor,
             duration: Duration(seconds: 3),
           ),
@@ -569,7 +569,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text(
-              '您的紧急呼叫已成功发送给家人。',
+              '您的紧急呼叫已成功发送，已通知家人和附近邻居。',
               style: TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 12),
