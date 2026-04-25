@@ -3,8 +3,10 @@ using CareForTheOld.Models.DTOs.Requests.Families;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Implementations;
+using CareForTheOld.Services.Interfaces;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using Xunit;
 
 namespace CareForTheOld.Tests.Services;
@@ -16,6 +18,7 @@ public class FamilyServiceTests
 {
     private readonly AppDbContext _context;
     private readonly FamilyService _service;
+    private readonly Mock<INotificationService> _mockNotification;
 
     public FamilyServiceTests()
     {
@@ -24,7 +27,8 @@ public class FamilyServiceTests
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
         _context = new AppDbContext(options);
-        _service = new FamilyService(_context);
+        _mockNotification = new Mock<INotificationService>();
+        _service = new FamilyService(_context, _mockNotification.Object);
     }
 
     /// <summary>
@@ -74,7 +78,7 @@ public class FamilyServiceTests
     }
 
     [Fact]
-    public async Task JoinFamilyByCodeAsync_ShouldJoin()
+    public async Task JoinFamilyByCodeAsync_ShouldCreatePendingMember()
     {
         // 准备：创建用户和家庭
         var creator = await CreateUserAsync("13700002001", "家庭创建者", UserRole.Child);
@@ -93,7 +97,8 @@ public class FamilyServiceTests
             FamilyId = family.Id,
             UserId = creator.Id,
             Role = UserRole.Child,
-            Relation = "创建者"
+            Relation = "创建者",
+            Status = FamilyMemberStatus.Approved
         });
         await _context.SaveChangesAsync();
 
@@ -106,14 +111,29 @@ public class FamilyServiceTests
             Relation = "父亲"
         };
 
-        // 执行：通过邀请码加入家庭
+        // 执行：通过邀请码申请加入家庭
         var result = await _service.JoinFamilyByCodeAsync(joiner.Id, request);
 
-        // 验证：加入成功，家庭成员列表包含新成员
+        // 验证：返回申请结果，状态为 Pending
         result.Should().NotBeNull();
-        result.Members.Should().HaveCount(2);
-        result.Members.Should().Contain(m =>
-            m.UserId == joiner.Id && m.Relation == "父亲" && m.Role == UserRole.Elder);
+        result.Status.Should().Be(FamilyMemberStatus.Pending);
+        result.Message.Should().Be("申请已提交，等待子女审批");
+        result.FamilyName.Should().Be("加入测试家庭");
+
+        // 验证：数据库中创建了 Pending 状态的成员记录
+        var pendingMember = await _context.FamilyMembers
+            .FirstOrDefaultAsync(fm => fm.UserId == joiner.Id);
+        pendingMember.Should().NotBeNull();
+        pendingMember!.Status.Should().Be(FamilyMemberStatus.Pending);
+        pendingMember.Relation.Should().Be("父亲");
+
+        // 验证：通知已发送给子女
+        _mockNotification.Verify(
+            n => n.SendToUsersAsync(
+                It.IsAny<IEnumerable<Guid>>(),
+                "FamilyJoinRequest",
+                It.IsAny<object>()),
+            Times.Once);
     }
 
     [Fact]
@@ -154,7 +174,8 @@ public class FamilyServiceTests
             FamilyId = family.Id,
             UserId = creator.Id,
             Role = UserRole.Child,
-            Relation = "创建者"
+            Relation = "创建者",
+            Status = FamilyMemberStatus.Approved
         });
         await _context.SaveChangesAsync();
 
@@ -164,10 +185,10 @@ public class FamilyServiceTests
             Relation = "朋友"
         };
 
-        // 执行并验证：已在家庭中的用户不能重复加入
+        // 执行并验证：已在家庭中的用户不能重复申请
         var act = async () => await _service.JoinFamilyByCodeAsync(creator.Id, request);
         await act.Should().ThrowAsync<ArgumentException>()
-            .WithMessage("您已加入家庭组，不能重复加入");
+            .WithMessage("您已提交加入申请或已加入家庭组，不能重复申请");
     }
 
     [Fact]
@@ -192,7 +213,8 @@ public class FamilyServiceTests
             FamilyId = family.Id,
             UserId = operator_.Id,
             Role = UserRole.Child,
-            Relation = "创建者"
+            Relation = "创建者",
+            Status = FamilyMemberStatus.Approved
         });
         await _context.SaveChangesAsync();
 
@@ -236,7 +258,8 @@ public class FamilyServiceTests
                 FamilyId = family.Id,
                 UserId = operator_.Id,
                 Role = UserRole.Child,
-                Relation = "创建者"
+                Relation = "创建者",
+                Status = FamilyMemberStatus.Approved
             },
             new FamilyMember
             {
@@ -244,7 +267,8 @@ public class FamilyServiceTests
                 FamilyId = family.Id,
                 UserId = member.Id,
                 Role = UserRole.Elder,
-                Relation = "父亲"
+                Relation = "父亲",
+                Status = FamilyMemberStatus.Approved
             }
         );
         await _context.SaveChangesAsync();
@@ -280,7 +304,8 @@ public class FamilyServiceTests
             FamilyId = family.Id,
             UserId = creator.Id,
             Role = UserRole.Child,
-            Relation = "创建者"
+            Relation = "创建者",
+            Status = FamilyMemberStatus.Approved
         });
         await _context.SaveChangesAsync();
 
@@ -315,7 +340,8 @@ public class FamilyServiceTests
             FamilyId = family.Id,
             UserId = creator.Id,
             Role = UserRole.Child,
-            Relation = "创建者"
+            Relation = "创建者",
+            Status = FamilyMemberStatus.Approved
         });
         await _context.SaveChangesAsync();
 
@@ -323,5 +349,228 @@ public class FamilyServiceTests
         var act = async () => await _service.RefreshInviteCodeAsync(family.Id, stranger.Id);
         await act.Should().ThrowAsync<UnauthorizedAccessException>()
             .WithMessage("您不是该家庭成员");
+    }
+
+    [Fact]
+    public async Task ApproveMemberAsync_ShouldApprove()
+    {
+        // 准备：创建家庭、子女操作者和待审批成员
+        var operator_ = await CreateUserAsync("13700009001", "审批操作者", UserRole.Child);
+        var applicant = await CreateUserAsync("13700009002", "申请人", UserRole.Elder);
+
+        var family = new Family
+        {
+            Id = Guid.NewGuid(),
+            FamilyName = "审批测试家庭",
+            CreatorId = operator_.Id,
+            InviteCode = "666666",
+            CreatedAt = DateTime.UtcNow
+        };
+        _context.Families.Add(family);
+        _context.FamilyMembers.AddRange(
+            new FamilyMember
+            {
+                Id = Guid.NewGuid(),
+                FamilyId = family.Id,
+                UserId = operator_.Id,
+                Role = UserRole.Child,
+                Relation = "创建者",
+                Status = FamilyMemberStatus.Approved
+            },
+            new FamilyMember
+            {
+                Id = Guid.NewGuid(),
+                FamilyId = family.Id,
+                UserId = applicant.Id,
+                Role = UserRole.Elder,
+                Relation = "爷爷",
+                Status = FamilyMemberStatus.Pending
+            }
+        );
+        await _context.SaveChangesAsync();
+
+        // 执行：审批通过
+        await _service.ApproveMemberAsync(family.Id, applicant.Id, operator_.Id);
+
+        // 验证：成员状态变为 Approved
+        var member = await _context.FamilyMembers
+            .FirstOrDefaultAsync(fm => fm.UserId == applicant.Id);
+        member.Should().NotBeNull();
+        member!.Status.Should().Be(FamilyMemberStatus.Approved);
+
+        // 验证：通知已发送给申请人
+        _mockNotification.Verify(
+            n => n.SendToUserAsync(
+                applicant.Id,
+                "FamilyJoinApproved",
+                It.IsAny<object>()),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task RejectMemberAsync_ShouldRemoveRecord()
+    {
+        // 准备：创建家庭、子女操作者和待审批成员
+        var operator_ = await CreateUserAsync("13700010001", "拒绝操作者", UserRole.Child);
+        var applicant = await CreateUserAsync("13700010002", "被拒绝申请人", UserRole.Elder);
+
+        var family = new Family
+        {
+            Id = Guid.NewGuid(),
+            FamilyName = "拒绝测试家庭",
+            CreatorId = operator_.Id,
+            InviteCode = "777777",
+            CreatedAt = DateTime.UtcNow
+        };
+        _context.Families.Add(family);
+        _context.FamilyMembers.Add(new FamilyMember
+        {
+            Id = Guid.NewGuid(),
+            FamilyId = family.Id,
+            UserId = operator_.Id,
+            Role = UserRole.Child,
+            Relation = "创建者",
+            Status = FamilyMemberStatus.Approved
+        });
+        _context.FamilyMembers.Add(new FamilyMember
+        {
+            Id = Guid.NewGuid(),
+            FamilyId = family.Id,
+            UserId = applicant.Id,
+            Role = UserRole.Elder,
+            Relation = "奶奶",
+            Status = FamilyMemberStatus.Pending
+        });
+        await _context.SaveChangesAsync();
+
+        // 执行：拒绝申请
+        await _service.RejectMemberAsync(family.Id, applicant.Id, operator_.Id);
+
+        // 验证：申请记录已删除
+        var member = await _context.FamilyMembers
+            .FirstOrDefaultAsync(fm => fm.UserId == applicant.Id);
+        member.Should().BeNull();
+
+        // 验证：通知已发送给申请人
+        _mockNotification.Verify(
+            n => n.SendToUserAsync(
+                applicant.Id,
+                "FamilyJoinRejected",
+                It.IsAny<object>()),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task GetPendingMembersAsync_ShouldReturnOnlyPending()
+    {
+        // 准备：创建家庭，包含不同状态的成员
+        var operator_ = await CreateUserAsync("13700011001", "查询操作者", UserRole.Child);
+        var pendingUser = await CreateUserAsync("13700011002", "待审批用户", UserRole.Elder);
+        var approvedUser = await CreateUserAsync("13700011003", "已通过用户", UserRole.Elder);
+
+        var family = new Family
+        {
+            Id = Guid.NewGuid(),
+            FamilyName = "查询测试家庭",
+            CreatorId = operator_.Id,
+            InviteCode = "999999",
+            CreatedAt = DateTime.UtcNow
+        };
+        _context.Families.Add(family);
+        _context.FamilyMembers.AddRange(
+            new FamilyMember
+            {
+                Id = Guid.NewGuid(),
+                FamilyId = family.Id,
+                UserId = operator_.Id,
+                Role = UserRole.Child,
+                Relation = "创建者",
+                Status = FamilyMemberStatus.Approved
+            },
+            new FamilyMember
+            {
+                Id = Guid.NewGuid(),
+                FamilyId = family.Id,
+                UserId = pendingUser.Id,
+                Role = UserRole.Elder,
+                Relation = "爷爷",
+                Status = FamilyMemberStatus.Pending
+            },
+            new FamilyMember
+            {
+                Id = Guid.NewGuid(),
+                FamilyId = family.Id,
+                UserId = approvedUser.Id,
+                Role = UserRole.Elder,
+                Relation = "奶奶",
+                Status = FamilyMemberStatus.Approved
+            }
+        );
+        await _context.SaveChangesAsync();
+
+        // 执行：查询待审批成员
+        var result = await _service.GetPendingMembersAsync(family.Id, operator_.Id);
+
+        // 验证：只返回待审批成员
+        result.Should().HaveCount(1);
+        result[0].UserId.Should().Be(pendingUser.Id);
+        result[0].Status.Should().Be(FamilyMemberStatus.Pending);
+    }
+
+    [Fact]
+    public async Task GetMyFamilyAsync_ShouldOnlyReturnApprovedMembers()
+    {
+        // 准备：创建家庭，包含已通过和待审批成员
+        var creator = await CreateUserAsync("13700012001", "创建者", UserRole.Child);
+        var approvedUser = await CreateUserAsync("13700012002", "已通过用户", UserRole.Elder);
+        var pendingUser = await CreateUserAsync("13700012003", "待审批用户", UserRole.Elder);
+
+        var family = new Family
+        {
+            Id = Guid.NewGuid(),
+            FamilyName = "筛选测试家庭",
+            CreatorId = creator.Id,
+            InviteCode = "123456",
+            CreatedAt = DateTime.UtcNow
+        };
+        _context.Families.Add(family);
+        _context.FamilyMembers.AddRange(
+            new FamilyMember
+            {
+                Id = Guid.NewGuid(),
+                FamilyId = family.Id,
+                UserId = creator.Id,
+                Role = UserRole.Child,
+                Relation = "创建者",
+                Status = FamilyMemberStatus.Approved
+            },
+            new FamilyMember
+            {
+                Id = Guid.NewGuid(),
+                FamilyId = family.Id,
+                UserId = approvedUser.Id,
+                Role = UserRole.Elder,
+                Relation = "爷爷",
+                Status = FamilyMemberStatus.Approved
+            },
+            new FamilyMember
+            {
+                Id = Guid.NewGuid(),
+                FamilyId = family.Id,
+                UserId = pendingUser.Id,
+                Role = UserRole.Elder,
+                Relation = "奶奶",
+                Status = FamilyMemberStatus.Pending
+            }
+        );
+        await _context.SaveChangesAsync();
+
+        // 执行：查询家庭信息（使用已通过用户的身份）
+        var result = await _service.GetMyFamilyAsync(approvedUser.Id);
+
+        // 验证：只返回已通过审批的成员
+        result.Should().NotBeNull();
+        result!.Members.Should().HaveCount(2); // 创建者 + 已通过用户
+        result.Members.Should().NotContain(m => m.UserId == pendingUser.Id);
     }
 }

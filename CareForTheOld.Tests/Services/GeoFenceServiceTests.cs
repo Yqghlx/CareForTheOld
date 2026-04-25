@@ -36,7 +36,8 @@ public class GeoFenceServiceTests
             .Setup(c => c.RemoveAsync(It.IsAny<string>()))
             .Returns(Task.CompletedTask);
 
-        _service = new GeoFenceService(_context, _mockCacheService.Object, new FamilyService(_context));
+        var mockNotification = new Mock<INotificationService>();
+        _service = new GeoFenceService(_context, _mockCacheService.Object, new FamilyService(_context, mockNotification.Object));
     }
 
     private async Task<Guid> CreateTestUserAsync(string realName = "测试老人", UserRole role = UserRole.Elder)
@@ -73,7 +74,8 @@ public class GeoFenceServiceTests
             FamilyId = family.Id,
             UserId = elderId,
             Role = UserRole.Elder,
-            Relation = "父亲"
+            Relation = "父亲",
+            Status = FamilyMemberStatus.Approved
         });
 
         _context.FamilyMembers.Add(new FamilyMember
@@ -82,7 +84,8 @@ public class GeoFenceServiceTests
             FamilyId = family.Id,
             UserId = childId,
             Role = UserRole.Child,
-            Relation = "子女"
+            Relation = "子女",
+            Status = FamilyMemberStatus.Approved
         });
 
         await _context.SaveChangesAsync();

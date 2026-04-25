@@ -32,7 +32,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
   Widget build(BuildContext context) {
     final familyState = ref.watch(familyProvider);
     final authState = ref.watch(authProvider);
-    final isElder = authState.user?.role.isElder ?? false;
+    final isElder = authState.role?.isElder ?? authState.user?.role.isElder ?? false;
 
     return Scaffold(
       appBar: AppBar(title: const Text('家庭成员')),
@@ -47,6 +47,12 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               // 家庭信息/邀请码卡片
               _buildFamilyCard(familyState, isElder),
               const SizedBox(height: 24),
+
+              // 待审批区域（子女端）
+              if (!isElder && familyState.family != null) ...[
+                _buildPendingSection(familyState),
+                const SizedBox(height: 16),
+              ],
 
               // 成员列表
               if (familyState.family != null) ...[
@@ -71,6 +77,187 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
         ),
       ),
     );
+  }
+
+  /// 待审批成员区域
+  Widget _buildPendingSection(FamilyState state) {
+    final pending = state.pendingMembers;
+    if (pending.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Text('待审批',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: Colors.orange.shade100,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                '${pending.length}',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.orange.shade700,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        ...pending.map((member) => _buildPendingCard(member)),
+      ],
+    );
+  }
+
+  /// 待审批成员卡片
+  Widget _buildPendingCard(FamilyMember member) {
+    return Card(
+      elevation: 2,
+      margin: const EdgeInsets.only(bottom: 12),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            // 头像
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: Colors.orange.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                member.role.isElder ? Icons.elderly : Icons.person,
+                color: Colors.orange,
+                size: 26,
+              ),
+            ),
+            const SizedBox(width: 12),
+            // 信息
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    member.realName.isEmpty ? '未设置姓名' : member.realName,
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 2),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                        decoration: BoxDecoration(
+                          color: Colors.orange.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          '待审批',
+                          style: TextStyle(fontSize: 11, color: Colors.orange.shade700),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        member.relation,
+                        style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            // 操作按钮
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.check_circle, color: Colors.green.shade600),
+                  onPressed: () => _approveMember(member),
+                  tooltip: '通过',
+                ),
+                IconButton(
+                  icon: Icon(Icons.cancel, color: Colors.red.shade300),
+                  onPressed: () => _rejectMember(member),
+                  tooltip: '拒绝',
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 审批通过
+  Future<void> _approveMember(FamilyMember member) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('审批确认'),
+        content: Text('确定通过 ${member.realName} 的加入申请吗？'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('取消'),
+          ),
+          PrimaryButton(
+            text: '通过',
+            onPressed: () => Navigator.pop(ctx, true),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    final success = await ref.read(familyProvider.notifier).approveMember(member.userId);
+    if (mounted) {
+      if (success) {
+        context.showSuccessSnackBar('已通过 ${member.realName} 的加入申请');
+      } else {
+        context.showErrorSnackBar('操作失败');
+      }
+    }
+  }
+
+  /// 拒绝申请
+  Future<void> _rejectMember(FamilyMember member) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('拒绝申请'),
+        content: Text('确定拒绝 ${member.realName} 的加入申请吗？'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('取消'),
+          ),
+          PrimaryButton(
+            text: '拒绝',
+            gradient: const LinearGradient(colors: [Colors.red, Colors.redAccent]),
+            onPressed: () => Navigator.pop(ctx, true),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    final success = await ref.read(familyProvider.notifier).rejectMember(member.userId);
+    if (mounted) {
+      if (success) {
+        context.showSuccessSnackBar('已拒绝申请');
+      } else {
+        context.showErrorSnackBar('操作失败');
+      }
+    }
   }
 
   /// 家庭信息卡片
@@ -226,7 +413,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
           ),
           const SizedBox(height: 4),
           Text(
-            '将邀请码分享给家人，即可加入家庭',
+            '将邀请码分享给家人，提交后需审批通过',
             style: TextStyle(
               color: Colors.white.withValues(alpha: 0.8),
               fontSize: 12,
@@ -544,7 +731,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                   child: const Text('取消'),
                 ),
                 PrimaryButton(
-                  text: '加入',
+                  text: '提交申请',
                   gradient: const LinearGradient(
                     colors: [Colors.orange, Colors.deepOrange],
                   ),
@@ -555,15 +742,16 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                       return;
                     }
                     Navigator.pop(ctx);
-                    final success = await ref.read(familyProvider.notifier).joinFamily(
+                    final result = await ref.read(familyProvider.notifier).joinFamily(
                       inviteCode: code,
                       relation: selectedRelation!,
                     );
                     if (mounted) {
-                      if (success) {
-                        context.showSuccessSnackBar('加入家庭成功！');
+                      if (result != null) {
+                        // 申请已提交
+                        context.showSuccessSnackBar(result.message);
                       } else {
-                        context.showErrorSnackBar('加入失败，请检查邀请码');
+                        context.showErrorSnackBar('申请失败，请检查邀请码');
                       }
                     }
                   },

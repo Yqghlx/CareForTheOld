@@ -177,17 +177,25 @@ void main() {
   // joinFamilyByCode
   // ------------------------------------------------------------------
   group('joinFamilyByCode', () {
-    test('成功通过邀请码加入家庭', () async {
+    test('成功通过邀请码申请加入家庭', () async {
       when(() => mockDio.post(any(), data: any(named: 'data')))
-          .thenAnswer((_) async => mockResponse({'data': familyJson}));
+          .thenAnswer((_) async => mockResponse({
+            'data': {
+              'message': '申请已提交，等待子女审批',
+              'familyName': '测试家庭',
+              'status': 'pending',
+            }
+          }));
 
       final result = await service.joinFamilyByCode(
         inviteCode: 'ABC123',
         relation: '儿子',
       );
 
-      expect(result, isA<FamilyGroup>());
-      expect(result.id, 'f1');
+      expect(result, isA<JoinFamilyResult>());
+      expect(result.familyName, '测试家庭');
+      expect(result.status, FamilyMemberStatus.pending);
+      expect(result.message, '申请已提交，等待子女审批');
 
       final captured = verify(() => mockDio.post(
         '/family/join',

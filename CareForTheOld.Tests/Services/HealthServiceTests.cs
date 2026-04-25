@@ -140,8 +140,8 @@ public class HealthServiceTests
         var family = new Family { Id = Guid.NewGuid(), FamilyName = "测试家庭", CreatorId = child.Id, InviteCode = "123456", CreatedAt = DateTime.UtcNow };
         _context.Families.Add(family);
         _context.FamilyMembers.AddRange(
-            new FamilyMember { Id = Guid.NewGuid(), FamilyId = family.Id, UserId = elder.Id, Role = UserRole.Elder, Relation = "父亲" },
-            new FamilyMember { Id = Guid.NewGuid(), FamilyId = family.Id, UserId = child.Id, Role = UserRole.Child, Relation = "子女" }
+            new FamilyMember { Id = Guid.NewGuid(), FamilyId = family.Id, UserId = elder.Id, Role = UserRole.Elder, Relation = "父亲", Status = FamilyMemberStatus.Approved },
+            new FamilyMember { Id = Guid.NewGuid(), FamilyId = family.Id, UserId = child.Id, Role = UserRole.Child, Relation = "子女", Status = FamilyMemberStatus.Approved }
         );
         await _context.SaveChangesAsync();
         return (elder.Id, child.Id, family.Id);

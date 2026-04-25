@@ -13,23 +13,27 @@ final familyServiceProvider = Provider<FamilyService>((ref) {
 /// 家庭状态
 class FamilyState {
   final FamilyGroup? family;
+  final List<FamilyMember> pendingMembers;
   final bool isLoading;
   final String? error;
 
   const FamilyState({
     this.family,
+    this.pendingMembers = const [],
     this.isLoading = false,
     this.error,
   });
 
   FamilyState copyWith({
     FamilyGroup? family,
+    List<FamilyMember>? pendingMembers,
     bool? isLoading,
     String? error,
     bool clearError = false,
   }) {
     return FamilyState(
       family: family ?? this.family,
+      pendingMembers: pendingMembers ?? this.pendingMembers,
       isLoading: isLoading ?? this.isLoading,
       error: clearError ? null : (error ?? this.error),
     );
@@ -44,6 +48,9 @@ class FamilyState {
 
   /// 全部成员
   List<FamilyMember> get members => family?.members ?? [];
+
+  /// 待审批成员数量
+  int get pendingCount => pendingMembers.length;
 }
 
 /// 家庭状态 Notifier
@@ -133,25 +140,20 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
     }
   }
 
-  /// 通过邀请码加入家庭
-  Future<bool> joinFamily({
+  /// 通过邀请码申请加入家庭（申请模式，返回申请结果）
+  Future<JoinFamilyResult?> joinFamily({
     required String inviteCode,
     required String relation,
   }) async {
     try {
-      final family = await _service.joinFamilyByCode(
+      final result = await _service.joinFamilyByCode(
         inviteCode: inviteCode,
         relation: relation,
       );
-      // 保存家庭信息到本地
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('familyId', family.id);
-      await prefs.setString('familyName', family.familyName);
-      state = state.copyWith(family: family);
-      return true;
+      return result;
     } catch (e) {
       state = state.copyWith(error: e.toString());
-      return false;
+      return null;
     }
   }
 
@@ -162,6 +164,49 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
     try {
       final family = await _service.refreshInviteCode(familyId);
       state = state.copyWith(family: family);
+      return true;
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+      return false;
+    }
+  }
+
+  /// 加载待审批成员列表
+  Future<void> loadPendingMembers() async {
+    final familyId = state.familyId;
+    if (familyId == null) return;
+    try {
+      final pending = await _service.getPendingMembers(familyId);
+      state = state.copyWith(pendingMembers: pending);
+    } catch (_) {
+      // 静默失败，不影响主流程
+    }
+  }
+
+  /// 审批通过成员加入
+  Future<bool> approveMember(String memberId) async {
+    final familyId = state.familyId;
+    if (familyId == null) return false;
+    try {
+      await _service.approveMember(familyId: familyId, memberId: memberId);
+      // 刷新待审批列表和家庭信息
+      await loadPendingMembers();
+      await loadFamily();
+      return true;
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+      return false;
+    }
+  }
+
+  /// 拒绝成员加入申请
+  Future<bool> rejectMember(String memberId) async {
+    final familyId = state.familyId;
+    if (familyId == null) return false;
+    try {
+      await _service.rejectMember(familyId: familyId, memberId: memberId);
+      // 刷新待审批列表
+      await loadPendingMembers();
       return true;
     } catch (e) {
       state = state.copyWith(error: e.toString());

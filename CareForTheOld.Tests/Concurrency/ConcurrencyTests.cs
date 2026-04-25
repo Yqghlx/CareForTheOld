@@ -155,7 +155,8 @@ public class ConcurrencyTests
             FamilyId = familyId,
             UserId = elderId,
             Role = UserRole.Elder,
-            Relation = "本人"
+            Relation = "本人",
+            Status = FamilyMemberStatus.Approved
         });
         await context.SaveChangesAsync();
 

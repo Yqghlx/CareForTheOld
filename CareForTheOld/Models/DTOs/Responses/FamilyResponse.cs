@@ -19,4 +19,9 @@ public class FamilyMemberResponse
     public UserRole Role { get; set; }
     public string Relation { get; set; } = string.Empty;
     public string? AvatarUrl { get; set; }
+
+    /// <summary>
+    /// 成员状态（Pending=待审批, Approved=已通过）
+    /// </summary>
+    public FamilyMemberStatus Status { get; set; }
 }
