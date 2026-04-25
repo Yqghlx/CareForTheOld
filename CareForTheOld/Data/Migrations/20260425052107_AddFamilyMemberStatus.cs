@@ -15,7 +15,7 @@ namespace CareForTheOld.Data.Migrations
                 table: "FamilyMembers",
                 type: "text",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: "approved");
         }
 
         /// <inheritdoc />
