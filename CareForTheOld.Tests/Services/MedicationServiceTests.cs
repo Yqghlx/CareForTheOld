@@ -3,8 +3,10 @@ using CareForTheOld.Models.DTOs.Requests.Medication;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Implementations;
+using CareForTheOld.Services.Interfaces;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using Xunit;
 
 namespace CareForTheOld.Tests.Services;
@@ -24,7 +26,8 @@ public class MedicationServiceTests
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
         _context = new AppDbContext(options);
-        _service = new MedicationService(_context, new FamilyService(_context));
+        var mockNotification = new Mock<INotificationService>();
+        _service = new MedicationService(_context, new FamilyService(_context, mockNotification.Object));
     }
 
     /// <summary>
@@ -70,7 +73,8 @@ public class MedicationServiceTests
                 FamilyId = family.Id,
                 UserId = elder.Id,
                 Role = UserRole.Elder,
-                Relation = "母亲"
+                Relation = "母亲",
+                Status = FamilyMemberStatus.Approved
             },
             new FamilyMember
             {
@@ -78,7 +82,8 @@ public class MedicationServiceTests
                 FamilyId = family.Id,
                 UserId = child.Id,
                 Role = UserRole.Child,
-                Relation = "女儿"
+                Relation = "女儿",
+                Status = FamilyMemberStatus.Approved
             }
         );
         await _context.SaveChangesAsync();

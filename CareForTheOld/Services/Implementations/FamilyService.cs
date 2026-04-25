@@ -12,11 +12,16 @@ namespace CareForTheOld.Services.Implementations;
 public class FamilyService : IFamilyService
 {
     private readonly AppDbContext _context;
+    private readonly INotificationService _notificationService;
 
     /// <summary>邀请码有效期（7天）</summary>
     private static readonly TimeSpan _inviteCodeExpiration = TimeSpan.FromDays(7);
 
-    public FamilyService(AppDbContext context) => _context = context;
+    public FamilyService(AppDbContext context, INotificationService notificationService)
+    {
+        _context = context;
+        _notificationService = notificationService;
+    }
 
     /// <summary>
     /// 使用加密随机数生成器生成 6 位数字邀请码，防止可预测攻击
@@ -27,12 +32,12 @@ public class FamilyService : IFamilyService
     }
 
     /// <summary>
-    /// 获取用户所属的家庭信息
+    /// 获取用户所属的家庭信息（仅返回已通过审批的成员）
     /// </summary>
     public async Task<FamilyResponse?> GetMyFamilyAsync(Guid userId)
     {
         var familyMember = await _context.FamilyMembers
-            .FirstOrDefaultAsync(fm => fm.UserId == userId);
+            .FirstOrDefaultAsync(fm => fm.UserId == userId && fm.Status == FamilyMemberStatus.Approved);
 
         if (familyMember == null)
             return null;
@@ -62,13 +67,14 @@ public class FamilyService : IFamilyService
             CreatedAt = DateTime.UtcNow
         };
 
-        // 创建者自动加入家庭组
+        // 创建者自动加入家庭组（状态为 Approved）
         family.Members.Add(new FamilyMember
         {
             Id = Guid.NewGuid(),
             UserId = creatorId,
             Role = creator.Role,
-            Relation = "创建者"
+            Relation = "创建者",
+            Status = FamilyMemberStatus.Approved
         });
 
         _context.Families.Add(family);
@@ -104,6 +110,7 @@ public class FamilyService : IFamilyService
             UserId = user.Id,
             Role = user.Role, // 使用用户实际角色，防止客户端伪造
             Relation = request.Relation,
+            Status = FamilyMemberStatus.Approved // 子女直接添加的成员默认通过
         });
 
         try
@@ -119,13 +126,13 @@ public class FamilyService : IFamilyService
     }
 
     /// <summary>
-    /// 通过邀请码加入家庭
+    /// 通过邀请码申请加入家庭（改为申请模式，需子女审批）
     /// </summary>
-    public async Task<FamilyResponse> JoinFamilyByCodeAsync(Guid userId, JoinFamilyRequest request)
+    public async Task<JoinFamilyResponse> JoinFamilyByCodeAsync(Guid userId, JoinFamilyRequest request)
     {
-        // 检查用户是否已在某个家庭中
+        // 检查用户是否已在某个家庭中（含待审批记录）
         if (await _context.FamilyMembers.AnyAsync(fm => fm.UserId == userId))
-            throw new ArgumentException("您已加入家庭组，不能重复加入");
+            throw new ArgumentException("您已提交加入申请或已加入家庭组，不能重复申请");
 
         var user = await _context.Users.FindAsync(userId)
             ?? throw new KeyNotFoundException("用户不存在");
@@ -139,15 +146,18 @@ public class FamilyService : IFamilyService
         if (family.InviteCodeExpiresAt.HasValue && family.InviteCodeExpiresAt.Value < DateTime.UtcNow)
             throw new ArgumentException("邀请码已过期，请联系家庭创建者获取新邀请码");
 
-        // 添加用户到家庭
-        _context.FamilyMembers.Add(new FamilyMember
+        // 创建待审批成员记录
+        var member = new FamilyMember
         {
             Id = Guid.NewGuid(),
             FamilyId = family.Id,
             UserId = userId,
             Role = user.Role,
             Relation = request.Relation,
-        });
+            Status = FamilyMemberStatus.Pending
+        };
+
+        _context.FamilyMembers.Add(member);
 
         try
         {
@@ -155,10 +165,129 @@ public class FamilyService : IFamilyService
         }
         catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
         {
-            throw new ArgumentException("您已加入家庭组，不能重复加入");
+            throw new ArgumentException("您已提交加入申请或已加入家庭组，不能重复申请");
         }
 
-        return await GetFamilyResponse(family.Id);
+        // 通知家庭中所有子女角色成员审批
+        var childMembers = await _context.FamilyMembers
+            .Where(fm => fm.FamilyId == family.Id && fm.Role == UserRole.Child && fm.Status == FamilyMemberStatus.Approved)
+            .Select(fm => fm.UserId)
+            .ToListAsync();
+
+        if (childMembers.Count > 0)
+        {
+            await _notificationService.SendToUsersAsync(childMembers, "FamilyJoinRequest", new
+            {
+                Title = "家庭加入申请",
+                Content = $"{user.RealName}（{request.Relation}）申请加入{family.FamilyName}，请审批",
+                FamilyId = family.Id,
+                FamilyName = family.FamilyName,
+                ApplicantId = userId,
+                ApplicantName = user.RealName,
+                Relation = request.Relation
+            });
+        }
+
+        return new JoinFamilyResponse
+        {
+            Message = "申请已提交，等待子女审批",
+            FamilyName = family.FamilyName,
+            Status = FamilyMemberStatus.Pending
+        };
+    }
+
+    /// <summary>
+    /// 获取待审批成员列表（仅子女可查看）
+    /// </summary>
+    public async Task<List<FamilyMemberResponse>> GetPendingMembersAsync(Guid familyId, Guid operatorId)
+    {
+        await EnsureMemberAsync(familyId, operatorId);
+
+        return await _context.FamilyMembers
+            .Include(fm => fm.User)
+            .Where(fm => fm.FamilyId == familyId && fm.Status == FamilyMemberStatus.Pending)
+            .Select(fm => new FamilyMemberResponse
+            {
+                UserId = fm.UserId,
+                RealName = fm.User.RealName,
+                Role = fm.Role,
+                Relation = fm.Relation,
+                AvatarUrl = fm.User.AvatarUrl,
+                Status = fm.Status
+            })
+            .ToListAsync();
+    }
+
+    /// <summary>
+    /// 审批通过成员加入（仅子女可操作）
+    /// </summary>
+    public async Task ApproveMemberAsync(Guid familyId, Guid memberId, Guid operatorId)
+    {
+        await EnsureMemberAsync(familyId, operatorId);
+
+        // 验证操作者是子女角色
+        var operatorMember = await _context.FamilyMembers
+            .FirstOrDefaultAsync(fm => fm.FamilyId == familyId && fm.UserId == operatorId)
+            ?? throw new UnauthorizedAccessException("您不是该家庭成员");
+
+        if (operatorMember.Role != UserRole.Child)
+            throw new UnauthorizedAccessException("仅子女可以审批成员");
+
+        var member = await _context.FamilyMembers
+            .Include(fm => fm.User)
+            .FirstOrDefaultAsync(fm => fm.FamilyId == familyId && fm.UserId == memberId && fm.Status == FamilyMemberStatus.Pending)
+            ?? throw new KeyNotFoundException("未找到该待审批成员");
+
+        member.Status = FamilyMemberStatus.Approved;
+        await _context.SaveChangesAsync();
+
+        // 通知申请人审批已通过
+        var family = await _context.Families.FindAsync(familyId);
+        var operatorUser = await _context.Users.FindAsync(operatorId);
+
+        await _notificationService.SendToUserAsync(memberId, "FamilyJoinApproved", new
+        {
+            Title = "加入申请已通过",
+            Content = $"{operatorUser?.RealName ?? "管理员"}已同意您加入{family?.FamilyName ?? "家庭组"}",
+            FamilyId = familyId,
+            FamilyName = family?.FamilyName ?? ""
+        });
+    }
+
+    /// <summary>
+    /// 拒绝成员加入申请（仅子女可操作）
+    /// </summary>
+    public async Task RejectMemberAsync(Guid familyId, Guid memberId, Guid operatorId)
+    {
+        await EnsureMemberAsync(familyId, operatorId);
+
+        // 验证操作者是子女角色
+        var operatorMember = await _context.FamilyMembers
+            .FirstOrDefaultAsync(fm => fm.FamilyId == familyId && fm.UserId == operatorId)
+            ?? throw new UnauthorizedAccessException("您不是该家庭成员");
+
+        if (operatorMember.Role != UserRole.Child)
+            throw new UnauthorizedAccessException("仅子女可以审批成员");
+
+        var member = await _context.FamilyMembers
+            .Include(fm => fm.User)
+            .FirstOrDefaultAsync(fm => fm.FamilyId == familyId && fm.UserId == memberId && fm.Status == FamilyMemberStatus.Pending)
+            ?? throw new KeyNotFoundException("未找到该待审批成员");
+
+        // 删除申请记录（而非保留 Rejected 状态，避免唯一约束冲突导致无法再次申请）
+        _context.FamilyMembers.Remove(member);
+        await _context.SaveChangesAsync();
+
+        // 通知申请人被拒绝
+        var family = await _context.Families.FindAsync(familyId);
+
+        await _notificationService.SendToUserAsync(memberId, "FamilyJoinRejected", new
+        {
+            Title = "加入申请被拒绝",
+            Content = $"{family?.FamilyName ?? "家庭组"}的管理员拒绝了您的加入申请",
+            FamilyId = familyId,
+            FamilyName = family?.FamilyName ?? ""
+        });
     }
 
     /// <summary>
@@ -183,9 +312,10 @@ public class FamilyService : IFamilyService
 
     public async Task<List<FamilyMemberResponse>> GetMembersAsync(Guid familyId)
     {
+        // 只返回已通过审批的成员
         return await _context.FamilyMembers
             .Include(fm => fm.User)
-            .Where(fm => fm.FamilyId == familyId)
+            .Where(fm => fm.FamilyId == familyId && fm.Status == FamilyMemberStatus.Approved)
             .Select(fm => new FamilyMemberResponse
             {
                 UserId = fm.UserId,
@@ -193,6 +323,7 @@ public class FamilyService : IFamilyService
                 Role = fm.Role,
                 Relation = fm.Relation,
                 AvatarUrl = fm.User.AvatarUrl,
+                Status = fm.Status
             })
             .ToListAsync();
     }
@@ -220,7 +351,7 @@ public class FamilyService : IFamilyService
 
     private async Task EnsureMemberAsync(Guid familyId, Guid userId)
     {
-        if (!await _context.FamilyMembers.AnyAsync(fm => fm.FamilyId == familyId && fm.UserId == userId))
+        if (!await _context.FamilyMembers.AnyAsync(fm => fm.FamilyId == familyId && fm.UserId == userId && fm.Status == FamilyMemberStatus.Approved))
             throw new UnauthorizedAccessException("您不是该家庭成员");
     }
 
@@ -232,7 +363,7 @@ public class FamilyService : IFamilyService
 
         // 先查操作者所在家庭，再验证老人是否同家庭
         var operatorFamilyId = await _context.FamilyMembers
-            .Where(fm => fm.UserId == operatorId)
+            .Where(fm => fm.UserId == operatorId && fm.Status == FamilyMemberStatus.Approved)
             .Select(fm => fm.FamilyId)
             .FirstOrDefaultAsync();
 
@@ -240,7 +371,7 @@ public class FamilyService : IFamilyService
             throw new UnauthorizedAccessException("您不是该老人的家庭成员，无权操作");
 
         var isInSameFamily = await _context.FamilyMembers
-            .AnyAsync(fm => fm.UserId == elderId && fm.FamilyId == operatorFamilyId);
+            .AnyAsync(fm => fm.UserId == elderId && fm.FamilyId == operatorFamilyId && fm.Status == FamilyMemberStatus.Approved);
 
         if (!isInSameFamily)
             throw new UnauthorizedAccessException("您不是该老人的家庭成员，无权操作");
@@ -252,20 +383,24 @@ public class FamilyService : IFamilyService
             .Include(f => f.Members).ThenInclude(fm => fm.User)
             .FirstAsync(f => f.Id == familyId);
 
+        // 只返回已通过审批的成员
         return new FamilyResponse
         {
             Id = family.Id,
             FamilyName = family.FamilyName,
             InviteCode = family.InviteCode,
             InviteCodeExpiresAt = family.InviteCodeExpiresAt,
-            Members = family.Members.Select(fm => new FamilyMemberResponse
-            {
-                UserId = fm.UserId,
-                RealName = fm.User.RealName,
-                Role = fm.Role,
-                Relation = fm.Relation,
-                AvatarUrl = fm.User.AvatarUrl,
-            }).ToList()
+            Members = family.Members
+                .Where(fm => fm.Status == FamilyMemberStatus.Approved)
+                .Select(fm => new FamilyMemberResponse
+                {
+                    UserId = fm.UserId,
+                    RealName = fm.User.RealName,
+                    Role = fm.Role,
+                    Relation = fm.Relation,
+                    AvatarUrl = fm.User.AvatarUrl,
+                    Status = fm.Status
+                }).ToList()
         };
     }
 

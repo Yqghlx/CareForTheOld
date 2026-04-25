@@ -42,7 +42,8 @@ public class GeoFenceServiceIntegrationTests : IAsyncLifetime
             .Setup(c => c.GetOrCreateAsync<GeoFenceCacheEntry>(It.IsAny<string>(), It.IsAny<Func<Task<GeoFenceCacheEntry?>>>(), It.IsAny<TimeSpan?>()))
             .Returns((string _, Func<Task<GeoFenceCacheEntry?>> factory, TimeSpan? _) => factory());
 
-        _service = new GeoFenceService(_context, _mockCacheService.Object, new FamilyService(_context));
+        var mockNotification = new Mock<INotificationService>();
+        _service = new GeoFenceService(_context, _mockCacheService.Object, new FamilyService(_context, mockNotification.Object));
     }
 
     public Task DisposeAsync()
@@ -93,8 +94,8 @@ public class GeoFenceServiceIntegrationTests : IAsyncLifetime
         _context.Users.AddRange(elder, child);
         _context.Families.Add(family);
         _context.FamilyMembers.AddRange(
-            new FamilyMember { Id = Guid.NewGuid(), FamilyId = family.Id, UserId = elder.Id, Role = UserRole.Elder, Relation = "父亲" },
-            new FamilyMember { Id = Guid.NewGuid(), FamilyId = family.Id, UserId = child.Id, Role = UserRole.Child, Relation = "子女" }
+            new FamilyMember { Id = Guid.NewGuid(), FamilyId = family.Id, UserId = elder.Id, Role = UserRole.Elder, Relation = "父亲", Status = FamilyMemberStatus.Approved },
+            new FamilyMember { Id = Guid.NewGuid(), FamilyId = family.Id, UserId = child.Id, Role = UserRole.Child, Relation = "子女", Status = FamilyMemberStatus.Approved }
         );
         await _context.SaveChangesAsync();
         return (elder, child);
@@ -164,7 +165,8 @@ public class GeoFenceServiceIntegrationTests : IAsyncLifetime
             await ctx.Database.EnsureCreatedAsync();
             var cache = new Mock<ICacheService>();
             cache.Setup(c => c.RemoveAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
-            var svc = new GeoFenceService(ctx, cache.Object, new FamilyService(ctx));
+            var mockN1 = new Mock<INotificationService>();
+            var svc = new GeoFenceService(ctx, cache.Object, new FamilyService(ctx, mockN1.Object));
             return await svc.CreateFenceAsync(child.Id, new CreateGeoFenceRequest
             {
                 ElderId = elder.Id,
@@ -180,7 +182,8 @@ public class GeoFenceServiceIntegrationTests : IAsyncLifetime
             await ctx.Database.EnsureCreatedAsync();
             var cache = new Mock<ICacheService>();
             cache.Setup(c => c.RemoveAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
-            var svc = new GeoFenceService(ctx, cache.Object, new FamilyService(ctx));
+            var mockN2 = new Mock<INotificationService>();
+            var svc = new GeoFenceService(ctx, cache.Object, new FamilyService(ctx, mockN2.Object));
             return await svc.CreateFenceAsync(child.Id, new CreateGeoFenceRequest
             {
                 ElderId = elder.Id,

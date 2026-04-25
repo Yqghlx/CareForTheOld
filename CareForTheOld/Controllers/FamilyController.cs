@@ -57,15 +57,15 @@ public class FamilyController : ControllerBase
     }
 
     /// <summary>
-    /// 通过邀请码加入家庭（严格限流，防止暴力破解邀请码）
+    /// 通过邀请码申请加入家庭（严格限流，防止暴力破解邀请码）
     /// </summary>
     [HttpPost("join")]
     [EnableRateLimiting("JoinFamilyPolicy")]
-    public async Task<ApiResponse<FamilyResponse>> JoinFamily([FromBody] JoinFamilyRequest request)
+    public async Task<ApiResponse<JoinFamilyResponse>> JoinFamily([FromBody] JoinFamilyRequest request)
     {
         var userId = this.GetUserId();
         var result = await _familyService.JoinFamilyByCodeAsync(userId, request);
-        return ApiResponse<FamilyResponse>.Ok(result, "加入成功");
+        return ApiResponse<JoinFamilyResponse>.Ok(result, "申请已提交");
     }
 
     /// <summary>
@@ -80,6 +80,9 @@ public class FamilyController : ControllerBase
         return ApiResponse<FamilyResponse>.Ok(result, "邀请码已刷新");
     }
 
+    /// <summary>
+    /// 获取已通过审批的家庭成员列表
+    /// </summary>
     [HttpGet("{id:guid}/members")]
     public async Task<ApiResponse<List<FamilyMemberResponse>>> GetMembers(Guid id)
     {
@@ -89,6 +92,42 @@ public class FamilyController : ControllerBase
         if (!members.Any(m => m.UserId == userId))
             return ApiResponse<List<FamilyMemberResponse>>.Fail("您不是该家庭成员");
         return ApiResponse<List<FamilyMemberResponse>>.Ok(members);
+    }
+
+    /// <summary>
+    /// 获取待审批成员列表（仅子女可查看）
+    /// </summary>
+    [HttpGet("{id:guid}/pending-members")]
+    [Authorize(Roles = "Child")]
+    public async Task<ApiResponse<List<FamilyMemberResponse>>> GetPendingMembers(Guid id)
+    {
+        var userId = this.GetUserId();
+        var result = await _familyService.GetPendingMembersAsync(id, userId);
+        return ApiResponse<List<FamilyMemberResponse>>.Ok(result);
+    }
+
+    /// <summary>
+    /// 审批通过成员加入（仅子女可操作）
+    /// </summary>
+    [HttpPost("{id:guid}/members/{memberId:guid}/approve")]
+    [Authorize(Roles = "Child")]
+    public async Task<ApiResponse<object>> ApproveMember(Guid id, Guid memberId)
+    {
+        var userId = this.GetUserId();
+        await _familyService.ApproveMemberAsync(id, memberId, userId);
+        return ApiResponse<object>.Ok(null!, "审批通过");
+    }
+
+    /// <summary>
+    /// 拒绝成员加入申请（仅子女可操作）
+    /// </summary>
+    [HttpPost("{id:guid}/members/{memberId:guid}/reject")]
+    [Authorize(Roles = "Child")]
+    public async Task<ApiResponse<object>> RejectMember(Guid id, Guid memberId)
+    {
+        var userId = this.GetUserId();
+        await _familyService.RejectMemberAsync(id, memberId, userId);
+        return ApiResponse<object>.Ok(null!, "已拒绝");
     }
 
     [HttpDelete("{id:guid}/members/{userId:guid}")]

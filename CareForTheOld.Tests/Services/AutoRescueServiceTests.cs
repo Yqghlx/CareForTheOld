@@ -101,11 +101,13 @@ public class AutoRescueServiceTests
 
         _context.FamilyMembers.Add(new FamilyMember
         {
-            Id = Guid.NewGuid(), UserId = elder.Id, FamilyId = family.Id, Role = UserRole.Elder
+            Id = Guid.NewGuid(), UserId = elder.Id, FamilyId = family.Id, Role = UserRole.Elder,
+            Status = FamilyMemberStatus.Approved
         });
         _context.FamilyMembers.Add(new FamilyMember
         {
-            Id = Guid.NewGuid(), UserId = child.Id, FamilyId = family.Id, Role = UserRole.Child
+            Id = Guid.NewGuid(), UserId = child.Id, FamilyId = family.Id, Role = UserRole.Child,
+            Status = FamilyMemberStatus.Approved
         });
         await _context.SaveChangesAsync();
 

@@ -97,7 +97,8 @@ public static class TestDataBuilder
             FamilyId = familyId,
             UserId = userId,
             Role = role,
-            Relation = relation
+            Relation = relation,
+            Status = FamilyMemberStatus.Approved
         };
     }
 

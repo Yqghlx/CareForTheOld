@@ -1,4 +1,5 @@
 using CareForTheOld.Models.Entities;
+using CareForTheOld.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,6 +13,11 @@ public class FamilyMemberConfiguration : IEntityTypeConfiguration<FamilyMember>
         builder.HasKey(fm => fm.Id);
 
         builder.Property(fm => fm.Relation).HasMaxLength(20).IsRequired();
+
+        // Status 存储为字符串，便于阅读数据库和向后兼容
+        builder.Property(fm => fm.Status)
+            .HasConversion<string>()
+            .IsRequired();
 
         // 同一家庭组内同一用户只能出现一次
         builder.HasIndex(fm => new { fm.FamilyId, fm.UserId }).IsUnique();

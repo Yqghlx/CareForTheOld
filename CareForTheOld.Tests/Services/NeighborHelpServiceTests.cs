@@ -82,11 +82,13 @@ public class NeighborHelpServiceTests
             {
                 Id = Guid.NewGuid(), FamilyId = family.Id, UserId = elder.Id,
                 Role = UserRole.Elder, Relation = "父亲",
+                Status = FamilyMemberStatus.Approved,
             },
             new FamilyMember
             {
                 Id = Guid.NewGuid(), FamilyId = family.Id, UserId = child.Id,
                 Role = UserRole.Child, Relation = "子女",
+                Status = FamilyMemberStatus.Approved,
             }
         );
 
@@ -126,6 +128,7 @@ public class NeighborHelpServiceTests
         {
             Id = Guid.NewGuid(), FamilyId = family.Id, UserId = elder.Id,
             Role = UserRole.Elder, Relation = "本人",
+            Status = FamilyMemberStatus.Approved,
         });
         await _context.SaveChangesAsync();
 

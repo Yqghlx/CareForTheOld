@@ -58,8 +58,8 @@ class FamilyService {
     await _dio.delete('/family/$familyId/members/$userId');
   }
 
-  /// 通过邀请码加入家庭
-  Future<FamilyGroup> joinFamilyByCode({
+  /// 通过邀请码申请加入家庭
+  Future<JoinFamilyResult> joinFamilyByCode({
     required String inviteCode,
     required String relation,
   }) async {
@@ -68,7 +68,7 @@ class FamilyService {
       'relation': relation,
     });
     final data = response.data['data'];
-    return FamilyGroup.fromJson(data);
+    return JoinFamilyResult.fromJson(data);
   }
 
   /// 刷新邀请码
@@ -76,5 +76,30 @@ class FamilyService {
     final response = await _dio.post('/family/$familyId/refresh-code');
     final data = response.data['data'];
     return FamilyGroup.fromJson(data);
+  }
+
+  /// 获取待审批成员列表
+  Future<List<FamilyMember>> getPendingMembers(String familyId) async {
+    final response = await _dio.get('/family/$familyId/pending-members');
+    final List<dynamic> dataList = response.data['data'];
+    return dataList
+        .map((json) => FamilyMember.fromJson(json))
+        .toList();
+  }
+
+  /// 审批通过成员加入
+  Future<void> approveMember({
+    required String familyId,
+    required String memberId,
+  }) async {
+    await _dio.post('/family/$familyId/members/$memberId/approve');
+  }
+
+  /// 拒绝成员加入申请
+  Future<void> rejectMember({
+    required String familyId,
+    required String memberId,
+  }) async {
+    await _dio.post('/family/$familyId/members/$memberId/reject');
   }
 }

@@ -2,6 +2,7 @@ using System.Security.Claims;
 using CareForTheOld.Controllers;
 using CareForTheOld.Models.DTOs.Requests.Families;
 using CareForTheOld.Models.DTOs.Responses;
+using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Interfaces;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
@@ -13,7 +14,7 @@ namespace CareForTheOld.Tests.Controllers;
 
 /// <summary>
 /// FamilyController 测试
-/// 覆盖：创建家庭、加入家庭、成员管理、权限校验
+/// 覆盖：创建家庭、加入家庭、成员管理、审批流程、权限校验
 /// </summary>
 public class FamilyControllerTests
 {
@@ -81,12 +82,17 @@ public class FamilyControllerTests
     }
 
     [Fact]
-    public async Task JoinFamily_通过邀请码加入应成功()
+    public async Task JoinFamily_通过邀请码申请应返回申请结果()
     {
         // Arrange
         SetUser(_userId);
-        var request = new JoinFamilyRequest { InviteCode = "123456" };
-        var expected = new FamilyResponse { Id = Guid.NewGuid(), FamilyName = "王家" };
+        var request = new JoinFamilyRequest { InviteCode = "123456", Relation = "爸爸" };
+        var expected = new JoinFamilyResponse
+        {
+            Message = "申请已提交，等待子女审批",
+            FamilyName = "王家",
+            Status = FamilyMemberStatus.Pending
+        };
 
         _mockService
             .Setup(s => s.JoinFamilyByCodeAsync(_userId, request))
@@ -97,7 +103,8 @@ public class FamilyControllerTests
 
         // Assert
         result.Success.Should().BeTrue();
-        result.Message.Should().Be("加入成功");
+        result.Message.Should().Be("申请已提交");
+        result.Data!.Status.Should().Be(FamilyMemberStatus.Pending);
         _mockService.Verify(s => s.JoinFamilyByCodeAsync(_userId, request), Times.Once);
     }
 
@@ -181,5 +188,72 @@ public class FamilyControllerTests
         result.Success.Should().BeTrue();
         result.Data!.InviteCode.Should().Be("654321");
         result.Message.Should().Be("邀请码已刷新");
+    }
+
+    [Fact]
+    public async Task GetPendingMembers_应返回待审批成员列表()
+    {
+        // Arrange
+        SetUser(_userId);
+        var familyId = Guid.NewGuid();
+        var pendingMembers = new List<FamilyMemberResponse>
+        {
+            new() { UserId = Guid.NewGuid(), RealName = "待审批老人", Status = FamilyMemberStatus.Pending }
+        };
+
+        _mockService
+            .Setup(s => s.GetPendingMembersAsync(familyId, _userId))
+            .ReturnsAsync(pendingMembers);
+
+        // Act
+        var result = await _controller.GetPendingMembers(familyId);
+
+        // Assert
+        result.Success.Should().BeTrue();
+        result.Data.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public async Task ApproveMember_应调用审批通过服务()
+    {
+        // Arrange
+        SetUser(_userId);
+        var familyId = Guid.NewGuid();
+        var memberId = Guid.NewGuid();
+
+        _mockService
+            .Setup(s => s.ApproveMemberAsync(familyId, memberId, _userId))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _controller.ApproveMember(familyId, memberId);
+
+        // Assert
+        result.Success.Should().BeTrue();
+        result.Message.Should().Be("审批通过");
+        _mockService.Verify(
+            s => s.ApproveMemberAsync(familyId, memberId, _userId), Times.Once);
+    }
+
+    [Fact]
+    public async Task RejectMember_应调用拒绝服务()
+    {
+        // Arrange
+        SetUser(_userId);
+        var familyId = Guid.NewGuid();
+        var memberId = Guid.NewGuid();
+
+        _mockService
+            .Setup(s => s.RejectMemberAsync(familyId, memberId, _userId))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _controller.RejectMember(familyId, memberId);
+
+        // Assert
+        result.Success.Should().BeTrue();
+        result.Message.Should().Be("已拒绝");
+        _mockService.Verify(
+            s => s.RejectMemberAsync(familyId, memberId, _userId), Times.Once);
     }
 }

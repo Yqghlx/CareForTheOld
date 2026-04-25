@@ -90,7 +90,8 @@ public class LocationServiceTests
                 FamilyId = family.Id,
                 UserId = elder.Id,
                 Role = UserRole.Elder,
-                Relation = "父亲"
+                Relation = "父亲",
+                Status = FamilyMemberStatus.Approved
             },
             new FamilyMember
             {
@@ -98,7 +99,8 @@ public class LocationServiceTests
                 FamilyId = family.Id,
                 UserId = child.Id,
                 Role = UserRole.Child,
-                Relation = "儿子"
+                Relation = "儿子",
+                Status = FamilyMemberStatus.Approved
             }
         );
         await _context.SaveChangesAsync();
