@@ -3,6 +3,10 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <!-- 推送通知权限（Android 13+ 必须声明） -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <!-- 震动权限（紧急呼叫强震动提醒） -->
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <application
         android:label="关爱老人"
         android:name="${applicationName}"
@@ -35,6 +39,13 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- FCM 默认通知渠道 -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="care_for_the_old" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_name"
+            android:value="关爱老人通知" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

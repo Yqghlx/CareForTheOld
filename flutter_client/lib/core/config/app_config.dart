@@ -15,10 +15,10 @@ class AppConfig {
     required this.environment,
   });
 
-  /// 开发环境：Android 模拟器通过 10.0.2.2 访问宿主机
+  /// 开发环境：使用宿主机局域网 IP，模拟器和真机均可访问
   static const dev = AppConfig(
-    apiBaseUrl: 'http://10.0.2.2:5001/api/v1',
-    signalrBaseUrl: 'http://10.0.2.2:5001/hubs/notification',
+    apiBaseUrl: 'http://192.168.100.200:5001/api/v1',
+    signalrBaseUrl: 'http://192.168.100.200:5001/hubs/notification',
     environment: 'development',
   );
 
