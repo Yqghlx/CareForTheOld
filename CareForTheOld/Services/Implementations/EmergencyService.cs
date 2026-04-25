@@ -16,6 +16,7 @@ public class EmergencyService : IEmergencyService
 {
     private readonly AppDbContext _context;
     private readonly INotificationService _notificationService;
+    private readonly IPushNotificationService _pushNotificationService;
     private readonly ISmsService _smsService;
     private readonly INeighborHelpService _neighborHelpService;
     private readonly ILogger<EmergencyService> _logger;
@@ -26,6 +27,7 @@ public class EmergencyService : IEmergencyService
     public EmergencyService(
         AppDbContext context,
         INotificationService notificationService,
+        IPushNotificationService pushNotificationService,
         ISmsService smsService,
         INeighborHelpService neighborHelpService,
         ILogger<EmergencyService> logger,
@@ -33,6 +35,7 @@ public class EmergencyService : IEmergencyService
     {
         _context = context;
         _notificationService = notificationService;
+        _pushNotificationService = pushNotificationService;
         _smsService = smsService;
         _neighborHelpService = neighborHelpService;
         _logger = logger;
@@ -139,7 +142,7 @@ public class EmergencyService : IEmergencyService
     }
 
     /// <summary>
-    /// 发送紧急呼叫通知给子女（SignalR + SMS 多通道）
+    /// 发送紧急呼叫通知给子女（SignalR + FCM + SMS 三通道）
     /// </summary>
     private async Task SendEmergencyNotificationAsync(Guid elderId, string elderName, Guid callId, bool isReminder = false)
     {
@@ -155,16 +158,21 @@ public class EmergencyService : IEmergencyService
 
         if (children.Count > 0)
         {
-            // SignalR 推送通知
+            var childUserIds = children.Select(c => c.UserId).ToList();
+
+            var title = isReminder ? "紧急呼叫仍未响应" : "紧急呼叫";
+            var content = isReminder
+                ? $"{elderName}的紧急呼叫已超过3分钟未得到响应，请尽快处理！"
+                : $"{elderName}发起了紧急呼叫，请尽快处理！";
+
+            // SignalR 推送通知（前台实时）
             await _notificationService.SendToUsersAsync(
-                children.Select(c => c.UserId),
+                childUserIds,
                 isReminder ? "EmergencyCallReminder" : "EmergencyCall",
                 new
                 {
-                    Title = isReminder ? "紧急呼叫仍未响应" : "紧急呼叫",
-                    Content = isReminder
-                        ? $"{elderName}的紧急呼叫已超过3分钟未得到响应，请尽快处理！"
-                        : $"{elderName}发起了紧急呼叫，请尽快处理！",
+                    Title = title,
+                    Content = content,
                     ElderId = elderId,
                     ElderName = elderName,
                     CallId = callId,
@@ -172,7 +180,30 @@ public class EmergencyService : IEmergencyService
                 }
             );
 
-            // SMS 多通道告警（异步发送，不阻塞主流程）
+            // FCM 推送通知（后台/锁屏唤醒），与 SMS 并行发送
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await _pushNotificationService.SendAsync(
+                        childUserIds,
+                        title,
+                        content,
+                        new Dictionary<string, string>
+                        {
+                            ["type"] = isReminder ? "emergency_reminder" : "emergency_call",
+                            ["callId"] = callId.ToString(),
+                            ["elderId"] = elderId.ToString(),
+                            ["elderName"] = elderName,
+                        });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "紧急呼叫 FCM 推送失败，呼叫 {CallId}", callId);
+                }
+            });
+
+            // SMS 多通道告警（最终兜底）
             _ = Task.Run(async () =>
             {
                 try

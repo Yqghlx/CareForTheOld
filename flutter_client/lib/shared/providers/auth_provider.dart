@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_role.dart';
 import '../models/user.dart';
 import '../../features/shared/services/signalr_service.dart';
+import '../../core/services/fcm_service.dart';
 
 /// 认证状态
 class AuthState {
@@ -104,6 +105,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
     // 登录成功后连接 SignalR
     _connectSignalR();
 
+    // 登录成功后注册 FCM 推送 token
+    _registerFcmToken();
+
     // 设置 Sentry 用户上下文（便于错误追踪时定位用户）
     Sentry.configureScope((scope) {
       scope.setUser(SentryUser(id: user.id, username: user.realName));
@@ -114,6 +118,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> logout() async {
     // 登出时断开 SignalR
     await _disconnectSignalR();
+
+    // 登出时清除 FCM 推送 token
+    await _unregisterFcmToken();
 
     // 清除加密存储中的 Token
     await _secureStorage.delete(key: 'accessToken');
@@ -159,6 +166,24 @@ class AuthNotifier extends StateNotifier<AuthState> {
       accessToken: accessToken,
       refreshToken: refreshToken,
     );
+  }
+
+  /// 注册 FCM 推送 token 到后端
+  void _registerFcmToken() {
+    try {
+      _ref.read(fcmServiceProvider).registerTokenToBackend();
+    } catch (e) {
+      debugPrint('FCM token 注册失败: $e');
+    }
+  }
+
+  /// 从后端清除 FCM 推送 token
+  Future<void> _unregisterFcmToken() async {
+    try {
+      await _ref.read(fcmServiceProvider).unregisterTokenFromBackend();
+    } catch (e) {
+      debugPrint('FCM token 清除失败: $e');
+    }
   }
 }
 

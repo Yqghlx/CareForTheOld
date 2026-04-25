@@ -9,6 +9,7 @@ import '../../../core/config/app_config.dart';
 import '../../../shared/providers/auth_provider.dart';
 import '../../shared/providers/emergency_provider.dart';
 import '../../shared/providers/neighbor_help_provider.dart';
+import 'emergency_alert_service.dart';
 import 'local_notification_service.dart';
 
 /// SignalR 连接服务
@@ -132,20 +133,31 @@ class SignalRService {
           );
           break;
         case 'EmergencyCall':
-          // 紧急呼叫（最高优先级通知），同时刷新紧急呼叫列表
+          // 紧急呼叫（最高优先级通知），触发全屏警报 + 刷新列表
           LocalNotificationService.showNotification(
             id: 4,
             title: title,
             body: content,
           );
+          EmergencyAlertService.instance.triggerAlert(
+            callId: notificationData['CallId']?.toString() ?? '',
+            elderName: notificationData['ElderName']?.toString() ?? '老人',
+            elderId: notificationData['ElderId']?.toString() ?? '',
+          );
           _ref.invalidate(emergencyProvider);
           break;
         case 'EmergencyCallReminder':
-          // 紧急呼叫二次提醒（最高优先级）
+          // 紧急呼叫二次提醒（最高优先级），触发全屏警报
           LocalNotificationService.showNotification(
             id: 5,
             title: title,
             body: content,
+          );
+          EmergencyAlertService.instance.triggerAlert(
+            callId: notificationData['CallId']?.toString() ?? '',
+            elderName: notificationData['ElderName']?.toString() ?? '老人',
+            elderId: notificationData['ElderId']?.toString() ?? '',
+            isReminder: true,
           );
           _ref.invalidate(emergencyProvider);
           break;

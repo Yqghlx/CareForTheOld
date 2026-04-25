@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using StackExchange.Redis;
 using System.Threading.RateLimiting;
+using FirebaseAdmin;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -145,6 +146,23 @@ builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped<HealthAnomalyDetector>();
 builder.Services.Configure<AnomalyDetectionOptions>(
     builder.Configuration.GetSection("AnomalyDetection"));
+
+// 注册 FCM 推送服务：有 Firebase 凭据时使用真实实现，否则使用空实现（开发环境回退）
+var firebaseCredentialsPath = builder.Configuration["Firebase:CredentialsPath"];
+if (!string.IsNullOrEmpty(firebaseCredentialsPath) && File.Exists(firebaseCredentialsPath))
+{
+    FirebaseAdmin.FirebaseApp.Create(new FirebaseAdmin.AppOptions
+    {
+        Credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromFile(firebaseCredentialsPath),
+    });
+    builder.Services.AddScoped<IPushNotificationService, FcmPushNotificationService>();
+    Log.Information("FCM 推送服务已启用，凭据文件: {Path}", firebaseCredentialsPath);
+}
+else
+{
+    builder.Services.AddScoped<IPushNotificationService, NullPushNotificationService>();
+    Log.Warning("未配置 Firebase 凭据，推送通知功能不可用（开发环境正常）");
+}
 
 // 注册文件存储服务：根据环境变量 OSS_ENABLED 选择实现
 var ossEnabled = Environment.GetEnvironmentVariable("OSS_ENABLED")?.ToLower() == "true";

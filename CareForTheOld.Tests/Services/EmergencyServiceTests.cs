@@ -21,6 +21,7 @@ public class EmergencyServiceTests
     private readonly AppDbContext _context;
     private readonly EmergencyService _service;
     private readonly Mock<INotificationService> _mockNotificationService;
+    private readonly Mock<IPushNotificationService> _mockPushNotificationService;
     private readonly Mock<ISmsService> _mockSmsService;
 
     /// <summary>
@@ -37,6 +38,7 @@ public class EmergencyServiceTests
             .Options;
         _context = new AppDbContext(options);
         _mockNotificationService = new Mock<INotificationService>();
+        _mockPushNotificationService = new Mock<IPushNotificationService>();
         _mockSmsService = new Mock<ISmsService>();
         // 设置 SMS 服务模拟返回成功
         _mockSmsService.Setup(s => s.SendAsync(It.IsAny<string>(), It.IsAny<string>()))
@@ -44,7 +46,7 @@ public class EmergencyServiceTests
         _mockSmsService.SetupGet(s => s.ServiceName).Returns("MockSms");
         var mockLogger = new Mock<ILogger<EmergencyService>>();
         var mockNeighborHelpService = new Mock<INeighborHelpService>();
-        _service = new EmergencyService(_context, _mockNotificationService.Object, _mockSmsService.Object, mockNeighborHelpService.Object, mockLogger.Object);
+        _service = new EmergencyService(_context, _mockNotificationService.Object, _mockPushNotificationService.Object, _mockSmsService.Object, mockNeighborHelpService.Object, mockLogger.Object);
     }
 
     /// <summary>

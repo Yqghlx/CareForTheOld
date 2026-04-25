@@ -81,6 +81,16 @@ dependencies:
   # OCR 文字识别（本地离线）
   google_mlkit_text_recognition: ^0.11.0
 
+  # Firebase 推送通知
+  firebase_core: ^3.0.0
+  firebase_messaging: ^15.0.0
+
+  # 音频播放（紧急警报铃声）
+  audioplayers: ^6.0.0
+
+  # 震动（紧急呼叫强震动提醒）
+  vibration: ^2.0.0
+
   # 时间处理
   uuid: ^4.2.0
   url_launcher: ^6.3.2

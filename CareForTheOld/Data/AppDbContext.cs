@@ -27,6 +27,7 @@ public class AppDbContext : DbContext
     public DbSet<TrustScore> TrustScores => Set<TrustScore>();
     public DbSet<HelpNotificationLog> HelpNotificationLogs => Set<HelpNotificationLog>();
     public DbSet<AutoRescueRecord> AutoRescueRecords => Set<AutoRescueRecord>();
+    public DbSet<DeviceToken> DeviceTokens => Set<DeviceToken>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,9 +10,12 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'core/router/app_router.dart';
 import 'core/services/app_logger.dart';
+import 'core/services/fcm_service.dart';
 import 'core/services/offline_queue_service.dart';
 import 'core/theme/app_theme.dart';
+import 'features/shared/services/emergency_alert_service.dart';
 import 'features/shared/services/local_notification_service.dart';
+import 'features/shared/pages/emergency_alert_page.dart';
 
 /// 全局 ScaffoldMessenger Key，用于在无 Context 场景下显示 SnackBar
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
@@ -37,6 +41,14 @@ void main() async {
 
   // 初始化日志系统（生产环境仅输出 WARNING及以上级别）
   AppLogger.init();
+
+  // 初始化 Firebase（FCM 推送通知）
+  try {
+    await Firebase.initializeApp();
+    debugPrint('Firebase 初始化成功');
+  } catch (e) {
+    debugPrint('Firebase 初始化失败（可能是模拟器无 Google Play Services）: $e');
+  }
 
   // 初始化本地通知
   await LocalNotificationService.initialize();
@@ -97,10 +109,34 @@ class _CareForTheOldAppState extends ConsumerState<CareForTheOldApp> {
   @override
   void initState() {
     super.initState();
-    // 初始化离线队列（网络恢复后自动上传）
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // 初始化离线队列（网络恢复后自动上传）
       ref.read(offlineQueueServiceProvider).init();
+
+      // 初始化 FCM 服务
+      _initFcm();
+
+      // 监听紧急警报状态变化，自动弹出全屏警报页面
+      EmergencyAlertService.instance.onAlertChanged = () {
+        if (EmergencyAlertService.instance.isAlerting && mounted) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => const EmergencyAlertPage(),
+              fullscreenDialog: true,
+            ),
+          );
+        }
+      };
     });
+  }
+
+  /// 初始化 FCM 服务
+  Future<void> _initFcm() async {
+    try {
+      await ref.read(fcmServiceProvider).initialize();
+    } catch (e) {
+      debugPrint('FCM 初始化异常: $e');
+    }
   }
 
   @override
