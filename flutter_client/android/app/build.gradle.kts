@@ -17,7 +17,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.example.care_for_the_old_client"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -52,6 +52,8 @@ android {
 
     buildTypes {
         release {
+            // Proguard 规则（解决 ML Kit R8 missing class 问题）
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             // CI 环境没有 key.properties 时 fallback 到 debug 签名
             if (keystorePropertiesFile.exists()) {
                 signingConfig = signingConfigs.getByName("release")
@@ -68,4 +70,6 @@ flutter {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+    // ML Kit 中文文字识别依赖（Release 模式 R8 需要显式声明）
+    implementation("com.google.mlkit:text-recognition-chinese:16.0.1")
 }
