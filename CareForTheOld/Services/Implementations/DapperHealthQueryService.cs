@@ -41,35 +41,35 @@ public class DapperHealthQueryService : IHealthQueryService
         // 使用 LIMIT 1 代替 TOP 1，兼容 SQLite 和 PostgreSQL
         const string sql = @"
             SELECT
-                Type,
+                ""Type"",
                 COUNT(*) AS TotalCount,
-                MAX(RecordedAt) AS LatestRecordedAt,
-                (SELECT hr2.Systolic FROM ""HealthRecords"" hr2
-                 WHERE hr2.UserId = @UserId AND hr2.Type = hr.Type AND hr2.IsDeleted = 0
-                 ORDER BY hr2.RecordedAt DESC LIMIT 1) AS LatestSystolic,
-                (SELECT hr2.Diastolic FROM ""HealthRecords"" hr2
-                 WHERE hr2.UserId = @UserId AND hr2.Type = hr.Type AND hr2.IsDeleted = 0
-                 ORDER BY hr2.RecordedAt DESC LIMIT 1) AS LatestDiastolic,
-                (SELECT hr2.BloodSugar FROM ""HealthRecords"" hr2
-                 WHERE hr2.UserId = @UserId AND hr2.Type = hr.Type AND hr2.IsDeleted = 0
-                 ORDER BY hr2.RecordedAt DESC LIMIT 1) AS LatestBloodSugar,
-                (SELECT hr2.HeartRate FROM ""HealthRecords"" hr2
-                 WHERE hr2.UserId = @UserId AND hr2.Type = hr.Type AND hr2.IsDeleted = 0
-                 ORDER BY hr2.RecordedAt DESC LIMIT 1) AS LatestHeartRate,
-                (SELECT hr2.Temperature FROM ""HealthRecords"" hr2
-                 WHERE hr2.UserId = @UserId AND hr2.Type = hr.Type AND hr2.IsDeleted = 0
-                 ORDER BY hr2.RecordedAt DESC LIMIT 1) AS LatestTemperature,
-                AVG(CASE WHEN hr.RecordedAt >= @SevenDaysAgo THEN CAST(hr.Systolic AS FLOAT) END) AS Avg7Systolic,
-                AVG(CASE WHEN hr.RecordedAt >= @SevenDaysAgo THEN CAST(hr.BloodSugar AS FLOAT) END) AS Avg7BloodSugar,
-                AVG(CASE WHEN hr.RecordedAt >= @SevenDaysAgo THEN CAST(hr.HeartRate AS FLOAT) END) AS Avg7HeartRate,
-                AVG(CASE WHEN hr.RecordedAt >= @SevenDaysAgo THEN CAST(hr.Temperature AS FLOAT) END) AS Avg7Temperature,
-                AVG(CASE WHEN hr.RecordedAt >= @ThirtyDaysAgo THEN CAST(hr.Systolic AS FLOAT) END) AS Avg30Systolic,
-                AVG(CASE WHEN hr.RecordedAt >= @ThirtyDaysAgo THEN CAST(hr.BloodSugar AS FLOAT) END) AS Avg30BloodSugar,
-                AVG(CASE WHEN hr.RecordedAt >= @ThirtyDaysAgo THEN CAST(hr.HeartRate AS FLOAT) END) AS Avg30HeartRate,
-                AVG(CASE WHEN hr.RecordedAt >= @ThirtyDaysAgo THEN CAST(hr.Temperature AS FLOAT) END) AS Avg30Temperature
-                        FROM ""HealthRecords"" hr
-            WHERE hr.UserId = @UserId AND hr.IsDeleted = 0
-            GROUP BY hr.Type";
+                MAX(""RecordedAt"") AS LatestRecordedAt,
+                (SELECT hr2.""Systolic"" FROM ""HealthRecords"" hr2
+                 WHERE hr2.""UserId"" = @UserId AND hr2.""Type"" = hr.""Type"" AND hr2.""IsDeleted"" = 0
+                 ORDER BY hr2.""RecordedAt"" DESC LIMIT 1) AS LatestSystolic,
+                (SELECT hr2.""Diastolic"" FROM ""HealthRecords"" hr2
+                 WHERE hr2.""UserId"" = @UserId AND hr2.""Type"" = hr.""Type"" AND hr2.""IsDeleted"" = 0
+                 ORDER BY hr2.""RecordedAt"" DESC LIMIT 1) AS LatestDiastolic,
+                (SELECT hr2.""BloodSugar"" FROM ""HealthRecords"" hr2
+                 WHERE hr2.""UserId"" = @UserId AND hr2.""Type"" = hr.""Type"" AND hr2.""IsDeleted"" = 0
+                 ORDER BY hr2.""RecordedAt"" DESC LIMIT 1) AS LatestBloodSugar,
+                (SELECT hr2.""HeartRate"" FROM ""HealthRecords"" hr2
+                 WHERE hr2.""UserId"" = @UserId AND hr2.""Type"" = hr.""Type"" AND hr2.""IsDeleted"" = 0
+                 ORDER BY hr2.""RecordedAt"" DESC LIMIT 1) AS LatestHeartRate,
+                (SELECT hr2.""Temperature"" FROM ""HealthRecords"" hr2
+                 WHERE hr2.""UserId"" = @UserId AND hr2.""Type"" = hr.""Type"" AND hr2.""IsDeleted"" = 0
+                 ORDER BY hr2.""RecordedAt"" DESC LIMIT 1) AS LatestTemperature,
+                AVG(CASE WHEN hr.""RecordedAt"" >= @SevenDaysAgo THEN CAST(hr.""Systolic"" AS FLOAT) END) AS Avg7Systolic,
+                AVG(CASE WHEN hr.""RecordedAt"" >= @SevenDaysAgo THEN CAST(hr.""BloodSugar"" AS FLOAT) END) AS Avg7BloodSugar,
+                AVG(CASE WHEN hr.""RecordedAt"" >= @SevenDaysAgo THEN CAST(hr.""HeartRate"" AS FLOAT) END) AS Avg7HeartRate,
+                AVG(CASE WHEN hr.""RecordedAt"" >= @SevenDaysAgo THEN CAST(hr.""Temperature"" AS FLOAT) END) AS Avg7Temperature,
+                AVG(CASE WHEN hr.""RecordedAt"" >= @ThirtyDaysAgo THEN CAST(hr.""Systolic"" AS FLOAT) END) AS Avg30Systolic,
+                AVG(CASE WHEN hr.""RecordedAt"" >= @ThirtyDaysAgo THEN CAST(hr.""BloodSugar"" AS FLOAT) END) AS Avg30BloodSugar,
+                AVG(CASE WHEN hr.""RecordedAt"" >= @ThirtyDaysAgo THEN CAST(hr.""HeartRate"" AS FLOAT) END) AS Avg30HeartRate,
+                AVG(CASE WHEN hr.""RecordedAt"" >= @ThirtyDaysAgo THEN CAST(hr.""Temperature"" AS FLOAT) END) AS Avg30Temperature
+            FROM ""HealthRecords"" hr
+            WHERE hr.""UserId"" = @UserId AND hr.""IsDeleted"" = 0
+            GROUP BY hr.""Type""";
 
         var rows = await connection.QueryAsync<HealthStatsRow>(sql, new
         {
