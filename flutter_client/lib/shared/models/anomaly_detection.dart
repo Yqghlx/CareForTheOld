@@ -11,6 +11,24 @@ enum AnomalyType {
   volatility,
 }
 
+/// 从后端返回的值解析异常类型（支持字符串 "spike" 和整数 1 两种格式）
+AnomalyType _parseAnomalyType(dynamic value) {
+  if (value is String) {
+    return AnomalyType.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => AnomalyType.spike,
+    );
+  }
+  if (value is int) {
+    // 后端枚举从 1 开始：Spike=1, ContinuousHigh=2, ContinuousLow=3, Acceleration=4, Volatility=5
+    return AnomalyType.values.firstWhere(
+      (e) => e.index + 1 == value,
+      orElse: () => AnomalyType.spike,
+    );
+  }
+  return AnomalyType.spike;
+}
+
 /// 异常类型扩展
 extension AnomalyTypeExtension on AnomalyType {
   String get label => switch (this) {
@@ -81,8 +99,17 @@ class AnomalyEvent {
     this.recommendedAction,
   });
 
-  factory AnomalyEvent.fromJson(Map<String, dynamic> json) =>
-      _$AnomalyEventFromJson(json);
+  /// 覆盖生成的 fromJson，兼容后端返回整数或字符串格式的枚举
+  factory AnomalyEvent.fromJson(Map<String, dynamic> json) => AnomalyEvent(
+        detectedAt: DateTime.parse(json['detectedAt'] as String),
+        type: _parseAnomalyType(json['type']),
+        description: json['description'] as String,
+        severityScore: (json['severityScore'] as num).toDouble(),
+        anomalyValue: (json['anomalyValue'] as num?)?.toDouble(),
+        baselineValue: (json['baselineValue'] as num?)?.toDouble(),
+        deviationPercent: (json['deviationPercent'] as num?)?.toDouble(),
+        recommendedAction: json['recommendedAction'] as String?,
+      );
   Map<String, dynamic> toJson() => _$AnomalyEventToJson(this);
 
   /// 严重度颜色（0-33绿色/正常，33-66橙色/警告，66-100红色/高危）
@@ -167,8 +194,24 @@ class TrendAnomalyDetectionResponse {
     this.positiveFeedback,
   });
 
+  /// 覆盖生成的 fromJson，兼容后端返回整数或字符串格式的 type 字段
   factory TrendAnomalyDetectionResponse.fromJson(Map<String, dynamic> json) =>
-      _$TrendAnomalyDetectionResponseFromJson(json);
+      TrendAnomalyDetectionResponse(
+        type: json['type']?.toString() ?? '',
+        typeName: json['typeName'] as String,
+        baseline: PersonalBaseline.fromJson(
+            json['baseline'] as Map<String, dynamic>),
+        anomalies: (json['anomalies'] as List<dynamic>?)
+                ?.map((e) => AnomalyEvent.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            const [],
+        recentStats: RecentStatsSummary.fromJson(
+            json['recentStats'] as Map<String, dynamic>),
+        positiveFeedback: json['positiveFeedback'] == null
+            ? null
+            : PositiveFeedback.fromJson(
+                json['positiveFeedback'] as Map<String, dynamic>),
+      );
   Map<String, dynamic> toJson() => _$TrendAnomalyDetectionResponseToJson(this);
 
   /// 是否有异常

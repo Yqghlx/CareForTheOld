@@ -486,71 +486,6 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                   ),
                   const SizedBox(width: 12),
                   Text('记录${type.label}'),
-                  const Spacer(),
-                  // OCR 拍照识别按钮
-                  IconButton(
-                    onPressed: () async {
-                      final image = await imagePicker.pickImage(
-                        source: ImageSource.camera,
-                        maxWidth: 1024,
-                        maxHeight: 1024,
-                        imageQuality: 85,
-                      );
-                      if (image == null) return;
-
-                      try {
-                        final result = await ocrService.parseHealthData(File(image.path));
-
-                        if (result.hasAnyData()) {
-                          // 根据健康类型填充对应的识别结果
-                          if (type == HealthType.bloodPressure) {
-                            if (result.systolic != null) {
-                              valueController.text = result.systolic.toString();
-                            }
-                            if (result.diastolic != null) {
-                              valueController2.text = result.diastolic.toString();
-                            }
-                          } else if (type == HealthType.bloodSugar) {
-                            if (result.bloodSugar != null) {
-                              valueController.text = result.bloodSugar!.toStringAsFixed(1);
-                            }
-                          } else if (type == HealthType.heartRate) {
-                            if (result.heartRate != null) {
-                              valueController.text = result.heartRate.toString();
-                            }
-                          } else if (type == HealthType.temperature) {
-                            if (result.temperature != null) {
-                              valueController.text = result.temperature!.toStringAsFixed(1);
-                            }
-                          }
-
-                          if (mounted) {
-                            context.showSuccessSnackBar('识别成功，已自动填充${type.label}数值');
-                          }
-                        } else {
-                          if (mounted) {
-                            context.showWarningSnackBar('未能识别到有效数值，请手动输入');
-                          }
-                        }
-                      } on OcrException catch (e) {
-                        if (mounted) {
-                          context.showErrorSnackBar(e.message);
-                        }
-                      } catch (e) {
-                        if (mounted) {
-                          context.showErrorSnackBar('识别失败: $e');
-                        }
-                      }
-                    },
-                    icon: Icon(Icons.camera_alt, color: type.color),
-                    tooltip: '拍照识别',
-                    style: IconButton.styleFrom(
-                      backgroundColor: type.color.withValues(alpha: 0.1),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
                 ],
               ),
               content: SingleChildScrollView(
@@ -568,15 +503,19 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                         children: [
                           Icon(Icons.info_outline, size: 18, color: type.color),
                           const SizedBox(width: 8),
-                          Text(
-                            _getNormalRangeHint(type),
-                            style: TextStyle(fontSize: 14, color: type.color),
+                          Flexible(
+                            child: Text(
+                              _getNormalRangeHint(type),
+                              style: TextStyle(fontSize: 14, color: type.color),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                            ),
                           ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 12),
-                    // 语音输入区域
+                    // 快捷输入区域：语音 + 拍照并列
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
@@ -599,117 +538,234 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       ),
                       child: Column(
                         children: [
-                          // 语音按钮
-                          GestureDetector(
-                            onTap: () async {
-                              if (isListening) {
-                                // 停止录音
-                                await voiceService.stopListening();
-                                setDialogState(() => isListening = false);
-                                // 解析已识别的文本并填入
-                                if (voiceText.isNotEmpty) {
-                                  _fillFromVoice(
-                                    type,
-                                    voiceText,
-                                    valueController,
-                                    valueController2,
-                                  );
-                                  setDialogState(() {});
-                                }
-                              } else {
-                                // 初始化并开始录音
-                                final available = await voiceService.initialize();
-                                if (!mounted || !context.mounted) return;
-                                if (!available) {
-                                  context.showWarningSnackBar('语音识别不可用，请检查设备设置');
-                                  return;
-                                }
-                                setDialogState(() {
-                                  isListening = true;
-                                  voiceText = '';
-                                });
-                                final started = await voiceService.startListening(
-                                  onResult: (text, isFinal) {
-                                    setDialogState(() => voiceText = text);
-                                    if (isFinal && text.isNotEmpty) {
-                                      // 最终结果自动停止并填入
-                                      voiceService.stopListening();
-                                      _fillFromVoice(
-                                        type,
-                                        text,
-                                        valueController,
-                                        valueController2,
-                                      );
+                          Row(
+                            children: [
+                              // 语音输入卡片
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    if (isListening) {
+                                      // 停止录音
+                                      await voiceService.stopListening();
                                       setDialogState(() => isListening = false);
+                                      // 解析已识别的文本并填入
+                                      if (voiceText.isNotEmpty) {
+                                        _fillFromVoice(
+                                          type,
+                                          voiceText,
+                                          valueController,
+                                          valueController2,
+                                        );
+                                        setDialogState(() {});
+                                      }
+                                    } else {
+                                      // 初始化并开始录音
+                                      final available = await voiceService.initialize();
+                                      if (!mounted || !context.mounted) return;
+                                      if (!available) {
+                                        if (mounted) {
+                                          context.showWarningSnackBar('语音识别不可用，请检查设备设置');
+                                        }
+                                        return;
+                                      }
+                                      setDialogState(() {
+                                        isListening = true;
+                                        voiceText = '';
+                                      });
+                                      final started = await voiceService.startListening(
+                                        onResult: (text, isFinal) {
+                                          setDialogState(() => voiceText = text);
+                                          if (isFinal && text.isNotEmpty) {
+                                            // 最终结果自动停止并填入
+                                            voiceService.stopListening();
+                                            _fillFromVoice(
+                                              type,
+                                              text,
+                                              valueController,
+                                              valueController2,
+                                            );
+                                            setDialogState(() => isListening = false);
+                                          }
+                                        },
+                                        onSoundLevelChange: (level) {
+                                          setDialogState(() => soundLevel = level);
+                                        },
+                                      );
+                                      if (!started) {
+                                        setDialogState(() => isListening = false);
+                                        if (mounted) {
+                                          context.showWarningSnackBar('语音识别启动失败，请手动输入');
+                                        }
+                                      } else {
+                                        setDialogState(() => isListening = voiceService.isListening);
+                                      }
                                     }
                                   },
-                                  onSoundLevelChange: (level) {
-                                    setDialogState(() => soundLevel = level);
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 200),
+                                    padding: const EdgeInsets.symmetric(vertical: 16),
+                                    decoration: BoxDecoration(
+                                      gradient: isListening
+                                          ? const LinearGradient(
+                                              colors: [Colors.red, Colors.redAccent],
+                                            )
+                                          : LinearGradient(
+                                              colors: [
+                                                AppTheme.primaryColor,
+                                                AppTheme.primaryColor.withValues(alpha: 0.7),
+                                              ],
+                                            ),
+                                      borderRadius: BorderRadius.circular(12),
+                                      boxShadow: isListening
+                                          ? [
+                                              BoxShadow(
+                                                color: Colors.red.withValues(alpha: 0.4),
+                                                blurRadius: 16 + soundLevel.abs(),
+                                                spreadRadius: 4,
+                                              ),
+                                            ]
+                                          : [
+                                              BoxShadow(
+                                                color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                                                blurRadius: 8,
+                                                offset: const Offset(0, 2),
+                                              ),
+                                            ],
+                                    ),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          isListening ? Icons.stop : Icons.mic,
+                                          color: Colors.white,
+                                          size: 32,
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          isListening ? '停止' : '语音输入',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              // 拍照识别卡片
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    final image = await imagePicker.pickImage(
+                                      source: ImageSource.camera,
+                                      maxWidth: 1024,
+                                      maxHeight: 1024,
+                                      imageQuality: 85,
+                                    );
+                                    if (image == null) return;
+
+                                    try {
+                                      final result = await ocrService.parseHealthData(File(image.path));
+
+                                      if (result.hasAnyData()) {
+                                        // 根据健康类型填充对应的识别结果
+                                        if (type == HealthType.bloodPressure) {
+                                          if (result.systolic != null) {
+                                            valueController.text = result.systolic.toString();
+                                          }
+                                          if (result.diastolic != null) {
+                                            valueController2.text = result.diastolic.toString();
+                                          }
+                                        } else if (type == HealthType.bloodSugar) {
+                                          if (result.bloodSugar != null) {
+                                            valueController.text = result.bloodSugar!.toStringAsFixed(1);
+                                          }
+                                        } else if (type == HealthType.heartRate) {
+                                          if (result.heartRate != null) {
+                                            valueController.text = result.heartRate.toString();
+                                          }
+                                        } else if (type == HealthType.temperature) {
+                                          if (result.temperature != null) {
+                                            valueController.text = result.temperature!.toStringAsFixed(1);
+                                          }
+                                        }
+
+                                        if (mounted) {
+                                          context.showSuccessSnackBar('识别成功，已自动填充${type.label}数值');
+                                        }
+                                      } else {
+                                        if (mounted) {
+                                          context.showWarningSnackBar('未能识别到有效数值，请手动输入');
+                                        }
+                                      }
+                                    } on OcrException catch (e) {
+                                      if (mounted) {
+                                        context.showErrorSnackBar(e.message);
+                                      }
+                                    } catch (e) {
+                                      if (mounted) {
+                                        context.showErrorSnackBar('识别失败: $e');
+                                      }
+                                    }
                                   },
-                                );
-                                // listen 结束后更新状态
-                                if (!started) {
-                                  setDialogState(() => isListening = false);
-                                  if (mounted) {
-                                    context.showWarningSnackBar('语音识别启动失败，请手动输入');
-                                  }
-                                } else {
-                                  setDialogState(() => isListening = voiceService.isListening);
-                                }
-                              }
-                            },
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
-                              width: isListening ? 72 : 64,
-                              height: isListening ? 72 : 64,
-                              decoration: BoxDecoration(
-                                gradient: isListening
-                                    ? const LinearGradient(
-                                        colors: [Colors.red, Colors.redAccent],
-                                      )
-                                    : LinearGradient(
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(vertical: 16),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
                                         colors: [
-                                          AppTheme.primaryColor,
-                                          AppTheme.primaryColor.withValues(alpha: 0.7),
+                                          type.color,
+                                          type.color.withValues(alpha: 0.7),
                                         ],
                                       ),
-                                shape: BoxShape.circle,
-                                boxShadow: isListening
-                                    ? [
+                                      borderRadius: BorderRadius.circular(12),
+                                      boxShadow: [
                                         BoxShadow(
-                                          color: Colors.red.withValues(alpha: 0.4),
-                                          blurRadius: 16 + soundLevel.abs(),
-                                          spreadRadius: 4,
-                                        ),
-                                      ]
-                                    : [
-                                        BoxShadow(
-                                          color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                                          color: type.color.withValues(alpha: 0.3),
                                           blurRadius: 8,
                                           offset: const Offset(0, 2),
                                         ),
                                       ],
+                                    ),
+                                    child: const Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.camera_alt,
+                                          color: Colors.white,
+                                          size: 32,
+                                        ),
+                                        SizedBox(height: 8),
+                                        Text(
+                                          '拍照识别',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ),
-                              child: Icon(
-                                isListening ? Icons.stop : Icons.mic,
-                                color: Colors.white,
-                                size: isListening ? 36 : 32,
+                            ],
+                          ),
+                          // 语音识别中的状态反馈
+                          if (isListening) ...[
+                            const SizedBox(height: 12),
+                            Text(
+                              voiceText.isEmpty ? '请说出数值...' : voiceText,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: AppTheme.primaryColor,
+                                fontWeight: FontWeight.bold,
                               ),
+                              textAlign: TextAlign.center,
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          // 提示文本
-                          Text(
-                            isListening
-                                ? (voiceText.isEmpty ? '请说出数值...' : voiceText)
-                                : '点击麦克风，语音输入${type.label}数值',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: isListening ? AppTheme.primaryColor : Colors.grey.shade600,
-                              fontWeight: isListening ? FontWeight.bold : FontWeight.normal,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
+                          ],
                         ],
                       ),
                     ),
@@ -829,10 +885,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
               ),
               actions: [
                 TextButton(
-                  onPressed: isSubmitting ? null : () {
-                    voiceService.dispose();
-                    Navigator.pop(ctx);
-                  },
+                  onPressed: isSubmitting ? null : () => Navigator.pop(ctx),
                   child: const Text('取消'),
                 ),
                 PrimaryButton(
@@ -863,12 +916,15 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
         );
       },
     ).then((_) {
-      // 对话框关闭时释放语音资源和 OCR 资源，防止内存泄漏
-      voiceService.dispose();
-      ocrService.dispose();
-      valueController.dispose();
-      valueController2.dispose();
-      noteController.dispose();
+      // 延迟到下一帧释放资源，确保对话框 Widget 树已完全卸载
+      // 避免在 TextField 仍依附于 TextEditingController 时调用 dispose 导致断言失败
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        voiceService.dispose();
+        ocrService.dispose();
+        valueController.dispose();
+        valueController2.dispose();
+        noteController.dispose();
+      });
     });
   }
 
