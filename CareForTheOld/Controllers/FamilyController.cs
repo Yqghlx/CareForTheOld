@@ -32,7 +32,11 @@ public class FamilyController : ControllerBase
         return ApiResponse<FamilyResponse?>.Ok(result);
     }
 
+    /// <summary>
+    /// 创建家庭组（仅子女可创建，老人通过邀请码加入）
+    /// </summary>
     [HttpPost]
+    [Authorize(Roles = "Child")]
     public async Task<ApiResponse<FamilyResponse>> Create([FromBody] CreateFamilyRequest request)
     {
         var userId = this.GetUserId();
@@ -40,7 +44,11 @@ public class FamilyController : ControllerBase
         return ApiResponse<FamilyResponse>.Ok(result, "创建成功");
     }
 
+    /// <summary>
+    /// 添加家庭成员（仅子女可操作，通过手机号邀请已注册用户）
+    /// </summary>
     [HttpPost("{id:guid}/members")]
+    [Authorize(Roles = "Child")]
     public async Task<ApiResponse<FamilyResponse>> AddMember(Guid id, [FromBody] AddFamilyMemberRequest request)
     {
         var userId = this.GetUserId();
@@ -61,9 +69,10 @@ public class FamilyController : ControllerBase
     }
 
     /// <summary>
-    /// 刷新邀请码
+    /// 刷新邀请码（仅子女可操作）
     /// </summary>
     [HttpPost("{id:guid}/refresh-code")]
+    [Authorize(Roles = "Child")]
     public async Task<ApiResponse<FamilyResponse>> RefreshInviteCode(Guid id)
     {
         var userId = this.GetUserId();
@@ -83,6 +92,7 @@ public class FamilyController : ControllerBase
     }
 
     [HttpDelete("{id:guid}/members/{userId:guid}")]
+    [Authorize(Roles = "Child")]
     public async Task<ApiResponse<object>> RemoveMember(Guid id, Guid userId)
     {
         var currentUserId = this.GetUserId();

@@ -3,6 +3,7 @@ using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.Families;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Models.Entities;
+using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,12 +42,15 @@ public class FamilyService : IFamilyService
 
     public async Task<FamilyResponse> CreateFamilyAsync(Guid creatorId, CreateFamilyRequest request)
     {
+        // 验证创建者角色：只有子女才能创建家庭组
+        var creator = await _context.Users.FindAsync(creatorId)
+            ?? throw new KeyNotFoundException("用户不存在");
+        if (creator.Role != UserRole.Child)
+            throw new UnauthorizedAccessException("只有子女才能创建家庭组");
+
         // 检查用户是否已加入其他家庭
         if (await _context.FamilyMembers.AnyAsync(fm => fm.UserId == creatorId))
             throw new ArgumentException("您已加入家庭组，不能重复创建");
-
-        var creator = await _context.Users.FindAsync(creatorId)
-            ?? throw new KeyNotFoundException("用户不存在");
 
         var family = new Family
         {
