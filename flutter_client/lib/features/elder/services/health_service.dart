@@ -20,7 +20,7 @@ class HealthService {
     String? note,
   }) async {
     final response = await _dio.post('/health', data: {
-      'type': type.value,
+      'type': type.name,
       if (systolic != null) 'systolic': systolic,
       if (diastolic != null) 'diastolic': diastolic,
       if (bloodSugar != null) 'bloodSugar': bloodSugar,
@@ -40,7 +40,7 @@ class HealthService {
   }) async {
     final queryParams = <String, dynamic>{'limit': limit};
     if (type != null) {
-      queryParams['type'] = type.value;
+      queryParams['type'] = type.name;
     }
     final response = await _dio.get(
       '/health/me',

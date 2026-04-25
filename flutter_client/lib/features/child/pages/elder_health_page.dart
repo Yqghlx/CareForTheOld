@@ -645,6 +645,12 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         ),
       ),
     );
+
+    // 延迟到下一帧释放控制器，确保对话框 Widget 树已完全卸载
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      nameController.dispose();
+      dosageController.dispose();
+    });
   }
 
   /// 切换用药计划启用/停用状态
@@ -1075,11 +1081,14 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     children: [
                       Row(
                         children: [
-                          const Text(
-                            'AI 健康趋势分析',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                          const Flexible(
+                            child: Text(
+                              'AI 健康趋势分析',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -1100,9 +1109,11 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 4),
                       Text(
                         '基于 ${anomaly.baseline.baselineDays} 天数据分析',
                         style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),

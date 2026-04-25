@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// 紧急呼叫状态枚举
+/// 紧急呼叫状态枚举（与后端对应，整数序列化）
 enum EmergencyStatus {
   pending(0, '待处理', Colors.red),
   responded(1, '已响应', Colors.green);
@@ -10,6 +10,19 @@ enum EmergencyStatus {
   final Color color;
 
   const EmergencyStatus(this.value, this.label, this.color);
+
+  /// 从后端返回的值解析（支持字符串 "pending" 和整数 0 两种格式）
+  static EmergencyStatus fromDynamic(dynamic value) {
+    if (value == null) return pending;
+    if (value is int) return fromInt(value);
+    if (value is String) {
+      return EmergencyStatus.values.firstWhere(
+        (e) => e.name == value,
+        orElse: () => EmergencyStatus.pending,
+      );
+    }
+    return EmergencyStatus.pending;
+  }
 
   /// 从整数值获取状态
   static EmergencyStatus fromInt(int? value) {
@@ -59,7 +72,7 @@ class EmergencyCall {
       elderPhoneNumber: json['elderPhoneNumber'],
       familyId: json['familyId'] ?? '',
       calledAt: _parseUtcDateTime(json['calledAt']),
-      status: EmergencyStatus.fromInt(json['status']),
+      status: EmergencyStatus.fromDynamic(json['status']),
       respondedBy: json['respondedBy'],
       respondedByRealName: json['respondedByRealName'],
       respondedAt: json['respondedAt'] != null

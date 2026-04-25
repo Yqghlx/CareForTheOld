@@ -387,7 +387,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           ),
         ],
       ),
-    );
+    ).then((_) {
+      // 延迟到下一帧释放控制器，确保对话框 Widget 树已完全卸载
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        nameController.dispose();
+      });
+    });
   }
 
   /// 显示修改密码对话框
@@ -546,10 +551,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       });
     },
   ).then((_) {
-    // 对话框关闭后释放控制器，防止内存泄漏
-    oldPasswordController.dispose();
-    newPasswordController.dispose();
-    confirmPasswordController.dispose();
+    // 延迟到下一帧释放控制器，确保对话框 Widget 树已完全卸载
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      oldPasswordController.dispose();
+      newPasswordController.dispose();
+      confirmPasswordController.dispose();
+    });
   });
   }
 

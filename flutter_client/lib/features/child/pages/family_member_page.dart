@@ -470,7 +470,10 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
         ],
       ),
     ).then((_) {
-      nameController.dispose();
+      // 延迟到下一帧释放控制器，确保对话框 Widget 树已完全卸载
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        nameController.dispose();
+      });
     });
   }
 
@@ -571,7 +574,9 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
         );
       },
     ).then((_) {
-      codeController.dispose();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        codeController.dispose();
+      });
     });
   }
 
@@ -703,7 +708,9 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
         );
       },
     ).then((_) {
-      phoneController.dispose();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        phoneController.dispose();
+      });
     });
   }
 

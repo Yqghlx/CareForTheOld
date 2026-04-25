@@ -31,7 +31,7 @@ class MedicationService {
   }) async {
     final response = await _dio.post('/medication/logs', data: {
       'planId': planId,
-      'status': status.value,
+      'status': status.name,
       // scheduledAt 是后端返回的原始时间，不能转 UTC，否则下次 today-pending 比对不上
       'scheduledAt': scheduledAt.toIso8601String(),
       if (status == MedicationStatus.taken)

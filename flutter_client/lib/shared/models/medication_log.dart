@@ -31,7 +31,7 @@ class MedicationLog {
       medicineName: json['medicineName'] as String,
       elderId: json['elderId'] as String,
       elderName: json['elderName'] as String?,
-      status: MedicationStatus.fromInt(json['status'] as int?),
+      status: MedicationStatus.fromDynamic(json['status']),
       // 后端统一使用 UTC 存储和返回，这里确保解析为 UTC
       scheduledAt: _parseUtcDateTime(json['scheduledAt'] as String),
       takenAt: json['takenAt'] != null

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// 用药频率枚举（与后端 Frequency 对应）
+/// 用药频率枚举（与后端 Frequency 对应，整数序列化）
 enum Frequency {
   onceDaily(0, '每日一次', Icons.looks_one),
   twiceDaily(1, '每日两次', Icons.looks_two),
@@ -13,7 +13,20 @@ enum Frequency {
 
   const Frequency(this.value, this.label, this.icon);
 
-  /// 从后端整数枚举值解析
+  /// 从后端返回的值解析（支持字符串 "onceDaily" 和整数 0 两种格式）
+  static Frequency fromDynamic(dynamic value) {
+    if (value == null) return Frequency.onceDaily;
+    if (value is int) return fromInt(value);
+    if (value is String) {
+      return Frequency.values.firstWhere(
+        (e) => e.name == value,
+        orElse: () => Frequency.onceDaily,
+      );
+    }
+    return Frequency.onceDaily;
+  }
+
+  /// 从后端返回的整数值解析
   static Frequency fromInt(int? value) {
     if (value == null) return Frequency.onceDaily;
     return Frequency.values.firstWhere(
@@ -23,7 +36,7 @@ enum Frequency {
   }
 }
 
-/// 服药状态枚举（与后端 MedicationStatus 对应）
+/// 服药状态枚举（与后端 MedicationStatus 对应，整数序列化）
 enum MedicationStatus {
   taken(0, '已服', Colors.green),
   skipped(1, '跳过', Colors.grey),
@@ -35,7 +48,20 @@ enum MedicationStatus {
 
   const MedicationStatus(this.value, this.label, this.color);
 
-  /// 从后端整数枚举值解析
+  /// 从后端返回的值解析（支持字符串 "taken" 和整数 0 两种格式）
+  static MedicationStatus fromDynamic(dynamic value) {
+    if (value == null) return MedicationStatus.missed;
+    if (value is int) return fromInt(value);
+    if (value is String) {
+      return MedicationStatus.values.firstWhere(
+        (e) => e.name == value,
+        orElse: () => MedicationStatus.missed,
+      );
+    }
+    return MedicationStatus.missed;
+  }
+
+  /// 从后端返回的整数值解析
   static MedicationStatus fromInt(int? value) {
     if (value == null) return MedicationStatus.missed;
     return MedicationStatus.values.firstWhere(
@@ -82,7 +108,7 @@ class MedicationPlan {
       elderName: json['elderName'] as String?,
       medicineName: json['medicineName'] as String,
       dosage: json['dosage'] as String,
-      frequency: Frequency.fromInt(json['frequency'] as int?),
+      frequency: Frequency.fromDynamic(json['frequency']),
       reminderTimes: (json['reminderTimes'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
