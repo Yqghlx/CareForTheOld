@@ -18,6 +18,7 @@ class RoutePaths {
   static const String childEmergency = '/child/emergency';
   static String childElderHealth(String elderId) => '/child/elder/$elderId/health';
   static String childElderLocation(String elderId) => '/child/elder/$elderId/location';
+  static String childElderHealthTrend(String elderId) => '/child/elder/$elderId/health/trend';
 
   // ==================== 共享 ====================
   static const String settings = '/settings';

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/router/route_paths.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 import '../../../core/extensions/date_format_extension.dart';
 import '../../../core/theme/app_theme.dart';
@@ -109,7 +110,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
           IconButton(
             icon: const Icon(Icons.show_chart),
             onPressed: () => context.push(
-              '/child/elder/${widget.elderId}/health/trend?name=$elderName',
+              '${RoutePaths.childElderHealthTrend(widget.elderId)}?name=$elderName',
             ),
             tooltip: '健康趋势',
           ),
