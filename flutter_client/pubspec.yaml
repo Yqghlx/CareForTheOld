@@ -111,7 +111,3 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
-  assets:
-    # 图标资源按需添加到此目录
-    # - assets/images/

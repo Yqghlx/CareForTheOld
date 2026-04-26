@@ -8,6 +8,7 @@ import '../../features/elder/pages/elder_home_page.dart';
 import '../../features/elder/pages/health_record_page.dart';
 import '../../features/elder/pages/health_trend_page.dart';
 import '../../features/elder/pages/medication_page.dart';
+import '../../features/child/pages/elder_health_trend_page.dart';
 import '../../features/child/pages/child_home_page.dart';
 import '../../features/child/pages/family_member_page.dart';
 import '../../features/child/pages/elder_health_page.dart';
@@ -111,6 +112,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         pageBuilder: (context, state) {
           final elderId = state.pathParameters['elderId']!;
           return SlidePageTransition(child: ElderHealthPage(elderId: elderId));
+        },
+      ),
+      GoRoute(
+        path: '/child/elder/:elderId/health/trend',
+        pageBuilder: (context, state) {
+          final elderId = state.pathParameters['elderId']!;
+          final elderName = state.uri.queryParameters['name'] ?? '老人';
+          return SlidePageTransition(
+            child: ElderHealthTrendPage(elderId: elderId, elderName: elderName),
+          );
         },
       ),
       GoRoute(

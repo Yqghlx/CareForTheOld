@@ -102,6 +102,98 @@ class HealthTrendChart extends StatelessWidget {
     );
   }
 
+  /// 获取正常范围参考线（每种类型的上下限）
+  List<HorizontalLine> _getNormalRangeLines() {
+    switch (type) {
+      case HealthType.bloodPressure:
+        return [
+          // 收缩压正常上限 140
+          HorizontalLine(
+            y: 140,
+            color: Colors.red.withValues(alpha: 0.3),
+            strokeWidth: 1,
+            dashArray: [5, 5],
+            label: HorizontalLineLabel(
+              show: true,
+              alignment: Alignment.topRight,
+              padding: const EdgeInsets.only(bottom: 4),
+              style: TextStyle(color: Colors.red.withValues(alpha: 0.6), fontSize: 12),
+              labelResolver: (_) => '收缩压上限',
+            ),
+          ),
+          // 舒张压正常上限 90
+          HorizontalLine(
+            y: 90,
+            color: Colors.blue.withValues(alpha: 0.3),
+            strokeWidth: 1,
+            dashArray: [5, 5],
+            label: HorizontalLineLabel(
+              show: true,
+              alignment: Alignment.bottomRight,
+              padding: const EdgeInsets.only(top: 4),
+              style: TextStyle(color: Colors.blue.withValues(alpha: 0.6), fontSize: 12),
+              labelResolver: (_) => '舒张压上限',
+            ),
+          ),
+        ];
+      case HealthType.bloodSugar:
+        return [
+          HorizontalLine(
+            y: 7.0,
+            color: Colors.orange.withValues(alpha: 0.4),
+            strokeWidth: 1,
+            dashArray: [5, 5],
+            label: HorizontalLineLabel(
+              show: true,
+              alignment: Alignment.topRight,
+              padding: const EdgeInsets.only(bottom: 4),
+              style: TextStyle(color: Colors.orange.withValues(alpha: 0.7), fontSize: 12),
+              labelResolver: (_) => '空腹上限',
+            ),
+          ),
+          HorizontalLine(
+            y: 11.1,
+            color: Colors.red.withValues(alpha: 0.4),
+            strokeWidth: 1,
+            dashArray: [5, 5],
+            label: HorizontalLineLabel(
+              show: true,
+              alignment: Alignment.topRight,
+              padding: const EdgeInsets.only(bottom: 4),
+              style: TextStyle(color: Colors.red.withValues(alpha: 0.7), fontSize: 12),
+              labelResolver: (_) => '餐后上限',
+            ),
+          ),
+        ];
+      case HealthType.heartRate:
+        return [
+          HorizontalLine(y: 60, color: Colors.green.withValues(alpha: 0.3), strokeWidth: 1, dashArray: [5, 5]),
+          HorizontalLine(y: 100, color: Colors.red.withValues(alpha: 0.3), strokeWidth: 1, dashArray: [5, 5],
+            label: HorizontalLineLabel(
+              show: true,
+              alignment: Alignment.topRight,
+              padding: const EdgeInsets.only(bottom: 4),
+              style: TextStyle(color: Colors.red.withValues(alpha: 0.6), fontSize: 12),
+              labelResolver: (_) => '正常 60-100',
+            ),
+          ),
+        ];
+      case HealthType.temperature:
+        return [
+          HorizontalLine(y: 36.0, color: Colors.blue.withValues(alpha: 0.3), strokeWidth: 1, dashArray: [5, 5]),
+          HorizontalLine(y: 37.3, color: Colors.red.withValues(alpha: 0.3), strokeWidth: 1, dashArray: [5, 5],
+            label: HorizontalLineLabel(
+              show: true,
+              alignment: Alignment.topRight,
+              padding: const EdgeInsets.only(bottom: 4),
+              style: TextStyle(color: Colors.red.withValues(alpha: 0.6), fontSize: 12),
+              labelResolver: (_) => '正常 36-37.3',
+            ),
+          ),
+        ];
+    }
+  }
+
   /// 构建折线图
   Widget _buildLineChart(List<HealthRecord> data) {
     if (type == HealthType.bloodPressure) {
@@ -161,6 +253,21 @@ class HealthTrendChart extends StatelessWidget {
           maxX: (data.length - 1).toDouble(),
           minY: _getMinValue(data) - 10,
           maxY: _getMaxValue(data) + 10,
+          extraLinesData: ExtraLinesData(horizontalLines: _getNormalRangeLines()),
+          lineTouchData: LineTouchData(
+            touchTooltipData: LineTouchTooltipData(
+              tooltipBgColor: Colors.blueGrey.shade800,
+              getTooltipItems: (spots) => spots.map((spot) {
+                final idx = spot.spotIndex;
+                if (idx >= data.length) return null;
+                final r = data[idx];
+                return LineTooltipItem(
+                  '${r.recordedAt.month}/${r.recordedAt.day}\n收缩压: ${r.systolic ?? "-"}  舒张压: ${r.diastolic ?? "-"}',
+                  const TextStyle(color: Colors.white, fontSize: 14),
+                );
+              }).toList(),
+            ),
+          ),
           lineBarsData: [
             // 收缩压线（红色）
             LineChartBarData(
@@ -262,6 +369,21 @@ class HealthTrendChart extends StatelessWidget {
         maxX: (data.length - 1).toDouble(),
         minY: _getMinValueSingle(data) - 2,
         maxY: _getMaxValueSingle(data) + 2,
+        extraLinesData: ExtraLinesData(horizontalLines: _getNormalRangeLines()),
+        lineTouchData: LineTouchData(
+          touchTooltipData: LineTouchTooltipData(
+            tooltipBgColor: Colors.blueGrey.shade800,
+            getTooltipItems: (spots) => spots.map((spot) {
+              final idx = spot.spotIndex;
+              if (idx >= data.length) return null;
+              final r = data[idx];
+              return LineTooltipItem(
+                '${r.recordedAt.month}/${r.recordedAt.day}  ${_getValue(r)}${type.unit}',
+                const TextStyle(color: Colors.white, fontSize: 14),
+              );
+            }).toList(),
+          ),
+        ),
         lineBarsData: [
           LineChartBarData(
             isCurved: true,

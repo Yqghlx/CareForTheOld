@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/extensions/snackbar_extension.dart';
 import '../../../shared/models/health_record.dart';
@@ -103,6 +104,14 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       appBar: AppBar(
         title: Text('$elderName - 健康数据'),
         actions: [
+          // 查看趋势按钮
+          IconButton(
+            icon: const Icon(Icons.show_chart),
+            onPressed: () => context.push(
+              '/child/elder/${widget.elderId}/health/trend?name=$elderName',
+            ),
+            tooltip: '健康趋势',
+          ),
           // 导出报告按钮
           Semantics(
             label: '导出$elderName的健康报告为PDF文件',
