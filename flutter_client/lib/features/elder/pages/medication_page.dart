@@ -343,6 +343,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
   Future<void> _startVoiceConfirm() async {
     if (_isListening) {
       await _voiceService.stopListening();
+      if (!mounted) return;
       setState(() => _isListening = false);
       return;
     }
@@ -355,6 +356,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
       return;
     }
 
+    if (!mounted) return;
     setState(() => _isListening = true);
 
     final started = await _voiceService.startListening(

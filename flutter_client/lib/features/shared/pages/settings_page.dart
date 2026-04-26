@@ -69,6 +69,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   /// 加载定位设置
   Future<void> _loadLocationSetting() async {
     final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
     setState(() {
       _locationEnabled = prefs.getBool(PrefKeys.locationEnabled) ?? true;
       _isLoadingLocation = false;
@@ -78,12 +79,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   /// 加载应用版本信息
   Future<void> _loadAppVersion() async {
     final info = await PackageInfo.fromPlatform();
+    if (!mounted) return;
     setState(() => _appVersion = '${info.version} (${info.buildNumber})');
   }
 
   /// 加载通知偏好设置
   Future<void> _loadNotificationPrefs() async {
     final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
     setState(() {
       _notifyHealth = prefs.getBool(PrefKeys.notifyHealth) ?? true;
       _notifyMedication = prefs.getBool(PrefKeys.notifyMedication) ?? true;
@@ -102,6 +105,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Future<void> _saveLocationSetting(bool enabled) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(PrefKeys.locationEnabled, enabled);
+    if (!mounted) return;
     setState(() => _locationEnabled = enabled);
 
     // 根据开关状态启动或停止位置上报服务
