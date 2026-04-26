@@ -209,11 +209,11 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
       if (mounted) {
         // 返回到紧急页面查看详情
         Navigator.of(context).pop();
-        context.showSuccessSnackBar('已标记处理');
+        context.showSuccessSnackBar(AppTheme.msgMarkHandled);
       }
     } catch (e) {
       if (mounted) {
-        context.showErrorSnackBar('响应失败，请稍后重试');
+        context.showErrorSnackBar(AppTheme.msgOperationFailed);
       }
     } finally {
       if (mounted) {
@@ -242,7 +242,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
       }
     } else {
       if (mounted) {
-        context.showErrorSnackBar('无法获取老人电话号码');
+        context.showErrorSnackBar(AppTheme.msgNoPhoneNumber);
       }
     }
   }

@@ -304,9 +304,9 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
         await ref.read(medicationProvider.notifier).markAsTaken(log);
     if (mounted) {
       if (success) {
-          context.showSuccessSnackBar('已标记为已服用');
+          context.showSuccessSnackBar(AppTheme.msgMedicationTaken);
         } else {
-          context.showErrorSnackBar('操作失败');
+          context.showErrorSnackBar(AppTheme.msgOperationFailed);
         }
     }
   }
@@ -334,7 +334,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
     final success =
         await ref.read(medicationProvider.notifier).markAsSkipped(log);
     if (mounted) {
-      context.showSnackBar(success ? '已跳过本次用药' : '操作失败');
+      context.showSnackBar(success ? AppTheme.msgMedicationSkipped : AppTheme.msgOperationFailed);
     }
   }
 
@@ -350,7 +350,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
     final available = await _voiceService.initialize();
     if (!available) {
       if (mounted) {
-        context.showWarningSnackBar('语音识别不可用，请检查设备设置');
+        context.showWarningSnackBar(AppTheme.msgVoiceNotAvailable);
       }
       return;
     }
@@ -368,7 +368,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
     if (!started) {
       setState(() => _isListening = false);
       if (mounted) {
-        context.showWarningSnackBar('语音识别启动失败，请手动操作');
+        context.showWarningSnackBar(AppTheme.msgVoiceStartFailed);
       }
     }
   }
@@ -383,7 +383,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
 
     if (pendingLogs.isEmpty) {
       if (mounted) {
-        context.showWarningSnackBar('当前没有待服用的药物');
+        context.showWarningSnackBar(AppTheme.msgNoPendingMedication);
       }
       return;
     }

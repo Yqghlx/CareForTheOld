@@ -334,9 +334,9 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
 
     if (mounted && context.mounted) {
       if (success) {
-        context.showSuccessSnackBar('报告已生成，请选择分享方式');
+        context.showSuccessSnackBar(AppTheme.msgReportGenerated);
       } else {
-        context.showErrorSnackBar('导出失败，请稍后重试');
+        context.showErrorSnackBar(AppTheme.msgOperationFailed);
       }
     }
   }

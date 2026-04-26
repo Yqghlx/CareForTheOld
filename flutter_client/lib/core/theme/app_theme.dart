@@ -129,6 +129,55 @@ class AppTheme {
   static const String msgSaveSuccess = '保存成功';
   static const String msgDeleteSuccess = '删除成功';
 
+  // 用药相关消息
+  static const String msgMedicationTaken = '已标记为已服用';
+  static const String msgMedicationSkipped = '已跳过本次用药';
+  static const String msgNoPendingMedication = '当前没有待服用的药物';
+  static const String msgVoiceNotAvailable = '语音识别不可用，请检查设备设置';
+  static const String msgVoiceStartFailed = '语音识别启动失败，请手动操作';
+  static const String msgVoiceInputFailed = '语音识别启动失败，请手动输入';
+
+  // 紧急呼叫消息
+  static const String msgEmergencyLongPress = '请长按按钮 2 秒发起紧急呼叫';
+  static const String msgEmergencyCancelled = '已取消，请长按 2 秒发起呼叫';
+  static const String msgEmergencySent = '紧急呼叫已发送，已通知家人和附近邻居';
+  static const String msgEmergencyFailed = '呼叫失败，请直接拨打电话联系家人';
+
+  // 健康录入消息
+  static const String msgReportGenerated = '报告已生成，请选择分享方式';
+  static const String msgRecordDeleted = '记录已删除';
+  static const String msgOcrSuccess = '识别成功，已自动填充数值';
+  static const String msgOcrNoValue = '未能识别到有效数值，请手动输入';
+  static const String msgOcrFailed = '文字识别失败，请重新拍照';
+  static const String msgInvalidValue = '请输入有效的数值';
+
+  // 个人设置消息
+  static const String msgNameUpdated = '姓名修改成功';
+  static const String msgPasswordEmpty = '密码不能为空';
+  static const String msgPasswordMismatch = '两次输入的新密码不一致';
+  static const String msgPasswordChanged = '密码修改成功，请重新登录';
+  static const String msgAvatarUpdated = '头像更新成功';
+  static const String msgAvatarFailed = '头像上传失败，请重试';
+
+  // 邻里互助消息
+  static const String msgHelpAccepted = '已接受求助，请尽快前往帮助';
+  static const String msgHelpAlreadyTaken = '该求助已被其他邻居接受';
+  static const String msgRateSuccess = '评价成功，感谢您的反馈';
+
+  // 邻里圈消息
+  static const String msgInviteCodeHint = '请输入 6 位邀请码';
+  static const String msgJoinSuccess = '加入成功';
+  static const String msgCircleNameRequired = '请输入圈子名称';
+  static const String msgCreateSuccess = '创建成功';
+  static const String msgLeftCircle = '已退出';
+  static const String msgInviteRefreshed = '邀请码已刷新';
+  static const String msgNoCircleNearby = '附近没有找到邻里圈';
+
+  // 紧急告警消息
+  static const String msgMarkHandled = '已标记处理';
+  static const String msgNoPhoneNumber = '无法获取老人电话号码';
+  static const String msgCannotDial = '无法拨打电话，请手动拨打';
+
   /// 业务常量
   /// 邻里圈搜索默认半径（米）
   static const double defaultNeighborSearchRadius = 2000.0;

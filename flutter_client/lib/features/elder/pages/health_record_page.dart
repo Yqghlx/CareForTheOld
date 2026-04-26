@@ -446,11 +446,11 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
       await service.deleteRecord(recordId);
       ref.read(healthRecordsProvider.notifier).loadRecords();
       if (mounted) {
-        context.showSnackBar('记录已删除');
+        context.showSnackBar(AppTheme.msgRecordDeleted);
       }
     } catch (e) {
       if (mounted) {
-        context.showErrorSnackBar('删除失败，请稍后重试');
+        context.showErrorSnackBar(AppTheme.msgOperationFailed);
       }
     }
   }
@@ -599,7 +599,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                       if (!mounted || !context.mounted) return;
                                       if (!available) {
                                         if (mounted) {
-                                          context.showWarningSnackBar('语音识别不可用，请检查设备设置');
+                                          context.showWarningSnackBar(AppTheme.msgVoiceNotAvailable);
                                         }
                                         return;
                                       }
@@ -629,7 +629,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                       if (!started) {
                                         setDialogState(() => isListening = false);
                                         if (mounted) {
-                                          context.showWarningSnackBar('语音识别启动失败，请手动输入');
+                                          context.showWarningSnackBar(AppTheme.msgVoiceInputFailed);
                                         }
                                       } else {
                                         setDialogState(() => isListening = voiceService.isListening);
@@ -733,7 +733,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                         }
                                       } else {
                                         if (mounted) {
-                                          context.showWarningSnackBar('未能识别到有效数值，请手动输入');
+                                          context.showWarningSnackBar(AppTheme.msgOcrNoValue);
                                         }
                                       }
                                     } on OcrException catch (e) {
@@ -742,7 +742,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                       }
                                     } catch (e) {
                                       if (mounted) {
-                                        context.showErrorSnackBar('文字识别失败，请重新拍照');
+                                        context.showErrorSnackBar(AppTheme.msgOcrFailed);
                                       }
                                     }
                                   },
@@ -1068,7 +1068,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
       context.showErrorSnackBar(e.message);
       return;
     } catch (_) {
-      context.showErrorSnackBar('请输入有效的数值');
+      context.showErrorSnackBar(AppTheme.msgInvalidValue);
       return;
     }
 
@@ -1131,7 +1131,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
       ref.invalidate(healthStatsProvider);
     } else if (mounted && dialogContext.mounted) {
       // 提交失败，保持对话框打开，让用户可以重试
-      dialogContext.showErrorSnackBar('保存失败，请重试');
+      dialogContext.showErrorSnackBar(AppTheme.msgOperationFailed);
     }
   }
 }
