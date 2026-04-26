@@ -41,7 +41,7 @@ public class EmergencyService : IEmergencyService
         _smsService = smsService;
         _neighborHelpService = neighborHelpService;
         _logger = logger;
-        _followUpDelayMinutes = configuration?.GetValue("Emergency:FollowUpDelayMinutes", 3) ?? 3;
+        _followUpDelayMinutes = configuration?.GetValue("Emergency:FollowUpDelayMinutes", AppConstants.Emergency.FollowUpDelayMinutes) ?? AppConstants.Emergency.FollowUpDelayMinutes;
     }
 
     /// <summary>

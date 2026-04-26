@@ -211,7 +211,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
                   color: AppTheme.grey100,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: AppTheme.radius10,
                 ),
                 child: Row(
                   children: [
@@ -296,7 +296,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
               height: 40,
               decoration: BoxDecoration(
                 color: call.status.color.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: AppTheme.radius10,
               ),
               child: Icon(
                 call.isPending ? Icons.warning_amber : Icons.check_circle,

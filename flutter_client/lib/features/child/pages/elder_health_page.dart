@@ -731,7 +731,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   height: 40,
                   decoration: BoxDecoration(
                     color: record.type.color.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: AppTheme.radius10,
                   ),
                   child: Icon(record.type.icon, color: record.type.color, size: 22),
                 ),
@@ -809,7 +809,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   height: 40,
                   decoration: BoxDecoration(
                     color: log.status.color.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: AppTheme.radius10,
                   ),
                   child: Icon(
                     log.status == MedicationStatus.taken
@@ -899,7 +899,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               height: 40,
               decoration: BoxDecoration(
                 color: Colors.blue.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: AppTheme.radius10,
               ),
               child: const Icon(Icons.picture_as_pdf, color: Colors.blue),
             ),
@@ -1451,7 +1451,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               height: 40,
               decoration: BoxDecoration(
                 color: AppTheme.primaryColor.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: AppTheme.radius10,
               ),
               child: const Icon(Icons.analytics, color: AppTheme.primaryColor),
             ),

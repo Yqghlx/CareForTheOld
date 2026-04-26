@@ -134,7 +134,7 @@ public class AuthService : IAuthService
         var accessToken = GenerateAccessToken(user);
         var refreshToken = GenerateRefreshToken();
 
-        var expirationMinutes = int.Parse(_configuration["Jwt:AccessTokenExpirationMinutes"] ?? "60");
+        var expirationMinutes = int.Parse(_configuration["Jwt:AccessTokenExpirationMinutes"] ?? AppConstants.Security.JwtAccessTokenExpirationMinutes.ToString());
 
         // 保存刷新令牌
         _context.RefreshTokens.Add(new RefreshToken
@@ -143,7 +143,7 @@ public class AuthService : IAuthService
             UserId = user.Id,
             Token = refreshToken,
             ExpiresAt = DateTime.UtcNow.AddDays(
-                int.Parse(_configuration["Jwt:RefreshTokenExpirationDays"] ?? "30")),
+                int.Parse(_configuration["Jwt:RefreshTokenExpirationDays"] ?? AppConstants.Security.JwtRefreshTokenExpirationDays.ToString())),
             CreatedAt = DateTime.UtcNow
         });
 
@@ -172,7 +172,7 @@ public class AuthService : IAuthService
             Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var expirationMinutes = int.Parse(_configuration["Jwt:AccessTokenExpirationMinutes"] ?? "60");
+        var expirationMinutes = int.Parse(_configuration["Jwt:AccessTokenExpirationMinutes"] ?? AppConstants.Security.JwtAccessTokenExpirationMinutes.ToString());
 
         var claims = new[]
         {

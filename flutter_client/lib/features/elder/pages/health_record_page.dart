@@ -91,7 +91,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
                     color: Colors.orange.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: AppTheme.radius10,
                     border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
                   ),
                   child: Row(
@@ -227,7 +227,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.8),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: AppTheme.radius10,
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -514,7 +514,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                     height: 40,
                     decoration: BoxDecoration(
                       color: type.color.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: AppTheme.radius10,
                     ),
                     child: Icon(type.icon, color: type.color),
                   ),

@@ -104,24 +104,31 @@ class MedicationNotifier extends StateNotifier<MedicationState> {
     }).toList();
   }
 
-  /// 标记已服用（带防重复提交保护 + loading 状态 + 离线支持）
-  Future<bool> markAsTaken(MedicationLog log) async {
+  /// 统一更新用药状态（防重复提交保护 + loading 状态 + 离线支持）
+  ///
+  /// 将 markAsTaken / markAsSkipped 的公共逻辑集中处理：
+  /// 防重复提交检查、构建数据、离线入队、网络请求+失败回退、UI更新。
+  /// [status] 为 taken 时自动附加 takenAt 时间戳。
+  Future<bool> _updateMedicationStatus(MedicationLog log, MedicationStatus status) async {
     final key = logKey(log);
+    // 防重复提交：已在提交中的记录直接返回
     if (state.isSubmitting(key)) return false;
     state = state.copyWith(submittingKeys: {...state.submittingKeys, key});
 
-    // 构建用药日志数据
-    final medicationData = {
+    // 构建用药日志数据，taken 时附加实际服用时间
+    final medicationData = <String, dynamic>{
       'planId': log.planId,
-      'status': MedicationStatus.taken.value,
+      'status': status.value,
       'scheduledAt': log.scheduledAt.toIso8601String(),
-      'takenAt': DateTime.now().toUtc().toIso8601String(),
     };
+    if (status == MedicationStatus.taken) {
+      medicationData['takenAt'] = DateTime.now().toUtc().toIso8601String();
+    }
 
     // 离线时直接入队，乐观更新 UI
     if (!_connectivity.isOnline) {
       await _offlineQueue.enqueue('medication', medicationData);
-      final updated = log.copyWith(status: MedicationStatus.taken);
+      final updated = log.copyWith(status: status);
       final newList = _replaceByPlanAndTime(state.todayPending, updated);
       state = state.copyWith(
         todayPending: newList,
@@ -133,7 +140,7 @@ class MedicationNotifier extends StateNotifier<MedicationState> {
     try {
       final updated = await _service.recordLog(
         planId: log.planId,
-        status: MedicationStatus.taken,
+        status: status,
         scheduledAt: log.scheduledAt,
       );
       final newList = _replaceByPlanAndTime(state.todayPending, updated);
@@ -145,7 +152,7 @@ class MedicationNotifier extends StateNotifier<MedicationState> {
     } catch (e) {
       // 网络请求失败，入队离线队列，乐观更新 UI
       await _offlineQueue.enqueue('medication', medicationData);
-      final updated = log.copyWith(status: MedicationStatus.taken);
+      final updated = log.copyWith(status: status);
       final newList = _replaceByPlanAndTime(state.todayPending, updated);
       state = state.copyWith(
         todayPending: newList,
@@ -155,55 +162,13 @@ class MedicationNotifier extends StateNotifier<MedicationState> {
     }
   }
 
-  /// 标记跳过（带防重复提交保护 + loading 状态 + 离线支持）
-  Future<bool> markAsSkipped(MedicationLog log) async {
-    final key = logKey(log);
-    if (state.isSubmitting(key)) return false;
-    state = state.copyWith(submittingKeys: {...state.submittingKeys, key});
+  /// 标记已服用
+  Future<bool> markAsTaken(MedicationLog log) =>
+      _updateMedicationStatus(log, MedicationStatus.taken);
 
-    // 构建用药日志数据
-    final medicationData = {
-      'planId': log.planId,
-      'status': MedicationStatus.skipped.value,
-      'scheduledAt': log.scheduledAt.toIso8601String(),
-    };
-
-    // 离线时直接入队，乐观更新 UI
-    if (!_connectivity.isOnline) {
-      await _offlineQueue.enqueue('medication', medicationData);
-      final updated = log.copyWith(status: MedicationStatus.skipped);
-      final newList = _replaceByPlanAndTime(state.todayPending, updated);
-      state = state.copyWith(
-        todayPending: newList,
-        submittingKeys: {...state.submittingKeys}..remove(key),
-      );
-      return true;
-    }
-
-    try {
-      final updated = await _service.recordLog(
-        planId: log.planId,
-        status: MedicationStatus.skipped,
-        scheduledAt: log.scheduledAt,
-      );
-      final newList = _replaceByPlanAndTime(state.todayPending, updated);
-      state = state.copyWith(
-        todayPending: newList,
-        submittingKeys: {...state.submittingKeys}..remove(key),
-      );
-      return true;
-    } catch (e) {
-      // 网络请求失败，入队离线队列，乐观更新 UI
-      await _offlineQueue.enqueue('medication', medicationData);
-      final updated = log.copyWith(status: MedicationStatus.skipped);
-      final newList = _replaceByPlanAndTime(state.todayPending, updated);
-      state = state.copyWith(
-        todayPending: newList,
-        submittingKeys: {...state.submittingKeys}..remove(key),
-      );
-      return true;
-    }
-  }
+  /// 标记跳过
+  Future<bool> markAsSkipped(MedicationLog log) =>
+      _updateMedicationStatus(log, MedicationStatus.skipped);
 }
 
 /// 用药状态 Provider

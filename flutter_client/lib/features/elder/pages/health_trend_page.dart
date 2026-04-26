@@ -76,7 +76,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                     height: 40,
                     decoration: BoxDecoration(
                       color: _selectedType.color.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: AppTheme.radius10,
                     ),
                     child: Icon(_selectedType.icon, color: _selectedType.color),
                   ),
@@ -267,7 +267,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
               height: 40,
               decoration: BoxDecoration(
                 color: Colors.blue.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: AppTheme.radius10,
               ),
               child: const Icon(Icons.picture_as_pdf, color: Colors.blue),
             ),

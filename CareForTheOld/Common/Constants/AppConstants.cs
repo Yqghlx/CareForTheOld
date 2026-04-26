@@ -16,6 +16,33 @@ public static class AppConstants
     }
 
     /// <summary>
+    /// 位置服务相关常量
+    /// </summary>
+    public static class Location
+    {
+        /// <summary>GPS 精度阈值（米），精度超过此值时跳过围栏检查，防止室内飘移误报</summary>
+        public const double DefaultAccuracyThresholdMeters = 100.0;
+    }
+
+    /// <summary>
+    /// 紧急呼叫相关常量
+    /// </summary>
+    public static class Emergency
+    {
+        /// <summary>二次提醒延迟（分钟）：首次呼叫后未响应，再次提醒子女</summary>
+        public const int FollowUpDelayMinutes = 3;
+    }
+
+    /// <summary>
+    /// 自动救援相关常量
+    /// </summary>
+    public static class AutoRescue
+    {
+        /// <summary>子女响应等待时间（分钟），超时后自动触发邻里广播</summary>
+        public const int DefaultDelayMinutes = 5;
+    }
+
+    /// <summary>
     /// 邻里互助相关常量
     /// </summary>
     public static class NeighborHelp
@@ -25,6 +52,21 @@ public static class AppConstants
 
         /// <summary>广播距离阈值（米），只通知此范围内的邻居</summary>
         public const double BroadcastRadiusMeters = 500;
+    }
+
+    /// <summary>
+    /// 邻里圈相关常量
+    /// </summary>
+    public static class NeighborCircle
+    {
+        /// <summary>附近成员默认搜索半径（米），与围栏默认半径一致</summary>
+        public const int DefaultMemberRadiusMeters = 500;
+
+        /// <summary>附近圈子搜索半径（米）</summary>
+        public const int SearchRadiusMeters = 2000;
+
+        /// <summary>搜索返回最大结果数</summary>
+        public const int SearchMaxResults = 20;
     }
 
     /// <summary>
@@ -73,6 +115,12 @@ public static class AppConstants
     {
         /// <summary>JWT 时钟偏移容忍时间（分钟），应对服务器间时钟差异</summary>
         public const int JwtClockSkewMinutes = 5;
+
+        /// <summary>JWT 访问令牌默认过期时间（分钟）</summary>
+        public const int JwtAccessTokenExpirationMinutes = 60;
+
+        /// <summary>JWT 刷新令牌默认过期时间（天）</summary>
+        public const int JwtRefreshTokenExpirationDays = 30;
     }
 
     /// <summary>

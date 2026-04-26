@@ -432,7 +432,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               height: 40,
               decoration: BoxDecoration(
                 color: AppTheme.primaryColor.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: AppTheme.radius10,
               ),
               child: const Icon(Icons.person, color: AppTheme.primaryColor),
             ),
@@ -536,7 +536,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     height: 40,
                     decoration: BoxDecoration(
                       color: AppTheme.primaryColor.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: AppTheme.radius10,
                     ),
                     child: const Icon(Icons.lock, color: AppTheme.primaryColor),
                   ),
@@ -675,7 +675,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               height: 40,
               decoration: BoxDecoration(
                 color: AppTheme.primaryColor.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: AppTheme.radius10,
               ),
               child: const Icon(Icons.info, color: AppTheme.primaryColor),
             ),
@@ -719,7 +719,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               height: 40,
               decoration: BoxDecoration(
                 color: AppTheme.primaryColor.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: AppTheme.radius10,
               ),
               child: const Icon(Icons.help, color: AppTheme.primaryColor),
             ),
@@ -765,7 +765,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               height: 40,
               decoration: BoxDecoration(
                 color: Colors.red.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: AppTheme.radius10,
               ),
               child: const Icon(Icons.logout, color: Colors.red),
             ),

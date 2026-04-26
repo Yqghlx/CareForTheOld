@@ -346,7 +346,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         height: 40,
                         decoration: BoxDecoration(
                           color: AppTheme.primaryColor.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: AppTheme.radius10,
                         ),
                         child: Icon(
                           Icons.chevron_right,
@@ -425,7 +425,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     height: 40,
                     decoration: BoxDecoration(
                       color: Colors.blue.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: AppTheme.radius10,
                     ),
                     child: const Icon(Icons.medication, color: Colors.blue),
                   ),

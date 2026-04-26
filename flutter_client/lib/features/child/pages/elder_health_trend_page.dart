@@ -86,7 +86,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
                   height: 40,
                   decoration: BoxDecoration(
                     color: _selectedType.color.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: AppTheme.radius10,
                   ),
                   child: Icon(_selectedType.icon, color: _selectedType.color),
                 ),

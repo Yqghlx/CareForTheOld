@@ -154,7 +154,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
             height: 40,
             decoration: BoxDecoration(
               color: isEnabled ? Colors.green.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: AppTheme.radius10,
             ),
             child: Icon(
               isEnabled ? Icons.security : Icons.security_outlined,
@@ -239,7 +239,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                     height: 40,
                     decoration: BoxDecoration(
                       color: Colors.green.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: AppTheme.radius10,
                     ),
                     child: const Icon(Icons.security, color: Colors.green),
                   ),

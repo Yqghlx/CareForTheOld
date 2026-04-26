@@ -96,7 +96,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
                 color: Colors.orange.shade100,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: AppTheme.radius10,
               ),
               child: Text(
                 '${pending.length}',
@@ -617,7 +617,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               height: 40,
               decoration: BoxDecoration(
                 color: AppTheme.primaryColor.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: AppTheme.radius10,
               ),
               child: const Icon(Icons.home, color: AppTheme.primaryColor),
             ),
@@ -682,7 +682,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     height: 40,
                     decoration: BoxDecoration(
                       color: Colors.orange.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: AppTheme.radius10,
                     ),
                     child: const Icon(Icons.vpn_key, color: Colors.orange),
                   ),
@@ -809,7 +809,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     height: 40,
                     decoration: BoxDecoration(
                       color: AppTheme.primaryColor.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: AppTheme.radius10,
                     ),
                     child: const Icon(Icons.person_add, color: AppTheme.primaryColor),
                   ),

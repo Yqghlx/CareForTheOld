@@ -188,7 +188,7 @@ public class NeighborCircleService : INeighborCircleService
 
     /// <inheritdoc />
     public async Task<List<NeighborMemberResponse>> GetNearbyMembersAsync(
-        Guid circleId, double latitude, double longitude, double radiusMeters = 500)
+        Guid circleId, double latitude, double longitude, double radiusMeters = AppConstants.NeighborCircle.DefaultMemberRadiusMeters)
     {
         // 先获取圈子所有成员，再用最近位置记录计算距离
         var memberIds = await _context.NeighborCircleMembers
@@ -254,7 +254,7 @@ public class NeighborCircleService : INeighborCircleService
 
     /// <inheritdoc />
     public async Task<List<NeighborCircleResponse>> SearchNearbyCirclesAsync(
-        double latitude, double longitude, double radiusMeters = 2000, int maxResults = 20)
+        double latitude, double longitude, double radiusMeters = AppConstants.NeighborCircle.SearchRadiusMeters, int maxResults = AppConstants.NeighborCircle.SearchMaxResults)
     {
         // 只搜索活跃的圈子
         var circles = await _context.NeighborCircles

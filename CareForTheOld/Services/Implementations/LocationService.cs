@@ -30,7 +30,7 @@ public class LocationService : ILocationService
         ILogger<LocationService> logger,
         IConfiguration? configuration = null)
     {
-        _accuracyThreshold = configuration?.GetValue("Location:AccuracyThresholdMeters", 100.0) ?? 100.0;
+        _accuracyThreshold = configuration?.GetValue("Location:AccuracyThresholdMeters", AppConstants.Location.DefaultAccuracyThresholdMeters) ?? AppConstants.Location.DefaultAccuracyThresholdMeters;
         _context = context;
         _geoFenceService = geoFenceService;
         _notificationService = notificationService;
