@@ -242,8 +242,10 @@ public class FamilyService : IFamilyService
     {
         await EnsureMemberAsync(familyId, operatorId);
 
-        // 验证操作者是子女角色
+        // 验证操作者是子女角色，Include User 避免额外查询
         var operatorMember = await _context.FamilyMembers
+            .Include(fm => fm.User)
+            .Include(fm => fm.Family)
             .FirstOrDefaultAsync(fm => fm.FamilyId == familyId && fm.UserId == operatorId)
             ?? throw new UnauthorizedAccessException(ErrorMessages.Family.NotFamilyMember);
 
@@ -258,18 +260,15 @@ public class FamilyService : IFamilyService
         member.Status = FamilyMemberStatus.Approved;
         await _context.SaveChangesAsync();
 
-        // 通知申请人审批已通过
-        var family = await _context.Families.FindAsync(familyId);
-        var operatorUser = await _context.Users.FindAsync(operatorId);
-
+        // 通知申请人审批已通过（使用已加载的导航属性，无需额外查询）
         await _notificationService.SendToUserAsync(memberId, AppConstants.NotificationTypes.FamilyJoinApproved, new
         {
             Title = NotificationMessages.Family.JoinApprovedTitle,
             Content = string.Format(NotificationMessages.Family.JoinApprovedContentTemplate,
-                operatorUser?.RealName ?? NotificationMessages.Family.DefaultOperatorName,
-                family?.FamilyName ?? NotificationMessages.Family.DefaultFamilyName),
+                operatorMember.User?.RealName ?? NotificationMessages.Family.DefaultOperatorName,
+                operatorMember.Family?.FamilyName ?? NotificationMessages.Family.DefaultFamilyName),
             FamilyId = familyId,
-            FamilyName = family?.FamilyName ?? ""
+            FamilyName = operatorMember.Family?.FamilyName ?? ""
         });
     }
 
@@ -280,8 +279,9 @@ public class FamilyService : IFamilyService
     {
         await EnsureMemberAsync(familyId, operatorId);
 
-        // 验证操作者是子女角色
+        // 验证操作者是子女角色，Include Family 避免额外查询
         var operatorMember = await _context.FamilyMembers
+            .Include(fm => fm.Family)
             .FirstOrDefaultAsync(fm => fm.FamilyId == familyId && fm.UserId == operatorId)
             ?? throw new UnauthorizedAccessException(ErrorMessages.Family.NotFamilyMember);
 
@@ -297,15 +297,13 @@ public class FamilyService : IFamilyService
         _context.FamilyMembers.Remove(member);
         await _context.SaveChangesAsync();
 
-        // 通知申请人被拒绝
-        var family = await _context.Families.FindAsync(familyId);
-
+        // 通知申请人被拒绝（使用已加载的导航属性）
         await _notificationService.SendToUserAsync(memberId, AppConstants.NotificationTypes.FamilyJoinRejected, new
         {
             Title = NotificationMessages.Family.JoinRejectedTitle,
-            Content = string.Format(NotificationMessages.Family.JoinRejectedContentTemplate, family?.FamilyName ?? NotificationMessages.Family.DefaultFamilyName),
+            Content = string.Format(NotificationMessages.Family.JoinRejectedContentTemplate, operatorMember.Family?.FamilyName ?? NotificationMessages.Family.DefaultFamilyName),
             FamilyId = familyId,
-            FamilyName = family?.FamilyName ?? ""
+            FamilyName = operatorMember.Family?.FamilyName ?? ""
         });
     }
 
