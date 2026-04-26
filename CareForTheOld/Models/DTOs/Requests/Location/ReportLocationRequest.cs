@@ -27,5 +27,6 @@ public class ReportLocationRequest
     /// GPS 定位精度（米），用于过滤低精度飘移数据
     /// 精度超过 100 米时跳过电子围栏判断，防止室内 GPS 飘移触发误报
     /// </summary>
+    [Range(0.0, 10000.0, ErrorMessage = ValidationMessages.Location.AccuracyOutOfRange)]
     public double? Accuracy { get; set; }
 }

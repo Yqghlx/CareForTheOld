@@ -403,22 +403,7 @@ public class NeighborHelpService : INeighborHelpService
                         r.ExpiresAt > now &&
                         r.RequesterId != userId)
             .OrderByDescending(r => r.RequestedAt)
-            .Select(r => new NeighborHelpRequestResponse
-            {
-                Id = r.Id,
-                EmergencyCallId = r.EmergencyCallId,
-                CircleId = r.CircleId,
-                RequesterId = r.RequesterId,
-                RequesterName = r.Requester.RealName,
-                ResponderId = r.ResponderId,
-                ResponderName = r.Responder != null ? r.Responder.RealName : null,
-                Status = r.Status,
-                Latitude = r.Latitude,
-                Longitude = r.Longitude,
-                RequestedAt = r.RequestedAt,
-                RespondedAt = r.RespondedAt,
-                ExpiresAt = r.ExpiresAt,
-            })
+            .Select(r => MapToResponse(r))
             .ToListAsync();
     }
 
@@ -440,22 +425,7 @@ public class NeighborHelpService : INeighborHelpService
             .OrderByDescending(r => r.RequestedAt)
             .Skip(skip)
             .Take(limit)
-            .Select(r => new NeighborHelpRequestResponse
-            {
-                Id = r.Id,
-                EmergencyCallId = r.EmergencyCallId,
-                CircleId = r.CircleId,
-                RequesterId = r.RequesterId,
-                RequesterName = r.Requester.RealName,
-                ResponderId = r.ResponderId,
-                ResponderName = r.Responder != null ? r.Responder.RealName : null,
-                Status = r.Status,
-                Latitude = r.Latitude,
-                Longitude = r.Longitude,
-                RequestedAt = r.RequestedAt,
-                RespondedAt = r.RespondedAt,
-                ExpiresAt = r.ExpiresAt,
-            })
+            .Select(r => MapToResponse(r))
             .ToListAsync();
     }
 
@@ -566,23 +536,28 @@ public class NeighborHelpService : INeighborHelpService
             .Include(r => r.Responder)
             .FirstAsync(r => r.Id == requestId);
 
-        return new NeighborHelpRequestResponse
-        {
-            Id = request.Id,
-            EmergencyCallId = request.EmergencyCallId,
-            CircleId = request.CircleId,
-            RequesterId = request.RequesterId,
-            RequesterName = request.Requester.RealName,
-            ResponderId = request.ResponderId,
-            ResponderName = request.Responder?.RealName,
-            Status = request.Status,
-            Latitude = request.Latitude,
-            Longitude = request.Longitude,
-            RequestedAt = request.RequestedAt,
-            RespondedAt = request.RespondedAt,
-            ExpiresAt = request.ExpiresAt,
-        };
+        return MapToResponse(request);
     }
+
+    /// <summary>
+    /// 将 NeighborHelpRequest 实体映射为响应 DTO
+    /// </summary>
+    private static NeighborHelpRequestResponse MapToResponse(NeighborHelpRequest r) => new()
+    {
+        Id = r.Id,
+        EmergencyCallId = r.EmergencyCallId,
+        CircleId = r.CircleId,
+        RequesterId = r.RequesterId,
+        RequesterName = r.Requester.RealName,
+        ResponderId = r.ResponderId,
+        ResponderName = r.Responder != null ? r.Responder.RealName : null,
+        Status = r.Status,
+        Latitude = r.Latitude,
+        Longitude = r.Longitude,
+        RequestedAt = r.RequestedAt,
+        RespondedAt = r.RespondedAt,
+        ExpiresAt = r.ExpiresAt,
+    };
 
     /// <summary>
     /// 验证操作者是否为请求者本人或其家庭成员（子女）

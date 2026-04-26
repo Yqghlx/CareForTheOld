@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Asp.Versioning;
 using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
@@ -85,7 +86,7 @@ public class NeighborCircleController : ControllerBase
     [HttpGet("{id:guid}/nearby-members")]
     [CacheControl(MaxAgeSeconds = 60)]
     public async Task<ApiResponse<List<NeighborMemberResponse>>> GetNearbyMembers(
-        Guid id, [FromQuery] double latitude, [FromQuery] double longitude, [FromQuery] double radius = 500)
+        Guid id, [FromQuery, Range(-90.0, 90.0)] double latitude, [FromQuery, Range(-180.0, 180.0)] double longitude, [FromQuery] double radius = AppConstants.NeighborCircle.DefaultMemberRadiusMeters)
     {
         var userId = this.GetUserId();
         await _circleService.EnsureCircleMemberAsync(id, userId);
@@ -134,7 +135,7 @@ public class NeighborCircleController : ControllerBase
     [HttpGet("nearby")]
     [CacheControl(MaxAgeSeconds = 60)]
     public async Task<ApiResponse<List<NeighborCircleResponse>>> SearchNearby(
-        [FromQuery] double latitude, [FromQuery] double longitude, [FromQuery] double radius = 2000)
+        [FromQuery, Range(-90.0, 90.0)] double latitude, [FromQuery, Range(-180.0, 180.0)] double longitude, [FromQuery] double radius = AppConstants.NeighborCircle.SearchRadiusMeters)
     {
         var result = await _circleService.SearchNearbyCirclesAsync(latitude, longitude, radius);
         return ApiResponse<List<NeighborCircleResponse>>.Ok(result);

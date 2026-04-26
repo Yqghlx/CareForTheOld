@@ -34,6 +34,7 @@ public static class ValidationMessages
         public const string LatitudeOutOfRange = "纬度范围应在 -90 到 90 之间";
         public const string LongitudeRequired = "经度不能为空";
         public const string LongitudeOutOfRange = "经度范围应在 -180 到 180 之间";
+        public const string AccuracyOutOfRange = "GPS 精度值应在 0 到 10000 米之间";
     }
 
     public static class Family
