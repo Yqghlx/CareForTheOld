@@ -51,9 +51,8 @@ public class MedicationService : IMedicationService
             StartDate = request.StartDate,
             EndDate = request.EndDate,
             IsActive = true,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
         };
+        plan.CreatedAt = plan.UpdatedAt = DateTime.UtcNow;
 
         _context.MedicationPlans.Add(plan);
         await _context.SaveChangesAsync();

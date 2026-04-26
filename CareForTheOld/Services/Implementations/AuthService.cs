@@ -45,9 +45,8 @@ public class AuthService : IAuthService
             RealName = request.RealName,
             BirthDate = request.BirthDate,
             Role = request.Role,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
         };
+        user.CreatedAt = user.UpdatedAt = DateTime.UtcNow;
 
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
