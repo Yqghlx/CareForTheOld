@@ -236,19 +236,14 @@ public class GeoFenceService : IGeoFenceService
     }
 
     /// <summary>
-    /// 检查两个用户是否在同一家庭（拆分子查询为两次独立查询，提升性能）
+    /// 检查两个用户是否在同一家庭（使用 JOIN 单次查询）
     /// </summary>
     private async Task<bool> IsInSameFamilyAsync(Guid userId1, Guid userId2)
     {
-        var familyId = await _context.FamilyMembers
-            .Where(fm => fm.UserId == userId2)
-            .Select(fm => fm.FamilyId)
-            .FirstOrDefaultAsync();
-
-        if (familyId == Guid.Empty) return false;
-
         return await _context.FamilyMembers
-            .AnyAsync(fm => fm.UserId == userId1 && fm.FamilyId == familyId);
+            .Where(fm1 => fm1.UserId == userId1)
+            .AnyAsync(fm1 => _context.FamilyMembers
+                .Any(fm2 => fm2.UserId == userId2 && fm2.FamilyId == fm1.FamilyId));
     }
 
     /// <summary>

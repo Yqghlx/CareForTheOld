@@ -188,15 +188,15 @@ public class LocationService : ILocationService
     /// </summary>
     private async Task SendGeoFenceAlertAsync(Guid elderId, Guid fenceId, int fenceRadius, double distance)
     {
-        // 获取老人所在的家庭
+        // 获取老人所在的家庭（含用户信息，避免额外查询）
         var familyMember = await _context.FamilyMembers
+            .Include(fm => fm.User)
             .FirstOrDefaultAsync(fm => fm.UserId == elderId);
 
         if (familyMember == null) return; // 老人没有加入家庭，无法通知
 
-        // 获取老人姓名
-        var elder = await _context.Users.FindAsync(elderId);
-        var elderName = elder?.RealName ?? AppConstants.HealthTypeLabels.DefaultElderName;
+        // 从已加载的导航属性获取老人姓名
+        var elderName = familyMember.User?.RealName ?? AppConstants.HealthTypeLabels.DefaultElderName;
 
         // 获取家庭中的子女成员
         var children = await _context.FamilyMembers
