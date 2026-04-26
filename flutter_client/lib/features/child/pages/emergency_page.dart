@@ -214,7 +214,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                       const SizedBox(width: 4),
                       Text(
                         '${call.latitude!.toStringAsFixed(4)}, ${call.longitude!.toStringAsFixed(4)}',
-                        style: TextStyle(fontSize: 13, color: AppTheme.grey700),
+                        style: AppTheme.textCaption13Grey700,
                       ),
                     ],
                     if (call.hasLocation && call.batteryLevel != null)

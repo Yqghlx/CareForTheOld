@@ -77,6 +77,8 @@ class AppTheme {
   static const TextStyle textAxisLabel = TextStyle(fontSize: 14, color: grey800);
   static const TextStyle textError = TextStyle(color: errorColor);
   static const TextStyle textCaptionSmall = TextStyle(fontSize: 13);
+  static const TextStyle textCaption13Grey600 = TextStyle(fontSize: 13, color: grey600);
+  static const TextStyle textCaption13Grey700 = TextStyle(fontSize: 13, color: grey700);
   static const TextStyle textGrey = TextStyle(color: grey600);
   static const TextStyle textGreyLight = TextStyle(color: grey500);
   static const TextStyle textLogoTitle = TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: primaryColor);

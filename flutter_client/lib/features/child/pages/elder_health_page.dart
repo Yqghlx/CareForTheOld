@@ -1081,7 +1081,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       const SizedBox(height: 4),
                       Text(
                         '基于 ${anomaly.baseline.baselineDays} 天数据分析',
-                        style: const TextStyle(fontSize: 13, color: AppTheme.grey600),
+                        style: AppTheme.textCaption13Grey600,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -1348,7 +1348,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     ),
                     Text(
                       event.description,
-                      style: TextStyle(fontSize: 13, color: AppTheme.grey700),
+                      style: AppTheme.textCaption13Grey700,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
