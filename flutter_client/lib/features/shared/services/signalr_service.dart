@@ -21,6 +21,9 @@ class SignalRService {
   /// 心跳定时器（每 60 秒发送一次心跳）
   Timer? _heartbeatTimer;
 
+  /// 心跳连续失败计数，超过 3 次触发重连
+  int _heartbeatFailCount = 0;
+
   /// 从 AppConfig 读取 SignalR Hub URL
   static String get _hubUrl => AppConfig.current.signalrBaseUrl;
 
@@ -251,14 +254,21 @@ class SignalRService {
 
   /// 启动心跳定时器（每 60 秒发送一次心跳，保持后端感知在线状态）
   void _startHeartbeat() {
+    _heartbeatFailCount = 0;
     _heartbeatTimer?.cancel();
     _heartbeatTimer = Timer.periodic(AppTheme.duration60s, (_) async {
       if (_hubConnection != null && isConnected) {
         try {
           await _hubConnection!.invoke('Heartbeat');
-          debugPrint('[心跳] 已发送');
+          _heartbeatFailCount = 0;
         } catch (e) {
-          debugPrint('[心跳] 发送失败: $e');
+          _heartbeatFailCount++;
+          debugPrint('[心跳] 发送失败($_heartbeatFailCount): $e');
+          if (_heartbeatFailCount >= 3) {
+            debugPrint('[心跳] 连续失败 3 次，尝试重连');
+            _heartbeatFailCount = 0;
+            await connect();
+          }
         }
       }
     });

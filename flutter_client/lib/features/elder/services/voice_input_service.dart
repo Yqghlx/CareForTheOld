@@ -34,20 +34,25 @@ class VoiceInputService {
     if (!_isAvailable || _isListening) return false;
 
     _isListening = true;
-    await _speech.listen(
-      onResult: (result) {
-        onResult(result.recognizedWords, result.finalResult);
-      },
-      onSoundLevelChange: onSoundLevelChange,
-      localeId: 'zh_CN',
-      listenOptions: SpeechListenOptions(
-        listenMode: ListenMode.dictation,
-        cancelOnError: true,
-        partialResults: true,
-      ),
-    );
-    _isListening = false;
-    return true;
+    try {
+      await _speech.listen(
+        onResult: (result) {
+          onResult(result.recognizedWords, result.finalResult);
+        },
+        onSoundLevelChange: onSoundLevelChange,
+        localeId: 'zh_CN',
+        listenOptions: SpeechListenOptions(
+          listenMode: ListenMode.dictation,
+          cancelOnError: true,
+          partialResults: true,
+        ),
+      );
+      _isListening = false;
+      return true;
+    } catch (_) {
+      _isListening = false;
+      return false;
+    }
   }
 
   /// 停止语音识别
