@@ -32,12 +32,7 @@ public class NotificationService : INotificationService
     /// </summary>
     public async Task SendToUserAsync(Guid userId, string type, object data)
     {
-        // 解析通知数据
-        var dict = JsonSerializer.Deserialize<Dictionary<string, object>>(
-            JsonSerializer.Serialize(data));
-
-        var title = dict?.GetValueOrDefault("Title")?.ToString() ?? NotificationMessages.DefaultTitle;
-        var content = dict?.GetValueOrDefault("Content")?.ToString() ?? "";
+        var (title, content, payload) = ExtractNotificationData(data);
 
         // 写入通知记录（供用户查询历史通知）
         var record = new NotificationRecord
@@ -60,7 +55,7 @@ public class NotificationService : INotificationService
             Type = type,
             Title = title,
             Content = content,
-            Payload = JsonSerializer.Serialize(data),
+            Payload = payload,
             Status = OutboxStatus.Pending,
             CreatedAt = DateTime.UtcNow
         };
@@ -73,13 +68,8 @@ public class NotificationService : INotificationService
     /// <inheritdoc />
     public async Task SendToUsersAsync(IEnumerable<Guid> userIds, string type, object data)
     {
-        var dict = JsonSerializer.Deserialize<Dictionary<string, object>>(
-            JsonSerializer.Serialize(data));
-
-        var title = dict?.GetValueOrDefault("Title")?.ToString() ?? NotificationMessages.DefaultTitle;
-        var content = dict?.GetValueOrDefault("Content")?.ToString() ?? "";
+        var (title, content, payload) = ExtractNotificationData(data);
         var now = DateTime.UtcNow;
-        var payload = JsonSerializer.Serialize(data);
 
         foreach (var userId in userIds)
         {
@@ -183,5 +173,19 @@ public class NotificationService : INotificationService
         }
 
         await _context.SaveChangesAsync();
+    }
+
+    /// <summary>
+    /// 从匿名对象中提取通知标题、内容和完整 JSON 载荷
+    /// </summary>
+    private static (string title, string content, string payload) ExtractNotificationData(object data)
+    {
+        var dict = JsonSerializer.Deserialize<Dictionary<string, object>>(
+            JsonSerializer.Serialize(data));
+
+        var title = dict?.GetValueOrDefault("Title")?.ToString() ?? NotificationMessages.DefaultTitle;
+        var content = dict?.GetValueOrDefault("Content")?.ToString() ?? "";
+        var payload = JsonSerializer.Serialize(data);
+        return (title, content, payload);
     }
 }
