@@ -127,8 +127,8 @@ public class HealthService : IHealthService
     public async Task<List<HealthStatsResponse>> GetUserStatsAsync(Guid userId)
     {
         var now = DateTime.UtcNow;
-        var sevenDaysAgo = now.AddDays(-7);
-        var thirtyDaysAgo = now.AddDays(-30);
+        var sevenDaysAgo = now.AddDays(-AppConstants.HealthStatsDays.RecentDays);
+        var thirtyDaysAgo = now.AddDays(-AppConstants.HealthStatsDays.LongTermDays);
 
         // 第一步：获取每种类型的最新记录（一次查询，避免分组内重复排序）
         var latestRecords = await _context.HealthRecords
