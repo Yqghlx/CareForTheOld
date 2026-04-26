@@ -67,7 +67,7 @@ public class HealthAnomalyDetector
             .Where(r => r.Date >= DateTime.UtcNow.AddHours(timezoneOffsetHours).AddDays(-_options.BaselineDays))
             .ToList();
 
-        var baselineValue = baselinePeriod.Count > 0
+        var baselineValue = baselinePeriod.Any()
             ? baselinePeriod.Average(r => r.Value)
             : dailyRecords.TakeLast(_options.BaselineDays).Average(r => r.Value);
 
@@ -84,7 +84,7 @@ public class HealthAnomalyDetector
         response.Anomalies = DetectAnomalyEvents(dailyRecords, healthType, baselineValue);
 
         // 正向激励：数据平稳时给予积极反馈
-        if (response.Anomalies.Count == 0 && dailyRecords.Count >= _options.BaselineDays)
+        if (!response.Anomalies.Any() && dailyRecords.Count >= _options.BaselineDays)
         {
             response.PositiveFeedback = GeneratePositiveFeedback(healthType, baselineValue, recentDays);
         }
@@ -177,7 +177,7 @@ public class HealthAnomalyDetector
         List<(DateTime Date, double Value)> recentRecords,
         double baselineValue)
     {
-        if (recentRecords.Count == 0)
+        if (!recentRecords.Any())
         {
             return new RecentStatsSummary();
         }
@@ -192,7 +192,7 @@ public class HealthAnomalyDetector
         var secondHalf = recentRecords.Skip(recentRecords.Count / 2).ToList();
 
         string? trend = null;
-        if (firstHalf.Count > 0 && secondHalf.Count > 0)
+        if (firstHalf.Any() && secondHalf.Any())
         {
             var firstAvg = firstHalf.Average(r => r.Value);
             var secondAvg = secondHalf.Average(r => r.Value);

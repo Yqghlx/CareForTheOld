@@ -107,7 +107,7 @@ public class HealthReportService : IHealthReportService
             foreach (var type in AllHealthTypes)
             {
                 var typeRecords = records.Where(r => r.Type == type).ToList();
-                if (typeRecords.Count > 0)
+                if (typeRecords.Any())
                 {
                     column.Item().Element(element => CreateTypeSection(element, type, typeRecords));
                 }
@@ -158,7 +158,7 @@ public class HealthReportService : IHealthReportService
                 foreach (var type in AllHealthTypes)
                 {
                     var typeRecords = records.Where(r => r.Type == type).ToList();
-                    if (typeRecords.Count == 0) continue;
+                    if (!typeRecords.Any()) continue;
 
                     table.Cell().BorderBottom(0.5f).BorderColor(AppConstants.PdfColors.Border.TableCell).Padding(5).Text(type.GetLabel());
                     table.Cell().BorderBottom(0.5f).BorderColor(AppConstants.PdfColors.Border.TableCell).Padding(5).Text(typeRecords.Count.ToString());
@@ -344,7 +344,7 @@ public class HealthReportService : IHealthReportService
 
         // 血压建议
         var bpRecords = records.Where(r => r.Type == HealthType.BloodPressure).ToList();
-        if (bpRecords.Count > 0)
+        if (bpRecords.Any())
         {
             var avgSystolic = bpRecords.Average(r => r.Systolic ?? 0);
             if (avgSystolic > AppConstants.HealthThresholds.BloodPressureSystolicMax)
@@ -357,7 +357,7 @@ public class HealthReportService : IHealthReportService
 
         // 血糖建议
         var bsRecords = records.Where(r => r.Type == HealthType.BloodSugar).ToList();
-        if (bsRecords.Count > 0)
+        if (bsRecords.Any())
         {
             var avgBs = bsRecords.Average(r => r.BloodSugar ?? 0m);
             if (avgBs > AppConstants.HealthThresholds.BloodSugarMax)
@@ -370,7 +370,7 @@ public class HealthReportService : IHealthReportService
 
         // 心率建议
         var hrRecords = records.Where(r => r.Type == HealthType.HeartRate).ToList();
-        if (hrRecords.Count > 0)
+        if (hrRecords.Any())
         {
             var avgHr = hrRecords.Average(r => r.HeartRate ?? 0);
             if (avgHr > AppConstants.HealthThresholds.HeartRateMax)
@@ -383,7 +383,7 @@ public class HealthReportService : IHealthReportService
 
         // 体温建议
         var tempRecords = records.Where(r => r.Type == HealthType.Temperature).ToList();
-        if (tempRecords.Count > 0)
+        if (tempRecords.Any())
         {
             var avgTemp = tempRecords.Average(r => r.Temperature ?? 0m);
             if (avgTemp > AppConstants.HealthThresholds.TemperatureMax)
@@ -394,7 +394,7 @@ public class HealthReportService : IHealthReportService
                 suggestions.Add(HealthReportMessages.Suggestions.TemperatureNormal);
         }
 
-        if (suggestions.Count == 0)
+        if (!suggestions.Any())
             suggestions.Add(HealthReportMessages.Suggestions.NoData);
 
         return suggestions;
