@@ -28,6 +28,9 @@ public class AuthService : IAuthService
         _configuration = configuration;
     }
 
+    /// <summary>
+    /// 用户注册：检查手机号是否重复，使用 BCrypt 哈希密码后创建用户并返回令牌
+    /// </summary>
     public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
     {
         // 检查手机号是否已注册
@@ -54,6 +57,9 @@ public class AuthService : IAuthService
         return await GenerateAuthResponse(user);
     }
 
+    /// <summary>
+    /// 用户登录：验证手机号和密码，成功后返回访问令牌和刷新令牌
+    /// </summary>
     public async Task<AuthResponse> LoginAsync(LoginRequest request)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
@@ -68,6 +74,9 @@ public class AuthService : IAuthService
         return await GenerateAuthResponse(user);
     }
 
+    /// <summary>
+    /// 刷新令牌：验证刷新令牌有效性，支持 Token 轮换机制并检测重放攻击
+    /// </summary>
     public async Task<AuthResponse> RefreshTokenAsync(string token)
     {
         var refreshToken = await _context.RefreshTokens

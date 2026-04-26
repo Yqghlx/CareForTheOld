@@ -18,12 +18,21 @@ public class UserService : IUserService
         _logger = logger;
     }
 
+    /// <summary>
+    /// 获取当前用户信息
+    /// </summary>
     public async Task<UserResponse> GetCurrentUserAsync(Guid userId)
         => await MapToResponse(userId) ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
+    /// <summary>
+    /// 根据用户 ID 获取用户信息
+    /// </summary>
     public async Task<UserResponse> GetUserByIdAsync(Guid userId)
         => await MapToResponse(userId) ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
+    /// <summary>
+    /// 更新用户信息：支持修改昵称和头像 URL
+    /// </summary>
     public async Task<UserResponse> UpdateUserAsync(Guid userId, UpdateUserRequest request)
     {
         var user = await _context.Users.AsTracking().FirstOrDefaultAsync(u => u.Id == userId)
@@ -38,6 +47,9 @@ public class UserService : IUserService
         return await MapToResponse(userId) ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
     }
 
+    /// <summary>
+    /// 修改用户密码：需验证旧密码，验证通过后使用 BCrypt 哈希新密码并更新
+    /// </summary>
     public async Task<bool> ChangePasswordAsync(Guid userId, ChangePasswordRequest request)
     {
         var user = await _context.Users.AsTracking().FirstOrDefaultAsync(u => u.Id == userId)

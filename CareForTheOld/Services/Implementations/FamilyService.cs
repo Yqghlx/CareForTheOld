@@ -43,6 +43,9 @@ public class FamilyService : IFamilyService
         return await GetFamilyResponse(familyMember.FamilyId);
     }
 
+    /// <summary>
+    /// 创建家庭组（仅子女可创建，创建者自动加入）
+    /// </summary>
     public async Task<FamilyResponse> CreateFamilyAsync(Guid creatorId, CreateFamilyRequest request)
     {
         // 验证创建者角色：只有子女才能创建家庭组
@@ -89,6 +92,9 @@ public class FamilyService : IFamilyService
         return await GetFamilyResponse(family.Id);
     }
 
+    /// <summary>
+    /// 直接添加家庭成员（子女操作，被添加者默认通过审批）
+    /// </summary>
     public async Task<FamilyResponse> AddMemberAsync(Guid familyId, Guid operatorId, AddFamilyMemberRequest request)
     {
         await EnsureMemberAsync(familyId, operatorId);
@@ -308,6 +314,9 @@ public class FamilyService : IFamilyService
         return await GetFamilyResponse(familyId);
     }
 
+    /// <summary>
+    /// 获取家庭成员列表（仅返回已通过审批的成员）
+    /// </summary>
     public async Task<List<FamilyMemberResponse>> GetMembersAsync(Guid familyId)
     {
         // 只返回已通过审批的成员
@@ -326,6 +335,9 @@ public class FamilyService : IFamilyService
             .ToListAsync();
     }
 
+    /// <summary>
+    /// 移除家庭成员（仅家庭创建者可操作，不可移除自己）
+    /// </summary>
     public async Task RemoveMemberAsync(Guid familyId, Guid userId, Guid operatorId)
     {
         // 验证操作者是家庭创建者

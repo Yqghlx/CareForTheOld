@@ -26,6 +26,9 @@ public class NotificationService : INotificationService
         _context = context;
     }
 
+    /// <summary>
+    /// 向单个用户发送通知（Outbox Pattern 写入）
+    /// </summary>
     public async Task SendToUserAsync(Guid userId, string type, object data)
     {
         // 解析通知数据
@@ -107,12 +110,18 @@ public class NotificationService : INotificationService
         await _context.SaveChangesAsync();
     }
 
+    /// <summary>
+    /// 向家庭所有成员发送通知
+    /// </summary>
     public async Task SendToFamilyAsync(Guid familyId, string type, object data)
     {
         await _hubContext.Clients.Group($"family_{familyId}")
             .SendAsync("ReceiveNotification", type, data);
     }
 
+    /// <summary>
+    /// 获取用户通知列表（分页）
+    /// </summary>
     public async Task<List<NotificationResponse>> GetUserNotificationsAsync(Guid userId, int limit = 50)
     {
         limit = Math.Clamp(limit, 1, 100);
@@ -132,12 +141,18 @@ public class NotificationService : INotificationService
             .ToListAsync();
     }
 
+    /// <summary>
+    /// 获取用户未读通知数量
+    /// </summary>
     public async Task<int> GetUnreadCountAsync(Guid userId)
     {
         return await _context.NotificationRecords
             .CountAsync(n => n.UserId == userId && !n.IsRead);
     }
 
+    /// <summary>
+    /// 标记单条通知为已读
+    /// </summary>
     public async Task<bool> MarkAsReadAsync(Guid notificationId, Guid userId)
     {
         var notification = await _context.NotificationRecords
@@ -151,6 +166,9 @@ public class NotificationService : INotificationService
         return true;
     }
 
+    /// <summary>
+    /// 标记用户所有通知为已读
+    /// </summary>
     public async Task MarkAllAsReadAsync(Guid userId)
     {
         var unreadNotifications = await _context.NotificationRecords

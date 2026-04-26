@@ -25,6 +25,9 @@ public class MedicationService : IMedicationService
         _familyService = familyService;
     }
 
+    /// <summary>
+    /// 创建用药计划
+    /// </summary>
     public async Task<MedicationPlanResponse> CreatePlanAsync(Guid operatorId, CreateMedicationPlanRequest request)
     {
         // 验证老人是否存在
@@ -58,6 +61,9 @@ public class MedicationService : IMedicationService
         return MapToPlanResponse(plan, elder.RealName);
     }
 
+    /// <summary>
+    /// 获取老人的用药计划列表
+    /// </summary>
     public async Task<List<MedicationPlanResponse>> GetPlansByElderAsync(Guid elderId, Guid? operatorId = null)
     {
         // 如果提供了 operatorId，验证是否为家庭成员
@@ -74,6 +80,9 @@ public class MedicationService : IMedicationService
             .ToListAsync();
     }
 
+    /// <summary>
+    /// 更新用药计划
+    /// </summary>
     public async Task<MedicationPlanResponse> UpdatePlanAsync(Guid planId, Guid operatorId, UpdateMedicationPlanRequest request)
     {
         var plan = await _context.MedicationPlans
@@ -101,6 +110,9 @@ public class MedicationService : IMedicationService
         return MapToPlanResponse(plan, plan.Elder.RealName);
     }
 
+    /// <summary>
+    /// 软删除用药计划
+    /// </summary>
     public async Task DeletePlanAsync(Guid planId, Guid operatorId)
     {
         var plan = await _context.MedicationPlans.AsTracking().FirstOrDefaultAsync(p => p.Id == planId)
@@ -114,6 +126,9 @@ public class MedicationService : IMedicationService
         await _context.SaveChangesAsync();
     }
 
+    /// <summary>
+    /// 记录用药日志（含补录和二次提醒检查）
+    /// </summary>
     public async Task<MedicationLogResponse> RecordLogAsync(Guid operatorId, RecordMedicationLogRequest request)
     {
         var plan = await _context.MedicationPlans
@@ -172,6 +187,9 @@ public class MedicationService : IMedicationService
         return MapToLogResponse(log, plan.MedicineName, plan.Elder.RealName);
     }
 
+    /// <summary>
+    /// 获取用药日志列表
+    /// </summary>
     public async Task<List<MedicationLogResponse>> GetLogsAsync(Guid elderId, DateOnly? date, int skip = 0, int limit = 50, Guid? operatorId = null)
     {
         // 如果提供了 operatorId，验证是否为家庭成员
@@ -200,6 +218,9 @@ public class MedicationService : IMedicationService
             .ToListAsync();
     }
 
+    /// <summary>
+    /// 获取今日待服药列表
+    /// </summary>
     public async Task<List<MedicationLogResponse>> GetTodayPendingAsync(Guid elderId)
     {
         var today = DateOnly.FromDateTime(DateTime.UtcNow);

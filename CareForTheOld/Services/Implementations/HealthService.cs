@@ -26,6 +26,9 @@ public class HealthService : IHealthService
         _logger = logger;
     }
 
+    /// <summary>
+    /// 创建健康记录：包含数据验证和异常预警通知，异常时通过 Hangfire 异步推送
+    /// </summary>
     public async Task<HealthRecordResponse> CreateRecordAsync(Guid userId, CreateHealthRecordRequest request)
     {
         // 验证必填字段
@@ -83,6 +86,9 @@ public class HealthService : IHealthService
         }
     }
 
+    /// <summary>
+    /// 获取用户健康记录列表：支持按类型筛选和分页
+    /// </summary>
     public async Task<List<HealthRecordResponse>> GetUserRecordsAsync(Guid userId, HealthType? type, int skip = 0, int limit = 50)
     {
         var query = _context.HealthRecords
@@ -100,6 +106,9 @@ public class HealthService : IHealthService
             .ToListAsync();
     }
 
+    /// <summary>
+    /// 获取家庭成员的健康记录：需验证目标用户是否属于该家庭
+    /// </summary>
     public async Task<List<HealthRecordResponse>> GetFamilyMemberRecordsAsync(Guid familyId, Guid memberId, HealthType? type, int skip = 0, int limit = 50)
     {
         // 验证 memberId 是否属于该家庭
@@ -112,6 +121,9 @@ public class HealthService : IHealthService
         return await GetUserRecordsAsync(memberId, type, skip, limit);
     }
 
+    /// <summary>
+    /// 获取用户健康统计数据：包括每种类型的最新值、7天和30天均值
+    /// </summary>
     public async Task<List<HealthStatsResponse>> GetUserStatsAsync(Guid userId)
     {
         var now = DateTime.UtcNow;
@@ -192,6 +204,9 @@ public class HealthService : IHealthService
         return stats;
     }
 
+    /// <summary>
+    /// 软删除健康记录：标记为已删除并保留原始数据
+    /// </summary>
     public async Task DeleteRecordAsync(Guid userId, Guid recordId)
     {
         var record = await _context.HealthRecords
