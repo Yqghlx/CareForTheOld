@@ -238,7 +238,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                   if (_errorMessage != null)
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      padding: AppTheme.paddingH16V12,
                       margin: const EdgeInsets.only(bottom: 16),
                       decoration: BoxDecoration(
                         color: AppTheme.errorColor.withValues(alpha: 0.1),

@@ -77,7 +77,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
           // 未处理的紧急呼叫
           if (state.unreadCalls.isNotEmpty) ...[
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: AppTheme.paddingH16V8,
               decoration: BoxDecoration(
                 color: AppTheme.errorColor.withValues(alpha: 0.1),
                 borderRadius: AppTheme.radiusS,
@@ -388,9 +388,9 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
       final success = await ref.read(emergencyProvider.notifier).respondCall(call.id);
       if (mounted) {
         if (success) {
-          context.showSuccessSnackBar('已标记为处理');
+          context.showSuccessSnackBar(AppTheme.msgMarkHandled);
         } else {
-          context.showErrorSnackBar('操作失败');
+          context.showErrorSnackBar(AppTheme.msgOperationFailed);
         }
         // 处理后自动刷新列表，保持数据最新
         if (success) {

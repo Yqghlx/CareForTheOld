@@ -89,7 +89,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
               if (healthState.isFromCache)
                 Container(
                   margin: AppTheme.marginBottom12,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: AppTheme.paddingH16V8,
                   decoration: BoxDecoration(
                     color: AppTheme.warningColor.withValues(alpha: 0.1),
                     borderRadius: AppTheme.radius10,
@@ -218,7 +218,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
           ),
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: AppTheme.paddingH16V8,
             itemCount: stats.length,
             separatorBuilder: (_, __) => const SizedBox(width: 12),
             itemBuilder: (context, index) {
@@ -819,7 +819,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                             labelText: '收缩压（mmHg）',
                             hintText: '60-250',
                             border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            contentPadding: AppTheme.paddingH16V12,
                           ),
                           keyboardType: TextInputType.number,
                           style: AppTheme.textBody18,
@@ -837,7 +837,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                             labelText: '舒张压（mmHg）',
                             hintText: '40-150',
                             border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            contentPadding: AppTheme.paddingH16V12,
                           ),
                           keyboardType: TextInputType.number,
                           style: AppTheme.textBody18,
@@ -856,7 +856,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                             labelText: '血糖值（mmol/L）',
                             hintText: '1.0-35.0',
                             border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            contentPadding: AppTheme.paddingH16V12,
                           ),
                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
                           style: AppTheme.textBody18,
@@ -874,7 +874,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                             labelText: '心率（次/分）',
                             hintText: '30-200',
                             border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            contentPadding: AppTheme.paddingH16V12,
                           ),
                           keyboardType: TextInputType.number,
                           style: AppTheme.textBody18,
@@ -892,7 +892,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                             labelText: '体温（°C）',
                             hintText: '35.0-42.0',
                             border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            contentPadding: AppTheme.paddingH16V12,
                           ),
                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
                           style: AppTheme.textBody18,
@@ -909,7 +909,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                         decoration: const InputDecoration(
                           labelText: '备注（可选）',
                           border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          contentPadding: AppTheme.paddingH16V12,
                         ),
                         maxLines: 2,
                         style: AppTheme.textBody16,

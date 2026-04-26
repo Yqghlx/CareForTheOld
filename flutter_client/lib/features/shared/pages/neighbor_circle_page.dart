@@ -85,7 +85,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                   if (circle.inviteCode.isNotEmpty) ...[
                     const SizedBox(height: 8),
                     Container(
-                      padding: const EdgeInsets.all(8),
+                      padding: AppTheme.paddingAll8,
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.primaryContainer,
                         borderRadius: AppTheme.radiusXS,

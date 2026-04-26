@@ -222,7 +222,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
       if (success) {
         context.showSuccessSnackBar('已通过 ${member.realName} 的加入申请');
       } else {
-        context.showErrorSnackBar('操作失败');
+        context.showErrorSnackBar(AppTheme.msgOperationFailed);
       }
     }
   }
@@ -255,7 +255,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
       if (success) {
         context.showSuccessSnackBar('已拒绝申请');
       } else {
-        context.showErrorSnackBar('操作失败');
+        context.showErrorSnackBar(AppTheme.msgOperationFailed);
       }
     }
   }

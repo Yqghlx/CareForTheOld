@@ -450,7 +450,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         decoration: const InputDecoration(
                           labelText: '选择老人',
                           border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          contentPadding: AppTheme.paddingH16V8,
                         ),
                         items: elders
                             .map((e) => DropdownMenuItem(
@@ -472,7 +472,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         decoration: const InputDecoration(
                           labelText: '药品名称',
                           border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          contentPadding: AppTheme.paddingH16V12,
                         ),
                         style: AppTheme.textBody16,
                       ),
@@ -488,7 +488,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         decoration: const InputDecoration(
                           labelText: '剂量（如：100mg）',
                           border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          contentPadding: AppTheme.paddingH16V12,
                         ),
                         style: AppTheme.textBody16,
                       ),
@@ -505,7 +505,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         decoration: const InputDecoration(
                           labelText: '用药频率',
                           border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          contentPadding: AppTheme.paddingH16V8,
                         ),
                         items: Frequency.values
                             .map((f) => DropdownMenuItem(
@@ -557,7 +557,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                                   }
                                 },
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                  padding: AppTheme.paddingH16V12,
                                   decoration: BoxDecoration(
                                     color: AppTheme.grey50,
                                     borderRadius: AppTheme.radiusS,

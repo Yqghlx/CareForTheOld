@@ -386,7 +386,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
             if (_isLongPressing)
               Positioned.fill(
                 child: Padding(
-                  padding: const EdgeInsets.all(8),
+                  padding: AppTheme.paddingAll8,
                   child: CircularProgressIndicator(
                     value: _longPressProgress,
                     strokeWidth: 6,

@@ -7,6 +7,7 @@ import '../../main.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../config/app_config.dart';
 import '../constants/api_endpoints.dart';
+import '../theme/app_theme.dart';
 
 /// API 客户端配置
 class ApiClient {
@@ -76,10 +77,10 @@ class ApiClient {
           final results = await Connectivity().checkConnectivity();
           final isOnline = results.any((r) => r != ConnectivityResult.none);
           if (!isOnline) {
-            showGlobalSnackBar('网络未连接，请检查网络设置');
+            showGlobalSnackBar(AppTheme.msgNetworkError);
             return handler.reject(DioException(
               requestOptions: options,
-              error: '网络未连接，请检查网络设置',
+              error: AppTheme.msgNetworkError,
               type: DioExceptionType.connectionError,
             ));
           }

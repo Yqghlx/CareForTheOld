@@ -634,7 +634,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 } catch (e) {
                   setDialogState(() => isSubmitting = false);
                   if (mounted && context.mounted) {
-                    context.showErrorSnackBar('更新失败，请稍后重试');
+                    context.showErrorSnackBar(AppTheme.msgOperationFailed);
                   }
                 }
               },
@@ -669,7 +669,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       }
     } catch (e) {
       if (mounted) {
-        context.showErrorSnackBar('操作失败，请稍后重试');
+        context.showErrorSnackBar(AppTheme.msgOperationFailed);
       }
     }
   }
@@ -693,7 +693,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       }
     } catch (e) {
       if (mounted) {
-        context.showErrorSnackBar('删除失败，请稍后重试');
+        context.showErrorSnackBar(AppTheme.msgOperationFailed);
       }
     }
   }
@@ -1002,9 +1002,9 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     if (mounted && context.mounted) {
       Navigator.pop(context);
       if (success) {
-        context.showSuccessSnackBar('报告已生成，请选择分享方式');
+        context.showSuccessSnackBar(AppTheme.msgReportGenerated);
       } else {
-        context.showErrorSnackBar('导出失败，请稍后重试');
+        context.showErrorSnackBar(AppTheme.msgOperationFailed);
       }
     }
   }
