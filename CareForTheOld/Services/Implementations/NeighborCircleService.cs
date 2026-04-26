@@ -7,6 +7,7 @@ using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace CareForTheOld.Services.Implementations;
 
@@ -16,11 +17,16 @@ namespace CareForTheOld.Services.Implementations;
 public class NeighborCircleService : INeighborCircleService
 {
     private readonly AppDbContext _context;
+    private readonly ILogger<NeighborCircleService> _logger;
 
     /// <summary>邀请码有效期</summary>
     private static readonly TimeSpan _inviteCodeExpiration = TimeSpan.FromDays(AppConstants.InviteCode.ExpirationDays);
 
-    public NeighborCircleService(AppDbContext context) => _context = context;
+    public NeighborCircleService(AppDbContext context, ILogger<NeighborCircleService> logger)
+    {
+        _context = context;
+        _logger = logger;
+    }
 
     /// <inheritdoc />
     public async Task<NeighborCircleResponse> CreateCircleAsync(Guid creatorId, CreateNeighborCircleRequest request)

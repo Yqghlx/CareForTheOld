@@ -27,6 +27,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
+  final _birthDateController = TextEditingController();
   UserRole _selectedRole = UserRole.elder;
   DateTime? _selectedBirthDate;
   final _formKey = GlobalKey<FormState>();
@@ -38,6 +39,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     _phoneController.dispose();
     _passwordController.dispose();
     _nameController.dispose();
+    _birthDateController.dispose();
     super.dispose();
   }
 
@@ -156,7 +158,10 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                       locale: const Locale('zh', 'CN'),
                     );
                     if (picked != null && mounted) {
-                      setState(() => _selectedBirthDate = picked);
+                      setState(() {
+                        _selectedBirthDate = picked;
+                        _birthDateController.text = '${picked.year}年${picked.month}月${picked.day}日';
+                      });
                     }
                   },
                   child: AbsorbPointer(
@@ -169,11 +174,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                             : null,
                         hintText: '点击选择出生日期',
                       ),
-                      controller: TextEditingController(
-                        text: _selectedBirthDate != null
-                            ? '${_selectedBirthDate!.year}年${_selectedBirthDate!.month}月${_selectedBirthDate!.day}日'
-                            : '',
-                      ),
+                      controller: _birthDateController,
                     ),
                   ),
                 ),

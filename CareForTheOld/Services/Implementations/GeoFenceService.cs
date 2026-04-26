@@ -6,6 +6,7 @@ using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace CareForTheOld.Services.Implementations;
 
@@ -21,6 +22,7 @@ public class GeoFenceService : IGeoFenceService
     private readonly AppDbContext _context;
     private readonly ICacheService _cacheService;
     private readonly IFamilyService _familyService;
+    private readonly ILogger<GeoFenceService> _logger;
 
     /// <summary>
     /// 围栏缓存 key 前缀（格式：geofence:{elderId}）
@@ -32,11 +34,12 @@ public class GeoFenceService : IGeoFenceService
     /// </summary>
     private static readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(AppConstants.Cache.GeoFenceExpirationMinutes);
 
-    public GeoFenceService(AppDbContext context, ICacheService cacheService, IFamilyService familyService)
+    public GeoFenceService(AppDbContext context, ICacheService cacheService, IFamilyService familyService, ILogger<GeoFenceService> logger)
     {
         _context = context;
         _cacheService = cacheService;
         _familyService = familyService;
+        _logger = logger;
     }
 
     /// <summary>
