@@ -90,6 +90,13 @@ class AppTheme {
     end: Alignment.bottomRight,
   );
 
+  /// 登录页渐变背景（暖白 → 纯白）
+  static const LinearGradient warmBackgroundGradient = LinearGradient(
+    colors: [Color(0xFFFFF5F0), Color(0xFFFFFFFF)],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+  );
+
   /// 卡片圆角
   static const double cardRadius = 16.0;
   static const double cardRadiusLarge = 20.0;

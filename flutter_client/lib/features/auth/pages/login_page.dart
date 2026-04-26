@@ -107,11 +107,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
       body: Container(
         // 渐变背景
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFFFFF5F0), Color(0xFFFFFFFF)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+          gradient: AppTheme.warmBackgroundGradient,
         ),
         child: SafeArea(
           child: SingleChildScrollView(

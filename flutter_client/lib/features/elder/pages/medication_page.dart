@@ -236,8 +236,8 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: [
-                                Color(0xFF66BB6A),
-                                Color(0xFFA5D6A7),
+                                AppTheme.successMedium,
+                                AppTheme.successLight,
                               ],
                             )
                           : null,
