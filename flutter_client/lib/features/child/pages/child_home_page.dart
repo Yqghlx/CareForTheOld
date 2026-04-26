@@ -1,3 +1,4 @@
+import '../../../core/router/route_paths.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -54,7 +55,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
             children: [
               IconButton(
                 icon: const Icon(Icons.emergency),
-                onPressed: () => context.push('/child/emergency'),
+                onPressed: () => context.push(RoutePaths.childEmergency),
                 tooltip: '紧急呼叫',
               ),
               if (emergencyState.hasUnreadCalls)
@@ -78,7 +79,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
               IconButton(
                 icon: const Icon(Icons.notifications),
                 tooltip: '通知',
-                onPressed: () => context.push('/notifications'),
+                onPressed: () => context.push(RoutePaths.notifications),
               ),
               // 未读通知红点
               Positioned(
@@ -104,7 +105,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
           IconButton(
             icon: const Icon(Icons.settings),
             tooltip: '设置',
-            onPressed: () => context.push('/settings'),
+            onPressed: () => context.push(RoutePaths.settings),
           ),
         ],
       ),
@@ -116,7 +117,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
             // 紧急呼叫提示（如果有未处理呼叫）- 循环脉冲动画
             if (emergencyState.hasUnreadCalls)
               _EmergencyPulseBanner(
-                onTap: () => context.push('/child/emergency'),
+                onTap: () => context.push(RoutePaths.childEmergency),
                 unreadCount: emergencyState.unreadCount,
               ),
 
@@ -194,7 +195,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                   child: PrimaryIconButton(
                     text: '管理家庭成员',
                     icon: Icons.people,
-                    onPressed: () => context.push('/child/family'),
+                    onPressed: () => context.push(RoutePaths.childFamily),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -217,7 +218,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                   child: PrimaryIconButton(
                     text: '邻里圈',
                     icon: Icons.diversity_3,
-                    onPressed: () => context.push('/neighbor-circle'),
+                    onPressed: () => context.push(RoutePaths.neighborCircle),
                     gradient: const LinearGradient(
                       colors: [Colors.teal, Colors.cyan],
                     ),
@@ -268,7 +269,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
             const SizedBox(height: 12),
             PrimaryButton(
               text: '添加家庭成员',
-              onPressed: () => context.push('/child/family'),
+              onPressed: () => context.push(RoutePaths.childFamily),
             ),
           ],
         ),

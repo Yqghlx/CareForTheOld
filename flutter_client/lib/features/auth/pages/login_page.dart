@@ -1,3 +1,4 @@
+import '../../../core/router/route_paths.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -84,9 +85,9 @@ class _LoginPageState extends ConsumerState<LoginPage>
 
       if (!mounted) return;
       if (user.role.isElder) {
-        context.go('/elder/home');
+        context.go(RoutePaths.elderHome);
       } else {
-        context.go('/child/home');
+        context.go(RoutePaths.childHome);
       }
     } on DioException catch (e) {
       debugPrint('登录异常: $e');

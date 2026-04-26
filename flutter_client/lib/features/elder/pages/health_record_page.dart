@@ -1,3 +1,4 @@
+import '../../../core/router/route_paths.dart';
 import 'dart:async';
 import 'dart:io';
 
@@ -58,7 +59,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.show_chart),
-            onPressed: () => context.push('/elder/health/trend'),
+            onPressed: () => context.push(RoutePaths.elderHealthTrend),
             tooltip: '查看趋势',
           ),
         ],

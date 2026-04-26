@@ -229,10 +229,10 @@ public class HealthAlertService : IHealthAlertService
     {
         return record.Type switch
         {
-            HealthType.BloodPressure => $"{record.Systolic}/{record.Diastolic} mmHg",
-            HealthType.BloodSugar => $"{record.BloodSugar} mmol/L",
-            HealthType.HeartRate => $"{record.HeartRate} 次/分",
-            HealthType.Temperature => $"{record.Temperature} °C",
+            HealthType.BloodPressure => $"{record.Systolic}/{record.Diastolic} {AppConstants.HealthUnits.BloodPressure}",
+            HealthType.BloodSugar => $"{record.BloodSugar} {AppConstants.HealthUnits.BloodSugar}",
+            HealthType.HeartRate => $"{record.HeartRate} {AppConstants.HealthUnits.HeartRate}",
+            HealthType.Temperature => $"{record.Temperature} {AppConstants.HealthUnits.Temperature}",
             _ => ""
         };
     }

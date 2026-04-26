@@ -7,6 +7,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CareForTheOld.Services.Implementations;
 
+/// <summary>
+/// 用户管理服务
+/// 提供用户信息查询、更新、密码修改、头像管理、权限验证等功能
+/// </summary>
 public class UserService : IUserService
 {
     private readonly AppDbContext _context;

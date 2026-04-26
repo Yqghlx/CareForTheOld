@@ -1,3 +1,4 @@
+import '../../../core/router/route_paths.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -75,7 +76,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                 IconButton(
                   icon: const Icon(Icons.notifications),
                   tooltip: '通知',
-                  onPressed: () => context.push('/notifications'),
+                  onPressed: () => context.push(RoutePaths.notifications),
                 ),
                 // 未读通知红点
                 Positioned(
@@ -101,7 +102,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
             IconButton(
               icon: const Icon(Icons.settings),
               tooltip: '设置',
-              onPressed: () => context.push('/settings'),
+              onPressed: () => context.push(RoutePaths.settings),
             ),
           ],
         ),
@@ -307,14 +308,14 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                 title: '家庭成员',
                 subtitle: '查看家人信息',
                 color: AppTheme.successColor,
-                onTap: () => context.push('/elder/family'),
+                onTap: () => context.push(RoutePaths.elderFamily),
               ),
               AnimatedQuickCard(
                 icon: Icons.diversity_3,
                 title: '邻里圈',
                 subtitle: '附近邻居互助',
                 color: Colors.teal,
-                onTap: () => context.push('/neighbor-circle'),
+                onTap: () => context.push(RoutePaths.neighborCircle),
               ),
               AnimatedQuickCard(
                 icon: Icons.volunteer_activism,
@@ -328,7 +329,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                 title: '设置',
                 subtitle: '个人信息设置',
                 color: AppTheme.grey500,
-                onTap: () => context.push('/settings'),
+                onTap: () => context.push(RoutePaths.settings),
               ),
             ],
           ),

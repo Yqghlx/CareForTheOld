@@ -1,3 +1,4 @@
+import '../../../core/router/route_paths.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -639,7 +640,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   ref.invalidate(notificationListProvider);
                   // 登出并跳转登录页
                   ref.read(authProvider.notifier).logout();
-                  context.go('/login');
+                  context.go(RoutePaths.login);
                 } else {
                   context.showErrorSnackBar('修改失败: ${ref.read(userProvider).error ?? "旧密码不正确"}');
                 }
@@ -792,7 +793,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               ref.invalidate(notificationListProvider);
               // 执行登出（清除认证状态和 SignalR 连接）
               ref.read(authProvider.notifier).logout();
-              context.go('/login');
+              context.go(RoutePaths.login);
             },
             gradient: const LinearGradient(
               colors: [AppTheme.errorColor, AppTheme.errorAccent],

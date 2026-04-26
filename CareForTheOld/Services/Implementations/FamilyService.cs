@@ -10,6 +10,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CareForTheOld.Services.Implementations;
 
+/// <summary>
+/// 家庭组管理服务
+/// 提供家庭组创建、成员管理、邀请码、审批流程等功能
+/// </summary>
 public class FamilyService : IFamilyService
 {
     private readonly AppDbContext _context;

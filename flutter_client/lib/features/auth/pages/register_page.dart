@@ -1,3 +1,4 @@
+import '../../../core/router/route_paths.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -70,9 +71,9 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       // 根据角色跳转
       if (!mounted) return;
       if (user.role.isElder) {
-        context.go('/elder/home');
+        context.go(RoutePaths.elderHome);
       } else {
-        context.go('/child/home');
+        context.go(RoutePaths.childHome);
       }
     } on DioException catch (e) {
       final msg = e.toDisplayMessage(fallback: '注册失败，请检查输入信息');
@@ -228,7 +229,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
 
                 // 返回登录
                 TextButton(
-                  onPressed: () => context.go('/login'),
+                  onPressed: () => context.go(RoutePaths.login),
                   child: const Text('已有账号？点击登录'),
                 ),
               ],

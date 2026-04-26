@@ -337,4 +337,23 @@ public static class AppConstants
         /// <summary>体温严重偏低阈值（°C）— 低体温症</summary>
         public const decimal TemperatureCriticalLow = 35.0m;
     }
+
+    /// <summary>
+    /// 健康指标单位常量
+    /// 集中管理健康数据展示所需的单位字符串
+    /// </summary>
+    public static class HealthUnits
+    {
+        /// <summary>血压单位（毫米汞柱）</summary>
+        public const string BloodPressure = "mmHg";
+
+        /// <summary>血糖单位（毫摩尔/升）</summary>
+        public const string BloodSugar = "mmol/L";
+
+        /// <summary>心率单位（次/分钟）</summary>
+        public const string HeartRate = "次/分";
+
+        /// <summary>体温单位（摄氏度）</summary>
+        public const string Temperature = "°C";
+    }
 }

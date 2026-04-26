@@ -273,25 +273,25 @@ public class HealthReportService : IHealthReportService
                 var systolicAvg = records.Average(r => r.Systolic ?? 0);
                 var systolicMax = records.Max(r => r.Systolic ?? 0);
                 var systolicMin = records.Min(r => r.Systolic ?? 0);
-                return ($"{systolicAvg:F0} mmHg", $"{systolicMax} mmHg", $"{systolicMin} mmHg");
+                return ($"{systolicAvg:F0} {AppConstants.HealthUnits.BloodPressure}", $"{systolicMax} {AppConstants.HealthUnits.BloodPressure}", $"{systolicMin} {AppConstants.HealthUnits.BloodPressure}");
 
             case HealthType.BloodSugar:
                 var bsAvg = records.Average(r => r.BloodSugar ?? 0);
                 var bsMax = records.Max(r => r.BloodSugar ?? 0m);
                 var bsMin = records.Min(r => r.BloodSugar ?? 0m);
-                return ($"{bsAvg:F1} mmol/L", $"{bsMax:F1} mmol/L", $"{bsMin:F1} mmol/L");
+                return ($"{bsAvg:F1} {AppConstants.HealthUnits.BloodSugar}", $"{bsMax:F1} {AppConstants.HealthUnits.BloodSugar}", $"{bsMin:F1} {AppConstants.HealthUnits.BloodSugar}");
 
             case HealthType.HeartRate:
                 var hrAvg = records.Average(r => r.HeartRate ?? 0);
                 var hrMax = records.Max(r => r.HeartRate ?? 0);
                 var hrMin = records.Min(r => r.HeartRate ?? 0);
-                return ($"{hrAvg:F0} 次/分", $"{hrMax} 次/分", $"{hrMin} 次/分");
+                return ($"{hrAvg:F0} {AppConstants.HealthUnits.HeartRate}", $"{hrMax} {AppConstants.HealthUnits.HeartRate}", $"{hrMin} {AppConstants.HealthUnits.HeartRate}");
 
             case HealthType.Temperature:
                 var tempAvg = records.Average(r => r.Temperature ?? 0m);
                 var tempMax = records.Max(r => r.Temperature ?? 0m);
                 var tempMin = records.Min(r => r.Temperature ?? 0m);
-                return ($"{tempAvg:F1} °C", $"{tempMax:F1} °C", $"{tempMin:F1} °C");
+                return ($"{tempAvg:F1} {AppConstants.HealthUnits.Temperature}", $"{tempMax:F1} {AppConstants.HealthUnits.Temperature}", $"{tempMin:F1} {AppConstants.HealthUnits.Temperature}");
 
             default:
                 return ("-", "-", "-");
@@ -320,10 +320,10 @@ public class HealthReportService : IHealthReportService
     {
         return type switch
         {
-            HealthType.BloodPressure => $"{record.Systolic}/{record.Diastolic} mmHg",
-            HealthType.BloodSugar => $"{record.BloodSugar:F1} mmol/L",
-            HealthType.HeartRate => $"{record.HeartRate} 次/分",
-            HealthType.Temperature => $"{record.Temperature:F1} °C",
+            HealthType.BloodPressure => $"{record.Systolic}/{record.Diastolic} {AppConstants.HealthUnits.BloodPressure}",
+            HealthType.BloodSugar => $"{record.BloodSugar:F1} {AppConstants.HealthUnits.BloodSugar}",
+            HealthType.HeartRate => $"{record.HeartRate} {AppConstants.HealthUnits.HeartRate}",
+            HealthType.Temperature => $"{record.Temperature:F1} {AppConstants.HealthUnits.Temperature}",
             _ => "-"
         };
     }
