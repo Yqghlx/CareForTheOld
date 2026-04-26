@@ -60,7 +60,7 @@ public class HealthAlertService : IHealthAlertService
         var elderName = elder?.RealName ?? AppConstants.HealthTypeLabels.DefaultElderName;
 
         // 构建通知内容
-        var typeLabel = GetTypeLabel(record.Type);
+        var typeLabel = record.Type.GetLabel();
         var valueDisplay = GetDisplayValue(record);
 
         if (children.Count > 0)
@@ -71,7 +71,7 @@ public class HealthAlertService : IHealthAlertService
                 new
                 {
                     Title = NotificationMessages.Health.AnomalyAlertTitle,
-                    Content = $"{elderName}的{typeLabel}数据异常：{valueDisplay}。{alertMessage}请及时关注。",
+                    Content = string.Format(NotificationMessages.Health.AnomalyAlertContentTemplate, elderName, typeLabel, valueDisplay, alertMessage),
                     ElderId = elderId,
                     ElderName = elderName,
                     HealthType = record.Type,
@@ -205,21 +205,6 @@ public class HealthAlertService : IHealthAlertService
         }
 
         return null;
-    }
-
-    /// <summary>
-    /// 获取健康类型显示名称
-    /// </summary>
-    private static string GetTypeLabel(HealthType type)
-    {
-        return type switch
-        {
-            HealthType.BloodPressure => AppConstants.HealthTypeLabels.BloodPressure,
-            HealthType.BloodSugar => AppConstants.HealthTypeLabels.BloodSugar,
-            HealthType.HeartRate => AppConstants.HealthTypeLabels.HeartRate,
-            HealthType.Temperature => AppConstants.HealthTypeLabels.Temperature,
-            _ => type.ToString()
-        };
     }
 
     /// <summary>

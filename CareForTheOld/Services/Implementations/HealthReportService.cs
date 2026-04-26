@@ -159,7 +159,7 @@ public class HealthReportService : IHealthReportService
                     var typeRecords = records.Where(r => r.Type == type).ToList();
                     if (typeRecords.Count == 0) continue;
 
-                    table.Cell().BorderBottom(0.5f).BorderColor(AppConstants.PdfColors.Border.TableCell).Padding(5).Text(GetTypeLabel(type));
+                    table.Cell().BorderBottom(0.5f).BorderColor(AppConstants.PdfColors.Border.TableCell).Padding(5).Text(type.GetLabel());
                     table.Cell().BorderBottom(0.5f).BorderColor(AppConstants.PdfColors.Border.TableCell).Padding(5).Text(typeRecords.Count.ToString());
 
                     var (avg, max, min) = CalculateStats(type, typeRecords);
@@ -184,7 +184,7 @@ public class HealthReportService : IHealthReportService
         {
             column.Spacing(5);
 
-            column.Item().PaddingTop(10).Text($"{GetTypeLabel(type)}{HealthReportMessages.DetailRecordsSuffix}")
+            column.Item().PaddingTop(10).Text($"{type.GetLabel()}{HealthReportMessages.DetailRecordsSuffix}")
                 .FontSize(16).Bold().FontColor(typeColor);
 
             column.Item().LineHorizontal(0.5f).LineColor(AppConstants.PdfColors.Border.Divider);
@@ -296,21 +296,6 @@ public class HealthReportService : IHealthReportService
             default:
                 return ("-", "-", "-");
         }
-    }
-
-    /// <summary>
-    /// 获取类型标签
-    /// </summary>
-    private static string GetTypeLabel(HealthType type)
-    {
-        return type switch
-        {
-            HealthType.BloodPressure => AppConstants.HealthTypeLabels.BloodPressure,
-            HealthType.BloodSugar => AppConstants.HealthTypeLabels.BloodSugar,
-            HealthType.HeartRate => AppConstants.HealthTypeLabels.HeartRate,
-            HealthType.Temperature => AppConstants.HealthTypeLabels.Temperature,
-            _ => type.ToString()
-        };
     }
 
     /// <summary>

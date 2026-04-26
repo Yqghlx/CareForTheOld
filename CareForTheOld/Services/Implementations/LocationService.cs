@@ -217,7 +217,7 @@ public class LocationService : ILocationService
             new
             {
                 Title = NotificationMessages.Location.GeoFenceAlertTitle,
-                Content = $"{elderName}已离开安全区域，当前位置距离安全中心{distanceText}，请及时关注。",
+                Content = string.Format(NotificationMessages.Location.GeoFenceAlertContentTemplate, elderName, distanceText),
                 ElderId = elderId,
                 ElderName = elderName,
                 FenceId = fenceId,

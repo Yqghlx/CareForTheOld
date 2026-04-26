@@ -294,7 +294,7 @@ public class FamilyService : IFamilyService
         await _notificationService.SendToUserAsync(memberId, "FamilyJoinRejected", new
         {
             Title = NotificationMessages.Family.JoinRejectedTitle,
-            Content = string.Format(NotificationMessages.Family.JoinRejectedContentTemplate, family?.FamilyName ?? "家庭组"),
+            Content = string.Format(NotificationMessages.Family.JoinRejectedContentTemplate, family?.FamilyName ?? NotificationMessages.Family.DefaultFamilyName),
             FamilyId = familyId,
             FamilyName = family?.FamilyName ?? ""
         });

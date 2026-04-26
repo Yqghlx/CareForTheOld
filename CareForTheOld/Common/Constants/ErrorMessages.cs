@@ -575,6 +575,9 @@ public static class NotificationMessages
     {
         /// <summary>安全区域预警标题</summary>
         public const string GeoFenceAlertTitle = "安全区域预警";
+
+        /// <summary>围栏越界内容模板（占位符：老人姓名、距离描述）</summary>
+        public const string GeoFenceAlertContentTemplate = "{0}已离开安全区域，当前位置距离安全中心{1}，请及时关注。";
     }
 
     /// <summary>健康相关通知</summary>
@@ -582,6 +585,9 @@ public static class NotificationMessages
     {
         /// <summary>健康异常预警标题</summary>
         public const string AnomalyAlertTitle = "健康异常预警";
+
+        /// <summary>健康异常预警内容模板（占位符：老人姓名、类型标签、数值展示、预警消息）</summary>
+        public const string AnomalyAlertContentTemplate = "{0}的{1}数据异常：{2}。{3}请及时关注。";
     }
 
     /// <summary>自动救援相关通知</summary>
