@@ -665,4 +665,13 @@ public static class AppConstants
         /// <summary>iOS 平台标识</summary>
         public const string IOS = "ios";
     }
+
+    /// <summary>
+    /// Android 通知渠道常量
+    /// </summary>
+    public static class NotificationChannels
+    {
+        /// <summary>紧急呼叫通知渠道</summary>
+        public const string Emergency = "emergency";
+    }
 }

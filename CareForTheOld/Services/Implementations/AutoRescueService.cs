@@ -125,16 +125,30 @@ public class AutoRescueService : IAutoRescueService
 
         if (!pendingRecords.Any()) return;
 
+        // 批量预加载所有涉及的家庭子女 ID（避免循环内 N+1 查询）
+        var familyIds = pendingRecords.Select(r => r.FamilyId).Distinct().ToList();
+        var childIdsByFamily = await context.FamilyMembers
+            .Where(fm => familyIds.Contains(fm.FamilyId) && fm.Role == UserRole.Child)
+            .GroupBy(fm => fm.FamilyId)
+            .ToDictionaryAsync(g => g.Key, g => g.Select(fm => fm.UserId).ToList());
+
+        // 批量预加载所有涉及的通知记录（避免循环内逐条查询）
+        var allChildIds = childIdsByFamily.Values.SelectMany(ids => ids).Distinct().ToList();
+        var earliestTriggeredAt = pendingRecords.Min(r => r.TriggeredAt);
+        var readNotificationUserIds = await context.NotificationRecords
+            .Where(n => n.Type == AppConstants.NotificationTypes.AutoRescueAlert &&
+                        allChildIds.Contains(n.UserId) &&
+                        n.CreatedAt >= earliestTriggeredAt &&
+                        n.IsRead)
+            .Select(n => n.UserId)
+            .Distinct()
+            .ToListAsync();
+
         foreach (var record in pendingRecords)
         {
-            var childIds = await GetChildUserIdsAsync(context, record.FamilyId);
+            var childIds = childIdsByFamily.GetValueOrDefault(record.FamilyId, []);
 
-            var anyChildRead = await context.NotificationRecords
-                .Where(n => n.Type == AppConstants.NotificationTypes.AutoRescueAlert &&
-                            childIds.Contains(n.UserId) &&
-                            n.CreatedAt >= record.TriggeredAt &&
-                            n.IsRead)
-                .AnyAsync();
+            var anyChildRead = childIds.Any(id => readNotificationUserIds.Contains(id));
 
             if (anyChildRead)
             {

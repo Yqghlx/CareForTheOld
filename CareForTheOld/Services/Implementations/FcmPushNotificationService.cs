@@ -86,7 +86,7 @@ public class FcmPushNotificationService : IPushNotificationService
                     Priority = Priority.High,
                     Notification = new AndroidNotification
                     {
-                        ChannelId = "emergency",
+                        ChannelId = AppConstants.NotificationChannels.Emergency,
                         Priority = NotificationPriority.HIGH,
                         DefaultSound = true,
                         // 锁屏可见
