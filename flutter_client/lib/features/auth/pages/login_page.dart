@@ -187,7 +187,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                       ),
                       keyboardType: TextInputType.phone,
-                      style: const TextStyle(fontSize: 18),
+                      style: AppTheme.textBody18,
                       validator: FormValidators.phone,
                     ),
                   ),
@@ -223,7 +223,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                         ),
                       ),
                       obscureText: _obscurePassword,
-                      style: const TextStyle(fontSize: 18),
+                      style: AppTheme.textBody18,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return '请输入密码';

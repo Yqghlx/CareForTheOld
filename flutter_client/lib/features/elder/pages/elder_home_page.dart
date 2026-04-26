@@ -585,7 +585,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
           children: [
             const Text(
               '您的紧急呼叫已成功发送，已通知家人和附近邻居。',
-              style: TextStyle(fontSize: 16),
+              style: AppTheme.textBody16,
             ),
             const SizedBox(height: 12),
             Text(
@@ -630,12 +630,12 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
             ),
             ListTile(
               leading: const Icon(Icons.photo_library, color: AppTheme.primaryColor),
-              title: const Text('从相册选择', style: TextStyle(fontSize: 18)),
+              title: const Text('从相册选择', style: AppTheme.textBody18),
               onTap: () => Navigator.pop(ctx, ImageSource.gallery),
             ),
             ListTile(
               leading: const Icon(Icons.camera_alt, color: AppTheme.primaryColor),
-              title: const Text('拍照', style: TextStyle(fontSize: 18)),
+              title: const Text('拍照', style: AppTheme.textBody18),
               onTap: () => Navigator.pop(ctx, ImageSource.camera),
             ),
             const SizedBox(height: 8),

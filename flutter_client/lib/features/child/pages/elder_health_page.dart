@@ -1288,7 +1288,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         const SizedBox(width: 8),
         Text(
           '${anomaly.typeName}: ',
-          style: TextStyle(fontSize: 14, color: AppTheme.grey600),
+          style: AppTheme.textSubtitle,
         ),
         Text(
           baselineText,
@@ -1297,7 +1297,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         const SizedBox(width: 4),
         Text(
           unit,
-          style: TextStyle(fontSize: 14, color: AppTheme.grey600),
+          style: AppTheme.textSubtitle,
         ),
         const Spacer(),
         Text(
@@ -1529,7 +1529,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         children: [
           Text(
             '$label: ',
-            style: TextStyle(fontSize: 14, color: AppTheme.grey600),
+            style: AppTheme.textSubtitle,
           ),
           Text(
             displayValue,

@@ -157,7 +157,7 @@ class _HelpRequestCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(request.requesterName,
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                          style: AppTheme.textBold),
                       Text(timeAgo, style: TextStyle(color: AppTheme.grey600, fontSize: 12)),
                     ],
                   ),
@@ -208,7 +208,7 @@ class _HelpRequestCard extends StatelessWidget {
       HelpRequestStatus.resolved => ('已完成', AppTheme.infoBlue),
       HelpRequestStatus.expired => ('已过期', AppTheme.grey500),
     };
-    return Chip(label: Text(label, style: const TextStyle(fontSize: 12)), materialTapTargetSize: MaterialTapTargetSize.shrinkWrap);
+    return Chip(label: Text(label, style: AppTheme.textCaption), materialTapTargetSize: MaterialTapTargetSize.shrinkWrap);
   }
 
   String _formatTimeAgo(DateTime time) {

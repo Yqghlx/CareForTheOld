@@ -178,7 +178,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                 const SizedBox(height: 4),
                 Text(
                   '半径: ${radius >= 1000 ? '${(radius / 1000).toStringAsFixed(1)}公里' : '$radius米'}',
-                  style: TextStyle(fontSize: 14, color: AppTheme.grey600),
+                  style: AppTheme.textSubtitle,
                 ),
               ],
             ),
@@ -254,7 +254,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                   children: [
                     Text(
                       '为 $elderName 设置安全区域，当老人离开该区域时将收到通知。',
-                      style: TextStyle(fontSize: 14, color: AppTheme.grey600),
+                      style: AppTheme.textSubtitle,
                     ),
                     const SizedBox(height: 16),
 
@@ -281,7 +281,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                               style: AppTheme.textBody,
                             ),
                           if (centerLat == 0)
-                            const Text('暂无位置数据，请等待老人上报位置', style: TextStyle(fontSize: 14, color: AppTheme.grey600)),
+                            const Text('暂无位置数据，请等待老人上报位置', style: AppTheme.textSubtitle),
                         ],
                       ),
                     ),
@@ -459,7 +459,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                         ),
                         Text(
                           '更新于 ${location.relativeTime}',
-                          style: TextStyle(fontSize: 14, color: AppTheme.grey600),
+                          style: AppTheme.textSubtitle,
                         ),
                       ],
                     ),

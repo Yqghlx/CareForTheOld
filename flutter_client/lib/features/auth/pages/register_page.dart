@@ -180,7 +180,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 const SizedBox(height: 24),
 
                 // 角色选择
-                const Text('请选择您的身份:', style: TextStyle(fontSize: 16)),
+                const Text('请选择您的身份:', style: AppTheme.textBody16),
                 const SizedBox(height: 12),
                 Row(
                   children: [
@@ -222,7 +222,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                     onPressed: _isLoading ? null : _register,
                     child: _isLoading
                         ? const CircularProgressIndicator()
-                        : const Text('注册', style: TextStyle(fontSize: 18)),
+                        : const Text('注册', style: AppTheme.textBody18),
                   ),
                 ),
                 const SizedBox(height: 16),

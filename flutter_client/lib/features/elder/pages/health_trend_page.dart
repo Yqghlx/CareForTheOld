@@ -208,7 +208,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
       children: [
         const Text(
           '时间范围：',
-          style: TextStyle(fontSize: 16),
+          style: AppTheme.textBody16,
         ),
         const SizedBox(width: 12),
         Expanded(

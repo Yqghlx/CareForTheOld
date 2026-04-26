@@ -124,7 +124,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
           // 最近历史
           const Text(
             '最近呼叫记录',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: AppTheme.textTitle,
           ),
           const SizedBox(height: 12),
 

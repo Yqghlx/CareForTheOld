@@ -183,7 +183,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             // 个人信息
             const Text(
               '个人信息',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: AppTheme.textTitle,
             ),
             const SizedBox(height: 12),
             Card(
@@ -215,7 +215,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             if (isElder) ...[
               const Text(
                 '功能设置',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: AppTheme.textTitle,
               ),
               const SizedBox(height: 12),
               Card(
@@ -247,7 +247,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             // 通知设置
             const Text(
               '通知设置',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: AppTheme.textTitle,
             ),
             const SizedBox(height: 12),
             Card(
@@ -322,7 +322,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             // 其他设置
             const Text(
               '其他',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: AppTheme.textTitle,
             ),
             const SizedBox(height: 12),
             Card(
@@ -400,7 +400,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
-                    style: TextStyle(fontSize: 14, color: AppTheme.grey600),
+                    style: AppTheme.textSubtitle,
                   ),
                 ],
               ),
@@ -688,7 +688,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('关爱老人 App', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text('关爱老人 App', style: AppTheme.textTitle),
             SizedBox(height: 8),
             Text('版本: 1.0.0'),
             SizedBox(height: 12),
@@ -732,7 +732,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('使用帮助', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            Text('使用帮助', style: AppTheme.textHeading),
             SizedBox(height: 8),
             Text('• 老人端：可记录健康数据、查看用药提醒、发起紧急呼叫'),
             SizedBox(height: 4),
