@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
+using CareForTheOld.Common.Constants;
 
 namespace CareForTheOld.Common.Validators;
 
@@ -11,7 +12,7 @@ public class PasswordValidatorAttribute : ValidationAttribute
 {
     public PasswordValidatorAttribute()
     {
-        ErrorMessage = "密码长度至少8位，且必须包含数字和字母";
+        ErrorMessage = ValidationMessages.Auth.PasswordFormatInvalid;
     }
 
     public override bool IsValid(object? value)

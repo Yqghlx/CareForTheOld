@@ -26,7 +26,7 @@ public static class ControllerExtensions
     public static Guid GetUserId(this ControllerBase controller)
     {
         return controller.TryGetUserId()
-            ?? throw new UnauthorizedAccessException("无法获取用户身份，请重新登录");
+            ?? throw new UnauthorizedAccessException(ErrorMessages.Common.UserIdentityNotFound);
     }
 
     /// <summary>

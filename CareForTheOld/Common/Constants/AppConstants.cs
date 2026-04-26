@@ -22,6 +22,15 @@ public static class AppConstants
     {
         /// <summary>GPS 精度阈值（米），精度超过此值时跳过围栏检查，防止室内飘移误报</summary>
         public const double DefaultAccuracyThresholdMeters = 100.0;
+
+        /// <summary>距离显示单位阈值（米），超过此值以公里为单位显示</summary>
+        public const int DistanceDisplayThresholdMeters = 1000;
+
+        /// <summary>公里单位后缀</summary>
+        public const string KilometerUnit = "公里";
+
+        /// <summary>米单位后缀</summary>
+        public const string MeterUnit = "米";
     }
 
     /// <summary>

@@ -11,6 +11,7 @@ public static class ValidationMessages
         public const string PhoneRequired = "手机号不能为空";
         public const string PhoneInvalid = "手机号格式不正确";
         public const string PasswordRequired = "密码不能为空";
+        public const string PasswordFormatInvalid = "密码长度至少8位，且必须包含数字和字母";
         public const string NameRequired = "姓名不能为空";
         public const string NameTooLong = "姓名长度不能超过50";
         public const string BirthDateRequired = "出生日期不能为空";

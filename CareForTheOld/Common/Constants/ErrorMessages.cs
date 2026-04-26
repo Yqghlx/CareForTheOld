@@ -16,6 +16,9 @@ public static class ErrorMessages
 
         /// <summary>响应者不存在</summary>
         public const string ResponderNotFound = "响应者不存在";
+
+        /// <summary>无法获取用户身份</summary>
+        public const string UserIdentityNotFound = "无法获取用户身份，请重新登录";
     }
 
     /// <summary>
@@ -490,6 +493,13 @@ public static class SuccessMessages
         public const string NotFound = "通知不存在";
         public const string MarkedRead = "已标记为已读";
         public const string AllMarkedRead = "全部标记为已读";
+    }
+
+    /// <summary>通用操作成功消息</summary>
+    public static class Operation
+    {
+        /// <summary>默认操作成功消息</summary>
+        public const string Success = "操作成功";
     }
 }
 

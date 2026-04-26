@@ -207,9 +207,9 @@ public class LocationService : ILocationService
         if (children.Count == 0) return; // 没有子女成员
 
         // 构建通知内容
-        var distanceText = distance > 1000
-            ? $"{(distance / 1000):.1}公里"
-            : $"{(int)distance}米";
+        var distanceText = distance > AppConstants.Location.DistanceDisplayThresholdMeters
+            ? $"{(distance / AppConstants.Location.DistanceDisplayThresholdMeters):.1}{AppConstants.Location.KilometerUnit}"
+            : $"{(int)distance}{AppConstants.Location.MeterUnit}";
 
         await _notificationService.SendToUsersAsync(
             children.Select(c => c.UserId),

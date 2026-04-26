@@ -1,3 +1,5 @@
+using CareForTheOld.Common.Constants;
+
 namespace CareForTheOld.Common.Helpers;
 
 /// <summary>
@@ -10,7 +12,7 @@ public class ApiResponse<T>
     public string Message { get; set; } = string.Empty;
     public List<string>? Errors { get; set; }
 
-    public static ApiResponse<T> Ok(T data, string message = "操作成功")
+    public static ApiResponse<T> Ok(T data, string message = SuccessMessages.Operation.Success)
         => new() { Success = true, Data = data, Message = message };
 
     public static ApiResponse<T> Fail(string message, List<string>? errors = null)

@@ -36,5 +36,5 @@ public class EmergencyCallResponse
     /// <summary>
     /// 状态标签
     /// </summary>
-    public string StatusLabel => Status == EmergencyStatus.Pending ? "待处理" : "已响应";
+    public string StatusLabel => Status.GetLabel();
 }
