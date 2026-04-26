@@ -71,18 +71,18 @@ class ErrorStateWidget extends StatelessWidget {
 
   /// 将技术错误信息转为用户友好提示
   static String friendlyMessage(String? error) {
-    if (error == null) return '加载失败，请重试';
+    if (error == null) return AppTheme.msgLoadFailed;
     if (error.contains('SocketException') || error.contains('网络')) {
-      return '网络连接失败，请检查网络设置';
+      return AppTheme.msgNetworkError;
     }
-    if (error.contains('401')) return '登录已过期，请重新登录';
+    if (error.contains('401')) return AppTheme.msgSessionExpired;
     if (error.contains('403')) return '没有权限执行此操作';
-    if (error.contains('404')) return '请求的内容不存在';
+    if (error.contains('404')) return AppTheme.msgNotFound;
     if (error.contains('500') || error.contains('502') || error.contains('503')) {
-      return '服务器繁忙，请稍后重试';
+      return AppTheme.msgServerError;
     }
     // 默认截取前 50 字符，避免向用户暴露长堆栈信息
-    if (error.length > 50) return '加载失败，请重试';
+    if (error.length > 50) return AppTheme.msgLoadFailed;
     return error;
   }
 
