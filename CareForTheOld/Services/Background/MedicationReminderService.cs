@@ -269,9 +269,10 @@ public class MedicationReminderService : BackgroundService
                 .Where(fm => familyIds.Contains(fm.FamilyId) && fm.UserId != plan.ElderId)
                 .ToListAsync(stoppingToken);
 
+            var elderName = plan.Elder?.RealName ?? AppConstants.HealthTypeLabels.DefaultElderName;
+
             foreach (var other in otherMembers)
             {
-                var elderName = plan.Elder?.RealName ?? AppConstants.HealthTypeLabels.DefaultElderName;
                 var familyMessage = new NotificationMessage
                 {
                     Type = AppConstants.NotificationTypes.MedicationReminderFamily,
