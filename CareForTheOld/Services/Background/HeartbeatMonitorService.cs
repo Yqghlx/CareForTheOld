@@ -113,8 +113,8 @@ public class HeartbeatMonitorService
                     AppConstants.NotificationTypes.ElderOffline,
                     new
                     {
-                        Title = "老人离线告警",
-                        Content = $"{user.RealName} 已超过 {offlineMinutes} 分钟未响应心跳，请及时确认是否安全。",
+                        Title = NotificationMessages.Heartbeat.OfflineTitle,
+                        Content = string.Format(NotificationMessages.Heartbeat.OfflineContentTemplate, user.RealName, offlineMinutes),
                         ElderId = userId,
                         ElderName = user.RealName,
                         OfflineMinutes = offlineMinutes,

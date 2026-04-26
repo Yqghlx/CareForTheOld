@@ -634,6 +634,44 @@ public static class NotificationMessages
         public const string SmsReminderContentTemplate = "【紧急提醒】{0}的紧急呼叫已超过3分钟未响应，请尽快处理！";
     }
 
+    /// <summary>用药提醒相关通知</summary>
+    public static class Medication
+    {
+        /// <summary>用药提醒标题</summary>
+        public const string ReminderTitle = "用药提醒";
+
+        /// <summary>用药再次提醒标题</summary>
+        public const string ReminderSecondaryTitle = "用药提醒（再次提醒）";
+
+        /// <summary>用药提醒内容模板（占位符：药品名称、剂量）</summary>
+        public const string ReminderContentTemplate = "请按时服用 {0}，剂量：{1}";
+
+        /// <summary>用药再次提醒内容模板（占位符：药品名称、剂量）</summary>
+        public const string ReminderSecondaryContentTemplate = "您还未服用 {0}（{1}），请尽快服药。";
+
+        /// <summary>老人未服药通知子女标题</summary>
+        public const string MissedTitle = "老人未服药提醒";
+
+        /// <summary>老人未服药内容模板（占位符：老人姓名、时间、药品名称、剂量、延迟分钟数）</summary>
+        public const string MissedContentTemplate = "{0} 在 {1} 的 {2}（{3}）已超过 {4} 分钟未确认服药，请电话确认。";
+
+        /// <summary>子女端用药提醒标题</summary>
+        public const string FamilyReminderTitle = "老人用药提醒";
+
+        /// <summary>子女端用药提醒内容模板（占位符：老人姓名、药品名称）</summary>
+        public const string FamilyReminderContentTemplate = "{0} 应服用 {1}";
+    }
+
+    /// <summary>心跳监控相关通知</summary>
+    public static class Heartbeat
+    {
+        /// <summary>老人离线告警标题</summary>
+        public const string OfflineTitle = "老人离线告警";
+
+        /// <summary>老人离线告警内容模板（占位符：老人姓名、离线分钟数）</summary>
+        public const string OfflineContentTemplate = "{0} 已超过 {1} 分钟未响应心跳，请及时确认是否安全。";
+    }
+
     /// <summary>默认通知标题（SignalR 投递时无 Title 字段的兜底值）</summary>
     public const string DefaultTitle = "通知";
 }
@@ -730,5 +768,23 @@ public static class HealthAlertMessages
         public const string GeneralHigh = "指标已连续偏高，建议关注身体状况，必要时就医";
         public const string GeneralLow = "指标已连续偏低，建议关注身体状况，保持规律作息";
         public const string GeneralVolatility = "近期数据波动较大，建议规律测量并记录生活情况，必要时咨询医生";
+    }
+
+    /// <summary>
+    /// 严重度关键词（GetAlertLevel 中用于判断预警等级）
+    /// </summary>
+    public static class SeverityKeywords
+    {
+        /// <summary>立即就医关键词</summary>
+        public const string ImmediateTreatment = "立即就医";
+
+        /// <summary>严重关键词</summary>
+        public const string Severe = "严重";
+
+        /// <summary>尽快就医关键词</summary>
+        public const string PromptTreatment = "尽快就医";
+
+        /// <summary>及时就医关键词</summary>
+        public const string TimelyTreatment = "及时就医";
     }
 }

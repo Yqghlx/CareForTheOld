@@ -182,8 +182,8 @@ public class MedicationReminderService : BackgroundService
             await SendWithRetryAsync(
                 () => notificationService.SendToUserAsync(elderId, AppConstants.NotificationTypes.MedicationReminderUrgent, new
                 {
-                    Title = "用药提醒（再次提醒）",
-                    Content = $"您还未服用 {plan.MedicineName}（{plan.Dosage}），请尽快服药。",
+                    Title = NotificationMessages.Medication.ReminderSecondaryTitle,
+                    Content = string.Format(NotificationMessages.Medication.ReminderSecondaryContentTemplate, plan.MedicineName, plan.Dosage),
                     PlanId = planId,
                     MedicineName = plan.MedicineName,
                     ScheduledAt = scheduledAt,
@@ -212,8 +212,8 @@ public class MedicationReminderService : BackgroundService
                     await SendWithRetryAsync(
                         () => notificationService.SendToUserAsync(child.UserId, AppConstants.NotificationTypes.MedicationMissed, new
                         {
-                            Title = "老人未服药提醒",
-                            Content = $"{elderName} 在 {scheduledAt:HH:mm} 的 {plan.MedicineName}（{plan.Dosage}）已超过 {AppConstants.Medication.EscalationDelayMinutes} 分钟未确认服药，请电话确认。",
+                            Title = NotificationMessages.Medication.MissedTitle,
+                            Content = string.Format(NotificationMessages.Medication.MissedContentTemplate, elderName, scheduledAt.ToString("HH:mm"), plan.MedicineName, plan.Dosage, AppConstants.Medication.EscalationDelayMinutes),
                             ElderId = elderId,
                             ElderName = elderName,
                             PlanId = planId,
@@ -243,8 +243,8 @@ public class MedicationReminderService : BackgroundService
         var message = new NotificationMessage
         {
             Type = AppConstants.NotificationTypes.MedicationReminderUrgent,
-            Title = "用药提醒",
-            Content = $"请按时服用 {plan.MedicineName}，剂量：{plan.Dosage}",
+            Title = NotificationMessages.Medication.ReminderTitle,
+            Content = string.Format(NotificationMessages.Medication.ReminderContentTemplate, plan.MedicineName, plan.Dosage),
             Timestamp = DateTime.UtcNow,
             Data = new
             {
@@ -276,8 +276,8 @@ public class MedicationReminderService : BackgroundService
                 var familyMessage = new NotificationMessage
                 {
                     Type = AppConstants.NotificationTypes.MedicationReminderFamily,
-                    Title = "老人用药提醒",
-                    Content = $"{plan.Elder.RealName} 应服用 {plan.MedicineName}",
+                    Title = NotificationMessages.Medication.FamilyReminderTitle,
+                    Content = string.Format(NotificationMessages.Medication.FamilyReminderContentTemplate, plan.Elder.RealName, plan.MedicineName),
                     Timestamp = DateTime.UtcNow,
                     Data = new
                     {

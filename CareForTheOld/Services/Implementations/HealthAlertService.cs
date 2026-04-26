@@ -228,11 +228,11 @@ public class HealthAlertService : IHealthAlertService
     private static string GetAlertLevel(HealthType type, string alertMessage)
     {
         // 严重异常
-        if (alertMessage.Contains("立即就医") || alertMessage.Contains("严重"))
+        if (alertMessage.Contains(HealthAlertMessages.SeverityKeywords.ImmediateTreatment) || alertMessage.Contains(HealthAlertMessages.SeverityKeywords.Severe))
             return AppConstants.AlertLevels.Critical;
 
         // 中度异常
-        if (alertMessage.Contains("尽快就医") || alertMessage.Contains("及时就医"))
+        if (alertMessage.Contains(HealthAlertMessages.SeverityKeywords.PromptTreatment) || alertMessage.Contains(HealthAlertMessages.SeverityKeywords.TimelyTreatment))
             return AppConstants.AlertLevels.Warning;
 
         // 轻度异常
