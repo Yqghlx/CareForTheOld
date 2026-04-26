@@ -74,9 +74,15 @@ public class LocationService : ILocationService
             if (outsideResult != null)
             {
                 var (fence, distance) = outsideResult.Value;
-                // 通过 Hangfire 异步发送围栏预警通知，支持持久化和自动重试
-                BackgroundJob.Enqueue(() => SendGeoFenceAlertJobAsync(
-                    userId, fence!.Id, fence.Radius, distance));
+                try
+                {
+                    BackgroundJob.Enqueue(() => SendGeoFenceAlertJobAsync(
+                        userId, fence!.Id, fence.Radius, distance));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "围栏预警任务入队失败，用户 {UserId}", userId);
+                }
             }
         }
 

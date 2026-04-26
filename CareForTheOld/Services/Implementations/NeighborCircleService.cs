@@ -349,31 +349,27 @@ public class NeighborCircleService : INeighborCircleService
     private static string GenerateInviteCode() => InviteCodeHelper.Generate();
 
     /// <summary>
-    /// 构建邻里圈响应（含创建者名称和成员数）
+    /// 构建邻里圈响应（含创建者名称和成员数），使用投影减少数据库交互
     /// </summary>
     private async Task<NeighborCircleResponse> BuildCircleResponse(Guid circleId)
     {
-        var circle = await _context.NeighborCircles
-            .Include(c => c.Creator)
-            .FirstAsync(c => c.Id == circleId);
-
-        var memberCount = await _context.NeighborCircleMembers
-            .CountAsync(m => m.CircleId == circleId);
-
-        return new NeighborCircleResponse
-        {
-            Id = circle.Id,
-            CircleName = circle.CircleName,
-            CenterLatitude = circle.CenterLatitude,
-            CenterLongitude = circle.CenterLongitude,
-            RadiusMeters = circle.RadiusMeters,
-            CreatorId = circle.CreatorId,
-            CreatorName = circle.Creator.RealName,
-            InviteCode = circle.InviteCode,
-            InviteCodeExpiresAt = circle.InviteCodeExpiresAt,
-            MemberCount = memberCount,
-            IsActive = circle.IsActive,
-            CreatedAt = circle.CreatedAt
-        };
+        return await _context.NeighborCircles
+            .Where(c => c.Id == circleId)
+            .Select(c => new NeighborCircleResponse
+            {
+                Id = c.Id,
+                CircleName = c.CircleName,
+                CenterLatitude = c.CenterLatitude,
+                CenterLongitude = c.CenterLongitude,
+                RadiusMeters = c.RadiusMeters,
+                CreatorId = c.CreatorId,
+                CreatorName = c.Creator.RealName,
+                InviteCode = c.InviteCode,
+                InviteCodeExpiresAt = c.InviteCodeExpiresAt,
+                MemberCount = _context.NeighborCircleMembers.Count(m => m.CircleId == circleId),
+                IsActive = c.IsActive,
+                CreatedAt = c.CreatedAt
+            })
+            .FirstAsync();
     }
 }
