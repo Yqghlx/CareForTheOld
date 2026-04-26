@@ -75,10 +75,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
               // 今日待服药
               const Text(
                 '今日用药计划',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: AppTheme.textLargeTitle,
               ),
               const SizedBox(height: 16),
 
@@ -279,10 +276,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
                   const SizedBox(height: 4),
                   Text(
                     '计划时间: $timeStr',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppTheme.grey600,
-                    ),
+                    style: AppTheme.textSecondary16,
                   ),
                 ],
               ),

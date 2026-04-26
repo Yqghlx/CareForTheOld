@@ -399,7 +399,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    style: AppTheme.textHeading,
                   ),
                   const SizedBox(height: 2),
                   Text(

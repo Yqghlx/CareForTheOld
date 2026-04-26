@@ -105,12 +105,12 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                             const SizedBox(height: 16),
                             Text(
                               '暂无${_selectedType.label}记录',
-                              style: const TextStyle(fontSize: 18, color: AppTheme.grey600),
+                              style: AppTheme.textSecondary16,
                             ),
                             const SizedBox(height: 8),
                             Text(
                               '请先在健康页面记录${_selectedType.label}数据',
-                              style: TextStyle(fontSize: 16, color: AppTheme.grey500),
+                              style: AppTheme.textGreyLight,
                             ),
                           ],
                         ),

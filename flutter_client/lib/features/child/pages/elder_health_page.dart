@@ -965,7 +965,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 children: [
                   const CircularProgressIndicator(),
                   const SizedBox(height: 16),
-                  const Text('正在生成报告...', style: TextStyle(fontSize: 16)),
+                  const Text('正在生成报告...', style: AppTheme.textBody16),
                 ],
               ),
             ),
@@ -1084,7 +1084,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       const SizedBox(height: 4),
                       Text(
                         '基于 ${anomaly.baseline.baselineDays} 天数据分析',
-                        style: TextStyle(fontSize: 13, color: AppTheme.grey600),
+                        style: const TextStyle(fontSize: 13, color: AppTheme.grey600),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
