@@ -27,6 +27,13 @@ class AppTheme {
   static const Color infoBlueLight = Color(0xFFBBDEFB); // ~blue.shade100
   static const Color infoBlueDark = Color(0xFF1976D2);  // ~blue.shade700
 
+  /// 语义色（健康数据图表、枚举标签等场景使用）
+  static const Color purpleColor = Color(0xFF9C27B0);    // ~purple.shade500
+  static const Color tealColor = Color(0xFF009688);      // ~teal.shade500
+  static const Color cyanColor = Color(0xFF00BCD4);      // ~cyan.shade500
+  static const Color deepOrangeColor = Color(0xFFFF5722); // ~deepOrange.shade500
+  static const Color blueGrey800 = Color(0xFF37474F);    // ~blueGrey.shade800
+
   /// 背景色
   static const Color backgroundColor = Color(0xFFF5F5F5);
   static const Color cardColor = Colors.white;
@@ -53,6 +60,11 @@ class AppTheme {
   static const TextStyle textCaption = TextStyle(fontSize: 12, color: grey500);
   static const TextStyle textBody = TextStyle(fontSize: 14);
   static const TextStyle textCardTitle = TextStyle(fontSize: 16, fontWeight: FontWeight.w600);
+  static const TextStyle textLargeTitle = TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
+  static const TextStyle textHeading = TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
+  static const TextStyle textBody18 = TextStyle(fontSize: 18);
+  static const TextStyle textBody16 = TextStyle(fontSize: 16);
+  static const TextStyle textBold = TextStyle(fontWeight: FontWeight.bold);
 
   /// 渐变配置
   static const LinearGradient primaryGradient = LinearGradient(

@@ -39,9 +39,9 @@ enum Frequency {
 
 /// 服药状态枚举（与后端 MedicationStatus 对应，整数序列化）
 enum MedicationStatus {
-  taken(0, '已服', Colors.green),
+  taken(0, '已服', AppTheme.successColor),
   skipped(1, '跳过', AppTheme.grey500),
-  missed(2, '漏服', Colors.red);
+  missed(2, '漏服', AppTheme.errorColor);
 
   final int value;
   final String label;

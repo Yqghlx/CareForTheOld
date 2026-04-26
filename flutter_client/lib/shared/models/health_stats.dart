@@ -70,9 +70,9 @@ class HealthStats {
   /// 趋势颜色
   Color get trendColor {
     switch (trend) {
-      case 'rising': return Colors.orange;
-      case 'falling': return Colors.blue;
-      case 'stable': return Colors.green;
+      case 'rising': return AppTheme.warningColor;
+      case 'falling': return AppTheme.infoBlue;
+      case 'stable': return AppTheme.successColor;
       default: return AppTheme.grey500;
     }
   }

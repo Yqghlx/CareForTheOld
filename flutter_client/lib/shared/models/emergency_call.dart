@@ -4,8 +4,8 @@ import '../../core/theme/app_theme.dart';
 
 /// 紧急呼叫状态枚举（与后端对应，整数序列化）
 enum EmergencyStatus {
-  pending(0, '待处理', Colors.red),
-  responded(1, '已响应', Colors.green);
+  pending(0, '待处理', AppTheme.errorColor),
+  responded(1, '已响应', AppTheme.successColor);
 
   final int value;
   final String label;
@@ -107,9 +107,9 @@ class EmergencyCall {
   /// 电池状态颜色
   Color get batteryColor {
     if (batteryLevel == null) return AppTheme.grey500;
-    if (batteryLevel! > 50) return Colors.green;
-    if (batteryLevel! > 20) return Colors.orange;
-    return Colors.red;
+    if (batteryLevel! > 50) return AppTheme.successColor;
+    if (batteryLevel! > 20) return AppTheme.warningColor;
+    return AppTheme.errorColor;
   }
 
   /// 格式化呼叫时间

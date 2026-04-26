@@ -58,22 +58,22 @@ class NotificationRecord {
     switch (type) {
       case 'MedicationReminder':
       case 'MedicationReminderFamily':
-        return Colors.blue;
+        return AppTheme.infoBlue;
       case 'MedicationReminderUrgent':
-        return Colors.orange;
+        return AppTheme.warningColor;
       case 'MedicationMissed':
-        return Colors.deepOrange;
+        return AppTheme.deepOrangeColor;
       case 'EmergencyCall':
       case 'EmergencyCallReminder':
-        return Colors.red;
+        return AppTheme.errorColor;
       case 'GeoFenceAlert':
-        return Colors.purple;
+        return AppTheme.purpleColor;
       case 'HealthAlert':
-        return Colors.orange;
+        return AppTheme.warningColor;
       case 'HeartbeatAlert':
         return AppTheme.grey500;
       default:
-        return Colors.green;
+        return AppTheme.successColor;
     }
   }
 

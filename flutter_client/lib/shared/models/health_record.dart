@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/app_theme.dart';
 
 /// 健康数据类型枚举（与后端 HealthType 对应，整数序列化）
 enum HealthType {
-  bloodPressure(0, '血压', Icons.favorite, Colors.red),
-  bloodSugar(1, '血糖', Icons.water_drop, Colors.blue),
-  heartRate(2, '心率', Icons.monitor_heart, Colors.purple),
-  temperature(3, '体温', Icons.thermostat, Colors.orange);
+  bloodPressure(0, '血压', Icons.favorite, AppTheme.errorColor),
+  bloodSugar(1, '血糖', Icons.water_drop, AppTheme.infoBlue),
+  heartRate(2, '心率', Icons.monitor_heart, AppTheme.purpleColor),
+  temperature(3, '体温', Icons.thermostat, AppTheme.warningColor);
 
   final int value;
   final String label;

@@ -115,9 +115,9 @@ class _ElderLocationMapState extends State<ElderLocationMap> {
                   CircleMarker(
                     point: LatLng(widget.fenceCenterLat!, widget.fenceCenterLon!),
                     radius: widget.fenceRadius!.toDouble(),
-                    color: Colors.green.withValues(alpha: 0.2),
+                    color: AppTheme.successColor.withValues(alpha: 0.2),
                     borderStrokeWidth: 2.0,
-                    borderColor: Colors.green,
+                    borderColor: AppTheme.successColor,
                     useRadiusInMeter: true,
                   ),
                 ],
@@ -131,11 +131,11 @@ class _ElderLocationMapState extends State<ElderLocationMap> {
                   height: 40,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.red,
+                      color: AppTheme.errorColor,
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.red.withValues(alpha: 0.4),
+                          color: AppTheme.errorColor.withValues(alpha: 0.4),
                           blurRadius: 8,
                           spreadRadius: 2,
                         ),

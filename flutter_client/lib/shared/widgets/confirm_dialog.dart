@@ -35,7 +35,7 @@ Future<bool> showConfirmDialog(
         ),
         TextButton(
           onPressed: () => Navigator.pop(ctx, true),
-          style: TextButton.styleFrom(foregroundColor: Colors.red),
+          style: TextButton.styleFrom(foregroundColor: AppTheme.errorColor),
           child: Text(confirmText),
         ),
       ],
