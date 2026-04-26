@@ -113,6 +113,33 @@ public static class AppConstants
 
         /// <summary>紧急呼叫二次提醒 FCM 推送类型</summary>
         public const string EmergencyReminderFcm = "emergency_reminder";
+
+        /// <summary>用药紧急提醒通知（老人端）</summary>
+        public const string MedicationReminderUrgent = "MedicationReminderUrgent";
+
+        /// <summary>用药未服药通知子女</summary>
+        public const string MedicationReminderFamily = "MedicationReminderFamily";
+
+        /// <summary>用药漏服记录通知</summary>
+        public const string MedicationMissed = "MedicationMissed";
+
+        /// <summary>邻里求助广播通知</summary>
+        public const string NeighborHelpRequest = "NeighborHelpRequest";
+
+        /// <summary>邻里求助已接受通知</summary>
+        public const string NeighborHelpAccepted = "NeighborHelpAccepted";
+
+        /// <summary>邻里求助已完成通知</summary>
+        public const string NeighborHelpResolved = "NeighborHelpResolved";
+
+        /// <summary>邻里求助已取消通知</summary>
+        public const string NeighborHelpCancelled = "NeighborHelpCancelled";
+
+        /// <summary>健康异常预警通知</summary>
+        public const string HealthAlert = "HealthAlert";
+
+        /// <summary>老人离线告警通知</summary>
+        public const string ElderOffline = "ElderOffline";
     }
 
     /// <summary>

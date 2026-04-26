@@ -95,8 +95,7 @@ public class NeighborHelpService : INeighborHelpService
         var nearbyUserIds = new List<Guid>();
         var lat = call.Latitude.Value;
         var lng = call.Longitude.Value;
-        var latThreshold = BroadcastRadiusMeters / 111_000.0;
-        var lngThreshold = BroadcastRadiusMeters / (111_000.0 * Math.Cos(lat * Math.PI / 180.0));
+        var (latThreshold, lngThreshold) = GeoHelper.CalculateDegreeThresholds(BroadcastRadiusMeters, lat);
 
         foreach (var loc in recentLocations)
         {
@@ -162,7 +161,7 @@ public class NeighborHelpService : INeighborHelpService
         // Outbox Pattern 推送通知给附近邻居
         await _notificationService.SendToUsersAsync(
             nearbyUserIds,
-            "NeighborHelpRequest",
+            AppConstants.NotificationTypes.NeighborHelpRequest,
             new
             {
                 Title = "邻居紧急求助",
@@ -222,7 +221,7 @@ public class NeighborHelpService : INeighborHelpService
         // 通知老人："邻居XX正在赶来"
         await _notificationService.SendToUserAsync(
             request.RequesterId,
-            "NeighborHelpAccepted",
+            AppConstants.NotificationTypes.NeighborHelpAccepted,
             new
             {
                 Title = "邻居正在赶来",
@@ -245,7 +244,7 @@ public class NeighborHelpService : INeighborHelpService
             {
                 await _notificationService.SendToUsersAsync(
                     childIds,
-                    "NeighborHelpAccepted",
+                    AppConstants.NotificationTypes.NeighborHelpAccepted,
                     new
                     {
                         Title = "邻居已响应紧急呼叫",
@@ -269,7 +268,7 @@ public class NeighborHelpService : INeighborHelpService
         {
             await _notificationService.SendToUsersAsync(
                 otherMemberIds,
-                "NeighborHelpResolved",
+                AppConstants.NotificationTypes.NeighborHelpResolved,
                 new
                 {
                     Title = "求助已被响应",
@@ -333,7 +332,7 @@ public class NeighborHelpService : INeighborHelpService
         {
             await _notificationService.SendToUserAsync(
                 request.ResponderId.Value,
-                "NeighborHelpCancelled",
+                AppConstants.NotificationTypes.NeighborHelpCancelled,
                 new
                 {
                     Title = "求助已取消",
@@ -571,7 +570,7 @@ public class NeighborHelpService : INeighborHelpService
 
         await _notificationService.SendToUsersAsync(
             memberIds,
-            "NeighborHelpRequest",
+            AppConstants.NotificationTypes.NeighborHelpRequest,
             new
             {
                 Title = "邻居紧急求助",

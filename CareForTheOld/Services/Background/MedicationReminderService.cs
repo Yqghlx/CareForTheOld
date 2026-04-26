@@ -180,7 +180,7 @@ public class MedicationReminderService : BackgroundService
         {
             // 二次提醒：再次通知老人
             await SendWithRetryAsync(
-                () => notificationService.SendToUserAsync(elderId, "MedicationReminderUrgent", new
+                () => notificationService.SendToUserAsync(elderId, AppConstants.NotificationTypes.MedicationReminderUrgent, new
                 {
                     Title = "用药提醒（再次提醒）",
                     Content = $"您还未服用 {plan.MedicineName}（{plan.Dosage}），请尽快服药。",
@@ -210,7 +210,7 @@ public class MedicationReminderService : BackgroundService
                 foreach (var child in children)
                 {
                     await SendWithRetryAsync(
-                        () => notificationService.SendToUserAsync(child.UserId, "MedicationMissed", new
+                        () => notificationService.SendToUserAsync(child.UserId, AppConstants.NotificationTypes.MedicationMissed, new
                         {
                             Title = "老人未服药提醒",
                             Content = $"{elderName} 在 {scheduledAt:HH:mm} 的 {plan.MedicineName}（{plan.Dosage}）已超过 {AppConstants.Medication.EscalationDelayMinutes} 分钟未确认服药，请电话确认。",
@@ -242,7 +242,7 @@ public class MedicationReminderService : BackgroundService
     {
         var message = new NotificationMessage
         {
-            Type = "MedicationReminder",
+            Type = AppConstants.NotificationTypes.MedicationReminderUrgent,
             Title = "用药提醒",
             Content = $"请按时服用 {plan.MedicineName}，剂量：{plan.Dosage}",
             Timestamp = DateTime.UtcNow,
@@ -275,7 +275,7 @@ public class MedicationReminderService : BackgroundService
             {
                 var familyMessage = new NotificationMessage
                 {
-                    Type = "MedicationReminderFamily",
+                    Type = AppConstants.NotificationTypes.MedicationReminderFamily,
                     Title = "老人用药提醒",
                     Content = $"{plan.Elder.RealName} 应服用 {plan.MedicineName}",
                     Timestamp = DateTime.UtcNow,

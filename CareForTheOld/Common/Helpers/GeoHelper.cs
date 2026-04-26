@@ -28,4 +28,18 @@ public static class GeoHelper
         var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
         return EarthRadiusMeters * c;
     }
+
+    /// <summary>
+    /// 计算给定半径对应的经纬度度数阈值，用于粗筛过滤远距离坐标
+    /// 纬度方向 1° ≈ 111km，经度方向受纬度影响（赤道 111km → 极地趋近 0）
+    /// </summary>
+    /// <param name="radiusMeters">半径（米）</param>
+    /// <param name="latitude">中心点纬度，用于修正经度阈值</param>
+    /// <returns>纬度阈值和经度阈值（单位：度）</returns>
+    public static (double LatThreshold, double LngThreshold) CalculateDegreeThresholds(double radiusMeters, double latitude)
+    {
+        var latThreshold = radiusMeters / 111_000.0;
+        var lngThreshold = radiusMeters / (111_000.0 * Math.Cos(latitude * Math.PI / 180.0));
+        return (latThreshold, lngThreshold);
+    }
 }

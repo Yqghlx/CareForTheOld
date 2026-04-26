@@ -93,7 +93,7 @@ public class HealthAlertService : IHealthAlertService
         {
             await _notificationService.SendToUsersAsync(
                 children.Select(c => c.UserId),
-                "HealthAlert",
+                AppConstants.NotificationTypes.HealthAlert,
                 new
                 {
                     Title = $"健康异常预警",

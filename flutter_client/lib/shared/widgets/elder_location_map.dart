@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import '../../core/config/app_config.dart';
 import '../../core/theme/app_theme.dart';
 
 /// 老人位置地图组件
@@ -74,7 +75,7 @@ class _ElderLocationMapState extends State<ElderLocationMap> {
             children: [
               Icon(Icons.map_outlined, size: 48, color: AppTheme.grey400),
               const SizedBox(height: 12),
-              const Text('暂无位置数据', style: TextStyle(color: Colors.grey)),
+              const Text('暂无位置数据', style: TextStyle(color: AppTheme.grey500)),
             ],
           ),
         ),
@@ -100,7 +101,7 @@ class _ElderLocationMapState extends State<ElderLocationMap> {
           children: [
             // OpenStreetMap 图层
             TileLayer(
-              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              urlTemplate: AppConfig.openStreetMapTileUrl,
               userAgentPackageName: 'com.example.care_for_the_old_client',
               maxZoom: 19,
             ),

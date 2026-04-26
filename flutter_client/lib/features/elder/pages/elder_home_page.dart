@@ -118,7 +118,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
           selectedFontSize: 18,
           unselectedFontSize: 16,
           selectedItemColor: AppTheme.primaryColor,
-          unselectedItemColor: Colors.grey,
+          unselectedItemColor: AppTheme.grey500,
         ),
       ),
     );
@@ -318,7 +318,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                 icon: Icons.settings,
                 title: '设置',
                 subtitle: '个人信息设置',
-                color: Colors.grey,
+                color: AppTheme.grey500,
                 onTap: () => context.push('/settings'),
               ),
             ],

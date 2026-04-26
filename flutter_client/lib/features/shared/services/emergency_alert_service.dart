@@ -4,6 +4,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:vibration/vibration.dart';
 
+import '../../../core/config/app_config.dart';
+
 /// 紧急警报服务（全局单例）
 ///
 /// 管理全屏紧急警报的状态：震动、铃声、警报触发/停止。
@@ -102,7 +104,7 @@ class EmergencyAlertService {
     try {
       await _audioPlayer.setReleaseMode(ReleaseMode.loop);
       await _audioPlayer.play(UrlSource(
-        'https://actions.google.com/sounds/v1/alarms/beep_full.ogg',
+        AppConfig.emergencyAlarmSoundUrl,
       ));
     } catch (e) {
       // 网络不可用时使用系统默认通知音

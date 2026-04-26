@@ -110,7 +110,7 @@ public class HeartbeatMonitorService
             {
                 await notificationService.SendToUsersAsync(
                     children.Select(c => c.UserId),
-                    "ElderOffline",
+                    AppConstants.NotificationTypes.ElderOffline,
                     new
                     {
                         Title = "老人离线告警",

@@ -208,8 +208,7 @@ public class NeighborCircleService : INeighborCircleService
         var distanceMap = new Dictionary<Guid, double>();
 
         // 经纬度粗筛阈值：1 度约 111 公里
-        var latThreshold = radiusMeters / 111_000.0;
-        var lngThreshold = radiusMeters / (111_000.0 * Math.Cos(latitude * Math.PI / 180.0));
+        var (latThreshold, lngThreshold) = GeoHelper.CalculateDegreeThresholds(radiusMeters, latitude);
 
         foreach (var loc in recentLocations)
         {
@@ -263,8 +262,7 @@ public class NeighborCircleService : INeighborCircleService
             .ToListAsync();
 
         // 经纬度粗筛阈值
-        var latThreshold = radiusMeters / 111_000.0;
-        var lngThreshold = radiusMeters / (111_000.0 * Math.Cos(latitude * Math.PI / 180.0));
+        var (latThreshold, _) = GeoHelper.CalculateDegreeThresholds(radiusMeters, latitude);
 
         var results = new List<(NeighborCircle Circle, double Distance)>();
 

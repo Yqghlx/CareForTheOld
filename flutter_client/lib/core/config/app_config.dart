@@ -44,4 +44,13 @@ class AppConfig {
       : String.fromEnvironment('APP_ENV') == 'staging'
           ? staging
           : dev;
+
+  /// 外部服务 URL 常量
+  /// OpenStreetMap 瓦片服务地址（地图底图）
+  static const String openStreetMapTileUrl =
+      'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+  /// 紧急呼叫警报铃声地址
+  static const String emergencyAlarmSoundUrl =
+      'https://actions.google.com/sounds/v1/alarms/beep_full.ogg';
 }
