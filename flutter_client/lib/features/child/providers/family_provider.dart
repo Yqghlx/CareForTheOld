@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/api/api_client.dart';
+import '../../../core/constants/pref_keys.dart';
 import '../services/family_service.dart';
 import '../../../shared/models/family.dart';
 
@@ -67,8 +68,8 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
       if (family != null) {
         // 保存家庭信息到本地（用于子女端缓存）
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('familyId', family.id);
-        await prefs.setString('familyName', family.familyName);
+        await prefs.setString(PrefKeys.familyId, family.id);
+        await prefs.setString(PrefKeys.familyName, family.familyName);
       }
       state = state.copyWith(family: family, isLoading: false);
     } catch (e) {
@@ -83,8 +84,8 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
       final family = await _service.createFamily(familyName);
       // 保存家庭信息到本地
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('familyId', family.id);
-      await prefs.setString('familyName', family.familyName);
+      await prefs.setString(PrefKeys.familyId, family.id);
+      await prefs.setString(PrefKeys.familyName, family.familyName);
       state = state.copyWith(family: family);
       return true;
     } catch (e) {

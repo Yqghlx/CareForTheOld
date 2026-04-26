@@ -28,9 +28,9 @@ public class GeoFenceService : IGeoFenceService
     private const string _cacheKeyPrefix = "geofence:";
 
     /// <summary>
-    /// 围栏缓存过期时间（10 分钟，围栏数据变更频率低）
+    /// 围栏缓存过期时间，使用 AppConstants.Cache.GeoFenceExpirationMinutes 统一管理
     /// </summary>
-    private static readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(10);
+    private static readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(AppConstants.Cache.GeoFenceExpirationMinutes);
 
     public GeoFenceService(AppDbContext context, ICacheService cacheService, IFamilyService familyService)
     {

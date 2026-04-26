@@ -269,9 +269,7 @@ public class NeighborCircleService : INeighborCircleService
         foreach (var circle in circles)
         {
             // 粗筛：搜索点到圈子中心距离不超过（搜索半径 + 圈子半径）
-            var extendedLatThreshold = (radiusMeters + circle.RadiusMeters) / 111_000.0;
-            var extendedLngThreshold = (radiusMeters + circle.RadiusMeters) /
-                                       (111_000.0 * Math.Cos(latitude * Math.PI / 180.0));
+            var (extendedLatThreshold, extendedLngThreshold) = GeoHelper.CalculateDegreeThresholds(radiusMeters + circle.RadiusMeters, latitude);
 
             if (Math.Abs(circle.CenterLatitude - latitude) > extendedLatThreshold ||
                 Math.Abs(circle.CenterLongitude - longitude) > extendedLngThreshold)

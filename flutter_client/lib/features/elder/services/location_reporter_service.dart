@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/api/api_client.dart';
+import '../../../core/constants/pref_keys.dart';
 import '../../../core/services/connectivity_service.dart';
 import '../../../core/services/offline_queue_service.dart';
 import '../../shared/services/location_service.dart';
@@ -45,7 +46,7 @@ class LocationReporterService {
 
     // 检查定位开关设置
     final prefs = await SharedPreferences.getInstance();
-    final locationEnabled = prefs.getBool('location_enabled') ?? true;
+    final locationEnabled = prefs.getBool(PrefKeys.locationEnabled) ?? true;
     if (!locationEnabled) {
       debugPrint('[位置上报] 定位上报已关闭');
       return false;
@@ -106,7 +107,7 @@ class LocationReporterService {
   /// 检查并上报位置（根据设置决定是否上报）
   Future<void> _reportLocationIfEnabled() async {
     final prefs = await SharedPreferences.getInstance();
-    final locationEnabled = prefs.getBool('location_enabled') ?? true;
+    final locationEnabled = prefs.getBool(PrefKeys.locationEnabled) ?? true;
     if (!locationEnabled) {
       debugPrint('[位置上报] 定位上报已关闭，跳过本次上报');
       return;

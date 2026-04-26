@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
@@ -15,8 +16,8 @@ public class TrustScoreService : ITrustScoreService
     private readonly AppDbContext _context;
     private readonly ILogger<TrustScoreService> _logger;
 
-    /// <summary>互助次数封顶值（超过此数不再加分）</summary>
-    private const int MaxHelpsCap = 20;
+    /// <summary>互助次数封顶值（超过此数不再加分），使用 AppConstants 统一管理</summary>
+    private const int MaxHelpsCap = AppConstants.TrustScore.MaxHelpsCap;
 
     public TrustScoreService(
         AppDbContext context,
@@ -153,9 +154,9 @@ public class TrustScoreService : ITrustScoreService
         // AvgRating(1-5) × 8 → 归一化到 0-40 分，权重 40%
         // Min(TotalHelps/20, 1) × 100 → 归一化到 0-30 分，权重 30%
         // ResponseRate(0-1) × 100 → 归一化到 0-30 分，权重 30%
-        var ratingPart = avgRating * 8m * 0.4m;
-        var helpsPart = Math.Min((decimal)totalHelps / MaxHelpsCap, 1m) * 100m * 0.3m;
-        var responsePart = responseRate * 100m * 0.3m;
+        var ratingPart = avgRating * AppConstants.TrustScore.RatingMultiplier * AppConstants.TrustScore.RatingWeight;
+        var helpsPart = Math.Min((decimal)totalHelps / MaxHelpsCap, 1m) * 100m * AppConstants.TrustScore.HelpsWeight;
+        var responsePart = responseRate * 100m * AppConstants.TrustScore.ResponseWeight;
         var finalScore = Math.Round(ratingPart + helpsPart + responsePart, 2);
 
         // 更新记录

@@ -12,6 +12,9 @@ class ApiEndpoints {
   static const userPassword = '/user/me/password';
   static const userAvatar = '/user/me/avatar';
 
+  // ==================== 设备/FCM ====================
+  static const deviceToken = '/devices/token';
+
   // ==================== 家庭 ====================
   static const family = '/family';
   static const familyMe = '/family/me';

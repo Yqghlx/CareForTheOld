@@ -67,7 +67,7 @@ public class NotificationHub : Hub
         // 记录连接时间作为初始心跳
         _lastHeartbeat[userId] = DateTime.UtcNow;
 
-        await Groups.AddToGroupAsync(Context.ConnectionId, $"user_{userId}");
+        await Groups.AddToGroupAsync(Context.ConnectionId, AppConstants.SignalRGroups.UserGroupName(userId));
 
         _logger.LogInformation("SignalR 连接: 用户 {UserId}, 连接ID {ConnectionId}, 在线用户 {OnlineCount}, 总连接 {TotalCount}",
             userId, Context.ConnectionId, OnlineUserCount, TotalConnectionCount);
@@ -83,7 +83,7 @@ public class NotificationHub : Hub
         var userId = Context.UserIdentifier;
         if (!string.IsNullOrEmpty(userId))
         {
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"user_{userId}");
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, AppConstants.SignalRGroups.UserGroupName(userId));
 
             // 清理在线连接记录
             if (_onlineUsers.TryGetValue(userId, out var connections))

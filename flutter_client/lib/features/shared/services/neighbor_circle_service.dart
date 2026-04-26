@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import '../../../shared/models/neighbor_circle.dart';
 import '../../../core/constants/api_endpoints.dart';
+import '../../../core/theme/app_theme.dart';
 
 /// 邻里圈管理 API 服务类
 class NeighborCircleService {
@@ -95,7 +96,7 @@ class NeighborCircleService {
   Future<List<NeighborCircle>> searchNearbyCircles({
     required double latitude,
     required double longitude,
-    double radius = 2000,
+    double radius = AppTheme.defaultNeighborSearchRadius,
   }) async {
     final response = await _dio.get(
       ApiEndpoints.neighborCircleSearchNearby,

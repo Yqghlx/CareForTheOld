@@ -9,6 +9,7 @@ import '../../../shared/providers/auth_provider.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../shared/widgets/common_cards.dart';
+import '../../../core/constants/pref_keys.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/validators/form_validators.dart';
 import '../providers/user_provider.dart';
@@ -68,7 +69,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Future<void> _loadLocationSetting() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _locationEnabled = prefs.getBool('location_enabled') ?? true;
+      _locationEnabled = prefs.getBool(PrefKeys.locationEnabled) ?? true;
       _isLoadingLocation = false;
     });
   }
@@ -83,9 +84,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Future<void> _loadNotificationPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _notifyHealth = prefs.getBool('notify_health') ?? true;
-      _notifyMedication = prefs.getBool('notify_medication') ?? true;
-      _notifyNeighbor = prefs.getBool('notify_neighbor') ?? true;
+      _notifyHealth = prefs.getBool(PrefKeys.notifyHealth) ?? true;
+      _notifyMedication = prefs.getBool(PrefKeys.notifyMedication) ?? true;
+      _notifyNeighbor = prefs.getBool(PrefKeys.notifyNeighbor) ?? true;
       _isLoadingPrefs = false;
     });
   }
@@ -99,7 +100,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   /// 保存定位设置并实际控制位置上报服务
   Future<void> _saveLocationSetting(bool enabled) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('location_enabled', enabled);
+    await prefs.setBool(PrefKeys.locationEnabled, enabled);
     setState(() => _locationEnabled = enabled);
 
     // 根据开关状态启动或停止位置上报服务
@@ -272,7 +273,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             value: _notifyHealth,
                             onChanged: (v) {
                               setState(() => _notifyHealth = v);
-                              _saveNotificationPref('notify_health', v);
+                              _saveNotificationPref(PrefKeys.notifyHealth, v);
                             },
                             activeTrackColor: AppTheme.primaryColor,
                             activeThumbColor: AppTheme.primaryColor,
@@ -289,7 +290,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             value: _notifyMedication,
                             onChanged: (v) {
                               setState(() => _notifyMedication = v);
-                              _saveNotificationPref('notify_medication', v);
+                              _saveNotificationPref(PrefKeys.notifyMedication, v);
                             },
                             activeTrackColor: AppTheme.primaryColor,
                             activeThumbColor: AppTheme.primaryColor,
@@ -306,7 +307,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             value: _notifyNeighbor,
                             onChanged: (v) {
                               setState(() => _notifyNeighbor = v);
-                              _saveNotificationPref('notify_neighbor', v);
+                              _saveNotificationPref(PrefKeys.notifyNeighbor, v);
                             },
                             activeTrackColor: AppTheme.primaryColor,
                             activeThumbColor: AppTheme.primaryColor,

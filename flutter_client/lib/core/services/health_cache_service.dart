@@ -75,6 +75,14 @@ class HealthCacheService {
       return [];
     }
   }
+
+  /// 释放资源：关闭 Hive Box
+  void dispose() {
+    _hBox?.close();
+    _mBox?.close();
+    _hBox = null;
+    _mBox = null;
+  }
 }
 
 /// 缓存状态标记，用于 UI 区分"网络数据"和"缓存数据"

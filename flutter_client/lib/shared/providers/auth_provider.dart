@@ -8,6 +8,7 @@ import '../models/user_role.dart';
 import '../models/user.dart';
 import '../../features/shared/services/signalr_service.dart';
 import '../../core/services/fcm_service.dart';
+import '../../core/constants/pref_keys.dart';
 
 /// 认证状态
 class AuthState {
@@ -65,7 +66,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     final refreshToken = await _secureStorage.read(key: 'refreshToken');
     // 非敏感信息从 SharedPreferences 读取
     final prefs = await SharedPreferences.getInstance();
-    final roleStr = prefs.getString('userRole');
+    final roleStr = prefs.getString(PrefKeys.userRole);
 
     if (accessToken != null && refreshToken != null) {
       state = state.copyWith(
@@ -91,8 +92,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
     await _secureStorage.write(key: 'refreshToken', value: refreshToken);
     // 非敏感信息普通存储
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('userRole', user.role.value);
-    await prefs.setString('userId', user.id);
+    await prefs.setString(PrefKeys.userRole, user.role.value);
+    await prefs.setString(PrefKeys.userId, user.id);
 
     state = AuthState(
       isAuthenticated: true,
@@ -127,8 +128,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
     await _secureStorage.delete(key: 'refreshToken');
     // 清除非敏感信息
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('userRole');
-    await prefs.remove('userId');
+    await prefs.remove(PrefKeys.userRole);
+    await prefs.remove(PrefKeys.userId);
 
     // 清除 Sentry 用户上下文
     Sentry.configureScope((scope) => scope.setUser(null));

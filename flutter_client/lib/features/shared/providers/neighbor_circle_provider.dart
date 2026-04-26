@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../shared/models/neighbor_circle.dart';
 import '../services/neighbor_circle_service.dart';
 
@@ -131,7 +132,7 @@ class NeighborCircleNotifier extends StateNotifier<NeighborCircleState> {
   Future<void> searchNearby({
     required double latitude,
     required double longitude,
-    double radius = 2000,
+    double radius = AppTheme.defaultNeighborSearchRadius,
   }) async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {

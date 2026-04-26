@@ -61,6 +61,9 @@ public static class AppConstants
     {
         /// <summary>默认缓存过期时间（分钟），无明确过期要求时使用</summary>
         public const int DefaultExpirationMinutes = 30;
+
+        /// <summary>围栏数据缓存过期时间（分钟），围栏变更频率较低可适当延长</summary>
+        public const int GeoFenceExpirationMinutes = 10;
     }
 
     /// <summary>
@@ -170,10 +173,41 @@ public static class AppConstants
         /// <summary>邻里圈组前缀，完整组名格式：circle_{circleId}</summary>
         public const string CirclePrefix = "circle_";
 
+        /// <summary>用户组前缀，完整组名格式：user_{userId}</summary>
+        public const string UserPrefix = "user_";
+
         /// <summary>生成家庭组名</summary>
         public static string FamilyGroupName(Guid familyId) => $"{FamilyPrefix}{familyId}";
 
         /// <summary>生成邻里圈组名</summary>
         public static string CircleGroupName(Guid circleId) => $"{CirclePrefix}{circleId}";
+
+        /// <summary>生成用户组名</summary>
+        public static string UserGroupName(Guid userId) => $"{UserPrefix}{userId}";
+
+        /// <summary>生成用户组名（string 重载，用于 SignalR Hub 中 UserIdentifier）</summary>
+        public static string UserGroupName(string userId) => $"{UserPrefix}{userId}";
+    }
+
+    /// <summary>
+    /// 信任评分算法参数
+    /// 评分公式：AvgRating×RatingMultiplier×RatingWeight + Min(TotalHelps/MaxHelpsCap,1)×100×HelpsWeight + ResponseRate×100×ResponseWeight
+    /// </summary>
+    public static class TrustScore
+    {
+        /// <summary>评分权重：评分均值占比（40%）</summary>
+        public const decimal RatingWeight = 0.4m;
+
+        /// <summary>评分权重：互助次数占比（30%）</summary>
+        public const decimal HelpsWeight = 0.3m;
+
+        /// <summary>评分权重：响应率占比（30%）</summary>
+        public const decimal ResponseWeight = 0.3m;
+
+        /// <summary>评分归一化乘数：将 1-5 评分映射到 0-40</summary>
+        public const decimal RatingMultiplier = 8m;
+
+        /// <summary>互助次数封顶值，超过此数不再额外加分</summary>
+        public const int MaxHelpsCap = 20;
     }
 }

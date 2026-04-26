@@ -8,6 +8,7 @@ import 'package:logging/logging.dart';
 
 import '../../features/shared/services/emergency_alert_service.dart';
 import '../api/api_client.dart';
+import '../constants/api_endpoints.dart';
 
 /// FCM 后台消息处理入口（必须是顶层函数）
 ///
@@ -84,7 +85,7 @@ class FcmService {
 
     try {
       final apiClient = _ref.read(apiClientProvider);
-      await apiClient.dio.post('/devices/token', data: {
+      await apiClient.dio.post(ApiEndpoints.deviceToken, data: {
         'token': _currentToken,
         'platform': 'android',
       });
@@ -98,7 +99,7 @@ class FcmService {
   Future<void> unregisterTokenFromBackend() async {
     try {
       final apiClient = _ref.read(apiClientProvider);
-      await apiClient.dio.delete('/devices/token');
+      await apiClient.dio.delete(ApiEndpoints.deviceToken);
       _log.info('FCM token 已从后端清除');
     } catch (e) {
       _log.warning('FCM token 清除失败: $e');

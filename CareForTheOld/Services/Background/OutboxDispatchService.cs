@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Services.Hubs;
@@ -72,7 +73,7 @@ public class OutboxDispatchService
                     : JsonSerializer.Deserialize<object>(message.Payload);
 
                 // 通过 SignalR 推送
-                await hubContext.Clients.Group($"user_{message.UserId}")
+                await hubContext.Clients.Group(AppConstants.SignalRGroups.UserGroupName(message.UserId))
                     .SendAsync("ReceiveNotification", message.Type, data);
 
                 // 标记为已投递
