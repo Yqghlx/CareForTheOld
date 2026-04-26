@@ -147,8 +147,7 @@ public class HealthController : ControllerBase
     {
         var userId = this.GetUserId();
         var pdfBytes = await _reportService.GeneratePdfReportAsync(userId, days);
-        var fileName = $"{HealthReportMessages.FileName.Prefix}_{DateTime.UtcNow.ToString(HealthReportMessages.FileName.DateFormat)}{HealthReportMessages.FileName.Extension}";
-        return File(pdfBytes, AppConstants.MimeTypes.Pdf, fileName);
+        return File(pdfBytes, AppConstants.MimeTypes.Pdf, GenerateReportFileName());
     }
 
     /// <summary>
@@ -167,8 +166,7 @@ public class HealthController : ControllerBase
             return Forbid();
 
         var pdfBytes = await _reportService.GeneratePdfReportAsync(memberId, days);
-        var fileName = $"{HealthReportMessages.FileName.Prefix}_{DateTime.UtcNow.ToString(HealthReportMessages.FileName.DateFormat)}{HealthReportMessages.FileName.Extension}";
-        return File(pdfBytes, AppConstants.MimeTypes.Pdf, fileName);
+        return File(pdfBytes, AppConstants.MimeTypes.Pdf, GenerateReportFileName());
     }
 
     /// <summary>
@@ -256,6 +254,12 @@ public class HealthController : ControllerBase
         var members = await _familyService.GetMembersAsync(familyId);
         return members.Any(m => m.UserId == userId);
     }
+
+    /// <summary>
+    /// 生成健康报告文件名
+    /// </summary>
+    private static string GenerateReportFileName()
+        => $"{HealthReportMessages.FileName.Prefix}_{DateTime.UtcNow.ToString(HealthReportMessages.FileName.DateFormat)}{HealthReportMessages.FileName.Extension}";
 
     /// <summary>
     /// 根据健康类型提取对应的数值（转换为 double）

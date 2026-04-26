@@ -139,7 +139,6 @@ public class NeighborHelpService : INeighborHelpService
         };
 
         _context.NeighborHelpRequests.Add(helpRequest);
-        await _context.SaveChangesAsync();
 
         // 记录通知日志（用于后续计算响应率）
         foreach (var neighborId in nearbyUserIds)
@@ -149,9 +148,11 @@ public class NeighborHelpService : INeighborHelpService
                 Id = Guid.NewGuid(),
                 HelpRequestId = helpRequest.Id,
                 UserId = neighborId,
-                NotifiedAt = DateTime.UtcNow,
+                NotifiedAt = now,
             });
         }
+
+        // 一次性保存请求和通知日志，减少数据库交互
         await _context.SaveChangesAsync();
 
         // Outbox Pattern 推送通知给附近邻居
