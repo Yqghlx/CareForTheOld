@@ -485,7 +485,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   }
                   context.showSuccessSnackBar(AppTheme.msgNameUpdated);
                 } else {
-                  context.showErrorSnackBar('修改失败: ${ref.read(userProvider).error}');
+                  context.showErrorSnackBar(AppTheme.msgModifyFailed(ref.read(userProvider).error ?? ''));
                 }
               }
             },

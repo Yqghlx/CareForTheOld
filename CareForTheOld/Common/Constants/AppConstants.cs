@@ -221,6 +221,15 @@ public static class AppConstants
 
         /// <summary>老人离线告警通知</summary>
         public const string ElderOffline = "ElderOffline";
+
+        /// <summary>家庭加入申请通知（子女端）</summary>
+        public const string FamilyJoinRequest = "FamilyJoinRequest";
+
+        /// <summary>家庭加入申请已批准通知（申请人端）</summary>
+        public const string FamilyJoinApproved = "FamilyJoinApproved";
+
+        /// <summary>家庭加入申请已拒绝通知（申请人端）</summary>
+        public const string FamilyJoinRejected = "FamilyJoinRejected";
     }
 
     /// <summary>

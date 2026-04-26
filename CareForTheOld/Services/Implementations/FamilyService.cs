@@ -184,7 +184,7 @@ public class FamilyService : IFamilyService
 
         if (childMembers.Count > 0)
         {
-            await _notificationService.SendToUsersAsync(childMembers, "FamilyJoinRequest", new
+            await _notificationService.SendToUsersAsync(childMembers, AppConstants.NotificationTypes.FamilyJoinRequest, new
             {
                 Title = NotificationMessages.Family.JoinRequestTitle,
                 Content = string.Format(NotificationMessages.Family.JoinRequestContentTemplate, user.RealName, request.Relation, family.FamilyName),
@@ -253,7 +253,7 @@ public class FamilyService : IFamilyService
         var family = await _context.Families.FindAsync(familyId);
         var operatorUser = await _context.Users.FindAsync(operatorId);
 
-        await _notificationService.SendToUserAsync(memberId, "FamilyJoinApproved", new
+        await _notificationService.SendToUserAsync(memberId, AppConstants.NotificationTypes.FamilyJoinApproved, new
         {
             Title = NotificationMessages.Family.JoinApprovedTitle,
             Content = string.Format(NotificationMessages.Family.JoinApprovedContentTemplate,
@@ -291,7 +291,7 @@ public class FamilyService : IFamilyService
         // 通知申请人被拒绝
         var family = await _context.Families.FindAsync(familyId);
 
-        await _notificationService.SendToUserAsync(memberId, "FamilyJoinRejected", new
+        await _notificationService.SendToUserAsync(memberId, AppConstants.NotificationTypes.FamilyJoinRejected, new
         {
             Title = NotificationMessages.Family.JoinRejectedTitle,
             Content = string.Format(NotificationMessages.Family.JoinRejectedContentTemplate, family?.FamilyName ?? NotificationMessages.Family.DefaultFamilyName),

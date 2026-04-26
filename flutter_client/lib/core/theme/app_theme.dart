@@ -166,6 +166,7 @@ class AppTheme {
   static const String msgPasswordMismatch = '两次输入的新密码不一致';
   static const String msgPasswordChanged = '密码修改成功，请重新登录';
   static const String msgPasswordChangeFailed = '修改失败，请重试';
+  static String msgModifyFailed(String error) => '修改失败: $error';
   static const String msgOldPasswordIncorrect = '旧密码不正确';
   static const String msgAvatarUpdated = '头像更新成功';
   static const String msgAvatarFailed = '头像上传失败，请重试';
@@ -219,9 +220,9 @@ class AppTheme {
   static const String msgPlanCreated = '用药计划创建成功';
   static const String msgPlanCreateFailed = '用药计划创建失败，请稍后重试';
   static const String msgPlanUpdated = '用药计划已更新';
-  static const String msgReminderEnabled = '已启用用药提醒';
-  static const String msgReminderDisabled = '已停用用药提醒';
-  static const String msgPlanDeleted = '已删除用药计划';
+  static String msgReminderEnabled(String name) => '已启用 $name 的用药提醒';
+  static String msgReminderDisabled(String name) => '已停用 $name 的用药提醒';
+  static String msgPlanDeleted(String name) => '已删除 $name 的用药计划';
   static const String msgMedicineNameInvalid = '请输入有效的药品名称（1-50字符）';
   static const String msgDosageInvalid = '请输入有效的剂量（1-30字符）';
   static const String msgReminderTimeRequired = '请至少添加一个提醒时间';

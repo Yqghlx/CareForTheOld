@@ -663,9 +663,9 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       ref.invalidate(elderMedicationPlansProvider(widget.elderId));
       if (mounted) {
         if (active) {
-          context.showSuccessSnackBar('已启用 ${plan.medicineName} 的用药提醒');
+          context.showSuccessSnackBar(AppTheme.msgReminderEnabled(plan.medicineName));
         } else {
-          context.showSnackBar('已停用 ${plan.medicineName} 的用药提醒');
+          context.showSnackBar(AppTheme.msgReminderDisabled(plan.medicineName));
         }
       }
     } catch (e) {
@@ -690,7 +690,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       await service.deletePlan(plan.id);
       ref.invalidate(elderMedicationPlansProvider(widget.elderId));
       if (mounted) {
-        context.showSnackBar('已删除 ${plan.medicineName} 的用药计划');
+        context.showSnackBar(AppTheme.msgPlanDeleted(plan.medicineName));
       }
     } catch (e) {
       if (mounted) {
