@@ -224,19 +224,20 @@ public class EmergencyService : IEmergencyService
         Guid callId,
         bool isReminder)
     {
+        // 短信内容模板对所有子女相同，提取到循环外避免重复格式化
+        var smsContent = isReminder
+            ? string.Format(NotificationMessages.Emergency.SmsReminderContentTemplate, elderName)
+            : string.Format(NotificationMessages.Emergency.SmsCallContentTemplate, elderName);
+
         // 批量收集 SmsRecord，循环结束后一次性写入数据库（避免 N+1）
         var smsRecords = new List<SmsRecord>();
 
         foreach (var child in children)
         {
-            var content = isReminder
-                ? string.Format(NotificationMessages.Emergency.SmsReminderContentTemplate, elderName)
-                : string.Format(NotificationMessages.Emergency.SmsCallContentTemplate, elderName);
-
             var (success, errorMessage) = (false, "未知错误");
             try
             {
-                (success, errorMessage) = await _smsService.SendAsync(child.User.PhoneNumber, content);
+                (success, errorMessage) = await _smsService.SendAsync(child.User.PhoneNumber, smsContent);
             }
             catch (Exception ex)
             {
@@ -249,7 +250,7 @@ public class EmergencyService : IEmergencyService
             {
                 Id = Guid.NewGuid(),
                 PhoneNumber = child.User.PhoneNumber,
-                Content = content,
+                Content = smsContent,
                 ServiceName = _smsService.ServiceName,
                 Success = success,
                 ErrorMessage = errorMessage,

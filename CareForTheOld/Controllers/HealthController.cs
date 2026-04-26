@@ -174,6 +174,7 @@ public class HealthController : ControllerBase
     /// 获取自己的健康趋势异常检测（老人查看）
     /// </summary>
     [HttpGet("me/anomaly-detection")]
+    [Authorize(Roles = "Elder")]
     [CacheControl(MaxAgeSeconds = 300)]
     public async Task<ApiResponse<TrendAnomalyDetectionResponse>> GetMyAnomalyDetection(
         [FromQuery] HealthType? type)
