@@ -166,15 +166,7 @@ public class EmergencyService : IEmergencyService
     /// </summary>
     private async Task SendEmergencyNotificationAsync(Guid elderId, string elderName, Guid callId, bool isReminder = false)
     {
-        var familyMember = await _context.FamilyMembers
-            .FirstOrDefaultAsync(fm => fm.UserId == elderId);
-
-        if (familyMember == null) return;
-
-        var children = await _context.FamilyMembers
-            .Include(fm => fm.User)
-            .Where(fm => fm.FamilyId == familyMember.FamilyId && fm.Role == UserRole.Child)
-            .ToListAsync();
+        var children = await GetChildrenAsync(elderId);
 
         if (children.Any())
         {
@@ -327,15 +319,7 @@ public class EmergencyService : IEmergencyService
 
             if (call == null) return;
 
-            var familyMember = await _context.FamilyMembers
-                .FirstOrDefaultAsync(fm => fm.UserId == call.ElderId);
-
-            if (familyMember == null) return;
-
-            var children = await _context.FamilyMembers
-                .Include(fm => fm.User)
-                .Where(fm => fm.FamilyId == familyMember.FamilyId && fm.Role == UserRole.Child)
-                .ToListAsync();
+            var children = await GetChildrenAsync(call.ElderId);
 
             await SendSmsAlertToChildrenAsync(children, call.Elder.RealName, callId, isReminder);
         }
@@ -449,4 +433,20 @@ public class EmergencyService : IEmergencyService
         Longitude = c.Longitude,
         BatteryLevel = c.BatteryLevel,
     };
+
+    /// <summary>
+    /// 查询指定老人所在家庭的子女成员列表（含用户信息）
+    /// </summary>
+    private async Task<List<FamilyMember>> GetChildrenAsync(Guid elderId)
+    {
+        var familyMember = await _context.FamilyMembers
+            .FirstOrDefaultAsync(fm => fm.UserId == elderId);
+
+        if (familyMember == null) return [];
+
+        return await _context.FamilyMembers
+            .Include(fm => fm.User)
+            .Where(fm => fm.FamilyId == familyMember.FamilyId && fm.Role == UserRole.Child)
+            .ToListAsync();
+    }
 }
