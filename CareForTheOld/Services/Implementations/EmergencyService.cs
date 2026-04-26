@@ -74,17 +74,38 @@ public class EmergencyService : IEmergencyService
         await _context.SaveChangesAsync();
 
         // 异步发送紧急呼叫通知给子女（通过 Hangfire 持久化）
-        BackgroundJob.Enqueue(() => SendEmergencyNotificationJobAsync(
-            elderId, familyMember.User.RealName, call.Id));
+        try
+        {
+            BackgroundJob.Enqueue(() => SendEmergencyNotificationJobAsync(
+                elderId, familyMember.User.RealName, call.Id));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "紧急呼叫通知入队失败，呼叫 {CallId}", call.Id);
+        }
 
         // 异步广播给邻里圈附近邻居（通过 Hangfire 持久化）
-        BackgroundJob.Enqueue<INeighborHelpService>(
-            svc => svc.BroadcastHelpRequestAsync(call.Id));
+        try
+        {
+            BackgroundJob.Enqueue<INeighborHelpService>(
+                svc => svc.BroadcastHelpRequestAsync(call.Id));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "邻里广播入队失败，呼叫 {CallId}", call.Id);
+        }
 
         // 安排二次提醒检查（如果无人响应则再次通知）
-        BackgroundJob.Schedule<EmergencyService>(
-            svc => svc.CheckAndSendFollowUpAsync(call.Id),
-            TimeSpan.FromMinutes(_followUpDelayMinutes));
+        try
+        {
+            BackgroundJob.Schedule<EmergencyService>(
+                svc => svc.CheckAndSendFollowUpAsync(call.Id),
+                TimeSpan.FromMinutes(_followUpDelayMinutes));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "二次提醒调度失败，呼叫 {CallId}", call.Id);
+        }
 
         // 返回响应
         return new EmergencyCallResponse
