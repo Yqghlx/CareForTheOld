@@ -83,6 +83,30 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
               ),
               const SizedBox(height: 20),
 
+              // 离线缓存提示
+              if (healthState.isFromCache)
+                Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.cloud_off, size: 18, color: Colors.orange.shade700),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          '网络未连接，当前显示缓存数据',
+                          style: TextStyle(fontSize: 16, color: Colors.orange.shade700),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
               // 统计概览
               statsAsync.when(
                 data: (stats) => _buildStatsBar(stats),

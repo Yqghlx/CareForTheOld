@@ -130,6 +130,22 @@ class HealthRecord {
     return dt.isUtc ? dt : DateTime.utc(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.millisecond, dt.microsecond);
   }
 
+  /// 序列化为 JSON（用于本地缓存）
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'userId': userId,
+    'realName': realName,
+    'type': type.value,
+    'systolic': systolic,
+    'diastolic': diastolic,
+    'bloodSugar': bloodSugar,
+    'heartRate': heartRate,
+    'temperature': temperature,
+    'note': note,
+    'recordedAt': recordedAt.toIso8601String(),
+    'createdAt': createdAt.toIso8601String(),
+  };
+
   /// 获取格式化的显示值
   String get displayValue => type.formatValue(this);
 }

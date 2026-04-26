@@ -125,4 +125,20 @@ class MedicationPlan {
 
   /// 格式化提醒时间显示
   String get reminderTimesText => reminderTimes.join('、');
+
+  /// 序列化为 JSON（用于本地缓存）
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'elderId': elderId,
+    'elderName': elderName,
+    'medicineName': medicineName,
+    'dosage': dosage,
+    'frequency': frequency.value,
+    'reminderTimes': reminderTimes,
+    'startDate': startDate.toIso8601String(),
+    'endDate': endDate?.toIso8601String(),
+    'isActive': isActive,
+    'createdAt': createdAt.toIso8601String(),
+    'updatedAt': updatedAt.toIso8601String(),
+  };
 }

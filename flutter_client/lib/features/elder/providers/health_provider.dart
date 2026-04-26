@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
+import '../../../core/services/health_cache_service.dart';
 import '../services/health_service.dart';
 import '../../../shared/models/health_record.dart';
 import '../../../shared/models/health_stats.dart';
@@ -10,18 +11,25 @@ final healthServiceProvider = Provider<HealthService>((ref) {
   return HealthService(dio);
 });
 
+/// 健康缓存服务 Provider
+final healthCacheServiceProvider = Provider<HealthCacheService>((ref) {
+  return HealthCacheService();
+});
+
 /// 健康记录列表状态
 class HealthRecordsState {
   final List<HealthRecord> records;
   final bool isLoading;
   final String? error;
   final HealthType? selectedFilter;
+  final bool isFromCache; // 标记数据来源是否为本地缓存
 
   const HealthRecordsState({
     this.records = const [],
     this.isLoading = false,
     this.error,
     this.selectedFilter,
+    this.isFromCache = false,
   });
 
   HealthRecordsState copyWith({
@@ -29,6 +37,7 @@ class HealthRecordsState {
     bool? isLoading,
     String? error,
     HealthType? selectedFilter,
+    bool? isFromCache,
     bool clearError = false,
   }) {
     return HealthRecordsState(
@@ -36,6 +45,7 @@ class HealthRecordsState {
       isLoading: isLoading ?? this.isLoading,
       error: clearError ? null : (error ?? this.error),
       selectedFilter: selectedFilter ?? this.selectedFilter,
+      isFromCache: isFromCache ?? this.isFromCache,
     );
   }
 }
@@ -43,22 +53,41 @@ class HealthRecordsState {
 /// 健康记录列表 Notifier
 class HealthRecordsNotifier extends StateNotifier<HealthRecordsState> {
   final HealthService _healthService;
+  final HealthCacheService _cacheService;
 
-  HealthRecordsNotifier(this._healthService)
+  HealthRecordsNotifier(this._healthService, this._cacheService)
       : super(const HealthRecordsState());
 
-  /// 加载健康记录
+  /// 加载健康记录（网络优先，失败降级到缓存）
   Future<void> loadRecords({HealthType? type}) async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
       final records = await _healthService.getMyRecords(type: type);
+      // 网络成功：更新缓存
+      if (type == null) {
+        await _cacheService.cacheMyRecords(records);
+      }
       state = state.copyWith(
         records: records,
         isLoading: false,
         selectedFilter: type,
+        isFromCache: false,
       );
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      // 网络失败：降级读取缓存
+      final cached = type != null
+          ? _cacheService.getCachedRecordsByType(type)
+          : _cacheService.getCachedMyRecords();
+      if (cached.isNotEmpty) {
+        state = state.copyWith(
+          records: cached,
+          isLoading: false,
+          selectedFilter: type,
+          isFromCache: true,
+        );
+      } else {
+        state = state.copyWith(isLoading: false, error: e.toString());
+      }
     }
   }
 
@@ -84,6 +113,8 @@ class HealthRecordsNotifier extends StateNotifier<HealthRecordsState> {
       );
       // 将新记录插入列表头部
       state = state.copyWith(records: [newRecord, ...state.records]);
+      // 更新缓存
+      await _cacheService.cacheMyRecords(state.records);
       return true;
     } catch (e) {
       state = state.copyWith(error: e.toString());
@@ -98,6 +129,7 @@ class HealthRecordsNotifier extends StateNotifier<HealthRecordsState> {
       state = state.copyWith(
         records: state.records.where((r) => r.id != id).toList(),
       );
+      await _cacheService.cacheMyRecords(state.records);
       return true;
     } catch (e) {
       state = state.copyWith(error: e.toString());
@@ -115,7 +147,8 @@ class HealthRecordsNotifier extends StateNotifier<HealthRecordsState> {
 final healthRecordsProvider =
     StateNotifierProvider<HealthRecordsNotifier, HealthRecordsState>((ref) {
   final service = ref.watch(healthServiceProvider);
-  return HealthRecordsNotifier(service);
+  final cache = ref.watch(healthCacheServiceProvider);
+  return HealthRecordsNotifier(service, cache);
 });
 
 /// 健康统计数据 Provider（自动获取）
