@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -7,6 +6,7 @@ import '../../main.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../config/app_config.dart';
 import '../constants/api_endpoints.dart';
+import '../services/app_logger.dart';
 import '../theme/app_theme.dart';
 
 /// API 客户端配置
@@ -90,7 +90,7 @@ class ApiClient {
 
         final token = _tokenGetter?.call();
         // 调试日志（仅记录路径，不输出 Token 敏感信息）
-        debugPrint('API请求: ${options.path}');
+        AppLogger.debug('API请求: ${options.path}');
         if (token != null && token.isNotEmpty) {
           options.headers['Authorization'] = 'Bearer $token';
         }
@@ -123,7 +123,7 @@ class ApiClient {
 
         // 排除刷新接口本身的 401，避免无限递归
         if (error.requestOptions.path.contains(ApiEndpoints.authRefresh)) {
-          debugPrint('刷新令牌接口返回 401，令牌已失效');
+          AppLogger.warning('刷新令牌接口返回 401，令牌已失效');
           _onUnauthorized?.call();
           _processPendingRequests(refreshed: false);
           return handler.next(error);
@@ -131,7 +131,7 @@ class ApiClient {
 
         final refreshToken = _refreshTokenGetter?.call();
         if (refreshToken == null || refreshToken.isEmpty) {
-          debugPrint('无可用刷新令牌，直接登出');
+          AppLogger.warning('无可用刷新令牌，直接登出');
           _onUnauthorized?.call();
           return handler.next(error);
         }
@@ -142,31 +142,31 @@ class ApiClient {
 
         // 如果已有刷新流程正在进行，等待即可
         if (_isRefreshing) {
-          debugPrint('令牌刷新进行中，请求排队等待: ${error.requestOptions.path}');
+          AppLogger.debug('令牌刷新进行中，请求排队等待: ${error.requestOptions.path}');
           return;
         }
 
         // 开始刷新流程
         _isRefreshing = true;
-        debugPrint('检测到 401，开始刷新令牌...');
+        AppLogger.info('检测到 401，开始刷新令牌...');
 
         try {
           final newTokens = await _refreshTokens(refreshToken);
           if (newTokens != null) {
-            debugPrint('令牌刷新成功，重试排队请求');
+            AppLogger.info('令牌刷新成功，重试排队请求');
             // 通知外部更新令牌存储
             await _onTokenRefreshed?.call(
                 newTokens['accessToken']!, newTokens['refreshToken']!);
             _isRefreshing = false;
             _processPendingRequests(refreshed: true);
           } else {
-            debugPrint('令牌刷新失败，执行登出');
+            AppLogger.warning('令牌刷新失败，执行登出');
             _isRefreshing = false;
             _onUnauthorized?.call();
             _processPendingRequests(refreshed: false);
           }
         } catch (e) {
-          debugPrint('令牌刷新异常: $e');
+          AppLogger.error('令牌刷新异常: $e');
           _isRefreshing = false;
           _onUnauthorized?.call();
           _processPendingRequests(refreshed: false);
@@ -204,10 +204,10 @@ class ApiClient {
       }
       return null;
     } on DioException catch (e) {
-      debugPrint('刷新令牌请求失败: ${e.message}');
+      AppLogger.error('刷新令牌请求失败: ${e.message}');
       return null;
     } catch (e) {
-      debugPrint('刷新令牌未知异常: $e');
+      AppLogger.error('刷新令牌未知异常: $e');
       return null;
     }
   }

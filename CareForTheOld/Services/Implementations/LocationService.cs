@@ -104,15 +104,7 @@ public class LocationService : ILocationService
 
         if (record == null) return null;
 
-        return new LocationRecordResponse
-        {
-            Id = record.Id,
-            UserId = record.UserId,
-            RealName = record.User.RealName,
-            Latitude = record.Latitude,
-            Longitude = record.Longitude,
-            RecordedAt = record.RecordedAt,
-        };
+        return MapToResponse(record);
     }
 
     /// <summary>
@@ -128,15 +120,7 @@ public class LocationService : ILocationService
             .Take(limit)
             .ToListAsync();
 
-        return records.Select(r => new LocationRecordResponse
-        {
-            Id = r.Id,
-            UserId = r.UserId,
-            RealName = r.User.RealName,
-            Latitude = r.Latitude,
-            Longitude = r.Longitude,
-            RecordedAt = r.RecordedAt,
-        }).ToList();
+        return records.Select(MapToResponse).ToList();
     }
 
     /// <summary>
@@ -244,4 +228,17 @@ public class LocationService : ILocationService
             }
         }
     }
+
+    /// <summary>
+    /// 将 LocationRecord 实体映射为响应 DTO
+    /// </summary>
+    private static LocationRecordResponse MapToResponse(LocationRecord r) => new()
+    {
+        Id = r.Id,
+        UserId = r.UserId,
+        RealName = r.User.RealName,
+        Latitude = r.Latitude,
+        Longitude = r.Longitude,
+        RecordedAt = r.RecordedAt,
+    };
 }
