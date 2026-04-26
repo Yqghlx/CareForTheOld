@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/models/notification_record.dart';
@@ -6,6 +5,7 @@ import '../services/notification_record_service.dart';
 import 'package:dio/dio.dart';
 import '../../../core/extensions/api_error_extension.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/services/app_logger.dart';
 
 /// 通知状态
 class NotificationListState {
@@ -112,7 +112,7 @@ class NotificationListNotifier extends StateNotifier<NotificationListState> {
       final count = await _service.getUnreadCount();
       state = state.copyWith(unreadCount: count);
     } catch (e) {
-      debugPrint('加载未读数量失败: $e');
+      AppLogger.error('加载未读数量失败: $e');
     }
   }
 
@@ -132,7 +132,7 @@ class NotificationListNotifier extends StateNotifier<NotificationListState> {
       final unreadCount = updatedNotifications.where((n) => !n.isRead).length;
       state = state.copyWith(notifications: updatedNotifications, unreadCount: unreadCount);
     } catch (e) {
-      debugPrint('标记已读失败: $e');
+      AppLogger.error('标记已读失败: $e');
     }
   }
 
@@ -148,7 +148,7 @@ class NotificationListNotifier extends StateNotifier<NotificationListState> {
       }).toList();
       state = state.copyWith(notifications: updatedNotifications, unreadCount: 0);
     } catch (e) {
-      debugPrint('全部标记已读失败: $e');
+      AppLogger.error('全部标记已读失败: $e');
     }
   }
 }

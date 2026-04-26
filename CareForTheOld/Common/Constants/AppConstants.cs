@@ -52,6 +52,18 @@ public static class AppConstants
     }
 
     /// <summary>
+    /// 心跳监控相关常量
+    /// </summary>
+    public static class Heartbeat
+    {
+        /// <summary>心跳超时阈值（分钟），超过此时间无心跳视为掉线</summary>
+        public const int DefaultTimeoutMinutes = 5;
+
+        /// <summary>告警冷却时间（分钟），同一老人两次告警的最小间隔</summary>
+        public const int DefaultAlertCooldownMinutes = 15;
+    }
+
+    /// <summary>
     /// 邻里互助相关常量
     /// </summary>
     public static class NeighborHelp
