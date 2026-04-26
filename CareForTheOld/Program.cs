@@ -271,13 +271,13 @@ static string GetClientIp(HttpContext context)
 
 builder.Services.AddRateLimiter(options =>
 {
-    // 认证接口限流：每 IP 每分钟 10 次
+    // 认证接口限流：每 IP 每分钟 30 次（开发环境多设备共享 IP，需较高配额）
     options.AddPolicy("AuthPolicy", context =>
         RateLimitPartition.GetSlidingWindowLimiter(
             partitionKey: GetClientIp(context),
             factory: _ => new SlidingWindowRateLimiterOptions
             {
-                PermitLimit = builder.Configuration.GetValue("RateLimit:AuthPermitLimit", 10),
+                PermitLimit = builder.Configuration.GetValue("RateLimit:AuthPermitLimit", 30),
                 Window = TimeSpan.FromSeconds(builder.Configuration.GetValue("RateLimit:AuthWindow", 60)),
                 SegmentsPerWindow = 2,
                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
@@ -297,40 +297,53 @@ builder.Services.AddRateLimiter(options =>
                 QueueLimit = 0
             }));
 
-    // 加入家庭限流：每用户每5分钟最多5次，防止邀请码暴力破解
+    // 加入家庭限流：每用户每5分钟，防止邀请码暴力破解（阈值可配置）
     options.AddPolicy("JoinFamilyPolicy", context =>
         RateLimitPartition.GetSlidingWindowLimiter(
             partitionKey: context.User?.FindFirst("sub")?.Value ?? GetClientIp(context),
             factory: _ => new SlidingWindowRateLimiterOptions
             {
-                PermitLimit = 5,
-                Window = TimeSpan.FromMinutes(5),
+                PermitLimit = builder.Configuration.GetValue("RateLimit:JoinFamilyPermitLimit", 5),
+                Window = TimeSpan.FromSeconds(builder.Configuration.GetValue("RateLimit:JoinFamilyWindow", 300)),
                 SegmentsPerWindow = 2,
                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                 QueueLimit = 0
             }));
 
-    // 加入邻里圈限流：每用户每5分钟最多10次，防止邀请码暴力破解
+    // 加入邻里圈限流：每用户每5分钟，防止邀请码暴力破解（阈值可配置）
     options.AddPolicy("JoinCirclePolicy", context =>
         RateLimitPartition.GetSlidingWindowLimiter(
             partitionKey: context.User?.FindFirst("sub")?.Value ?? GetClientIp(context),
             factory: _ => new SlidingWindowRateLimiterOptions
             {
-                PermitLimit = 10,
-                Window = TimeSpan.FromMinutes(5),
+                PermitLimit = builder.Configuration.GetValue("RateLimit:JoinCirclePermitLimit", 10),
+                Window = TimeSpan.FromSeconds(builder.Configuration.GetValue("RateLimit:JoinCircleWindow", 300)),
                 SegmentsPerWindow = 2,
                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                 QueueLimit = 0
             }));
 
-    // 紧急呼叫限流：每用户每分钟最多3次，防止恶意刷量
+    // 紧急呼叫限流：每用户每分钟，防止恶意刷量（阈值可配置）
     options.AddPolicy("EmergencyPolicy", context =>
         RateLimitPartition.GetSlidingWindowLimiter(
             partitionKey: context.User?.FindFirst("sub")?.Value ?? GetClientIp(context),
             factory: _ => new SlidingWindowRateLimiterOptions
             {
-                PermitLimit = 3,
-                Window = TimeSpan.FromMinutes(1),
+                PermitLimit = builder.Configuration.GetValue("RateLimit:EmergencyPermitLimit", 3),
+                Window = TimeSpan.FromSeconds(builder.Configuration.GetValue("RateLimit:EmergencyWindow", 60)),
+                SegmentsPerWindow = 2,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0
+            }));
+
+    // 健康检查端点限流：每 IP 每分钟，防止被滥用
+    options.AddPolicy("HealthPolicy", context =>
+        RateLimitPartition.GetSlidingWindowLimiter(
+            partitionKey: GetClientIp(context),
+            factory: _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = builder.Configuration.GetValue("RateLimit:HealthPermitLimit", 100),
+                Window = TimeSpan.FromSeconds(builder.Configuration.GetValue("RateLimit:HealthWindow", 60)),
                 SegmentsPerWindow = 2,
                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                 QueueLimit = 0
@@ -351,8 +364,9 @@ builder.Services.AddRateLimiter(options =>
             "限流触发 | IP: {ClientIp} | 用户: {UserId} | 方法: {Method} | 路径: {Path} | 时间: {Timestamp:O}",
             clientIp, userId, method, path, DateTime.UtcNow);
 
-        // 返回 JSON 格式的错误响应
+        // 返回 JSON 格式的错误响应 + Retry-After 响应头，告知客户端多久后可重试
         context.HttpContext.Response.ContentType = "application/json";
+        context.HttpContext.Response.Headers.RetryAfter = "60";
         await context.HttpContext.Response.WriteAsync(
             "{\"success\":false,\"message\":\"请求过于频繁，请稍后再试\",\"data\":null}",
             cancellationToken);

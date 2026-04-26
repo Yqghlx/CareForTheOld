@@ -70,6 +70,10 @@ services:
       OSS_BUCKET_NAME: ${OSS_BUCKET_NAME:-}
       # SMS 配置（可选）
       Sms__Provider: ${Sms__Provider:-aliyun}
+      # Firebase 推送通知配置
+      Firebase__CredentialsPath: /app/firebase/service-account.json
+    volumes:
+      - ./CareForTheOld/firebase/service-account.json:/app/firebase/service-account.json:ro
     depends_on:
       postgres:
         condition: service_healthy
