@@ -213,7 +213,7 @@ public class LocationService : ILocationService
 
         await _notificationService.SendToUsersAsync(
             children.Select(c => c.UserId),
-            "GeoFenceAlert",
+            AppConstants.NotificationTypes.GeoFenceAlert,
             new
             {
                 Title = "安全区域预警",
@@ -223,7 +223,7 @@ public class LocationService : ILocationService
                 FenceId = fenceId,
                 FenceRadius = fenceRadius,
                 Distance = distance,
-                AlertLevel = distance > fenceRadius * 2 ? "Critical" : "Warning"
+                AlertLevel = distance > fenceRadius * 2 ? AppConstants.AlertLevels.Critical : AppConstants.AlertLevels.Warning
             }
         );
 

@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using CareForTheOld.Common.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
@@ -136,7 +137,7 @@ public class NotificationHub : Hub
     /// </summary>
     public async Task JoinFamilyGroup(Guid familyId)
     {
-        await Groups.AddToGroupAsync(Context.ConnectionId, $"family_{familyId}");
+        await Groups.AddToGroupAsync(Context.ConnectionId, AppConstants.SignalRGroups.FamilyGroupName(familyId));
         _logger.LogDebug("用户 {UserId} 加入家庭组 {FamilyId}", Context.UserIdentifier, familyId);
     }
 
@@ -145,7 +146,7 @@ public class NotificationHub : Hub
     /// </summary>
     public async Task LeaveFamilyGroup(Guid familyId)
     {
-        await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"family_{familyId}");
+        await Groups.RemoveFromGroupAsync(Context.ConnectionId, AppConstants.SignalRGroups.FamilyGroupName(familyId));
         _logger.LogDebug("用户 {UserId} 离开家庭组 {FamilyId}", Context.UserIdentifier, familyId);
     }
 
@@ -154,7 +155,7 @@ public class NotificationHub : Hub
     /// </summary>
     public async Task JoinCircleGroup(Guid circleId)
     {
-        await Groups.AddToGroupAsync(Context.ConnectionId, $"circle_{circleId}");
+        await Groups.AddToGroupAsync(Context.ConnectionId, AppConstants.SignalRGroups.CircleGroupName(circleId));
         _logger.LogDebug("用户 {UserId} 加入邻里圈组 {CircleId}", Context.UserIdentifier, circleId);
     }
 

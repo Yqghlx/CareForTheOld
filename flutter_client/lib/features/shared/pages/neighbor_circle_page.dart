@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../shared/widgets/common_states.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 import '../providers/neighbor_circle_provider.dart';
 import 'trust_ranking_page.dart';
@@ -87,7 +88,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: AppTheme.radiusXS,
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,

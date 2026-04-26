@@ -220,7 +220,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                               padding: const EdgeInsets.all(4),
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: AppTheme.radiusXS,
                               ),
                               child: const Icon(
                                 Icons.camera_alt,

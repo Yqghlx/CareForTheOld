@@ -219,7 +219,7 @@ public class MedicationReminderService : BackgroundService
                             PlanId = planId,
                             MedicineName = plan.MedicineName,
                             ScheduledAt = scheduledAt,
-                            AlertLevel = "Warning"
+                            AlertLevel = AppConstants.AlertLevels.Warning
                         }),
                         $"子女未服药通知-{child.UserId}");
                 }

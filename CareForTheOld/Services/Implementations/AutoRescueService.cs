@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
@@ -84,7 +85,7 @@ public class AutoRescueService : IAutoRescueService
         {
             await notificationService.SendToUsersAsync(
                 childIds,
-                "AutoRescueAlert",
+                AppConstants.NotificationTypes.AutoRescueAlert,
                 new
                 {
                     Title = "紧急：请尽快确认老人安全",
@@ -94,7 +95,7 @@ public class AutoRescueService : IAutoRescueService
                     ElderName = elderName,
                     TriggerType = triggerType.ToString(),
                     DelayMinutes = _delayMinutes,
-                    AlertLevel = "Critical",
+                    AlertLevel = AppConstants.AlertLevels.Critical,
                 });
 
             // 更新通知时间
@@ -131,7 +132,7 @@ public class AutoRescueService : IAutoRescueService
         {
             // 检查子女是否已读通知（查 NotificationRecord 的 IsRead）
             var hasRead = await context.NotificationRecords
-                .AnyAsync(n => n.Type == "AutoRescueAlert" &&
+                .AnyAsync(n => n.Type == AppConstants.NotificationTypes.AutoRescueAlert &&
                                context.FamilyMembers
                                    .Where(fm => fm.FamilyId == record.FamilyId && fm.Role == UserRole.Child)
                                    .Select(fm => fm.UserId)
@@ -145,7 +146,7 @@ public class AutoRescueService : IAutoRescueService
                 .ToListAsync();
 
             var anyChildRead = await context.NotificationRecords
-                .Where(n => n.Type == "AutoRescueAlert" &&
+                .Where(n => n.Type == AppConstants.NotificationTypes.AutoRescueAlert &&
                             childIds.Contains(n.UserId) &&
                             n.CreatedAt >= record.TriggeredAt &&
                             n.IsRead)
@@ -178,7 +179,7 @@ public class AutoRescueService : IAutoRescueService
             {
                 await notificationService.SendToUsersAsync(
                     childIds,
-                    "AutoRescueBroadcast",
+                    AppConstants.NotificationTypes.AutoRescueBroadcast,
                     new
                     {
                         Title = "已自动通知邻里圈",

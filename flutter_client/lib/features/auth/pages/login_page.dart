@@ -127,7 +127,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                       height: 100,
                       decoration: BoxDecoration(
                         gradient: AppTheme.warmGradient,
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: AppTheme.radius2XL,
                         boxShadow: [
                           BoxShadow(
                             color: AppTheme.primaryColor.withValues(alpha: 0.3),
@@ -240,7 +240,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                       margin: const EdgeInsets.only(bottom: 16),
                       decoration: BoxDecoration(
                         color: AppTheme.errorColor.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: AppTheme.radiusXS,
                         border: Border.all(color: AppTheme.errorColor.withValues(alpha: 0.3)),
                       ),
                       child: Row(

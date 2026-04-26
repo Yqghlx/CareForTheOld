@@ -61,10 +61,13 @@ class AppTheme {
   static const double buttonRadius = 12.0;
 
   /// 预定义 BorderRadius 常量（统一项目中圆角使用）
+  static const BorderRadius radiusXS = BorderRadius.all(Radius.circular(8));
   static const BorderRadius radiusS = BorderRadius.all(Radius.circular(12));
   static const BorderRadius radiusM = BorderRadius.all(Radius.circular(14));
   static const BorderRadius radiusL = BorderRadius.all(Radius.circular(16));
   static const BorderRadius radiusXL = BorderRadius.all(Radius.circular(20));
+  static const BorderRadius radius2XL = BorderRadius.all(Radius.circular(24));
+  static const BorderRadius radius3XL = BorderRadius.all(Radius.circular(32));
 
   /// 统一间距常量
   static const double spacingXs = 4.0;

@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Models.Entities;
@@ -115,7 +116,7 @@ public class NotificationService : INotificationService
     /// </summary>
     public async Task SendToFamilyAsync(Guid familyId, string type, object data)
     {
-        await _hubContext.Clients.Group($"family_{familyId}")
+        await _hubContext.Clients.Group(AppConstants.SignalRGroups.FamilyGroupName(familyId))
             .SendAsync("ReceiveNotification", type, data);
     }
 

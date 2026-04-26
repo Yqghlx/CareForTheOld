@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
@@ -118,7 +119,7 @@ public class HeartbeatMonitorService
                         ElderName = user.RealName,
                         OfflineMinutes = offlineMinutes,
                         LastHeartbeat = lastHeartbeat,
-                        AlertLevel = "Critical"
+                        AlertLevel = AppConstants.AlertLevels.Critical
                     }
                 );
             }

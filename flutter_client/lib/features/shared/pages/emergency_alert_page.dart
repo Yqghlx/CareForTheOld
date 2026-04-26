@@ -162,7 +162,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
           backgroundColor: Colors.white,
           foregroundColor: Colors.red,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(32),
+            borderRadius: AppTheme.radius3XL,
           ),
         ),
       ),
@@ -188,7 +188,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
         style: OutlinedButton.styleFrom(
           side: const BorderSide(color: Colors.white, width: 2),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(32),
+            borderRadius: AppTheme.radius3XL,
           ),
         ),
       ),

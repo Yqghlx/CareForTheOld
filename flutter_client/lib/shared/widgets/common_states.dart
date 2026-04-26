@@ -233,7 +233,7 @@ class SkeletonCard extends StatelessWidget {
       child: Card(
         margin: EdgeInsets.only(bottom: 12),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(16)),
+          borderRadius: AppTheme.radiusL,
         ),
         child: Padding(
           padding: EdgeInsets.all(16),
@@ -259,7 +259,7 @@ class SkeletonCard extends StatelessWidget {
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           color: AppTheme.grey300,
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          borderRadius: AppTheme.radiusXS,
                         ),
                       ),
                     ),
@@ -271,7 +271,7 @@ class SkeletonCard extends StatelessWidget {
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           color: AppTheme.grey300,
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          borderRadius: AppTheme.radiusXS,
                         ),
                       ),
                     ),

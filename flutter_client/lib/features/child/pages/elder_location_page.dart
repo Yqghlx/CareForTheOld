@@ -549,7 +549,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
               height: 36,
               decoration: BoxDecoration(
                 color: Colors.blue.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: AppTheme.radiusXS,
               ),
               child: const Icon(Icons.location_history, color: Colors.blue, size: 20),
             ),

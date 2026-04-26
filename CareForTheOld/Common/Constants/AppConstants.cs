@@ -86,4 +86,67 @@ public static class AppConstants
         /// <summary>最大文件大小（字节），默认 2 MB</summary>
         public const long MaxAvatarSizeBytes = 2 * 1024 * 1024;
     }
+
+    /// <summary>
+    /// 通知类型常量
+    /// 集中管理通知类型字符串，防止拼写错误导致通知静默失败
+    /// </summary>
+    public static class NotificationTypes
+    {
+        /// <summary>自动救援告警通知（子女端）</summary>
+        public const string AutoRescueAlert = "AutoRescueAlert";
+
+        /// <summary>自动救援邻里广播通知（子女端）</summary>
+        public const string AutoRescueBroadcast = "AutoRescueBroadcast";
+
+        /// <summary>电子围栏超出预警通知</summary>
+        public const string GeoFenceAlert = "GeoFenceAlert";
+
+        /// <summary>紧急呼叫通知</summary>
+        public const string EmergencyCall = "EmergencyCall";
+
+        /// <summary>紧急呼叫二次提醒通知</summary>
+        public const string EmergencyCallReminder = "EmergencyCallReminder";
+
+        /// <summary>紧急呼叫 FCM 推送类型</summary>
+        public const string EmergencyCallFcm = "emergency_call";
+
+        /// <summary>紧急呼叫二次提醒 FCM 推送类型</summary>
+        public const string EmergencyReminderFcm = "emergency_reminder";
+    }
+
+    /// <summary>
+    /// 告警级别常量
+    /// 统一通知中使用的告警严重度标识
+    /// </summary>
+    public static class AlertLevels
+    {
+        /// <summary>严重 — 需要立即处理</summary>
+        public const string Critical = "Critical";
+
+        /// <summary>警告 — 需要尽快关注</summary>
+        public const string Warning = "Warning";
+
+        /// <summary>注意 — 轻度异常提醒</summary>
+        public const string Caution = "Caution";
+    }
+
+    /// <summary>
+    /// SignalR 组名前缀
+    /// 集中管理 SignalR 组名格式，确保 Hub 和 Service 使用一致的组名
+    /// </summary>
+    public static class SignalRGroups
+    {
+        /// <summary>家庭组前缀，完整组名格式：family_{familyId}</summary>
+        public const string FamilyPrefix = "family_";
+
+        /// <summary>邻里圈组前缀，完整组名格式：circle_{circleId}</summary>
+        public const string CirclePrefix = "circle_";
+
+        /// <summary>生成家庭组名</summary>
+        public static string FamilyGroupName(Guid familyId) => $"{FamilyPrefix}{familyId}";
+
+        /// <summary>生成邻里圈组名</summary>
+        public static string CircleGroupName(Guid circleId) => $"{CirclePrefix}{circleId}";
+    }
 }

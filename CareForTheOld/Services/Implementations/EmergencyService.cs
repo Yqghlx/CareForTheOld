@@ -1,5 +1,6 @@
 using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
+using CareForTheOld.Common.Helpers;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Models.Entities;
@@ -166,7 +167,7 @@ public class EmergencyService : IEmergencyService
             // SignalR 推送通知（前台实时）
             await _notificationService.SendToUsersAsync(
                 childUserIds,
-                isReminder ? "EmergencyCallReminder" : "EmergencyCall",
+                isReminder ? AppConstants.NotificationTypes.EmergencyCallReminder : AppConstants.NotificationTypes.EmergencyCall,
                 new
                 {
                     Title = title,
@@ -182,7 +183,7 @@ public class EmergencyService : IEmergencyService
             var fcmChildIds = childUserIds;
             var fcmTitle = title;
             var fcmContent = content;
-            var fcmType = isReminder ? "emergency_reminder" : "emergency_call";
+            var fcmType = isReminder ? AppConstants.NotificationTypes.EmergencyReminderFcm : AppConstants.NotificationTypes.EmergencyCallFcm;
             BackgroundJob.Enqueue(() => SendFcmPushJobAsync(
                 fcmChildIds, fcmTitle, fcmContent, fcmType,
                 callId.ToString(), elderId.ToString(), elderName));

@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
@@ -264,13 +265,13 @@ public class HealthAlertService : IHealthAlertService
     {
         // 严重异常
         if (alertMessage.Contains("立即就医") || alertMessage.Contains("严重"))
-            return "Critical";
+            return AppConstants.AlertLevels.Critical;
 
         // 中度异常
         if (alertMessage.Contains("尽快就医") || alertMessage.Contains("及时就医"))
-            return "Warning";
+            return AppConstants.AlertLevels.Warning;
 
         // 轻度异常
-        return "Caution";
+        return AppConstants.AlertLevels.Caution;
     }
 }
