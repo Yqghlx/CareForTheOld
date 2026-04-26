@@ -644,6 +644,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   ref.invalidate(notificationListProvider);
                   // 登出并跳转登录页
                   ref.read(authProvider.notifier).logout();
+                  if (!mounted) return;
                   context.go(RoutePaths.login);
                 } else {
                   context.showErrorSnackBar(
@@ -801,6 +802,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               ref.invalidate(notificationListProvider);
               // 执行登出（清除认证状态和 SignalR 连接）
               ref.read(authProvider.notifier).logout();
+              if (!context.mounted) return;
               context.go(RoutePaths.login);
             },
             gradient: const LinearGradient(

@@ -141,6 +141,7 @@ public class NeighborCircleService : INeighborCircleService
     public async Task LeaveCircleAsync(Guid circleId, Guid userId)
     {
         var circle = await _context.NeighborCircles
+            .AsTracking()
             .Include(c => c.Members)
             .FirstOrDefaultAsync(c => c.Id == circleId)
             ?? throw new KeyNotFoundException(ErrorMessages.NeighborCircle.CircleNotFound);
@@ -152,12 +153,7 @@ public class NeighborCircleService : INeighborCircleService
         {
             // 创建者退出 → 解散整个圈子
             _context.NeighborCircleMembers.RemoveRange(circle.Members);
-
-            // 必须用 AsTracking 才能在 NoTracking 全局模式下更新
-            var trackedCircle = await _context.NeighborCircles
-                .AsTracking()
-                .FirstAsync(c => c.Id == circleId);
-            trackedCircle.IsActive = false;
+            circle.IsActive = false;
         }
         else
         {
