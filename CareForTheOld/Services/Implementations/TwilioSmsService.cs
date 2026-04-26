@@ -37,14 +37,14 @@ public class TwilioSmsService : ISmsService
         if (string.IsNullOrEmpty(accountSid) || string.IsNullOrEmpty(authToken) || string.IsNullOrEmpty(fromNumber))
         {
             _logger.LogWarning("[Twilio短信] 配置缺失，AccountSid、AuthToken 或 FromNumber 未设置");
-            return (false, "短信服务配置缺失");
+            return (false, ErrorMessages.Sms.ConfigMissing);
         }
 
         // 验证手机号格式（Twilio 需要国际格式 +86xxxxxxxxxx）
         if (!phoneNumber.StartsWith("+"))
         {
             _logger.LogWarning("[Twilio短信] 手机号格式不正确，需要国际格式（如 +8613800138000）: {Phone}", phoneNumber);
-            return (false, "手机号格式不正确，需要国际格式");
+            return (false, ErrorMessages.Sms.PhoneFormatInternational);
         }
 
         try

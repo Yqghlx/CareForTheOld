@@ -115,7 +115,7 @@ public class MedicationController : ControllerBase
         [FromQuery] int skip = 0,
         [FromQuery] int limit = 50)
     {
-        limit = Math.Clamp(limit, 1, 100);
+        limit = Math.Clamp(limit, AppConstants.Pagination.MinPageSize, AppConstants.Pagination.MaxPageSize);
         var userId = this.GetUserId();
         var result = await _medicationService.GetLogsAsync(elderId, date, skip, limit, userId);
         return ApiResponse<List<MedicationLogResponse>>.Ok(result);
@@ -132,7 +132,7 @@ public class MedicationController : ControllerBase
         [FromQuery] int skip = 0,
         [FromQuery] int limit = 50)
     {
-        limit = Math.Clamp(limit, 1, 100);
+        limit = Math.Clamp(limit, AppConstants.Pagination.MinPageSize, AppConstants.Pagination.MaxPageSize);
         var userId = this.GetUserId();
         var result = await _medicationService.GetLogsAsync(userId, date, skip, limit);
         return ApiResponse<List<MedicationLogResponse>>.Ok(result);

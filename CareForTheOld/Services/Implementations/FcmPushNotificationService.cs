@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Services.Interfaces;
 using FirebaseAdmin;
@@ -57,7 +58,7 @@ public class FcmPushNotificationService : IPushNotificationService
         }
 
         // FCM multicast 最多 500 token/批次
-        var batches = tokens.Chunk(500);
+        var batches = tokens.Chunk(AppConstants.Fcm.MaxBatchSize);
 
         foreach (var batch in batches)
         {

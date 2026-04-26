@@ -25,7 +25,7 @@ public class GeoFenceService : IGeoFenceService
     /// <summary>
     /// 围栏缓存 key 前缀（格式：geofence:{elderId}）
     /// </summary>
-    private const string _cacheKeyPrefix = "geofence:";
+    private const string _cacheKeyPrefix = AppConstants.Cache.GeoFencePrefix;
 
     /// <summary>
     /// 围栏缓存过期时间，使用 AppConstants.Cache.GeoFenceExpirationMinutes 统一管理

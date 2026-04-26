@@ -62,7 +62,7 @@ public class LocationController : ControllerBase
     [CacheControl(MaxAgeSeconds = 60)]
     public async Task<ApiResponse<List<LocationRecordResponse>>> GetMyHistory([FromQuery] int skip = 0, [FromQuery] int limit = 50)
     {
-        limit = Math.Clamp(limit, 1, 100);
+        limit = Math.Clamp(limit, AppConstants.Pagination.MinPageSize, AppConstants.Pagination.MaxPageSize);
         var userId = this.GetUserId();
         var records = await _locationService.GetLocationHistoryAsync(userId, skip, limit);
         return ApiResponse<List<LocationRecordResponse>>.Ok(records);
@@ -98,7 +98,7 @@ public class LocationController : ControllerBase
     public async Task<ApiResponse<List<LocationRecordResponse>>> GetFamilyMemberHistory(
         Guid familyId, Guid memberId, [FromQuery] int skip = 0, [FromQuery] int limit = 50)
     {
-        limit = Math.Clamp(limit, 1, 100);
+        limit = Math.Clamp(limit, AppConstants.Pagination.MinPageSize, AppConstants.Pagination.MaxPageSize);
         var userId = this.GetUserId();
 
         // 验证当前用户和被查询成员都是该家庭成员

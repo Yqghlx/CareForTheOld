@@ -322,6 +322,18 @@ public static class ErrorMessages
     }
 
     /// <summary>
+    /// 短信服务相关错误消息
+    /// </summary>
+    public static class Sms
+    {
+        /// <summary>短信服务配置缺失</summary>
+        public const string ConfigMissing = "短信服务配置缺失";
+
+        /// <summary>手机号需要国际格式（如 +8613800138000）</summary>
+        public const string PhoneFormatInternational = "手机号格式不正确，需要国际格式";
+    }
+
+    /// <summary>
     /// 配置相关错误消息
     /// </summary>
     public static class Configuration

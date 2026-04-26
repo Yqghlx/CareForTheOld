@@ -106,6 +106,36 @@ public static class AppConstants
 
         /// <summary>围栏数据缓存过期时间（分钟），围栏变更频率较低可适当延长</summary>
         public const int GeoFenceExpirationMinutes = 10;
+
+        /// <summary>围栏缓存键前缀，完整键格式：geofence:{elderId}</summary>
+        public const string GeoFencePrefix = "geofence:";
+
+        /// <summary>用户缓存键前缀，完整键格式：user:{userId}</summary>
+        public const string UserPrefix = "user:";
+    }
+
+    /// <summary>
+    /// 分页相关常量
+    /// </summary>
+    public static class Pagination
+    {
+        /// <summary>每页最小条数</summary>
+        public const int MinPageSize = 1;
+
+        /// <summary>每页最大条数</summary>
+        public const int MaxPageSize = 100;
+
+        /// <summary>默认每页条数</summary>
+        public const int DefaultPageSize = 50;
+    }
+
+    /// <summary>
+    /// FCM 推送相关常量
+    /// </summary>
+    public static class Fcm
+    {
+        /// <summary>FCM multicast 单批次最大 token 数量</summary>
+        public const int MaxBatchSize = 500;
     }
 
     /// <summary>
