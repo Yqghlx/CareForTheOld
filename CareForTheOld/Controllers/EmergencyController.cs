@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using CareForTheOld.Common.Extensions;
+using CareForTheOld.Common.Filters;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Models.DTOs.Requests.Emergency;
 using CareForTheOld.Models.DTOs.Responses;
@@ -48,6 +49,7 @@ public class EmergencyController : ControllerBase
     /// 获取未处理的紧急呼叫（子女端）
     /// </summary>
     [HttpGet("unread")]
+    [CacheControl(MaxAgeSeconds = 30)]
     [Authorize(Roles = "Child")]
     public async Task<ApiResponse<List<EmergencyCallResponse>>> GetUnreadCalls()
     {
@@ -60,6 +62,7 @@ public class EmergencyController : ControllerBase
     /// 获取历史呼叫记录
     /// </summary>
     [HttpGet("history")]
+    [CacheControl(MaxAgeSeconds = 60)]
     public async Task<ApiResponse<List<EmergencyCallResponse>>> GetHistory([FromQuery] int skip = 0, [FromQuery] int limit = 20)
     {
         limit = Math.Clamp(limit, 1, 100);

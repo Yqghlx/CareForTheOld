@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../core/api/api_client.dart';
+import '../../../core/constants/api_endpoints.dart';
 
 /// 健康报告服务
 class HealthReportService {
@@ -28,10 +29,10 @@ class HealthReportService {
       String url;
       if (elderId != null && familyId != null) {
         // 子女端导出老人报告
-        url = '/health/family/$familyId/member/$elderId/report?days=$days';
+        url = ApiEndpoints.healthReport(familyId: familyId, elderId: elderId, days: days);
       } else {
         // 老人端导出自己的报告
-        url = '/health/me/report?days=$days';
+        url = ApiEndpoints.healthReport(days: days);
       }
 
       // 下载PDF

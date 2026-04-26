@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using CareForTheOld.Common.Extensions;
+using CareForTheOld.Common.Filters;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Models.DTOs.Requests.Neighbor;
 using CareForTheOld.Models.DTOs.Responses;
@@ -25,6 +26,7 @@ public class NeighborHelpController : ControllerBase
     /// 获取待响应的求助列表
     /// </summary>
     [HttpGet("pending")]
+    [CacheControl(MaxAgeSeconds = 30)]
     public async Task<ApiResponse<List<NeighborHelpRequestResponse>>> GetPending()
     {
         var userId = this.GetUserId();
@@ -36,6 +38,7 @@ public class NeighborHelpController : ControllerBase
     /// 获取互助历史记录
     /// </summary>
     [HttpGet("history")]
+    [CacheControl(MaxAgeSeconds = 60)]
     public async Task<ApiResponse<List<NeighborHelpRequestResponse>>> GetHistory(
         [FromQuery] int skip = 0, [FromQuery] int limit = 20)
     {
@@ -48,6 +51,7 @@ public class NeighborHelpController : ControllerBase
     /// 获取求助请求详情
     /// </summary>
     [HttpGet("{id:guid}")]
+    [CacheControl(MaxAgeSeconds = 60)]
     public async Task<ApiResponse<NeighborHelpRequestResponse>> GetRequest(Guid id)
     {
         var result = await _helpService.GetRequestAsync(id);

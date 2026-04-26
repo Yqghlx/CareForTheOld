@@ -28,6 +28,7 @@ public class NotificationController : ControllerBase
     /// 获取我的通知列表
     /// </summary>
     [HttpGet("me")]
+    [CacheControl(MaxAgeSeconds = 30)]
     public async Task<ApiResponse<List<NotificationResponse>>> GetMyNotifications([FromQuery] int limit = 50)
     {
         var notifications = await _notificationService.GetUserNotificationsAsync(this.GetUserId(), limit);

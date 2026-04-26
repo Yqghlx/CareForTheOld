@@ -46,7 +46,7 @@ class MedicationService {
   /// 获取我的用药日志
   Future<List<MedicationLog>> getMyLogs({int limit = 50}) async {
     final response = await _dio.get(
-      '/medication/logs/me',
+      ApiEndpoints.medicationLogsMe,
       queryParameters: {'limit': limit},
     );
     final List<dynamic> dataList = response.data['data'];
@@ -66,7 +66,7 @@ class MedicationService {
     final queryParams = <String, dynamic>{'limit': limit};
     if (date != null) queryParams['date'] = date;
     final response = await _dio.get(
-      '/medication/logs/elder/$elderId',
+      ApiEndpoints.medicationLogsByElder(elderId),
       queryParameters: queryParams,
     );
     final List<dynamic> dataList = response.data['data'];

@@ -44,7 +44,7 @@ class HealthService {
       queryParams['type'] = type.name;
     }
     final response = await _dio.get(
-      '/health/me',
+      ApiEndpoints.healthMe,
       queryParameters: queryParams,
     );
     final List<dynamic> dataList = response.data['data'];
@@ -73,7 +73,7 @@ class HealthService {
     final queryParams = <String, dynamic>{'limit': limit};
     if (type != null) queryParams['type'] = type.value;
     final response = await _dio.get(
-      '/health/family/$familyId/member/$memberId',
+      ApiEndpoints.healthFamilyMember(familyId, memberId),
       queryParameters: queryParams,
     );
     final List<dynamic> dataList = response.data['data'];
@@ -86,7 +86,7 @@ class HealthService {
     required String memberId,
   }) async {
     final response = await _dio.get(
-      '/health/family/$familyId/member/$memberId/stats',
+      ApiEndpoints.healthFamilyMemberStats(familyId, memberId),
     );
     final List<dynamic> dataList = response.data['data'];
     return dataList.map((json) => HealthStats.fromJson(json)).toList();
@@ -100,7 +100,7 @@ class HealthService {
     final queryParams = <String, dynamic>{};
     if (type != null) queryParams['type'] = type.value;
     final response = await _dio.get(
-      '/health/me/anomaly-detection',
+      ApiEndpoints.healthMeAnomaly,
       queryParameters: queryParams,
     );
     return TrendAnomalyDetectionResponse.fromJson(response.data['data']);
@@ -116,7 +116,7 @@ class HealthService {
     final queryParams = <String, dynamic>{};
     if (type != null) queryParams['type'] = type.value;
     final response = await _dio.get(
-      '/health/family/$familyId/member/$memberId/anomaly-detection',
+      ApiEndpoints.healthFamilyMemberAnomaly(familyId, memberId),
       queryParameters: queryParams,
     );
     return TrendAnomalyDetectionResponse.fromJson(response.data['data']);

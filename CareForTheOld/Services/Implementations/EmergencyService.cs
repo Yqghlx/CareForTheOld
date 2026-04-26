@@ -54,7 +54,7 @@ public class EmergencyService : IEmergencyService
             .FirstOrDefaultAsync(fm => fm.UserId == elderId);
 
         if (familyMember == null)
-            throw new InvalidOperationException("您不在任何家庭组中，无法发起紧急呼叫");
+            throw new InvalidOperationException(ErrorMessages.Family.NotInAnyFamily);
 
         // 创建紧急呼叫记录（含位置和电量）
         var call = new EmergencyCall
@@ -394,17 +394,17 @@ public class EmergencyService : IEmergencyService
             .FirstOrDefaultAsync(c => c.Id == callId);
 
         if (call == null)
-            throw new KeyNotFoundException("紧急呼叫记录不存在");
+            throw new KeyNotFoundException(ErrorMessages.Emergency.CallNotFound);
 
         if (call.Status == EmergencyStatus.Responded)
-            throw new InvalidOperationException("该呼叫已被处理");
+            throw new InvalidOperationException(ErrorMessages.Emergency.CallAlreadyResponded);
 
         // 验证用户是否是该家庭成员
         var isMember = await _context.FamilyMembers
             .AnyAsync(fm => fm.UserId == userId && fm.FamilyId == call.FamilyId);
 
         if (!isMember)
-            throw new UnauthorizedAccessException("您不是该家庭成员，无法处理此呼叫");
+            throw new UnauthorizedAccessException(ErrorMessages.Emergency.NotFamilyMemberForCall);
 
         // 更新呼叫状态
         call.Status = EmergencyStatus.Responded;

@@ -23,7 +23,7 @@ class NeighborHelpService {
     int limit = 20,
   }) async {
     final response = await _dio.get(
-      '/neighborhelp/history',
+      ApiEndpoints.neighborHelpHistory,
       queryParameters: {'skip': skip, 'limit': limit},
     );
     final List<dynamic> dataList = response.data['data'];
@@ -76,7 +76,7 @@ class NeighborHelpService {
     int limit = 20,
   }) async {
     final response = await _dio.get(
-      '/auto-rescue/history',
+      ApiEndpoints.autoRescueHistory,
       queryParameters: {'skip': skip, 'limit': limit},
     );
     final List<dynamic> dataList = response.data['data'];

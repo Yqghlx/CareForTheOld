@@ -191,13 +191,13 @@ public class NeighborHelpService : INeighborHelpService
             ?? throw new KeyNotFoundException(ErrorMessages.NeighborHelp.RequestNotFound);
 
         if (request.Status != HelpRequestStatus.Pending)
-            throw new InvalidOperationException($"求助请求当前状态为 {request.Status}，无法接受");
+            throw new InvalidOperationException(ErrorMessages.NeighborHelp.InvalidStatus);
 
         if (request.ExpiresAt < DateTime.UtcNow)
-            throw new InvalidOperationException("求助请求已过期");
+            throw new InvalidOperationException(ErrorMessages.NeighborHelp.RequestExpired);
 
         if (request.RequesterId == responderId)
-            throw new ArgumentException("不能接受自己发起的求助");
+            throw new ArgumentException(ErrorMessages.NeighborHelp.CannotAcceptOwn);
 
         // 原子锁定：更新状态和响应者
         request.Status = HelpRequestStatus.Accepted;
@@ -217,7 +217,7 @@ public class NeighborHelpService : INeighborHelpService
 
         // 查询响应者信息
         var responder = await _context.Users.FindAsync(responderId)
-            ?? throw new KeyNotFoundException("响应者不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.Common.ResponderNotFound);
 
         // 通知老人："邻居XX正在赶来"
         await _notificationService.SendToUserAsync(
@@ -291,7 +291,7 @@ public class NeighborHelpService : INeighborHelpService
             ?? throw new KeyNotFoundException(ErrorMessages.NeighborHelp.RequestNotFound);
 
         if (request.Status != HelpRequestStatus.Pending && request.Status != HelpRequestStatus.Accepted)
-            throw new InvalidOperationException($"求助请求当前状态为 {request.Status}，无法取消");
+            throw new InvalidOperationException(ErrorMessages.NeighborHelp.InvalidStatus);
 
         // 验证操作者：老人本人或其子女
         var isRequester = request.RequesterId == operatorId;
@@ -309,7 +309,7 @@ public class NeighborHelpService : INeighborHelpService
         }
 
         if (!isRequester && !isChild)
-            throw new UnauthorizedAccessException("只有求助者或其子女可以取消求助");
+            throw new UnauthorizedAccessException(ErrorMessages.NeighborHelp.OnlyRequesterOrChildCancel);
 
         request.Status = HelpRequestStatus.Cancelled;
         request.CancelledAt = DateTime.UtcNow;
@@ -354,10 +354,10 @@ public class NeighborHelpService : INeighborHelpService
             ?? throw new KeyNotFoundException(ErrorMessages.NeighborHelp.RequestNotFound);
 
         if (helpRequest.Status != HelpRequestStatus.Accepted)
-            throw new InvalidOperationException("只能评价已接受的求助请求");
+            throw new InvalidOperationException(ErrorMessages.NeighborHelp.CanOnlyRateAccepted);
 
         if (helpRequest.ResponderId == null)
-            throw new InvalidOperationException("该求助请求未被响应，无法评价");
+            throw new InvalidOperationException(ErrorMessages.NeighborHelp.NotRespondedCannotRate);
 
         // 验证评价者：老人本人或其子女
         var isRequester = helpRequest.RequesterId == raterId;
@@ -375,7 +375,7 @@ public class NeighborHelpService : INeighborHelpService
         }
 
         if (!isRequester && !isChild)
-            throw new UnauthorizedAccessException("只有求助者或其子女可以评价");
+            throw new UnauthorizedAccessException(ErrorMessages.NeighborHelp.OnlyRequesterOrChildRate);
 
         // 应用层检查：同一用户对同一请求不能重复评价
         if (await _context.NeighborHelpRatings.AnyAsync(r => r.HelpRequestId == requestId && r.RaterId == raterId))

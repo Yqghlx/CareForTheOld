@@ -144,7 +144,7 @@ public class MedicationServiceTests
         // 执行并验证：无效时间格式应抛出异常
         var act = async () => await _service.CreatePlanAsync(child.Id, request);
         await act.Should().ThrowAsync<ArgumentException>()
-            .WithMessage($"时间格式错误: 25:00，正确格式如 08:00");
+            .WithMessage($"时间格式错误，正确格式如 08:00: 25:00*");
     }
 
     [Fact]

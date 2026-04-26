@@ -114,7 +114,7 @@ public class GeoFenceService : IGeoFenceService
         var isFamilyMember = await IsInSameFamilyAsync(operatorId, fence.ElderId);
 
         if (fence.CreatedBy != operatorId && !isFamilyMember)
-            throw new UnauthorizedAccessException("无权修改此围栏");
+            throw new UnauthorizedAccessException(ErrorMessages.GeoFence.NoPermissionToEdit);
 
         fence.CenterLatitude = request.CenterLatitude;
         fence.CenterLongitude = request.CenterLongitude;
@@ -142,7 +142,7 @@ public class GeoFenceService : IGeoFenceService
         var isFamilyMember = await IsInSameFamilyAsync(operatorId, fence.ElderId);
 
         if (fence.CreatedBy != operatorId && !isFamilyMember)
-            throw new UnauthorizedAccessException("无权删除此围栏");
+            throw new UnauthorizedAccessException(ErrorMessages.GeoFence.NoPermissionToDelete);
 
         _context.GeoFences.Remove(fence);
         await _context.SaveChangesAsync();

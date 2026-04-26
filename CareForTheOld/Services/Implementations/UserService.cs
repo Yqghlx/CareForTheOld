@@ -46,7 +46,7 @@ public class UserService : IUserService
         // 验证旧密码
         if (!BCrypt.Net.BCrypt.Verify(request.OldPassword, user.PasswordHash))
         {
-            throw new InvalidOperationException("旧密码不正确");
+            throw new InvalidOperationException(ErrorMessages.User.OldPasswordIncorrect);
         }
 
         // 更新新密码
@@ -84,13 +84,13 @@ public class UserService : IUserService
             .FirstOrDefaultAsync();
 
         if (currentFamilyId == Guid.Empty)
-            throw new UnauthorizedAccessException("您不是该用户的家庭成员，无权查看");
+            throw new UnauthorizedAccessException(ErrorMessages.User.NoPermissionToView);
 
         var isInSameFamily = await _context.FamilyMembers
             .AnyAsync(fm => fm.UserId == targetUserId && fm.FamilyId == currentFamilyId);
 
         if (!isInSameFamily)
-            throw new UnauthorizedAccessException("您不是该用户的家庭成员，无权查看");
+            throw new UnauthorizedAccessException(ErrorMessages.User.NoPermissionToView);
     }
 
     private async Task<UserResponse?> MapToResponse(Guid userId)

@@ -29,7 +29,7 @@ public class MedicationService : IMedicationService
     {
         // 验证老人是否存在
         var elder = await _context.Users.FindAsync(request.ElderId)
-            ?? throw new KeyNotFoundException("老人用户不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.Medication.ElderNotFound);
 
         // 验证操作者权限（必须是老人的家庭成员）
         await _familyService.EnsureFamilyMemberAsync(request.ElderId, operatorId);
@@ -279,7 +279,7 @@ public class MedicationService : IMedicationService
         foreach (var time in times)
         {
             if (!TimeOnly.TryParse(time, out _))
-                throw new ArgumentException($"时间格式错误: {time}，正确格式如 08:00");
+                throw new ArgumentException($"{ErrorMessages.Medication.InvalidTimeFormat}: {time}");
         }
     }
 

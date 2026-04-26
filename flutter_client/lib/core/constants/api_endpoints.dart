@@ -10,6 +10,7 @@ class ApiEndpoints {
   // ==================== 用户 ====================
   static const userMe = '/user/me';
   static const userPassword = '/user/me/password';
+  static const userAvatar = '/user/me/avatar';
 
   // ==================== 家庭 ====================
   static const family = '/family';
@@ -33,11 +34,26 @@ class ApiEndpoints {
   static const healthMe = '/health/me';
   static const healthMeAnomaly = '/health/me/anomaly-detection';
   static String healthRecord(String id) => '/health/$id';
+  static String healthFamilyMember(String familyId, String memberId) =>
+      '/health/family/$familyId/member/$memberId';
+  static String healthFamilyMemberStats(String familyId, String memberId) =>
+      '/health/family/$familyId/member/$memberId/stats';
+  static String healthFamilyMemberAnomaly(String familyId, String memberId) =>
+      '/health/family/$familyId/member/$memberId/anomaly-detection';
+  static String healthReport({String? familyId, String? elderId, int days = 30}) {
+    if (familyId != null && elderId != null) {
+      return '/health/family/$familyId/member/$elderId/report?days=$days';
+    }
+    return '/health/me/report?days=$days';
+  }
 
   // ==================== 用药 ====================
   static const medicationPlansMe = '/medication/plans/me';
   static const medicationTodayPending = '/medication/today-pending';
   static const medicationLogs = '/medication/logs';
+  static const medicationLogsMe = '/medication/logs/me';
+  static String medicationLogsByElder(String elderId) =>
+      '/medication/logs/elder/$elderId';
   static String medicationPlansByElder(String elderId) =>
       '/medication/plans/elder/$elderId';
   static const medicationPlans = '/medication/plans';
@@ -49,6 +65,8 @@ class ApiEndpoints {
   static const locationMeHistory = '/location/me/history';
   static String locationFamilyMember(String familyId, String memberId) =>
       '/location/family/$familyId/member/$memberId/latest';
+  static String locationFamilyMemberHistory(String familyId, String memberId) =>
+      '/location/family/$familyId/member/$memberId/history';
 
   // ==================== 围栏 ====================
   static const geoFence = '/geofence';
@@ -62,6 +80,7 @@ class ApiEndpoints {
   static String emergencyRespond(String callId) => '/emergency/$callId/respond';
 
   // ==================== 通知 ====================
+  static const notificationMe = '/notification/me';
   static const notificationUnreadCount = '/notification/me/unread-count';
   static const notificationReadAll = '/notification/me/read-all';
   static String notificationRead(String notificationId) =>
@@ -79,9 +98,13 @@ class ApiEndpoints {
       '/neighborcircle/$circleId/leave';
   static String neighborCircleRefreshCode(String circleId) =>
       '/neighborcircle/$circleId/refresh-code';
+  static String neighborCircleNearbyMembers(String circleId) =>
+      '/neighborcircle/$circleId/nearby-members';
+  static const neighborCircleSearchNearby = '/neighborcircle/nearby';
 
   // ==================== 邻里互助 ====================
   static const neighborHelpPending = '/neighborhelp/pending';
+  static const neighborHelpHistory = '/neighborhelp/history';
   static String neighborHelpById(String requestId) =>
       '/neighborhelp/$requestId';
   static String neighborHelpAccept(String requestId) =>
@@ -94,8 +117,11 @@ class ApiEndpoints {
   // ==================== 自动救援 ====================
   static String autoRescueRespond(String recordId) =>
       '/auto-rescue/$recordId/respond';
+  static const autoRescueHistory = '/auto-rescue/history';
 
   // ==================== 信任评分 ====================
   static String trustScoreMe(String circleId) =>
       '/neighbor-circles/$circleId/trust/me';
+  static String trustScoreRanking(String circleId) =>
+      '/neighbor-circles/$circleId/trust/ranking';
 }

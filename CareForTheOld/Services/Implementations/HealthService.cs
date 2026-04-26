@@ -107,7 +107,7 @@ public class HealthService : IHealthService
             .AnyAsync(fm => fm.FamilyId == familyId && fm.UserId == memberId);
 
         if (!isMember)
-            throw new UnauthorizedAccessException("该用户不是家庭成员");
+            throw new UnauthorizedAccessException(ErrorMessages.Health.NotFamilyMember);
 
         return await GetUserRecordsAsync(memberId, type, skip, limit);
     }
@@ -197,7 +197,7 @@ public class HealthService : IHealthService
         var record = await _context.HealthRecords
             .AsTracking()
             .FirstOrDefaultAsync(r => r.Id == recordId && r.UserId == userId)
-            ?? throw new KeyNotFoundException("记录不存在或无权删除");
+            ?? throw new KeyNotFoundException(ErrorMessages.Health.RecordNotFoundOrNoPermission);
 
         // 软删除：标记为已删除，保留数据
         record.IsDeleted = true;
@@ -214,29 +214,29 @@ public class HealthService : IHealthService
         {
             case HealthType.BloodPressure:
                 if (!request.Systolic.HasValue || !request.Diastolic.HasValue)
-                    throw new ArgumentException("血压记录需要填写收缩压和舒张压");
+                    throw new ArgumentException(ErrorMessages.Health.BloodPressureRequired);
                 if (request.Systolic.Value < 60 || request.Systolic.Value > 300)
-                    throw new ArgumentException("收缩压数值异常（正常范围 60-300 mmHg）");
+                    throw new ArgumentException(ErrorMessages.Health.SystolicOutOfRange);
                 if (request.Diastolic.Value < 30 || request.Diastolic.Value > 200)
-                    throw new ArgumentException("舒张压数值异常（正常范围 30-200 mmHg）");
+                    throw new ArgumentException(ErrorMessages.Health.DiastolicOutOfRange);
                 break;
             case HealthType.BloodSugar:
                 if (!request.BloodSugar.HasValue)
-                    throw new ArgumentException("血糖记录需要填写血糖值");
+                    throw new ArgumentException(ErrorMessages.Health.BloodSugarRequired);
                 if (request.BloodSugar.Value < 1.0m || request.BloodSugar.Value > 35.0m)
-                    throw new ArgumentException("血糖数值异常（正常范围 1.0-35.0 mmol/L）");
+                    throw new ArgumentException(ErrorMessages.Health.BloodSugarOutOfRange);
                 break;
             case HealthType.HeartRate:
                 if (!request.HeartRate.HasValue)
-                    throw new ArgumentException("心率记录需要填写心率值");
+                    throw new ArgumentException(ErrorMessages.Health.HeartRateRequired);
                 if (request.HeartRate.Value < 30 || request.HeartRate.Value > 250)
-                    throw new ArgumentException("心率数值异常（正常范围 30-250 次/分钟）");
+                    throw new ArgumentException(ErrorMessages.Health.HeartRateOutOfRange);
                 break;
             case HealthType.Temperature:
                 if (!request.Temperature.HasValue)
-                    throw new ArgumentException("体温记录需要填写体温值");
+                    throw new ArgumentException(ErrorMessages.Health.TemperatureRequired);
                 if (request.Temperature.Value < 34.0m || request.Temperature.Value > 43.0m)
-                    throw new ArgumentException("体温数值异常（正常范围 34.0-43.0 °C）");
+                    throw new ArgumentException(ErrorMessages.Health.TemperatureOutOfRange);
                 break;
         }
     }

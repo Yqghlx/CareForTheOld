@@ -13,7 +13,7 @@ class NotificationRecordService {
   /// 获取我的通知列表（支持分页）
   Future<List<NotificationRecord>> getMyNotifications({int skip = 0, int limit = 50}) async {
     final response = await _dio.get(
-      '/notification/me',
+      ApiEndpoints.notificationMe,
       queryParameters: {'skip': skip, 'limit': limit},
     );
     final List<dynamic> dataList = response.data['data'];

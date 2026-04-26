@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using CareForTheOld.Common.Extensions;
+using CareForTheOld.Common.Filters;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Models.DTOs.Requests.Neighbor;
 using CareForTheOld.Models.DTOs.Responses;
@@ -25,6 +26,7 @@ public class NeighborCircleController : ControllerBase
     /// 获取当前用户加入的邻里圈
     /// </summary>
     [HttpGet("me")]
+    [CacheControl(MaxAgeSeconds = 60)]
     public async Task<ApiResponse<NeighborCircleResponse?>> GetMyCircle()
     {
         var userId = this.GetUserId();
@@ -47,6 +49,7 @@ public class NeighborCircleController : ControllerBase
     /// 获取邻里圈详情（仅成员可查看）
     /// </summary>
     [HttpGet("{id:guid}")]
+    [CacheControl(MaxAgeSeconds = 60)]
     public async Task<ApiResponse<NeighborCircleResponse>> GetCircle(Guid id)
     {
         var userId = this.GetUserId();
@@ -60,6 +63,7 @@ public class NeighborCircleController : ControllerBase
     /// 获取邻里圈成员列表（仅成员可查看）
     /// </summary>
     [HttpGet("{id:guid}/members")]
+    [CacheControl(MaxAgeSeconds = 60)]
     public async Task<ApiResponse<List<NeighborMemberResponse>>> GetMembers(Guid id)
     {
         var userId = this.GetUserId();
@@ -73,6 +77,7 @@ public class NeighborCircleController : ControllerBase
     /// 获取附近成员（基于最近位置记录）
     /// </summary>
     [HttpGet("{id:guid}/nearby-members")]
+    [CacheControl(MaxAgeSeconds = 60)]
     public async Task<ApiResponse<List<NeighborMemberResponse>>> GetNearbyMembers(
         Guid id, [FromQuery] double latitude, [FromQuery] double longitude, [FromQuery] double radius = 500)
     {
@@ -121,6 +126,7 @@ public class NeighborCircleController : ControllerBase
     /// 搜索附近的邻里圈
     /// </summary>
     [HttpGet("nearby")]
+    [CacheControl(MaxAgeSeconds = 60)]
     public async Task<ApiResponse<List<NeighborCircleResponse>>> SearchNearby(
         [FromQuery] double latitude, [FromQuery] double longitude, [FromQuery] double radius = 2000)
     {

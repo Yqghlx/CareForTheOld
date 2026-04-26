@@ -47,7 +47,7 @@ class UserService {
       'file': await MultipartFile.fromFile(filePath),
     });
     final response = await _dio.post(
-      '/user/me/avatar',
+      ApiEndpoints.userAvatar,
       data: formData,
       options: Options(contentType: 'multipart/form-data'),
     );

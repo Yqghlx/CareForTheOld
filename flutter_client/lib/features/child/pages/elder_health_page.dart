@@ -452,7 +452,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade50,
+                    color: AppTheme.grey50,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Column(
@@ -1128,7 +1128,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.grey.shade50,
+                color: AppTheme.grey50,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
@@ -1468,7 +1468,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade50,
+                  color: AppTheme.grey50,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(

@@ -56,7 +56,7 @@ class LocationService {
     int limit = 20,
   }) async {
     final response = await _dio.get(
-      '/location/family/$familyId/member/$memberId/history',
+      ApiEndpoints.locationFamilyMemberHistory(familyId, memberId),
       queryParameters: {'skip': skip, 'limit': limit},
     );
     final data = response.data['data'] as List;

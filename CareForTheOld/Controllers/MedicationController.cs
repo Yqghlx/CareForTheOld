@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using CareForTheOld.Common.Extensions;
+using CareForTheOld.Common.Filters;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Models.DTOs.Requests.Medication;
 using CareForTheOld.Models.DTOs.Responses;
@@ -43,6 +44,7 @@ public class MedicationController : ControllerBase
     /// 获取老人的用药计划列表（需为家庭成员）
     /// </summary>
     [HttpGet("plans/elder/{elderId:guid}")]
+    [CacheControl(MaxAgeSeconds = 60)]
     [Authorize(Roles = "Child")]
     public async Task<ApiResponse<List<MedicationPlanResponse>>> GetPlansByElder(Guid elderId)
     {
@@ -55,6 +57,7 @@ public class MedicationController : ControllerBase
     /// 获取自己的用药计划（老人查看）
     /// </summary>
     [HttpGet("plans/me")]
+    [CacheControl(MaxAgeSeconds = 60)]
     [Authorize(Roles = "Elder")]
     public async Task<ApiResponse<List<MedicationPlanResponse>>> GetMyPlans()
     {
@@ -103,6 +106,7 @@ public class MedicationController : ControllerBase
     /// 获取用药日志列表（子女查看老人，需为家庭成员）
     /// </summary>
     [HttpGet("logs/elder/{elderId:guid}")]
+    [CacheControl(MaxAgeSeconds = 60)]
     [Authorize(Roles = "Child")]
     public async Task<ApiResponse<List<MedicationLogResponse>>> GetLogs(
         Guid elderId,
@@ -120,6 +124,7 @@ public class MedicationController : ControllerBase
     /// 获取自己的用药日志（老人查看）
     /// </summary>
     [HttpGet("logs/me")]
+    [CacheControl(MaxAgeSeconds = 60)]
     [Authorize(Roles = "Elder")]
     public async Task<ApiResponse<List<MedicationLogResponse>>> GetMyLogs(
         [FromQuery] DateOnly? date,
@@ -136,6 +141,7 @@ public class MedicationController : ControllerBase
     /// 获取今日待服药列表
     /// </summary>
     [HttpGet("today-pending")]
+    [CacheControl(MaxAgeSeconds = 30)]
     [Authorize(Roles = "Elder")]
     public async Task<ApiResponse<List<MedicationLogResponse>>> GetTodayPending()
     {

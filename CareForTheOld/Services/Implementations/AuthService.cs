@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.Auth;
 using CareForTheOld.Models.DTOs.Responses;
@@ -31,7 +32,7 @@ public class AuthService : IAuthService
     {
         // 检查手机号是否已注册
         if (await _context.Users.AnyAsync(u => u.PhoneNumber == request.PhoneNumber))
-            throw new ArgumentException("该手机号已注册");
+            throw new ArgumentException(ErrorMessages.Auth.PhoneAlreadyRegistered);
 
         var user = new User
         {
@@ -60,7 +61,7 @@ public class AuthService : IAuthService
         if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
         {
             Log.Warning("登录失败：{MaskedPhone}，手机号或密码错误", MaskPhoneNumber(request.PhoneNumber));
-            throw new ArgumentException("手机号或密码错误");
+            throw new ArgumentException(ErrorMessages.Auth.InvalidCredentials);
         }
 
         Log.Information("用户登录成功：{MaskedPhone}，角色：{Role}", MaskPhoneNumber(request.PhoneNumber), user.Role);
@@ -76,7 +77,7 @@ public class AuthService : IAuthService
         if (refreshToken == null)
         {
             Log.Warning("刷新令牌无效：Token 不存在");
-            throw new ArgumentException("无效的刷新令牌");
+            throw new ArgumentException(ErrorMessages.Auth.InvalidRefreshToken);
         }
 
         // 检测 Token 重放攻击：已使用过的 Token 再次出现，说明可能被盗用
@@ -92,13 +93,13 @@ public class AuthService : IAuthService
                 t.IsRevoked = true;
             }
             await _context.SaveChangesAsync();
-            throw new ArgumentException("检测到安全异常，请重新登录");
+            throw new ArgumentException(ErrorMessages.Auth.SecurityAnomaly);
         }
 
         if (refreshToken.IsRevoked || refreshToken.ExpiresAt < DateTime.UtcNow)
         {
             Log.Warning("刷新令牌已过期或已撤销，用户：{UserId}", refreshToken.UserId);
-            throw new ArgumentException("刷新令牌已过期或已撤销");
+            throw new ArgumentException(ErrorMessages.Auth.RefreshTokenExpired);
         }
 
         // 标记旧令牌为已使用（轮换）

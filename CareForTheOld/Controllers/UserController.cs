@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using CareForTheOld.Common.Extensions;
+using CareForTheOld.Common.Filters;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Models.DTOs.Requests.Users;
 using CareForTheOld.Models.DTOs.Responses;
@@ -39,6 +40,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("me")]
+    [CacheControl(MaxAgeSeconds = 60)]
     public async Task<ApiResponse<UserResponse>> GetCurrentUser()
     {
         var userId = this.GetUserId();
@@ -111,6 +113,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
+    [CacheControl(MaxAgeSeconds = 60)]
     public async Task<ApiResponse<UserResponse>> GetUserById(Guid id)
     {
         // 仅允许查看本人或同一家庭成员的信息，防止越权访问

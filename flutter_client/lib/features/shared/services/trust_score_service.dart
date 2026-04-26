@@ -43,7 +43,7 @@ class TrustScoreService {
   /// 获取圈内信任排行榜
   Future<List<TrustRankingItem>> getRanking(String circleId, {int top = 20}) async {
     final response = await _dio.get(
-      '/neighbor-circles/$circleId/trust/ranking',
+      ApiEndpoints.trustScoreRanking(circleId),
       queryParameters: {'top': top},
     );
     final List<dynamic> dataList = response.data['data'];

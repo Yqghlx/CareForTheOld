@@ -58,6 +58,7 @@ public class LocationController : ControllerBase
     /// 获取我的位置历史
     /// </summary>
     [HttpGet("me/history")]
+    [CacheControl(MaxAgeSeconds = 60)]
     public async Task<ApiResponse<List<LocationRecordResponse>>> GetMyHistory([FromQuery] int skip = 0, [FromQuery] int limit = 50)
     {
         limit = Math.Clamp(limit, 1, 100);
@@ -70,6 +71,7 @@ public class LocationController : ControllerBase
     /// 获取家庭成员最新位置（子女查看老人）
     /// </summary>
     [HttpGet("family/{familyId:guid}/member/{memberId:guid}/latest")]
+    [CacheControl(MaxAgeSeconds = 30)]
     [Authorize(Roles = "Child")]
     public async Task<ApiResponse<LocationRecordResponse?>> GetFamilyMemberLatestLocation(Guid familyId, Guid memberId)
     {
@@ -90,6 +92,7 @@ public class LocationController : ControllerBase
     /// 获取家庭成员位置历史（子女查看老人）
     /// </summary>
     [HttpGet("family/{familyId:guid}/member/{memberId:guid}/history")]
+    [CacheControl(MaxAgeSeconds = 60)]
     [Authorize(Roles = "Child")]
     public async Task<ApiResponse<List<LocationRecordResponse>>> GetFamilyMemberHistory(
         Guid familyId, Guid memberId, [FromQuery] int skip = 0, [FromQuery] int limit = 50)

@@ -106,14 +106,14 @@ public class NeighborCircleService : INeighborCircleService
 
         // 验证邀请码是否过期
         if (circle.InviteCodeExpiresAt.HasValue && circle.InviteCodeExpiresAt.Value < DateTime.UtcNow)
-            throw new ArgumentException("邀请码已过期，请联系圈主获取新邀请码");
+            throw new ArgumentException(ErrorMessages.NeighborCircle.InviteCodeExpired);
 
         // 检查成员上限
         var memberCount = await _context.NeighborCircleMembers
             .CountAsync(m => m.CircleId == circle.Id);
 
         if (memberCount >= circle.MaxMembers)
-            throw new ArgumentException("该邻里圈人数已满");
+            throw new ArgumentException(ErrorMessages.NeighborCircle.CircleFull);
 
         _context.NeighborCircleMembers.Add(new NeighborCircleMember
         {
@@ -143,10 +143,10 @@ public class NeighborCircleService : INeighborCircleService
         var circle = await _context.NeighborCircles
             .Include(c => c.Members)
             .FirstOrDefaultAsync(c => c.Id == circleId)
-            ?? throw new KeyNotFoundException("邻里圈不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.NeighborCircle.CircleNotFound);
 
         var member = circle.Members.FirstOrDefault(m => m.UserId == userId)
-            ?? throw new KeyNotFoundException("您不是该邻里圈成员");
+            ?? throw new KeyNotFoundException(ErrorMessages.NeighborCircle.NotCircleMember);
 
         if (circle.CreatorId == userId)
         {
@@ -328,10 +328,10 @@ public class NeighborCircleService : INeighborCircleService
         var circle = await _context.NeighborCircles
             .AsTracking()
             .FirstOrDefaultAsync(c => c.Id == circleId)
-            ?? throw new KeyNotFoundException("邻里圈不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.NeighborCircle.CircleNotFound);
 
         if (circle.CreatorId != operatorId)
-            throw new UnauthorizedAccessException("仅圈主可以刷新邀请码");
+            throw new UnauthorizedAccessException(ErrorMessages.NeighborCircle.OnlyCreatorCanRefreshCode);
 
         circle.InviteCode = GenerateInviteCode();
         circle.InviteCodeExpiresAt = DateTime.UtcNow.Add(_inviteCodeExpiration);
@@ -345,7 +345,7 @@ public class NeighborCircleService : INeighborCircleService
     {
         if (!await _context.NeighborCircleMembers
                 .AnyAsync(m => m.CircleId == circleId && m.UserId == userId))
-            throw new UnauthorizedAccessException("您不是该邻里圈成员");
+            throw new UnauthorizedAccessException(ErrorMessages.NeighborCircle.NotCircleMember);
     }
 
     /// <summary>

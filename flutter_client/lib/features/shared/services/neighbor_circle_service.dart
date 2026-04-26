@@ -57,7 +57,7 @@ class NeighborCircleService {
     double radius = 500,
   }) async {
     final response = await _dio.get(
-      '/neighborcircle/$circleId/nearby-members',
+      ApiEndpoints.neighborCircleNearbyMembers(circleId),
       queryParameters: {
         'latitude': latitude,
         'longitude': longitude,
@@ -98,7 +98,7 @@ class NeighborCircleService {
     double radius = 2000,
   }) async {
     final response = await _dio.get(
-      '/neighborcircle/nearby',
+      ApiEndpoints.neighborCircleSearchNearby,
       queryParameters: {
         'latitude': latitude,
         'longitude': longitude,

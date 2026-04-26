@@ -561,7 +561,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                 ],
                               )
                             : null,
-                        color: isListening ? null : Colors.grey.shade50,
+                        color: isListening ? null : AppTheme.grey50,
                         borderRadius: BorderRadius.circular(16),
                         border: isListening
                             ? Border.all(
@@ -809,7 +809,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                     if (type == HealthType.bloodPressure) ...[
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade50,
+                          color: AppTheme.grey50,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: TextField(
@@ -827,7 +827,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       const SizedBox(height: 12),
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade50,
+                          color: AppTheme.grey50,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: TextField(
@@ -846,7 +846,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                     if (type == HealthType.bloodSugar)
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade50,
+                          color: AppTheme.grey50,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: TextField(
@@ -864,7 +864,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                     if (type == HealthType.heartRate)
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade50,
+                          color: AppTheme.grey50,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: TextField(
@@ -882,7 +882,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                     if (type == HealthType.temperature)
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade50,
+                          color: AppTheme.grey50,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: TextField(
@@ -900,7 +900,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                     const SizedBox(height: 12),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade50,
+                        color: AppTheme.grey50,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: TextField(

@@ -49,7 +49,7 @@ public class FamilyService : IFamilyService
         var creator = await _context.Users.FindAsync(creatorId)
             ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
         if (creator.Role != UserRole.Child)
-            throw new UnauthorizedAccessException("只有子女才能创建家庭组");
+            throw new UnauthorizedAccessException(ErrorMessages.Family.OnlyChildCanCreate);
 
         // 检查用户是否已加入其他家庭
         if (await _context.FamilyMembers.AnyAsync(fm => fm.UserId == creatorId))
@@ -96,10 +96,10 @@ public class FamilyService : IFamilyService
         var user = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
         // 使用模糊错误消息，防止用户枚举攻击
         if (user == null)
-            throw new KeyNotFoundException("无法添加该用户，请确认手机号正确且用户已注册");
+            throw new KeyNotFoundException(ErrorMessages.Family.CannotAddUser);
 
         if (await _context.FamilyMembers.AnyAsync(fm => fm.FamilyId == familyId && fm.UserId == user.Id))
-            throw new ArgumentException("该用户已在家庭组中");
+            throw new ArgumentException(ErrorMessages.Family.UserAlreadyInFamily);
 
         _context.FamilyMembers.Add(new FamilyMember
         {
@@ -117,7 +117,7 @@ public class FamilyService : IFamilyService
         }
         catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex))
         {
-            throw new ArgumentException("该用户已加入其他家庭组");
+            throw new ArgumentException(ErrorMessages.Family.UserAlreadyInOtherFamily);
         }
 
         return await GetFamilyResponse(familyId);
@@ -142,7 +142,7 @@ public class FamilyService : IFamilyService
 
         // 验证邀请码是否过期
         if (family.InviteCodeExpiresAt.HasValue && family.InviteCodeExpiresAt.Value < DateTime.UtcNow)
-            throw new ArgumentException("邀请码已过期，请联系家庭创建者获取新邀请码");
+            throw new ArgumentException(ErrorMessages.Family.InviteCodeExpired);
 
         // 创建待审批成员记录
         var member = new FamilyMember
@@ -226,15 +226,15 @@ public class FamilyService : IFamilyService
         // 验证操作者是子女角色
         var operatorMember = await _context.FamilyMembers
             .FirstOrDefaultAsync(fm => fm.FamilyId == familyId && fm.UserId == operatorId)
-            ?? throw new UnauthorizedAccessException("您不是该家庭成员");
+            ?? throw new UnauthorizedAccessException(ErrorMessages.Family.NotFamilyMember);
 
         if (operatorMember.Role != UserRole.Child)
-            throw new UnauthorizedAccessException("仅子女可以审批成员");
+            throw new UnauthorizedAccessException(ErrorMessages.Family.OnlyChildCanApprove);
 
         var member = await _context.FamilyMembers
             .Include(fm => fm.User)
             .FirstOrDefaultAsync(fm => fm.FamilyId == familyId && fm.UserId == memberId && fm.Status == FamilyMemberStatus.Pending)
-            ?? throw new KeyNotFoundException("未找到该待审批成员");
+            ?? throw new KeyNotFoundException(ErrorMessages.Family.PendingMemberNotFound);
 
         member.Status = FamilyMemberStatus.Approved;
         await _context.SaveChangesAsync();
@@ -296,10 +296,10 @@ public class FamilyService : IFamilyService
         await EnsureMemberAsync(familyId, operatorId);
 
         var family = await _context.Families.AsTracking().FirstOrDefaultAsync(f => f.Id == familyId)
-            ?? throw new KeyNotFoundException("家庭组不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.Family.FamilyNotFound);
 
         if (family.CreatorId != operatorId)
-            throw new UnauthorizedAccessException("仅家庭创建者可以刷新邀请码");
+            throw new UnauthorizedAccessException(string.Format(ErrorMessages.Family.OnlyCreatorCanOperate, "刷新邀请码"));
 
         family.InviteCode = GenerateInviteCode();
         family.InviteCodeExpiresAt = DateTime.UtcNow.Add(_inviteCodeExpiration);
@@ -330,18 +330,18 @@ public class FamilyService : IFamilyService
     {
         // 验证操作者是家庭创建者
         var family = await _context.Families.FindAsync(familyId)
-            ?? throw new KeyNotFoundException("家庭组不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.Family.FamilyNotFound);
 
         if (family.CreatorId != operatorId)
-            throw new UnauthorizedAccessException("仅家庭创建者可以移除成员");
+            throw new UnauthorizedAccessException(string.Format(ErrorMessages.Family.OnlyCreatorCanOperate, "移除成员"));
 
         // 不能移除创建者本人
         if (userId == family.CreatorId)
-            throw new ArgumentException("不能移除家庭创建者");
+            throw new ArgumentException(ErrorMessages.Family.CannotRemoveCreator);
 
         var member = await _context.FamilyMembers
             .FirstOrDefaultAsync(fm => fm.FamilyId == familyId && fm.UserId == userId)
-            ?? throw new KeyNotFoundException("该用户不在家庭组中");
+            ?? throw new KeyNotFoundException(ErrorMessages.Family.UserNotInFamily);
 
         _context.FamilyMembers.Remove(member);
         await _context.SaveChangesAsync();
@@ -350,7 +350,7 @@ public class FamilyService : IFamilyService
     private async Task EnsureMemberAsync(Guid familyId, Guid userId)
     {
         if (!await _context.FamilyMembers.AnyAsync(fm => fm.FamilyId == familyId && fm.UserId == userId && fm.Status == FamilyMemberStatus.Approved))
-            throw new UnauthorizedAccessException("您不是该家庭成员");
+            throw new UnauthorizedAccessException(ErrorMessages.Family.NotFamilyMember);
     }
 
     /// <inheritdoc />
@@ -366,13 +366,13 @@ public class FamilyService : IFamilyService
             .FirstOrDefaultAsync();
 
         if (operatorFamilyId == Guid.Empty)
-            throw new UnauthorizedAccessException("您不是该老人的家庭成员，无权操作");
+            throw new UnauthorizedAccessException(ErrorMessages.Family.NotElderFamilyMember);
 
         var isInSameFamily = await _context.FamilyMembers
             .AnyAsync(fm => fm.UserId == elderId && fm.FamilyId == operatorFamilyId && fm.Status == FamilyMemberStatus.Approved);
 
         if (!isInSameFamily)
-            throw new UnauthorizedAccessException("您不是该老人的家庭成员，无权操作");
+            throw new UnauthorizedAccessException(ErrorMessages.Family.NotElderFamilyMember);
     }
 
     private async Task<FamilyResponse> GetFamilyResponse(Guid familyId)
