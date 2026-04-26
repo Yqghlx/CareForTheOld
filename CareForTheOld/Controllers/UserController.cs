@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
 using CareForTheOld.Common.Filters;
 using CareForTheOld.Common.Helpers;
@@ -20,18 +21,6 @@ public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
     private readonly IFileStorageService _fileStorageService;
-    /// <summary>
-    /// 允许的头像文件扩展名
-    /// </summary>
-    private static readonly HashSet<string> _allowedExtensions = new(StringComparer.OrdinalIgnoreCase) { ".jpg", ".jpeg", ".png" };
-    /// <summary>
-    /// 允许的 MIME 内容类型
-    /// </summary>
-    private static readonly HashSet<string> _allowedContentTypes = new(StringComparer.OrdinalIgnoreCase) { "image/jpeg", "image/png" };
-    /// <summary>
-    /// 最大文件大小（2 MB）
-    /// </summary>
-    private const long _maxFileSize = 2 * 1024 * 1024;
 
     public UserController(IUserService userService, IFileStorageService fileStorageService)
     {
@@ -72,7 +61,7 @@ public class UserController : ControllerBase
     /// 便于后续切换至云存储（OSS/S3）而无需修改 Controller 逻辑。
     /// </remarks>
     [HttpPost("me/avatar")]
-    [RequestSizeLimit(_maxFileSize)]
+    [RequestSizeLimit(AppConstants.FileUpload.MaxAvatarSizeBytes)]
     public async Task<ApiResponse<object>> UploadAvatar(IFormFile file)
     {
         if (file == null || file.Length == 0)
@@ -81,18 +70,18 @@ public class UserController : ControllerBase
         }
 
         // 文件大小验证
-        if (file.Length > _maxFileSize)
+        if (file.Length > AppConstants.FileUpload.MaxAvatarSizeBytes)
         {
             return ApiResponse<object>.Fail("文件大小不能超过 2MB");
         }
 
         // 文件类型验证（扩展名 + MIME 类型双重校验）
         var extension = Path.GetExtension(file.FileName);
-        if (!_allowedExtensions.Contains(extension))
+        if (!AppConstants.FileUpload.AllowedAvatarExtensions.Contains(extension))
         {
             return ApiResponse<object>.Fail("仅支持 JPG 和 PNG 格式的图片");
         }
-        if (!_allowedContentTypes.Contains(file.ContentType))
+        if (!AppConstants.FileUpload.AllowedAvatarContentTypes.Contains(file.ContentType))
         {
             return ApiResponse<object>.Fail("文件内容类型不支持");
         }

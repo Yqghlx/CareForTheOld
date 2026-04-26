@@ -136,9 +136,7 @@ builder.Services.AddScoped<IEmergencyService, EmergencyService>();
 builder.Services.AddScoped<INeighborCircleService, NeighborCircleService>();
 builder.Services.AddScoped<INeighborHelpService, NeighborHelpService>();
 builder.Services.AddScoped<ITrustScoreService, TrustScoreService>();
-builder.Services.AddScoped<TrustScoreService>();
 builder.Services.AddScoped<IAutoRescueService, AutoRescueService>();
-builder.Services.AddScoped<AutoRescueService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IGeoFenceService, GeoFenceService>();
 builder.Services.AddScoped<IHealthReportService, HealthReportService>();
@@ -254,27 +252,12 @@ builder.Services.AddCors(options =>
 });
 
 // 限流配置
-// 获取客户端真实 IP（优先从 X-Forwarded-For / X-Real-IP 获取，兼容反向代理）
-static string GetClientIp(HttpContext context)
-{
-    var forwardedFor = context.Request.Headers["X-Forwarded-For"].FirstOrDefault();
-    if (!string.IsNullOrEmpty(forwardedFor))
-    {
-        // X-Forwarded-For 可能包含多个 IP，取第一个（最原始的客户端 IP）
-        var ip = forwardedFor.Split(',').First().Trim();
-        if (!string.IsNullOrEmpty(ip)) return ip;
-    }
-    var realIp = context.Request.Headers["X-Real-IP"].FirstOrDefault();
-    if (!string.IsNullOrEmpty(realIp)) return realIp;
-    return context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
-}
-
 builder.Services.AddRateLimiter(options =>
 {
     // 认证接口限流：每 IP 每分钟 30 次（开发环境多设备共享 IP，需较高配额）
     options.AddPolicy("AuthPolicy", context =>
         RateLimitPartition.GetSlidingWindowLimiter(
-            partitionKey: GetClientIp(context),
+            partitionKey: context.GetClientIp(),
             factory: _ => new SlidingWindowRateLimiterOptions
             {
                 PermitLimit = builder.Configuration.GetValue("RateLimit:AuthPermitLimit", 30),
@@ -287,7 +270,7 @@ builder.Services.AddRateLimiter(options =>
     // 通用 API 限流：每 IP 每分钟 60 次
     options.AddPolicy("GeneralPolicy", context =>
         RateLimitPartition.GetSlidingWindowLimiter(
-            partitionKey: GetClientIp(context),
+            partitionKey: context.GetClientIp(),
             factory: _ => new SlidingWindowRateLimiterOptions
             {
                 PermitLimit = builder.Configuration.GetValue("RateLimit:GeneralPermitLimit", 60),
@@ -300,7 +283,7 @@ builder.Services.AddRateLimiter(options =>
     // 加入家庭限流：每用户每5分钟，防止邀请码暴力破解（阈值可配置）
     options.AddPolicy("JoinFamilyPolicy", context =>
         RateLimitPartition.GetSlidingWindowLimiter(
-            partitionKey: context.User?.FindFirst("sub")?.Value ?? GetClientIp(context),
+            partitionKey: context.User?.FindFirst("sub")?.Value ?? context.GetClientIp(),
             factory: _ => new SlidingWindowRateLimiterOptions
             {
                 PermitLimit = builder.Configuration.GetValue("RateLimit:JoinFamilyPermitLimit", 5),
@@ -313,7 +296,7 @@ builder.Services.AddRateLimiter(options =>
     // 加入邻里圈限流：每用户每5分钟，防止邀请码暴力破解（阈值可配置）
     options.AddPolicy("JoinCirclePolicy", context =>
         RateLimitPartition.GetSlidingWindowLimiter(
-            partitionKey: context.User?.FindFirst("sub")?.Value ?? GetClientIp(context),
+            partitionKey: context.User?.FindFirst("sub")?.Value ?? context.GetClientIp(),
             factory: _ => new SlidingWindowRateLimiterOptions
             {
                 PermitLimit = builder.Configuration.GetValue("RateLimit:JoinCirclePermitLimit", 10),
@@ -326,7 +309,7 @@ builder.Services.AddRateLimiter(options =>
     // 紧急呼叫限流：每用户每分钟，防止恶意刷量（阈值可配置）
     options.AddPolicy("EmergencyPolicy", context =>
         RateLimitPartition.GetSlidingWindowLimiter(
-            partitionKey: context.User?.FindFirst("sub")?.Value ?? GetClientIp(context),
+            partitionKey: context.User?.FindFirst("sub")?.Value ?? context.GetClientIp(),
             factory: _ => new SlidingWindowRateLimiterOptions
             {
                 PermitLimit = builder.Configuration.GetValue("RateLimit:EmergencyPermitLimit", 3),
@@ -339,7 +322,7 @@ builder.Services.AddRateLimiter(options =>
     // 健康检查端点限流：每 IP 每分钟，防止被滥用
     options.AddPolicy("HealthPolicy", context =>
         RateLimitPartition.GetSlidingWindowLimiter(
-            partitionKey: GetClientIp(context),
+            partitionKey: context.GetClientIp(),
             factory: _ => new SlidingWindowRateLimiterOptions
             {
                 PermitLimit = builder.Configuration.GetValue("RateLimit:HealthPermitLimit", 100),
@@ -355,7 +338,7 @@ builder.Services.AddRateLimiter(options =>
     options.OnRejected = async (context, cancellationToken) =>
     {
         var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-        var clientIp = GetClientIp(context.HttpContext);
+        var clientIp = context.HttpContext.GetClientIp();
         var path = context.HttpContext.Request.Path;
         var method = context.HttpContext.Request.Method;
         var userId = context.HttpContext.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "匿名";

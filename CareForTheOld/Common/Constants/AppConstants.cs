@@ -71,4 +71,19 @@ public static class AppConstants
         /// <summary>JWT 时钟偏移容忍时间（分钟），应对服务器间时钟差异</summary>
         public const int JwtClockSkewMinutes = 5;
     }
+
+    /// <summary>
+    /// 文件上传相关常量
+    /// </summary>
+    public static class FileUpload
+    {
+        /// <summary>允许的头像文件扩展名</summary>
+        public static readonly HashSet<string> AllowedAvatarExtensions = new(StringComparer.OrdinalIgnoreCase) { ".jpg", ".jpeg", ".png" };
+
+        /// <summary>允许的头像 MIME 内容类型</summary>
+        public static readonly HashSet<string> AllowedAvatarContentTypes = new(StringComparer.OrdinalIgnoreCase) { "image/jpeg", "image/png" };
+
+        /// <summary>最大文件大小（字节），默认 2 MB</summary>
+        public const long MaxAvatarSizeBytes = 2 * 1024 * 1024;
+    }
 }
