@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
@@ -11,15 +12,15 @@ public class ReportLocationRequest
     /// <summary>
     /// 纬度（-90 到 90，最多 6 位小数）
     /// </summary>
-    [Required(ErrorMessage = "纬度不能为空")]
-    [Range(-90.0, 90.0, ErrorMessage = "纬度范围应在 -90 到 90 之间")]
+    [Required(ErrorMessage = ValidationMessages.Location.LatitudeRequired)]
+    [Range(-90.0, 90.0, ErrorMessage = ValidationMessages.Location.LatitudeOutOfRange)]
     public double Latitude { get; set; }
 
     /// <summary>
     /// 经度（-180 到 180，最多 6 位小数）
     /// </summary>
-    [Required(ErrorMessage = "经度不能为空")]
-    [Range(-180.0, 180.0, ErrorMessage = "经度范围应在 -180 到 180 之间")]
+    [Required(ErrorMessage = ValidationMessages.Location.LongitudeRequired)]
+    [Range(-180.0, 180.0, ErrorMessage = ValidationMessages.Location.LongitudeOutOfRange)]
     public double Longitude { get; set; }
 
     /// <summary>

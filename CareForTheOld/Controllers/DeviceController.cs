@@ -101,8 +101,8 @@ public class RegisterTokenRequest
     /// <summary>
     /// FCM 设备令牌
     /// </summary>
-    [Required(ErrorMessage = "设备令牌不能为空")]
-    [MaxLength(512, ErrorMessage = "设备令牌长度不能超过512")]
+    [Required(ErrorMessage = ErrorMessages.Device.TokenRequired)]
+    [MaxLength(512, ErrorMessage = ErrorMessages.Device.TokenTooLong)]
     public string Token { get; set; } = string.Empty;
 
     /// <summary>

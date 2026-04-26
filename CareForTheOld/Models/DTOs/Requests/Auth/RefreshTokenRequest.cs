@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using System.ComponentModel.DataAnnotations;
 
 namespace CareForTheOld.Models.DTOs.Requests.Auth;
@@ -7,6 +8,6 @@ namespace CareForTheOld.Models.DTOs.Requests.Auth;
 /// </summary>
 public class RefreshTokenRequest
 {
-    [Required(ErrorMessage = "刷新令牌不能为空")]
+    [Required(ErrorMessage = ValidationMessages.Auth.RefreshTokenRequired)]
     public string RefreshToken { get; set; } = string.Empty;
 }

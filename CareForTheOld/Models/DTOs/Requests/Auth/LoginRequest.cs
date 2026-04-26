@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using System.ComponentModel.DataAnnotations;
 
 namespace CareForTheOld.Models.DTOs.Requests.Auth;
@@ -7,9 +8,9 @@ namespace CareForTheOld.Models.DTOs.Requests.Auth;
 /// </summary>
 public class LoginRequest
 {
-    [Required(ErrorMessage = "手机号不能为空")]
+    [Required(ErrorMessage = ValidationMessages.Auth.PhoneRequired)]
     public string PhoneNumber { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "密码不能为空")]
+    [Required(ErrorMessage = ValidationMessages.Auth.PasswordRequired)]
     public string Password { get; set; } = string.Empty;
 }

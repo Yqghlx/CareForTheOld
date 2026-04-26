@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Validators;
 using CareForTheOld.Models.Enums;
 using System.ComponentModel.DataAnnotations;
@@ -9,22 +10,22 @@ namespace CareForTheOld.Models.DTOs.Requests.Auth;
 /// </summary>
 public class RegisterRequest
 {
-    [Required(ErrorMessage = "手机号不能为空")]
-    [RegularExpression(@"^1[3-9]\d{9}$", ErrorMessage = "手机号格式不正确")]
+    [Required(ErrorMessage = ValidationMessages.Auth.PhoneRequired)]
+    [RegularExpression(@"^1[3-9]\d{9}$", ErrorMessage = ValidationMessages.Auth.PhoneInvalid)]
     public string PhoneNumber { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "密码不能为空")]
+    [Required(ErrorMessage = ValidationMessages.Auth.PasswordRequired)]
     [PasswordValidator]
     public string Password { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "姓名不能为空")]
-    [StringLength(50, ErrorMessage = "姓名长度不能超过50")]
+    [Required(ErrorMessage = ValidationMessages.Auth.NameRequired)]
+    [StringLength(50, ErrorMessage = ValidationMessages.Auth.NameTooLong)]
     public string RealName { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "出生日期不能为空")]
+    [Required(ErrorMessage = ValidationMessages.Auth.BirthDateRequired)]
     public DateOnly BirthDate { get; set; }
 
-    [Required(ErrorMessage = "角色不能为空")]
-    [EnumDataType(typeof(UserRole), ErrorMessage = "角色值无效")]
+    [Required(ErrorMessage = ValidationMessages.Auth.RoleRequired)]
+    [EnumDataType(typeof(UserRole), ErrorMessage = ValidationMessages.Auth.RoleInvalid)]
     public UserRole Role { get; set; }
 }

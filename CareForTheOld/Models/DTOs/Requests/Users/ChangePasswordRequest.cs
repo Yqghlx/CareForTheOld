@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Validators;
 using System.ComponentModel.DataAnnotations;
 
@@ -11,13 +12,13 @@ public class ChangePasswordRequest
     /// <summary>
     /// 旧密码
     /// </summary>
-    [Required(ErrorMessage = "旧密码不能为空")]
+    [Required(ErrorMessage = ValidationMessages.User.OldPasswordRequired)]
     public string OldPassword { get; set; } = string.Empty;
 
     /// <summary>
     /// 新密码（与注册一致：至少 8 位，必须包含字母和数字）
     /// </summary>
-    [Required(ErrorMessage = "新密码不能为空")]
+    [Required(ErrorMessage = ValidationMessages.User.NewPasswordRequired)]
     [PasswordValidator]
     public string NewPassword { get; set; } = string.Empty;
 }

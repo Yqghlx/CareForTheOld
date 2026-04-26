@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Models.Enums;
 using System.ComponentModel.DataAnnotations;
 
@@ -5,13 +6,13 @@ namespace CareForTheOld.Models.DTOs.Requests.Families;
 
 public class AddFamilyMemberRequest
 {
-    [Required(ErrorMessage = "手机号不能为空")]
+    [Required(ErrorMessage = ValidationMessages.Family.PhoneRequired)]
     public string PhoneNumber { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "角色不能为空")]
+    [Required(ErrorMessage = ValidationMessages.Family.RoleRequired)]
     public UserRole Role { get; set; }
 
-    [Required(ErrorMessage = "关系不能为空")]
-    [StringLength(20, ErrorMessage = "关系描述长度不能超过20")]
+    [Required(ErrorMessage = ValidationMessages.Family.RelationshipRequired)]
+    [StringLength(20, ErrorMessage = ValidationMessages.Family.RelationshipTooLong)]
     public string Relation { get; set; } = string.Empty;
 }

@@ -310,6 +310,18 @@ public static class ErrorMessages
     }
 
     /// <summary>
+    /// 设备相关错误消息
+    /// </summary>
+    public static class Device
+    {
+        /// <summary>设备令牌不能为空</summary>
+        public const string TokenRequired = "设备令牌不能为空";
+
+        /// <summary>设备令牌长度超限</summary>
+        public const string TokenTooLong = "设备令牌长度不能超过512";
+    }
+
+    /// <summary>
     /// 配置相关错误消息
     /// </summary>
     public static class Configuration
