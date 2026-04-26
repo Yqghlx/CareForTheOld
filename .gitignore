@@ -8,6 +8,13 @@
 Thumbs.db
 Desktop.ini
 
+# Firebase 凭据（严禁提交）
+**/firebase/service-account.json
+**/google-services.json
+
+# 开发环境配置（含本地密钥，不应提交）
+**/appsettings.Development.json
+
 # 编辑器 / IDE
 .vs/
 .vscode/
