@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/extensions/date_format_extension.dart';
 
 /// 通知记录模型
 class NotificationRecord {
@@ -85,6 +86,6 @@ class NotificationRecord {
     if (diff.inHours < 24) return '${diff.inHours}小时前';
     if (diff.inDays < 7) return '${diff.inDays}天前';
 
-    return '${createdAt.month}/${createdAt.day} ${createdAt.hour.toString().padLeft(2, '0')}:${createdAt.minute.toString().padLeft(2, '0')}';
+    return createdAt.toShortDateTimeString();
   }
 }

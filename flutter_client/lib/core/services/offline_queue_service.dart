@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import '../api/api_client.dart';
+import '../constants/api_endpoints.dart';
 import 'connectivity_service.dart';
 
 /// 离线队列中的待上传项
@@ -134,13 +135,13 @@ class OfflineQueueService {
     try {
       switch (item.type) {
         case 'location':
-          await _dio.post('/location', data: item.data);
+          await _dio.post(ApiEndpoints.location, data: item.data);
           return true;
         case 'health':
-          await _dio.post('/health', data: item.data);
+          await _dio.post(ApiEndpoints.health, data: item.data);
           return true;
         case 'medication':
-          await _dio.post('/medication/logs', data: item.data);
+          await _dio.post(ApiEndpoints.medicationLogs, data: item.data);
           return true;
         default:
           debugPrint('[离线队列] 未知类型: ${item.type}，跳过');

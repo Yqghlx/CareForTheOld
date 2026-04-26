@@ -11,6 +11,7 @@ import '../providers/family_provider.dart';
 import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../core/extensions/snackbar_extension.dart';
+import '../../../core/extensions/date_format_extension.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../shared/providers/emergency_provider.dart';
 import '../../shared/providers/notification_record_provider.dart';
@@ -637,8 +638,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                             .map((c) => c.text.trim())
                             .where((t) => t.isNotEmpty)
                             .toList(),
-                        startDate:
-                            '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}',
+                        startDate: now.toDateString(),
                       );
                       if (mounted && context.mounted) {
                         // 刷新子女端老人健康页面的用药计划/记录

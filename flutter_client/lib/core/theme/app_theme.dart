@@ -33,6 +33,13 @@ class AppTheme {
   static const Color grey700 = Color(0xFF616161);
   static const Color grey800 = Color(0xFF424242);
 
+  /// 预定义文本样式（高频组合，统一管理）
+  static const TextStyle textTitle = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
+  static const TextStyle textSubtitle = TextStyle(fontSize: 14, color: grey600);
+  static const TextStyle textCaption = TextStyle(fontSize: 12, color: grey500);
+  static const TextStyle textBody = TextStyle(fontSize: 14);
+  static const TextStyle textCardTitle = TextStyle(fontSize: 16, fontWeight: FontWeight.w600);
+
   /// 渐变配置
   static const LinearGradient primaryGradient = LinearGradient(
     colors: [primaryColor, primaryLight],

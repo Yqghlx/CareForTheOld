@@ -164,29 +164,15 @@ public class LocationServiceTests
             g => g.CheckOutsideFenceAsync(elder.Id, 40.0, 117.0),
             Times.Once);
 
-        // 等待异步通知发送完成（SendGeoFenceAlertAsync 是 fire-and-forget，需轮询等待）
-        var verified = false;
-        for (var i = 0; i < 10; i++)
-        {
-            await Task.Delay(200);
-            try
-            {
-                _mockNotificationService.Verify(
-                    n => n.SendToUsersAsync(
-                        It.IsAny<IEnumerable<Guid>>(),
-                        "GeoFenceAlert",
-                        It.IsAny<object>()),
-                    Times.AtLeastOnce);
-                verified = true;
-                break;
-            }
-            catch (Moq.MockException)
-            {
-                // 继续等待
-            }
-        }
+        // 直接验证围栏告警 Job 方法：模拟 Hangfire 调用公开入口
+        await _service.SendGeoFenceAlertJobAsync(elder.Id, fenceResponse.Id, fenceResponse.Radius, 1500.0);
 
-        verified.Should().BeTrue("通知服务应被调用以发送围栏预警");
+        _mockNotificationService.Verify(
+            n => n.SendToUsersAsync(
+                It.IsAny<IEnumerable<Guid>>(),
+                "GeoFenceAlert",
+                It.IsAny<object>()),
+            Times.Once);
     }
 
     [Fact]
@@ -328,8 +314,8 @@ public class LocationServiceTests
         // 执行：上报围栏外位置
         await _service.ReportLocationAsync(elder.Id, 40.0, 117.0);
 
-        // 等待异步通知发送
-        await Task.Delay(500);
+        // 直接验证围栏告警 Job 方法：距离超过 2 倍半径应为 Critical
+        await _service.SendGeoFenceAlertJobAsync(elder.Id, fenceResponse.Id, fenceResponse.Radius, 1500.0);
 
         // 验证：通知包含 Critical 级别（距离 > 半径 * 2）
         _mockNotificationService.Verify(
@@ -362,8 +348,8 @@ public class LocationServiceTests
         // 执行
         await _service.ReportLocationAsync(elder.Id, 39.91, 116.41);
 
-        // 等待异步通知发送
-        await Task.Delay(500);
+        // 直接验证围栏告警 Job 方法：距离未超过 2 倍半径应为 Warning
+        await _service.SendGeoFenceAlertJobAsync(elder.Id, fenceResponse.Id, fenceResponse.Radius, 600.0);
 
         // 验证：通知包含 Warning 级别（距离 <= 半径 * 2）
         _mockNotificationService.Verify(

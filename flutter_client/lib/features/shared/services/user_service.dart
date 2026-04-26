@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/models/user.dart';
 import '../../../core/api/api_client.dart';
+import '../../../core/constants/api_endpoints.dart';
 
 /// 用户服务
 class UserService {
@@ -12,13 +13,13 @@ class UserService {
 
   /// 获取当前用户信息
   Future<User> getCurrentUser() async {
-    final response = await _dio.get('/user/me');
+    final response = await _dio.get(ApiEndpoints.userMe);
     return User.fromJson(response.data['data']);
   }
 
   /// 更新用户信息
   Future<User> updateUser({String? realName, String? avatarUrl}) async {
-    final response = await _dio.put('/user/me', data: {
+    final response = await _dio.put(ApiEndpoints.userMe, data: {
       if (realName != null) 'realName': realName,
       if (avatarUrl != null) 'avatarUrl': avatarUrl,
     });
@@ -30,7 +31,7 @@ class UserService {
     required String oldPassword,
     required String newPassword,
   }) async {
-    final response = await _dio.post('/user/me/password', data: {
+    final response = await _dio.post(ApiEndpoints.userPassword, data: {
       'oldPassword': oldPassword,
       'newPassword': newPassword,
     });

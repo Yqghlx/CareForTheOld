@@ -1,3 +1,5 @@
+import '../../core/extensions/date_format_extension.dart';
+
 /// 电子围栏模型
 class GeoFence {
   final String id;
@@ -42,8 +44,7 @@ class GeoFence {
   /// 获取格式化的更新时间
   String get formattedUpdatedAt {
     final local = updatedAt.toLocal();
-    return '${local.year}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')} '
-        '${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
+    return local.toDateTimeString();
   }
 
   /// 格式化半径显示

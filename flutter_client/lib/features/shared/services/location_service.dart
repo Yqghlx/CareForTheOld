@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import '../../../shared/models/location_record.dart';
+import '../../../core/constants/api_endpoints.dart';
 
 /// 位置服务
 class LocationService {
@@ -16,14 +17,14 @@ class LocationService {
     if (accuracy != null) {
       data['accuracy'] = accuracy;
     }
-    final response = await _dio.post('/location', data: data);
+    final response = await _dio.post(ApiEndpoints.location, data: data);
     final responseData = response.data['data'];
     return LocationRecord.fromJson(responseData);
   }
 
   /// 获取我的最新位置
   Future<LocationRecord?> getMyLatestLocation() async {
-    final response = await _dio.get('/location/me/latest');
+    final response = await _dio.get(ApiEndpoints.locationMeLatest);
     final data = response.data['data'];
     if (data == null) return null;
     return LocationRecord.fromJson(data);
@@ -31,7 +32,7 @@ class LocationService {
 
   /// 获取我的位置历史（支持分页）
   Future<List<LocationRecord>> getMyHistory({int skip = 0, int limit = 20}) async {
-    final response = await _dio.get('/location/me/history', queryParameters: {'skip': skip, 'limit': limit});
+    final response = await _dio.get(ApiEndpoints.locationMeHistory, queryParameters: {'skip': skip, 'limit': limit});
     final data = response.data['data'] as List;
     return data.map((e) => LocationRecord.fromJson(e)).toList();
   }
@@ -41,7 +42,7 @@ class LocationService {
     required String familyId,
     required String memberId,
   }) async {
-    final response = await _dio.get('/location/family/$familyId/member/$memberId/latest');
+    final response = await _dio.get(ApiEndpoints.locationFamilyMember(familyId, memberId));
     final data = response.data['data'];
     if (data == null) return null;
     return LocationRecord.fromJson(data);

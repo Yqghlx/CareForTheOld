@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/extensions/date_format_extension.dart';
 
 /// 紧急呼叫状态枚举（与后端对应，整数序列化）
 enum EmergencyStatus {
@@ -113,8 +114,7 @@ class EmergencyCall {
   /// 格式化呼叫时间
   String get formattedTime {
     final localTime = calledAt.toLocal();
-    return '${localTime.year}-${localTime.month.toString().padLeft(2, '0')}-${localTime.day.toString().padLeft(2, '0')} '
-        '${localTime.hour.toString().padLeft(2, '0')}:${localTime.minute.toString().padLeft(2, '0')}';
+    return localTime.toDateTimeString();
   }
 
   /// 相对时间描述

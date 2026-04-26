@@ -4,6 +4,7 @@ using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Interfaces;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -73,18 +74,9 @@ public class LocationService : ILocationService
             if (outsideResult != null)
             {
                 var (fence, distance) = outsideResult.Value;
-                // 异步发送围栏预警通知，不阻塞主流程，捕获异常防止后台任务崩溃
-                _ = Task.Run(async () =>
-                {
-                    try
-                    {
-                        await SendGeoFenceAlertAsync(userId, fence!, distance);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, "围栏预警通知发送失败，用户 {UserId}", userId);
-                    }
-                });
+                // 通过 Hangfire 异步发送围栏预警通知，支持持久化和自动重试
+                BackgroundJob.Enqueue(() => SendGeoFenceAlertJobAsync(
+                    userId, fence!.Id, fence.Radius, distance));
             }
         }
 
@@ -176,9 +168,25 @@ public class LocationService : ILocationService
     }
 
     /// <summary>
+    /// Hangfire 后台任务：发送电子围栏超出预警通知
+    /// 通过 fenceId 重新获取围栏数据，避免序列化复杂对象
+    /// </summary>
+    public async Task SendGeoFenceAlertJobAsync(Guid elderId, Guid fenceId, int fenceRadius, double distance)
+    {
+        try
+        {
+            await SendGeoFenceAlertAsync(elderId, fenceId, fenceRadius, distance);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "围栏预警通知发送失败，用户 {UserId}", elderId);
+        }
+    }
+
+    /// <summary>
     /// 发送电子围栏超出预警通知给子女
     /// </summary>
-    private async Task SendGeoFenceAlertAsync(Guid elderId, GeoFenceResponse fence, double distance)
+    private async Task SendGeoFenceAlertAsync(Guid elderId, Guid fenceId, int fenceRadius, double distance)
     {
         // 获取老人所在的家庭
         var familyMember = await _context.FamilyMembers
@@ -203,24 +211,21 @@ public class LocationService : ILocationService
             ? $"{(distance / 1000):.1}公里"
             : $"{(int)distance}米";
 
-        if (children.Count > 0)
-        {
-            await _notificationService.SendToUsersAsync(
-                children.Select(c => c.UserId),
-                "GeoFenceAlert",
-                new
-                {
-                    Title = "安全区域预警",
-                    Content = $"{elderName}已离开安全区域，当前位置距离安全中心{distanceText}，请及时关注。",
-                    ElderId = elderId,
-                    ElderName = elderName,
-                    FenceId = fence.Id,
-                    FenceRadius = fence.Radius,
-                    Distance = distance,
-                    AlertLevel = distance > fence.Radius * 2 ? "Critical" : "Warning"
-                }
-            );
-        }
+        await _notificationService.SendToUsersAsync(
+            children.Select(c => c.UserId),
+            "GeoFenceAlert",
+            new
+            {
+                Title = "安全区域预警",
+                Content = $"{elderName}已离开安全区域，当前位置距离安全中心{distanceText}，请及时关注。",
+                ElderId = elderId,
+                ElderName = elderName,
+                FenceId = fenceId,
+                FenceRadius = fenceRadius,
+                Distance = distance,
+                AlertLevel = distance > fenceRadius * 2 ? "Critical" : "Warning"
+            }
+        );
 
         // 检查老人是否在邻里圈中，若在则启动自动救援计时器
         var circleMembership = await _context.NeighborCircleMembers

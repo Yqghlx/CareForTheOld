@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import '../../../core/constants/api_endpoints.dart';
 import '../../../shared/models/family.dart';
 import '../../../shared/models/user_role.dart';
 
@@ -10,7 +11,7 @@ class FamilyService {
 
   /// 获取当前用户所属的家庭信息
   Future<FamilyGroup?> getMyFamily() async {
-    final response = await _dio.get('/family/me');
+    final response = await _dio.get(ApiEndpoints.familyMe);
     final data = response.data['data'];
     if (data == null) return null;
     return FamilyGroup.fromJson(data);
@@ -18,7 +19,7 @@ class FamilyService {
 
   /// 创建家庭组
   Future<FamilyGroup> createFamily(String familyName) async {
-    final response = await _dio.post('/family', data: {
+    final response = await _dio.post(ApiEndpoints.family, data: {
       'familyName': familyName,
     });
     final data = response.data['data'];
@@ -32,7 +33,7 @@ class FamilyService {
     required UserRole role,
     required String relation,
   }) async {
-    final response = await _dio.post('/family/$familyId/members', data: {
+    final response = await _dio.post(ApiEndpoints.familyMembers(familyId), data: {
       'phoneNumber': phoneNumber,
       'role': role == UserRole.elder ? 0 : 1,
       'relation': relation,
@@ -43,7 +44,7 @@ class FamilyService {
 
   /// 获取家庭成员列表
   Future<List<FamilyMember>> getMembers(String familyId) async {
-    final response = await _dio.get('/family/$familyId/members');
+    final response = await _dio.get(ApiEndpoints.familyMembers(familyId));
     final List<dynamic> dataList = response.data['data'];
     return dataList
         .map((json) => FamilyMember.fromJson(json))
@@ -55,7 +56,7 @@ class FamilyService {
     required String familyId,
     required String userId,
   }) async {
-    await _dio.delete('/family/$familyId/members/$userId');
+    await _dio.delete(ApiEndpoints.familyMember(familyId, userId));
   }
 
   /// 通过邀请码申请加入家庭
@@ -63,7 +64,7 @@ class FamilyService {
     required String inviteCode,
     required String relation,
   }) async {
-    final response = await _dio.post('/family/join', data: {
+    final response = await _dio.post(ApiEndpoints.familyJoin, data: {
       'inviteCode': inviteCode,
       'relation': relation,
     });
@@ -73,14 +74,14 @@ class FamilyService {
 
   /// 刷新邀请码
   Future<FamilyGroup> refreshInviteCode(String familyId) async {
-    final response = await _dio.post('/family/$familyId/refresh-code');
+    final response = await _dio.post(ApiEndpoints.familyRefreshCode(familyId));
     final data = response.data['data'];
     return FamilyGroup.fromJson(data);
   }
 
   /// 获取待审批成员列表
   Future<List<FamilyMember>> getPendingMembers(String familyId) async {
-    final response = await _dio.get('/family/$familyId/pending-members');
+    final response = await _dio.get(ApiEndpoints.familyPendingMembers(familyId));
     final List<dynamic> dataList = response.data['data'];
     return dataList
         .map((json) => FamilyMember.fromJson(json))
@@ -92,7 +93,7 @@ class FamilyService {
     required String familyId,
     required String memberId,
   }) async {
-    await _dio.post('/family/$familyId/members/$memberId/approve');
+    await _dio.post(ApiEndpoints.familyApprove(familyId, memberId));
   }
 
   /// 拒绝成员加入申请
@@ -100,6 +101,6 @@ class FamilyService {
     required String familyId,
     required String memberId,
   }) async {
-    await _dio.post('/family/$familyId/members/$memberId/reject');
+    await _dio.post(ApiEndpoints.familyReject(familyId, memberId));
   }
 }

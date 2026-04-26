@@ -1,3 +1,5 @@
+import '../../core/extensions/date_format_extension.dart';
+
 /// 位置记录模型
 class LocationRecord {
   final String id;
@@ -31,8 +33,7 @@ class LocationRecord {
   /// 格式化时间
   String get formattedTime {
     final localTime = recordedAt.toLocal();
-    return '${localTime.year}-${localTime.month.toString().padLeft(2, '0')}-${localTime.day.toString().padLeft(2, '0')} '
-        '${localTime.hour.toString().padLeft(2, '0')}:${localTime.minute.toString().padLeft(2, '0')}';
+    return localTime.toDateTimeString();
   }
 
   /// 相对时间描述

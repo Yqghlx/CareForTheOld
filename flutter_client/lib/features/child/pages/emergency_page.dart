@@ -8,6 +8,7 @@ import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../shared/widgets/common_states.dart';
 import '../../../core/extensions/snackbar_extension.dart';
+import '../../../core/extensions/date_format_extension.dart';
 import '../../../core/theme/app_theme.dart';
 
 /// 子女端紧急呼叫页面
@@ -348,7 +349,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
   /// 格式化响应时间
   String _formatRespondedAt(DateTime respondedAt) {
     final local = respondedAt.toLocal();
-    return '${local.month}/${local.day} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')} 处理';
+    return '${local.toShortDateTimeString()} 处理';
   }
 
   /// 拨打老人电话

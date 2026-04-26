@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/extensions/snackbar_extension.dart';
+import '../../../core/extensions/date_format_extension.dart';
 import '../../../shared/models/health_record.dart';
 import '../../../shared/models/health_stats.dart';
 import '../../../shared/models/medication_plan.dart';
@@ -250,7 +251,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       );
                       if (picked != null) {
                         setState(() {
-                          _selectedLogDate = '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
+                          _selectedLogDate = picked.toDateString();
                         });
                       }
                     },
@@ -714,8 +715,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       itemBuilder: (context, index) {
         final record = records[index];
         final time = record.recordedAt.toLocal();
-        final timeStr =
-            '${time.month}/${time.day} ${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+        final timeStr = time.toShortDateTimeString();
         return Card(
           elevation: 4,
           margin: const EdgeInsets.only(bottom: 8),
@@ -778,16 +778,14 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     return Column(
       children: logs.map((log) {
         final scheduledTime = log.scheduledAt.toLocal();
-        final scheduledStr =
-            '${scheduledTime.month}/${scheduledTime.day} ${scheduledTime.hour.toString().padLeft(2, '0')}:${scheduledTime.minute.toString().padLeft(2, '0')}';
+        final scheduledStr = scheduledTime.toShortDateTimeString();
 
         // 计算实际服药时间
         String? takenStr;
         String? delayInfo;
         if (log.takenAt != null) {
           final takenTime = log.takenAt!.toLocal();
-          takenStr =
-              '${takenTime.hour.toString().padLeft(2, '0')}:${takenTime.minute.toString().padLeft(2, '0')}';
+          takenStr = takenTime.toTimeString();
           // 计算延迟（超过30分钟视为延迟服药）
           final delay = log.takenAt!.difference(log.scheduledAt);
           if (delay.inMinutes > 30) {

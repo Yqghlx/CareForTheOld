@@ -18,6 +18,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/services/ocr_parser_service.dart';
 import '../../../core/extensions/snackbar_extension.dart';
+import '../../../core/extensions/date_format_extension.dart';
 import '../../../shared/widgets/confirm_dialog.dart';
 
 /// 健康记录页面
@@ -323,9 +324,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
   Widget _buildRecordItem(HealthRecord record) {
     // 格式化时间为本地时间
     final localTime = record.recordedAt.toLocal();
-    final timeStr =
-        '${localTime.year}-${localTime.month.toString().padLeft(2, '0')}-${localTime.day.toString().padLeft(2, '0')} '
-        '${localTime.hour.toString().padLeft(2, '0')}:${localTime.minute.toString().padLeft(2, '0')}';
+    final timeStr = localTime.toDateTimeString();
 
     // 判断数值是否异常
     final abnormalLabel = _getAbnormalLabel(record);

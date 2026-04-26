@@ -10,6 +10,7 @@ import '../../../shared/widgets/common_buttons.dart';
 import '../../../shared/widgets/common_states.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/extensions/snackbar_extension.dart';
+import '../../../core/extensions/date_format_extension.dart';
 
 /// 用药提醒页面
 class MedicationPage extends ConsumerStatefulWidget {
@@ -203,8 +204,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
   /// 已处理状态的卡片（已服用/已跳过）
   Widget _buildStaticMedicationCard(MedicationLog log) {
     final scheduledTime = log.scheduledAt.toLocal();
-    final timeStr =
-        '${scheduledTime.hour.toString().padLeft(2, '0')}:${scheduledTime.minute.toString().padLeft(2, '0')}';
+    final timeStr = scheduledTime.toTimeString();
 
     return Card(
       elevation: 4,
@@ -463,8 +463,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
   Widget build(BuildContext context) {
     final log = widget.log;
     final scheduledTime = log.scheduledAt.toLocal();
-    final timeStr =
-        '${scheduledTime.hour.toString().padLeft(2, '0')}:${scheduledTime.minute.toString().padLeft(2, '0')}';
+    final timeStr = scheduledTime.toTimeString();
 
     // 无动画时使用静态橙色边框
     if (!widget.enableAnimation) {

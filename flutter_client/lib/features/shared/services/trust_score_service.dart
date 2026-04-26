@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import '../../../core/constants/api_endpoints.dart';
 
 /// 信任排行榜条目
 class TrustRankingItem {
@@ -51,7 +52,7 @@ class TrustScoreService {
 
   /// 获取我的信任评分
   Future<double> getMyScore(String circleId) async {
-    final response = await _dio.get('/neighbor-circles/$circleId/trust/me');
+    final response = await _dio.get(ApiEndpoints.trustScoreMe(circleId));
     final data = response.data['data'];
     return (data['score'] as num).toDouble();
   }

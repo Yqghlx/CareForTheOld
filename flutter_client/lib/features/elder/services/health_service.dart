@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import '../../../shared/models/health_record.dart';
 import '../../../shared/models/health_stats.dart';
 import '../../../shared/models/anomaly_detection.dart';
+import '../../../core/constants/api_endpoints.dart';
 
 /// 健康记录 API 服务类
 class HealthService {
@@ -19,7 +20,7 @@ class HealthService {
     double? temperature,
     String? note,
   }) async {
-    final response = await _dio.post('/health', data: {
+    final response = await _dio.post(ApiEndpoints.health, data: {
       'type': type.name,
       if (systolic != null) 'systolic': systolic,
       if (diastolic != null) 'diastolic': diastolic,
@@ -52,14 +53,14 @@ class HealthService {
 
   /// 获取我的健康统计
   Future<List<HealthStats>> getMyStats() async {
-    final response = await _dio.get('/health/me/stats');
+    final response = await _dio.get(ApiEndpoints.healthMeStats);
     final List<dynamic> dataList = response.data['data'];
     return dataList.map((json) => HealthStats.fromJson(json)).toList();
   }
 
   /// 删除健康记录
   Future<void> deleteRecord(String id) async {
-    await _dio.delete('/health/$id');
+    await _dio.delete(ApiEndpoints.healthRecord(id));
   }
 
   /// 获取家庭成员的健康记录（子女查看老人数据）

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import '../../../shared/models/notification_record.dart';
 import '../../../core/api/api_client.dart';
+import '../../../core/constants/api_endpoints.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 通知记录 API 服务
@@ -21,19 +22,19 @@ class NotificationRecordService {
 
   /// 获取未读数量
   Future<int> getUnreadCount() async {
-    final response = await _dio.get('/notification/me/unread-count');
+    final response = await _dio.get(ApiEndpoints.notificationUnreadCount);
     return response.data['data']['count'] as int? ?? 0;
   }
 
   /// 标记已读
   Future<bool> markAsRead(String notificationId) async {
-    await _dio.put('/notification/$notificationId/read');
+    await _dio.put(ApiEndpoints.notificationRead(notificationId));
     return true;
   }
 
   /// 全部标记已读
   Future<bool> markAllAsRead() async {
-    await _dio.put('/notification/me/read-all');
+    await _dio.put(ApiEndpoints.notificationReadAll);
     return true;
   }
 }

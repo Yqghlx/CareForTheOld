@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/extensions/api_error_extension.dart';
 import '../../../core/extensions/snackbar_extension.dart';
+import '../../../core/extensions/date_format_extension.dart';
 import '../../../core/validators/form_validators.dart';
 import '../../../shared/providers/auth_provider.dart';
 import '../../../shared/models/user.dart';
@@ -50,7 +51,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
         'realName': _nameController.text,
         'role': _selectedRole == UserRole.elder ? 0 : 1,
         'birthDate': _selectedBirthDate != null
-            ? '${_selectedBirthDate!.year}-${_selectedBirthDate!.month.toString().padLeft(2, '0')}-${_selectedBirthDate!.day.toString().padLeft(2, '0')}'
+            ? _selectedBirthDate!.toDateString()
             : '2000-01-01', // 未选择时使用默认值
       });
 
