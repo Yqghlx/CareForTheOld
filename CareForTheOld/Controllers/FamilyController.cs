@@ -12,6 +12,11 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace CareForTheOld.Controllers;
 
+/// <summary>
+/// 家庭组管理控制器
+/// 提供家庭创建、成员管理、邀请码生成与刷新等功能
+/// 子女角色可创建家庭，老人通过邀请码加入
+/// </summary>
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]

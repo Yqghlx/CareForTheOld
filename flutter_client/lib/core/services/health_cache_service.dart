@@ -2,14 +2,13 @@ import 'dart:convert';
 import 'package:hive/hive.dart';
 import '../../shared/models/health_record.dart';
 import '../../shared/models/medication_plan.dart';
+import '../constants/pref_keys.dart';
 
 /// 健康数据本地缓存服务
 ///
 /// 使用 Hive 缓存健康记录和用药计划，断网时仍可查看历史数据。
 /// 每次网络请求成功后自动更新缓存，离线时自动降级读取缓存。
 class HealthCacheService {
-  static const _healthBox = 'health_cache';
-  static const _medicationBox = 'medication_cache';
   static const _healthKey = 'my_records';
   static const _medicationKey = 'my_plans';
   static const _maxCacheRecords = 100;
@@ -19,8 +18,8 @@ class HealthCacheService {
 
   /// 初始化 Hive Boxes
   Future<void> init() async {
-    _hBox = await Hive.openBox<String>(_healthBox);
-    _mBox = await Hive.openBox<String>(_medicationBox);
+    _hBox = await Hive.openBox<String>(HiveBoxKeys.healthCache);
+    _mBox = await Hive.openBox<String>(HiveBoxKeys.medicationCache);
   }
 
   // ==================== 健康记录缓存 ====================

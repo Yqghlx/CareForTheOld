@@ -11,6 +11,11 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace CareForTheOld.Controllers;
 
+/// <summary>
+/// 邻里互助控制器
+/// 提求求助发布、响应、完成和评分等功能
+/// 支持基于地理位置的邻居互助服务，与邻里圈联动
+/// </summary>
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/neighborhelp")]

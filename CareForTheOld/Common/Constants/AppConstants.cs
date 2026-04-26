@@ -258,4 +258,83 @@ public static class AppConstants
         /// <summary>互助次数封顶值，超过此数不再额外加分</summary>
         public const int MaxHelpsCap = 20;
     }
+
+    /// <summary>
+    /// 健康阈值常量
+    /// 定义各类健康指标的正常范围和严重阈值，用于健康异常检测和预警
+    /// </summary>
+    public static class HealthThresholds
+    {
+        /// <summary>血压收缩压正常范围下限（mmHg）</summary>
+        public const int BloodPressureSystolicMin = 90;
+
+        /// <summary>血压收缩压正常范围上限（mmHg）</summary>
+        public const int BloodPressureSystolicMax = 140;
+
+        /// <summary>血压舒张压正常范围下限（mmHg）</summary>
+        public const int BloodPressureDiastolicMin = 60;
+
+        /// <summary>血压舒张压正常范围上限（mmHg）</summary>
+        public const int BloodPressureDiastolicMax = 90;
+
+        /// <summary>血压严重偏高收缩压阈值（mmHg）— 高血压急症</summary>
+        public const int BloodPressureCriticalHighSystolic = 180;
+
+        /// <summary>血压严重偏高舒张压阈值（mmHg）— 高血压急症</summary>
+        public const int BloodPressureCriticalHighDiastolic = 120;
+
+        /// <summary>血压中度偏高收缩压阈值（mmHg）— 中度高血压</summary>
+        public const int BloodPressureModerateHighSystolic = 160;
+
+        /// <summary>血压中度偏高舒张压阈值（mmHg）— 中度高血压</summary>
+        public const int BloodPressureModerateHighDiastolic = 100;
+
+        /// <summary>血压严重偏低收缩压阈值（mmHg）— 休克风险</summary>
+        public const int BloodPressureCriticalLowSystolic = 80;
+
+        /// <summary>血压严重偏低舒张压阈值（mmHg）— 休克风险</summary>
+        public const int BloodPressureCriticalLowDiastolic = 50;
+
+        /// <summary>血糖正常范围下限（mmol/L，空腹）</summary>
+        public const decimal BloodSugarMin = 3.9m;
+
+        /// <summary>血糖正常范围上限（mmol/L，空腹）</summary>
+        public const decimal BloodSugarMax = 6.1m;
+
+        /// <summary>血糖严重偏高阈值（mmol/L）— 糖尿病诊断标准</summary>
+        public const decimal BloodSugarCriticalHigh = 11.1m;
+
+        /// <summary>血糖中度偏高阈值（mmol/L）— 糖耐量异常</summary>
+        public const decimal BloodSugarModerateHigh = 7.0m;
+
+        /// <summary>血糖严重偏低阈值（mmol/L）— 低血糖危险</summary>
+        public const decimal BloodSugarCriticalLow = 2.8m;
+
+        /// <summary>心率正常范围下限（次/分）</summary>
+        public const int HeartRateMin = 60;
+
+        /// <summary>心率正常范围上限（次/分）</summary>
+        public const int HeartRateMax = 100;
+
+        /// <summary>心率严重过快阈值（次/分）— 心动过速急症</summary>
+        public const int HeartRateCriticalHigh = 150;
+
+        /// <summary>心率严重过慢阈值（次/分）— 心动过缓急症</summary>
+        public const int HeartRateCriticalLow = 40;
+
+        /// <summary>体温正常范围下限（°C）</summary>
+        public const decimal TemperatureMin = 36.0m;
+
+        /// <summary>体温正常范围上限（°C）</summary>
+        public const decimal TemperatureMax = 37.3m;
+
+        /// <summary>体温高烧阈值（°C）— 高热急症</summary>
+        public const decimal TemperatureCriticalHigh = 39.0m;
+
+        /// <summary>体温发烧阈值（°C）— 中度发热</summary>
+        public const decimal TemperatureModerateHigh = 38.0m;
+
+        /// <summary>体温严重偏低阈值（°C）— 低体温症</summary>
+        public const decimal TemperatureCriticalLow = 35.0m;
+    }
 }

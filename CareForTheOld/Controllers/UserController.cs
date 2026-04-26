@@ -12,6 +12,10 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace CareForTheOld.Controllers;
 
+/// <summary>
+/// 用户管理控制器
+/// 提供用户信息查询、更新和头像上传等功能
+/// </summary>
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/theme/app_theme.dart';
 import '../providers/neighbor_help_provider.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 
@@ -49,7 +50,7 @@ class _NeighborHelpRatingPageState
                     iconSize: 48,
                     icon: Icon(
                       star <= _rating ? Icons.star : Icons.star_border,
-                      color: star <= _rating ? Colors.amber : Colors.grey,
+                      color: star <= _rating ? Colors.amber : AppTheme.grey400,
                     ),
                     onPressed: () => setState(() => _rating = star),
                   );
@@ -59,7 +60,7 @@ class _NeighborHelpRatingPageState
             Center(
               child: Text(
                 _ratingLabel,
-                style: TextStyle(color: Colors.grey[600]),
+                style: TextStyle(color: AppTheme.grey600),
               ),
             ),
             const SizedBox(height: 24),

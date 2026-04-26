@@ -214,7 +214,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                         suffixIcon: IconButton(
                           icon: Icon(
                             _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                            color: Colors.grey,
+                            color: AppTheme.grey600,
                           ),
                           onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                           tooltip: _obscurePassword ? '显示密码' : '隐藏密码',

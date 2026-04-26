@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import '../api/api_client.dart';
 import '../constants/api_endpoints.dart';
+import '../constants/pref_keys.dart';
 import 'connectivity_service.dart';
 
 /// 离线队列中的待上传项
@@ -43,7 +44,6 @@ class OfflineQueueItem {
 /// 当网络不可用时，将位置上报和健康录入数据存入本地 Hive 数据库，
 /// 网络恢复后自动批量上传，确保数据不丢失。
 class OfflineQueueService {
-  static const _boxName = 'offline_queue';
   static const _maxQueueSize = 100; // 防止队列无限增长
 
   final Dio _dio;
@@ -56,7 +56,7 @@ class OfflineQueueService {
 
   /// 初始化 Hive Box
   Future<void> init() async {
-    _box = await Hive.openBox<String>(_boxName);
+    _box = await Hive.openBox<String>(HiveBoxKeys.offlineQueue);
 
     // 监听网络恢复，自动触发上传
     _networkSubscription =

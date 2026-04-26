@@ -117,7 +117,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
           children: [
             _buildStatItem('待服用', '${state.pendingCount}', Colors.orange),
             _buildStatItem('已服用', '${state.takenCount}', Colors.green),
-            _buildStatItem('已跳过', '${state.skippedCount}', Colors.grey),
+            _buildStatItem('已跳过', '${state.skippedCount}', AppTheme.grey500),
           ],
         ),
       ),
@@ -243,7 +243,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
                           : null,
                       color: log.status == MedicationStatus.taken
                           ? null
-                          : Colors.grey.withValues(alpha: 0.15),
+                          : AppTheme.grey300.withValues(alpha: 0.15),
                       borderRadius: AppTheme.radiusM,
                     ),
                     child: log.status == MedicationStatus.taken
@@ -324,7 +324,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
           PrimaryButton(
             text: '确认跳过',
             onPressed: () => Navigator.pop(ctx, true),
-            gradient: const LinearGradient(colors: [Colors.grey, Colors.grey]),
+            gradient: const LinearGradient(colors: [AppTheme.grey500, AppTheme.grey600]),
           ),
         ],
       ),

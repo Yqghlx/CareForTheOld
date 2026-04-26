@@ -35,6 +35,11 @@ class FcmService {
   final _log = Logger('FcmService');
   String? _currentToken;
 
+  /// StreamSubscription 引用，用于 dispose 时取消订阅
+  StreamSubscription<String>? _tokenRefreshSubscription;
+  StreamSubscription<RemoteMessage>? _foregroundMessageSubscription;
+  StreamSubscription<RemoteMessage>? _messageOpenedAppSubscription;
+
   FcmService(this._ref);
 
   /// 初始化 FCM 服务
@@ -62,13 +67,13 @@ class FcmService {
       _log.info('FCM token 已获取: ${_currentToken?.substring(0, 20)}...');
 
       // 监听 token 刷新
-      messaging.onTokenRefresh.listen(_onTokenRefresh);
+      _tokenRefreshSubscription = messaging.onTokenRefresh.listen(_onTokenRefresh);
 
       // 前台消息处理
-      FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
+      _foregroundMessageSubscription = FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
 
       // 通知点击（APP 从后台通过通知打开）
-      FirebaseMessaging.onMessageOpenedApp.listen(_handleMessageOpenedApp);
+      _messageOpenedAppSubscription = FirebaseMessaging.onMessageOpenedApp.listen(_handleMessageOpenedApp);
 
       _log.info('FCM 服务初始化完成');
     } catch (e) {
@@ -154,9 +159,19 @@ class FcmService {
       );
     }
   }
+
+  /// 释放资源，取消所有 StreamSubscription
+  void dispose() {
+    _tokenRefreshSubscription?.cancel();
+    _foregroundMessageSubscription?.cancel();
+    _messageOpenedAppSubscription?.cancel();
+    _log.info('FCM 服务资源已释放');
+  }
 }
 
 /// FCM 服务 Provider
 final fcmServiceProvider = Provider<FcmService>((ref) {
-  return FcmService(ref);
+  final service = FcmService(ref);
+  ref.onDispose(() => service.dispose());
+  return service;
 });

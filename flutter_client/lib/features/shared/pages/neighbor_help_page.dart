@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../shared/models/neighbor_help_request.dart';
+import '../../../core/theme/app_theme.dart';
 import '../providers/neighbor_help_provider.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 
@@ -157,7 +158,7 @@ class _HelpRequestCard extends StatelessWidget {
                     children: [
                       Text(request.requesterName,
                           style: const TextStyle(fontWeight: FontWeight.bold)),
-                      Text(timeAgo, style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+                      Text(timeAgo, style: TextStyle(color: AppTheme.grey600, fontSize: 12)),
                     ],
                   ),
                 ),
@@ -203,9 +204,9 @@ class _HelpRequestCard extends StatelessWidget {
     final (label, color) = switch (request.status) {
       HelpRequestStatus.pending => ('待响应', Colors.orange),
       HelpRequestStatus.accepted => ('已响应', Colors.green),
-      HelpRequestStatus.cancelled => ('已取消', Colors.grey),
+      HelpRequestStatus.cancelled => ('已取消', AppTheme.grey500),
       HelpRequestStatus.resolved => ('已完成', Colors.blue),
-      HelpRequestStatus.expired => ('已过期', Colors.grey),
+      HelpRequestStatus.expired => ('已过期', AppTheme.grey500),
     };
     return Chip(label: Text(label, style: const TextStyle(fontSize: 12)), materialTapTargetSize: MaterialTapTargetSize.shrinkWrap);
   }

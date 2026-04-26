@@ -105,7 +105,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                             const SizedBox(height: 16),
                             Text(
                               '暂无${_selectedType.label}记录',
-                              style: const TextStyle(fontSize: 18, color: Colors.grey),
+                              style: const TextStyle(fontSize: 18, color: AppTheme.grey600),
                             ),
                             const SizedBox(height: 8),
                             Text(
@@ -176,7 +176,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                   children: [
                     Icon(
                       type.icon,
-                      color: isSelected ? Colors.white : Colors.grey,
+                      color: isSelected ? Colors.white : AppTheme.grey500,
                       size: 20,
                     ),
                     const SizedBox(height: 2),

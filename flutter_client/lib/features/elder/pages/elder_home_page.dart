@@ -37,13 +37,22 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
   bool _isLongPressing = false;
   double _longPressProgress = 0.0;
   static const double _longPressDurationSeconds = 2.0;
+  bool _longPressCancelled = false; // 用于 dispose 时取消异步操作
 
   @override
   void initState() {
     super.initState();
+    _longPressCancelled = false;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(notificationListProvider.notifier).loadNotifications();
     });
+  }
+
+  @override
+  void dispose() {
+    // 取消所有进行中的长按异步操作
+    _longPressCancelled = true;
+    super.dispose();
   }
 
   @override
@@ -432,6 +441,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
   /// 开始长按计时器
   void _startLongPressTimer() {
     HapticFeedback.mediumImpact();
+    _longPressCancelled = false;
     setState(() {
       _isLongPressing = true;
       _longPressProgress = 0.0;
@@ -442,9 +452,10 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
       const updateInterval = Duration(milliseconds: 50);
       final totalSteps = (_longPressDurationSeconds * 1000 / updateInterval.inMilliseconds).round();
 
-      for (int i = 0; i <= totalSteps && _isLongPressing; i++) {
+      for (int i = 0; i <= totalSteps && _isLongPressing && !_longPressCancelled; i++) {
         await Future.delayed(updateInterval);
-        if (!_isLongPressing) return;
+        // 检查是否已取消或 Widget 已销毁
+        if (!_isLongPressing || _longPressCancelled || !mounted) return;
 
         setState(() {
           _longPressProgress = (i / totalSteps).clamp(0.0, 1.0);
@@ -452,7 +463,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
       }
 
       // 进度到达 100%，触发呼叫
-      if (_isLongPressing && _longPressProgress >= 1.0) {
+      if (mounted && _isLongPressing && !_longPressCancelled && _longPressProgress >= 1.0) {
         setState(() => _isLongPressing = false);
         _performEmergencyCall();
       }
@@ -463,6 +474,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
 
   /// 取消长按计时器
   void _cancelLongPressTimer() {
+    _longPressCancelled = true;
     if (_isLongPressing && _longPressProgress < 1.0) {
       HapticFeedback.lightImpact();
       setState(() {

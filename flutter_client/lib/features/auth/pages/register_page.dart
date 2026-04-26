@@ -7,6 +7,7 @@ import '../../../core/api/api_client.dart';
 import '../../../core/extensions/api_error_extension.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 import '../../../core/extensions/date_format_extension.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../core/validators/form_validators.dart';
 import '../../../shared/providers/auth_provider.dart';
 import '../../../shared/models/user.dart';
@@ -119,7 +120,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                     suffixIcon: IconButton(
                       icon: Icon(
                         _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                        color: Colors.grey,
+                        color: AppTheme.grey600,
                       ),
                       onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                       tooltip: _obscurePassword ? '显示密码' : '隐藏密码',

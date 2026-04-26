@@ -11,6 +11,11 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace CareForTheOld.Controllers;
 
+/// <summary>
+/// 邻里圈管理控制器
+/// 提供邻里圈创建、加入、退出、成员查询和附近圈子搜索等功能
+/// 邻里圈用于社区互助，支持地理位置范围的成员管理
+/// </summary>
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]

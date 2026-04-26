@@ -15,32 +15,6 @@ public class HealthAlertService : IHealthAlertService
     private readonly AppDbContext _context;
     private readonly INotificationService _notificationService;
 
-    /// <summary>
-    /// 血压正常范围（mmHg）
-    /// </summary>
-    private const int BloodPressureSystolicMin = 90;
-    private const int BloodPressureSystolicMax = 140;
-    private const int BloodPressureDiastolicMin = 60;
-    private const int BloodPressureDiastolicMax = 90;
-
-    /// <summary>
-    /// 血糖正常范围（mmol/L，空腹）
-    /// </summary>
-    private const decimal BloodSugarMin = 3.9m;
-    private const decimal BloodSugarMax = 6.1m;
-
-    /// <summary>
-    /// 心率正常范围（次/分）
-    /// </summary>
-    private const int HeartRateMin = 60;
-    private const int HeartRateMax = 100;
-
-    /// <summary>
-    /// 体温正常范围（°C）
-    /// </summary>
-    private const decimal TemperatureMin = 36.0m;
-    private const decimal TemperatureMax = 37.3m;
-
     public HealthAlertService(AppDbContext context, INotificationService notificationService)
     {
         _context = context;
@@ -120,19 +94,24 @@ public class HealthAlertService : IHealthAlertService
         var diastolic = record.Diastolic.Value;
 
         // 高血压判断
-        if (systolic > BloodPressureSystolicMax || diastolic > BloodPressureDiastolicMax)
+        if (systolic > AppConstants.HealthThresholds.BloodPressureSystolicMax ||
+            diastolic > AppConstants.HealthThresholds.BloodPressureDiastolicMax)
         {
-            if (systolic >= 180 || diastolic >= 120)
+            if (systolic >= AppConstants.HealthThresholds.BloodPressureCriticalHighSystolic ||
+                diastolic >= AppConstants.HealthThresholds.BloodPressureCriticalHighDiastolic)
                 return "血压严重偏高，建议立即就医！";
-            if (systolic >= 160 || diastolic >= 100)
+            if (systolic >= AppConstants.HealthThresholds.BloodPressureModerateHighSystolic ||
+                diastolic >= AppConstants.HealthThresholds.BloodPressureModerateHighDiastolic)
                 return "血压偏高（中度高血压），建议尽快就医检查。";
             return "血压偏高，建议注意休息并监测。";
         }
 
         // 低血压判断
-        if (systolic < BloodPressureSystolicMin || diastolic < BloodPressureDiastolicMin)
+        if (systolic < AppConstants.HealthThresholds.BloodPressureSystolicMin ||
+            diastolic < AppConstants.HealthThresholds.BloodPressureDiastolicMin)
         {
-            if (systolic < 80 || diastolic < 50)
+            if (systolic < AppConstants.HealthThresholds.BloodPressureCriticalLowSystolic ||
+                diastolic < AppConstants.HealthThresholds.BloodPressureCriticalLowDiastolic)
                 return "血压严重偏低，建议立即就医！";
             return "血压偏低，建议注意营养补充。";
         }
@@ -150,19 +129,19 @@ public class HealthAlertService : IHealthAlertService
         var bloodSugar = record.BloodSugar.Value;
 
         // 高血糖判断
-        if (bloodSugar > BloodSugarMax)
+        if (bloodSugar > AppConstants.HealthThresholds.BloodSugarMax)
         {
-            if (bloodSugar >= 11.1m)
+            if (bloodSugar >= AppConstants.HealthThresholds.BloodSugarCriticalHigh)
                 return "血糖严重偏高（可能为糖尿病），建议立即就医！";
-            if (bloodSugar >= 7.0m)
+            if (bloodSugar >= AppConstants.HealthThresholds.BloodSugarModerateHigh)
                 return "血糖偏高，建议尽快就医检查。";
             return "血糖偏高，建议注意饮食控制。";
         }
 
         // 低血糖判断
-        if (bloodSugar < BloodSugarMin)
+        if (bloodSugar < AppConstants.HealthThresholds.BloodSugarMin)
         {
-            if (bloodSugar < 2.8m)
+            if (bloodSugar < AppConstants.HealthThresholds.BloodSugarCriticalLow)
                 return "血糖严重偏低（低血糖危险），建议立即补充糖分！";
             return "血糖偏低，建议适当补充糖分。";
         }
@@ -180,17 +159,17 @@ public class HealthAlertService : IHealthAlertService
         var heartRate = record.HeartRate.Value;
 
         // 心率过快
-        if (heartRate > HeartRateMax)
+        if (heartRate > AppConstants.HealthThresholds.HeartRateMax)
         {
-            if (heartRate >= 150)
+            if (heartRate >= AppConstants.HealthThresholds.HeartRateCriticalHigh)
                 return "心率过快，建议立即就医检查！";
             return "心率偏快，建议注意休息放松。";
         }
 
         // 心率过慢
-        if (heartRate < HeartRateMin)
+        if (heartRate < AppConstants.HealthThresholds.HeartRateMin)
         {
-            if (heartRate < 40)
+            if (heartRate < AppConstants.HealthThresholds.HeartRateCriticalLow)
                 return "心率过慢，建议立即就医检查！";
             return "心率偏慢，建议关注身体状况。";
         }
@@ -208,19 +187,19 @@ public class HealthAlertService : IHealthAlertService
         var temperature = record.Temperature.Value;
 
         // 发热判断
-        if (temperature > TemperatureMax)
+        if (temperature > AppConstants.HealthThresholds.TemperatureMax)
         {
-            if (temperature >= 39.0m)
+            if (temperature >= AppConstants.HealthThresholds.TemperatureCriticalHigh)
                 return "高烧，建议立即就医！";
-            if (temperature >= 38.0m)
+            if (temperature >= AppConstants.HealthThresholds.TemperatureModerateHigh)
                 return "发烧，建议及时就医检查。";
             return "低烧，建议注意休息观察。";
         }
 
         // 体温过低判断
-        if (temperature < TemperatureMin)
+        if (temperature < AppConstants.HealthThresholds.TemperatureMin)
         {
-            if (temperature < 35.0m)
+            if (temperature < AppConstants.HealthThresholds.TemperatureCriticalLow)
                 return "体温过低，建议立即就医！";
             return "体温偏低，建议注意保暖。";
         }

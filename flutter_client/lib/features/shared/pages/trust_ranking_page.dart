@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/widgets/common_states.dart';
+import '../../../core/theme/app_theme.dart';
 import '../providers/trust_score_provider.dart';
 import '../services/trust_score_service.dart';
 
@@ -80,7 +81,7 @@ class _TrustRankingPageState extends ConsumerState<TrustRankingPage> {
                       color: medalColors[item.rank], size: 28)
                   : Text('#${item.rank}',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: Colors.grey,
+                            color: AppTheme.grey600,
                           )),
             ),
             const SizedBox(width: 8),
