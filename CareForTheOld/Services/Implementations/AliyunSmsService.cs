@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -29,10 +30,10 @@ public class AliyunSmsService : ISmsService
     public async Task<(bool Success, string? ErrorMessage)> SendAsync(string phoneNumber, string content)
     {
         // 配置检查
-        var accessKeyId = _configuration["Sms:Aliyun:AccessKeyId"];
-        var accessKeySecret = _configuration["Sms:Aliyun:AccessKeySecret"];
-        var signName = _configuration["Sms:Aliyun:SignName"];
-        var templateCode = _configuration["Sms:Aliyun:TemplateCode"];
+        var accessKeyId = _configuration[ConfigurationKeys.Sms.Aliyun.AccessKeyId];
+        var accessKeySecret = _configuration[ConfigurationKeys.Sms.Aliyun.AccessKeySecret];
+        var signName = _configuration[ConfigurationKeys.Sms.Aliyun.SignName];
+        var templateCode = _configuration[ConfigurationKeys.Sms.Aliyun.TemplateCode];
 
         if (string.IsNullOrEmpty(accessKeyId) || string.IsNullOrEmpty(accessKeySecret))
         {

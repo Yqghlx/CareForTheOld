@@ -134,7 +134,7 @@ public class AuthService : IAuthService
         var accessToken = GenerateAccessToken(user);
         var refreshToken = GenerateRefreshToken();
 
-        var expirationMinutes = int.Parse(_configuration["Jwt:AccessTokenExpirationMinutes"] ?? AppConstants.Security.JwtAccessTokenExpirationMinutes.ToString());
+        var expirationMinutes = int.Parse(_configuration[ConfigurationKeys.Jwt.AccessTokenExpirationMinutes] ?? AppConstants.Security.JwtAccessTokenExpirationMinutes.ToString());
 
         // 保存刷新令牌
         _context.RefreshTokens.Add(new RefreshToken
@@ -143,7 +143,7 @@ public class AuthService : IAuthService
             UserId = user.Id,
             Token = refreshToken,
             ExpiresAt = DateTime.UtcNow.AddDays(
-                int.Parse(_configuration["Jwt:RefreshTokenExpirationDays"] ?? AppConstants.Security.JwtRefreshTokenExpirationDays.ToString())),
+                int.Parse(_configuration[ConfigurationKeys.Jwt.RefreshTokenExpirationDays] ?? AppConstants.Security.JwtRefreshTokenExpirationDays.ToString())),
             CreatedAt = DateTime.UtcNow
         });
 
@@ -169,10 +169,10 @@ public class AuthService : IAuthService
     private string GenerateAccessToken(User user)
     {
         var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+            Encoding.UTF8.GetBytes(_configuration[ConfigurationKeys.Jwt.Key]!));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var expirationMinutes = int.Parse(_configuration["Jwt:AccessTokenExpirationMinutes"] ?? AppConstants.Security.JwtAccessTokenExpirationMinutes.ToString());
+        var expirationMinutes = int.Parse(_configuration[ConfigurationKeys.Jwt.AccessTokenExpirationMinutes] ?? AppConstants.Security.JwtAccessTokenExpirationMinutes.ToString());
 
         var claims = new[]
         {
@@ -183,8 +183,8 @@ public class AuthService : IAuthService
         };
 
         var token = new JwtSecurityToken(
-            issuer: _configuration["Jwt:Issuer"] ?? "CareForTheOld",
-            audience: _configuration["Jwt:Audience"] ?? "CareForTheOld",
+            issuer: _configuration[ConfigurationKeys.Jwt.Issuer] ?? "CareForTheOld",
+            audience: _configuration[ConfigurationKeys.Jwt.Audience] ?? "CareForTheOld",
             claims: claims,
             expires: DateTime.UtcNow.AddMinutes(expirationMinutes),
             signingCredentials: credentials

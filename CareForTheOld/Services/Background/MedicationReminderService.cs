@@ -33,7 +33,7 @@ public class MedicationReminderService : BackgroundService
     {
         _serviceProvider = serviceProvider;
         _logger = logger;
-        _advanceMinutes = configuration.GetValue("MedicationReminder:AdvanceMinutes", 5);
+        _advanceMinutes = configuration.GetValue(ConfigurationKeys.MedicationReminder.AdvanceMinutes, 5);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)

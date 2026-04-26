@@ -55,9 +55,9 @@ public class HeartbeatMonitorService
         _scopeFactory = scopeFactory;
         _logger = logger;
         _heartbeatTimeout = TimeSpan.FromMinutes(
-            configuration.GetValue("Heartbeat:TimeoutMinutes", 5));
+            configuration.GetValue(ConfigurationKeys.Heartbeat.TimeoutMinutes, 5));
         _alertCooldown = TimeSpan.FromMinutes(
-            configuration.GetValue("Heartbeat:AlertCooldownMinutes", 15));
+            configuration.GetValue(ConfigurationKeys.Heartbeat.AlertCooldownMinutes, 15));
     }
 
     /// <summary>

@@ -164,6 +164,9 @@ class AppTheme {
   static const String msgPasswordChanged = '密码修改成功，请重新登录';
   static const String msgAvatarUpdated = '头像更新成功';
   static const String msgAvatarFailed = '头像上传失败，请重试';
+  static const String msgPasswordStrengthStrong = '密码强度：强';
+  static const String msgPasswordStrengthMedium = '密码强度：中';
+  static const String msgPasswordStrengthWeak = '密码强度：弱';
 
   // 邻里互助消息
   static const String msgHelpAccepted = '已接受求助，请尽快前往帮助';
@@ -203,6 +206,8 @@ class AppTheme {
   static const String msgFenceDeleted = '安全区域已删除';
   static const String msgFenceSaved = '安全区域已保存';
   static const String msgFenceSaveFailed = '保存失败';
+  static const String msgFenceEnabled = '安全区域已启用';
+  static const String msgFenceDisabled = '安全区域已禁用';
 
   // 用药计划消息
   static const String msgMedicineNameRequired = '请填写药品名称和剂量';

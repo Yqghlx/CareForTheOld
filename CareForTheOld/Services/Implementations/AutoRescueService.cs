@@ -27,8 +27,8 @@ public class AutoRescueService : IAutoRescueService
     {
         _scopeFactory = scopeFactory;
         _logger = logger;
-        _delayMinutes = configuration.GetValue("AutoRescue:DelayMinutes", AppConstants.AutoRescue.DefaultDelayMinutes);
-        _enabled = configuration.GetValue("AutoRescue:Enabled", true);
+        _delayMinutes = configuration.GetValue(ConfigurationKeys.AutoRescue.DelayMinutes, AppConstants.AutoRescue.DefaultDelayMinutes);
+        _enabled = configuration.GetValue(ConfigurationKeys.AutoRescue.Enabled, true);
     }
 
     /// <inheritdoc />

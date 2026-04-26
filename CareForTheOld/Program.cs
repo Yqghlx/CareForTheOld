@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Common.Middleware;
@@ -62,7 +63,7 @@ builder.Host.UseSerilog();
 byte[] jwtSigningKey;
 if (builder.Environment.IsDevelopment() || builder.Environment.IsEnvironment("Testing"))
 {
-    var jwtKey = builder.Configuration["Jwt:Key"];
+    var jwtKey = builder.Configuration[ConfigurationKeys.Jwt.Key];
     if (string.IsNullOrWhiteSpace(jwtKey))
     {
         jwtKey = "CareForTheOld_DevSecretKey_2026_MustBe32Chars!";
@@ -73,7 +74,7 @@ if (builder.Environment.IsDevelopment() || builder.Environment.IsEnvironment("Te
 else
 {
     // 生产环境从环境变量获取 JWT 密钥
-    var jwtKey = builder.Configuration["Jwt:Key"] ?? Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
+    var jwtKey = builder.Configuration[ConfigurationKeys.Jwt.Key] ?? Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
     if (string.IsNullOrWhiteSpace(jwtKey))
     {
         throw new InvalidOperationException(
@@ -146,7 +147,7 @@ builder.Services.Configure<AnomalyDetectionOptions>(
     builder.Configuration.GetSection("AnomalyDetection"));
 
 // 注册 FCM 推送服务：有 Firebase 凭据时使用真实实现，否则使用空实现（开发环境回退）
-var firebaseCredentialsPath = builder.Configuration["Firebase:CredentialsPath"];
+var firebaseCredentialsPath = builder.Configuration[ConfigurationKeys.Firebase.CredentialsPath];
 if (!string.IsNullOrEmpty(firebaseCredentialsPath) && File.Exists(firebaseCredentialsPath))
 {
     FirebaseAdmin.FirebaseApp.Create(new FirebaseAdmin.AppOptions
@@ -174,7 +175,7 @@ else
 }
 
 // 注册短信服务：根据配置 Sms:Provider 选择服务商（Aliyun 国内 / Twilio 国际）
-var smsProvider = builder.Configuration["Sms:Provider"]?.ToLower() ?? "aliyun";
+var smsProvider = builder.Configuration[ConfigurationKeys.Sms.Provider]?.ToLower() ?? "aliyun";
 if (smsProvider == "twilio")
 {
     builder.Services.AddScoped<ISmsService, TwilioSmsService>();
@@ -220,7 +221,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("ConfiguredCors", policy =>
     {
-        var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+        var allowedOrigins = builder.Configuration.GetSection(ConfigurationKeys.Cors.AllowedOrigins).Get<string[]>()
             ?? Array.Empty<string>();
 
         if (allowedOrigins.Length == 0)
@@ -260,8 +261,8 @@ builder.Services.AddRateLimiter(options =>
             partitionKey: context.GetClientIp(),
             factory: _ => new SlidingWindowRateLimiterOptions
             {
-                PermitLimit = builder.Configuration.GetValue("RateLimit:AuthPermitLimit", 30),
-                Window = TimeSpan.FromSeconds(builder.Configuration.GetValue("RateLimit:AuthWindow", 60)),
+                PermitLimit = builder.Configuration.GetValue(ConfigurationKeys.RateLimit.AuthPermitLimit, 30),
+                Window = TimeSpan.FromSeconds(builder.Configuration.GetValue(ConfigurationKeys.RateLimit.AuthWindow, 60)),
                 SegmentsPerWindow = 2,
                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                 QueueLimit = 0
@@ -273,8 +274,8 @@ builder.Services.AddRateLimiter(options =>
             partitionKey: context.GetClientIp(),
             factory: _ => new SlidingWindowRateLimiterOptions
             {
-                PermitLimit = builder.Configuration.GetValue("RateLimit:GeneralPermitLimit", 60),
-                Window = TimeSpan.FromSeconds(builder.Configuration.GetValue("RateLimit:GeneralWindow", 60)),
+                PermitLimit = builder.Configuration.GetValue(ConfigurationKeys.RateLimit.GeneralPermitLimit, 60),
+                Window = TimeSpan.FromSeconds(builder.Configuration.GetValue(ConfigurationKeys.RateLimit.GeneralWindow, 60)),
                 SegmentsPerWindow = 2,
                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                 QueueLimit = 0
@@ -286,8 +287,8 @@ builder.Services.AddRateLimiter(options =>
             partitionKey: context.User?.FindFirst("sub")?.Value ?? context.GetClientIp(),
             factory: _ => new SlidingWindowRateLimiterOptions
             {
-                PermitLimit = builder.Configuration.GetValue("RateLimit:JoinFamilyPermitLimit", 5),
-                Window = TimeSpan.FromSeconds(builder.Configuration.GetValue("RateLimit:JoinFamilyWindow", 300)),
+                PermitLimit = builder.Configuration.GetValue(ConfigurationKeys.RateLimit.JoinFamilyPermitLimit, 5),
+                Window = TimeSpan.FromSeconds(builder.Configuration.GetValue(ConfigurationKeys.RateLimit.JoinFamilyWindow, 300)),
                 SegmentsPerWindow = 2,
                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                 QueueLimit = 0
@@ -299,8 +300,8 @@ builder.Services.AddRateLimiter(options =>
             partitionKey: context.User?.FindFirst("sub")?.Value ?? context.GetClientIp(),
             factory: _ => new SlidingWindowRateLimiterOptions
             {
-                PermitLimit = builder.Configuration.GetValue("RateLimit:JoinCirclePermitLimit", 10),
-                Window = TimeSpan.FromSeconds(builder.Configuration.GetValue("RateLimit:JoinCircleWindow", 300)),
+                PermitLimit = builder.Configuration.GetValue(ConfigurationKeys.RateLimit.JoinCirclePermitLimit, 10),
+                Window = TimeSpan.FromSeconds(builder.Configuration.GetValue(ConfigurationKeys.RateLimit.JoinCircleWindow, 300)),
                 SegmentsPerWindow = 2,
                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                 QueueLimit = 0
@@ -312,8 +313,8 @@ builder.Services.AddRateLimiter(options =>
             partitionKey: context.User?.FindFirst("sub")?.Value ?? context.GetClientIp(),
             factory: _ => new SlidingWindowRateLimiterOptions
             {
-                PermitLimit = builder.Configuration.GetValue("RateLimit:EmergencyPermitLimit", 3),
-                Window = TimeSpan.FromSeconds(builder.Configuration.GetValue("RateLimit:EmergencyWindow", 60)),
+                PermitLimit = builder.Configuration.GetValue(ConfigurationKeys.RateLimit.EmergencyPermitLimit, 3),
+                Window = TimeSpan.FromSeconds(builder.Configuration.GetValue(ConfigurationKeys.RateLimit.EmergencyWindow, 60)),
                 SegmentsPerWindow = 2,
                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                 QueueLimit = 0
@@ -325,8 +326,8 @@ builder.Services.AddRateLimiter(options =>
             partitionKey: context.GetClientIp(),
             factory: _ => new SlidingWindowRateLimiterOptions
             {
-                PermitLimit = builder.Configuration.GetValue("RateLimit:HealthPermitLimit", 100),
-                Window = TimeSpan.FromSeconds(builder.Configuration.GetValue("RateLimit:HealthWindow", 60)),
+                PermitLimit = builder.Configuration.GetValue(ConfigurationKeys.RateLimit.HealthPermitLimit, 100),
+                Window = TimeSpan.FromSeconds(builder.Configuration.GetValue(ConfigurationKeys.RateLimit.HealthWindow, 60)),
                 SegmentsPerWindow = 2,
                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                 QueueLimit = 0

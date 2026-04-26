@@ -168,7 +168,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  isEnabled ? '安全区域已启用' : '安全区域已禁用',
+                  isEnabled ? AppTheme.msgFenceEnabled : AppTheme.msgFenceDisabled,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

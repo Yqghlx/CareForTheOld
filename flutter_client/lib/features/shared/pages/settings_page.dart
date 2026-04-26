@@ -516,13 +516,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               final hasDigit = RegExp(r'\d').hasMatch(newPwd);
               final hasSpecial = RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(newPwd);
               if (hasLetter && hasDigit && hasSpecial) {
-                strengthText = '密码强度：强';
+                strengthText = AppTheme.msgPasswordStrengthStrong;
                 strengthColor = AppTheme.successColor;
               } else if (hasLetter && hasDigit) {
-                strengthText = '密码强度：中';
+                strengthText = AppTheme.msgPasswordStrengthMedium;
                 strengthColor = AppTheme.warningColor;
               } else {
-                strengthText = '密码强度：弱';
+                strengthText = AppTheme.msgPasswordStrengthWeak;
                 strengthColor = AppTheme.errorColor;
               }
             }

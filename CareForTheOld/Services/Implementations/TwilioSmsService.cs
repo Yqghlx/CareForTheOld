@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -29,9 +30,9 @@ public class TwilioSmsService : ISmsService
     public async Task<(bool Success, string? ErrorMessage)> SendAsync(string phoneNumber, string content)
     {
         // 配置检查
-        var accountSid = _configuration["Sms:Twilio:AccountSid"];
-        var authToken = _configuration["Sms:Twilio:AuthToken"];
-        var fromNumber = _configuration["Sms:Twilio:FromNumber"];
+        var accountSid = _configuration[ConfigurationKeys.Sms.Twilio.AccountSid];
+        var authToken = _configuration[ConfigurationKeys.Sms.Twilio.AuthToken];
+        var fromNumber = _configuration[ConfigurationKeys.Sms.Twilio.FromNumber];
 
         if (string.IsNullOrEmpty(accountSid) || string.IsNullOrEmpty(authToken) || string.IsNullOrEmpty(fromNumber))
         {

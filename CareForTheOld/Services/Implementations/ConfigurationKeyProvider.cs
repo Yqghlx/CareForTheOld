@@ -23,7 +23,7 @@ public class ConfigurationKeyProvider : IKeyProvider
     /// <inheritdoc />
     public Task<byte[]> GetSigningKeyAsync()
     {
-        var key = _configuration["Jwt:Key"];
+        var key = _configuration[ConfigurationKeys.Jwt.Key];
 
         if (string.IsNullOrWhiteSpace(key) || key.Length < 32)
         {

@@ -104,8 +104,8 @@ public static class ServiceCollectionExtensions
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = configuration["Jwt:Issuer"] ?? "CareForTheOld",
-                ValidAudience = configuration["Jwt:Audience"] ?? "CareForTheOld",
+                ValidIssuer = configuration[ConfigurationKeys.Jwt.Issuer] ?? "CareForTheOld",
+                ValidAudience = configuration[ConfigurationKeys.Jwt.Audience] ?? "CareForTheOld",
                 IssuerSigningKey = new SymmetricSecurityKey(signingKey),
                 ClockSkew = TimeSpan.FromMinutes(AppConstants.Security.JwtClockSkewMinutes),
                 // SignalR 的 Context.UserIdentifier 依赖此配置
