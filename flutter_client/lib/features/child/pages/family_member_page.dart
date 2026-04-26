@@ -482,7 +482,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               text: '输入邀请码加入',
               onPressed: () => _showJoinFamilyDialog(),
               gradient: const LinearGradient(
-                colors: [AppTheme.warningColor, Colors.deepOrange],
+                colors: [AppTheme.warningColor, AppTheme.deepOrangeColor],
               ),
             ),
           ],
@@ -733,7 +733,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                 PrimaryButton(
                   text: '提交申请',
                   gradient: const LinearGradient(
-                    colors: [AppTheme.warningColor, Colors.deepOrange],
+                    colors: [AppTheme.warningColor, AppTheme.deepOrangeColor],
                   ),
                   onPressed: () async {
                     final code = codeController.text.trim();

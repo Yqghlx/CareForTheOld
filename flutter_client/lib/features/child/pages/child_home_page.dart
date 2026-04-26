@@ -179,7 +179,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     icon: Icons.volunteer_activism,
                     onPressed: () => context.push(RoutePaths.neighborHelp),
                     gradient: const LinearGradient(
-                      colors: [AppTheme.warningColor, Colors.deepOrange],
+                      colors: [AppTheme.warningColor, AppTheme.deepOrangeColor],
                     ),
                   ),
                 ),
