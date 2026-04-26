@@ -81,7 +81,7 @@ public class AutoRescueService : IAutoRescueService
             .Select(fm => fm.UserId)
             .ToListAsync();
 
-        if (childIds.Count > 0)
+        if (childIds.Any())
         {
             await notificationService.SendToUsersAsync(
                 childIds,
@@ -175,7 +175,7 @@ public class AutoRescueService : IAutoRescueService
                 record.ElderId, _delayMinutes);
 
             // 通知子女：已自动通知邻里圈
-            if (childIds.Count > 0)
+            if (childIds.Any())
             {
                 await notificationService.SendToUsersAsync(
                     childIds,

@@ -235,7 +235,7 @@ public class NeighborHelpService : INeighborHelpService
                 .Select(fm => fm.UserId)
                 .ToListAsync();
 
-            if (childIds.Count > 0)
+            if (childIds.Any())
             {
                 await _notificationService.SendToUsersAsync(
                     childIds,
@@ -259,7 +259,7 @@ public class NeighborHelpService : INeighborHelpService
             .Select(m => m.UserId)
             .ToListAsync();
 
-        if (otherMemberIds.Count > 0)
+        if (otherMemberIds.Any())
         {
             await _notificationService.SendToUsersAsync(
                 otherMemberIds,

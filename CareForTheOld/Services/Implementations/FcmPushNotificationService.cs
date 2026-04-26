@@ -137,7 +137,7 @@ public class FcmPushNotificationService : IPushNotificationService
             }
         }
 
-        if (invalidTokens.Count > 0)
+        if (invalidTokens.Any())
         {
             var deleted = await _context.DeviceTokens
                 .Where(dt => invalidTokens.Contains(dt.Token))

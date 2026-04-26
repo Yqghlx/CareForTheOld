@@ -151,7 +151,6 @@ public class NeighborCircleService : INeighborCircleService
         if (circle.CreatorId == userId)
         {
             // 创建者退出 → 解散整个圈子
-            circle.IsActive = false;
             _context.NeighborCircleMembers.RemoveRange(circle.Members);
 
             // 必须用 AsTracking 才能在 NoTracking 全局模式下更新

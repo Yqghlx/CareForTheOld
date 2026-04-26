@@ -119,7 +119,7 @@ public class AuthService : IAuthService
         var expiredTokens = await _context.RefreshTokens
             .Where(rt => rt.UserId == refreshToken.UserId && rt.ExpiresAt < DateTime.UtcNow)
             .ToListAsync();
-        if (expiredTokens.Count > 0)
+        if (expiredTokens.Any())
         {
             _context.RefreshTokens.RemoveRange(expiredTokens);
         }

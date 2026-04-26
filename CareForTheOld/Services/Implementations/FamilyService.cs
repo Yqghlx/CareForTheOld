@@ -182,7 +182,7 @@ public class FamilyService : IFamilyService
             .Select(fm => fm.UserId)
             .ToListAsync();
 
-        if (childMembers.Count > 0)
+        if (childMembers.Any())
         {
             await _notificationService.SendToUsersAsync(childMembers, AppConstants.NotificationTypes.FamilyJoinRequest, new
             {

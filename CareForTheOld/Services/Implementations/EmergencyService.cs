@@ -155,7 +155,7 @@ public class EmergencyService : IEmergencyService
             .Where(fm => fm.FamilyId == familyMember.FamilyId && fm.Role == UserRole.Child)
             .ToListAsync();
 
-        if (children.Count > 0)
+        if (children.Any())
         {
             var childUserIds = children.Select(c => c.UserId).ToList();
 
@@ -239,7 +239,7 @@ public class EmergencyService : IEmergencyService
         }
 
         // 一次性批量写入所有短信记录
-        if (smsRecords.Count > 0)
+        if (smsRecords.Any())
         {
             _context.SmsRecords.AddRange(smsRecords);
             await _context.SaveChangesAsync();
