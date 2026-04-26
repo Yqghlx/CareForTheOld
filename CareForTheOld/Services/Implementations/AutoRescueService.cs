@@ -76,10 +76,7 @@ public class AutoRescueService : IAutoRescueService
             ? NotificationMessages.AutoRescue.GeoFenceBreachText
             : NotificationMessages.AutoRescue.HeartbeatTimeoutText;
 
-        var childIds = await context.FamilyMembers
-            .Where(fm => fm.FamilyId == familyId && fm.Role == UserRole.Child)
-            .Select(fm => fm.UserId)
-            .ToListAsync();
+        var childIds = await GetChildUserIdsAsync(context, familyId);
 
         if (childIds.Any())
         {
@@ -130,10 +127,7 @@ public class AutoRescueService : IAutoRescueService
 
         foreach (var record in pendingRecords)
         {
-            var childIds = await context.FamilyMembers
-                .Where(fm => fm.FamilyId == record.FamilyId && fm.Role == UserRole.Child)
-                .Select(fm => fm.UserId)
-                .ToListAsync();
+            var childIds = await GetChildUserIdsAsync(context, record.FamilyId);
 
             var anyChildRead = await context.NotificationRecords
                 .Where(n => n.Type == AppConstants.NotificationTypes.AutoRescueAlert &&
@@ -225,6 +219,17 @@ public class AutoRescueService : IAutoRescueService
             .OrderByDescending(a => a.TriggeredAt)
             .Skip(skip)
             .Take(limit)
+            .ToListAsync();
+    }
+
+    /// <summary>
+    /// 获取指定家庭中所有子女的用户 ID
+    /// </summary>
+    private static async Task<List<Guid>> GetChildUserIdsAsync(AppDbContext context, Guid familyId)
+    {
+        return await context.FamilyMembers
+            .Where(fm => fm.FamilyId == familyId && fm.Role == UserRole.Child)
+            .Select(fm => fm.UserId)
             .ToListAsync();
     }
 }

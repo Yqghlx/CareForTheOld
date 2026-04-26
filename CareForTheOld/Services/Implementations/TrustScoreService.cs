@@ -181,7 +181,8 @@ public class TrustScoreService : ITrustScoreService
         score.AvgRating = Math.Round(avgRating, 2);
         score.ResponseRate = Math.Round(responseRate, 4);
         score.Score = finalScore;
-        score.LastCalculatedAt = DateTime.UtcNow;
-        score.UpdatedAt = DateTime.UtcNow;
+        var now = DateTime.UtcNow;
+        score.LastCalculatedAt = now;
+        score.UpdatedAt = now;
     }
 }

@@ -105,7 +105,7 @@ public class NeighborCircleService : INeighborCircleService
             ?? throw new KeyNotFoundException(ErrorMessages.NeighborCircle.InvalidInviteCode);
 
         // 验证邀请码是否过期
-        if (circle.InviteCodeExpiresAt.HasValue && circle.InviteCodeExpiresAt.Value < DateTime.UtcNow)
+        if (circle.InviteCodeExpiresAt is { } expiresAt && expiresAt < DateTime.UtcNow)
             throw new ArgumentException(ErrorMessages.NeighborCircle.InviteCodeExpired);
 
         // 检查成员上限

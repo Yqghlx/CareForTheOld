@@ -15,6 +15,7 @@ namespace CareForTheOld.Services.Implementations;
 /// </summary>
 public class HealthReportService : IHealthReportService
 {
+    private static readonly HealthType[] AllHealthTypes = Enum.GetValues<HealthType>();
     private readonly AppDbContext _context;
 
     public HealthReportService(AppDbContext context) => _context = context;
@@ -103,7 +104,7 @@ public class HealthReportService : IHealthReportService
             column.Item().Element(element => CreateSummary(element, records));
 
             // 各类型详细数据
-            foreach (HealthType type in Enum.GetValues(typeof(HealthType)))
+            foreach (var type in AllHealthTypes)
             {
                 var typeRecords = records.Where(r => r.Type == type).ToList();
                 if (typeRecords.Count > 0)
@@ -154,7 +155,7 @@ public class HealthReportService : IHealthReportService
                 });
 
                 // 各类型数据行
-                foreach (HealthType type in Enum.GetValues(typeof(HealthType)))
+                foreach (var type in AllHealthTypes)
                 {
                     var typeRecords = records.Where(r => r.Type == type).ToList();
                     if (typeRecords.Count == 0) continue;
