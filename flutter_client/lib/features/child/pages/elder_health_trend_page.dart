@@ -192,7 +192,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
                   children: [
                     Icon(
                       type.icon,
-                      color: isSelected ? Colors.white : AppTheme.grey500,
+                      color: isSelected ? AppTheme.cardColor : AppTheme.grey500,
                       size: 20,
                     ),
                     const SizedBox(height: 2),
@@ -203,7 +203,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
                         style: TextStyle(
                           fontSize: 14,
                           color: isSelected
-                              ? Colors.white
+                              ? AppTheme.cardColor
                               : AppTheme.grey700,
                           fontWeight:
                               isSelected ? FontWeight.bold : FontWeight.normal,
@@ -262,7 +262,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
             label,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: isSelected ? Colors.white : AppTheme.grey700,
+              color: isSelected ? AppTheme.cardColor : AppTheme.grey700,
               fontWeight:
                   isSelected ? FontWeight.bold : FontWeight.normal,
             ),

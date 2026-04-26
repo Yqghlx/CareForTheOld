@@ -69,7 +69,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
                     // 警报图标
                     const Icon(
                       Icons.warning_amber_rounded,
-                      color: Colors.white,
+                      color: AppTheme.cardColor,
                       size: 80,
                     ),
                     AppTheme.spacer16,
@@ -78,7 +78,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
                     Text(
                       alert.isReminder ? '紧急呼叫仍未响应！' : '紧急呼叫！',
                       style: const TextStyle(
-                        color: Colors.white,
+                        color: AppTheme.cardColor,
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
                       ),
@@ -92,18 +92,18 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
                         vertical: 12,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
+                        color: AppTheme.cardColor.withValues(alpha: 0.2),
                         borderRadius: AppTheme.radiusL,
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.person, color: Colors.white, size: 32),
+                          const Icon(Icons.person, color: AppTheme.cardColor, size: 32),
                           AppTheme.hSpacer12,
                           Text(
                             alert.elderName,
                             style: const TextStyle(
-                              color: Colors.white,
+                              color: AppTheme.cardColor,
                               fontSize: 28,
                               fontWeight: FontWeight.w600,
                             ),
@@ -116,7 +116,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
                     Text(
                       alert.isReminder ? '已超过3分钟未得到响应' : '发起了紧急呼叫，请立即响应！',
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.9),
+                        color: AppTheme.cardColor.withValues(alpha: 0.9),
                         fontSize: 18,
                       ),
                     ),
@@ -161,7 +161,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
         ),
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
+          backgroundColor: AppTheme.cardColor,
           foregroundColor: AppTheme.errorColor,
           shape: RoundedRectangleBorder(
             borderRadius: AppTheme.radius3XL,
@@ -178,17 +178,17 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
       height: 64,
       child: OutlinedButton.icon(
         onPressed: _callElder,
-        icon: const Icon(Icons.phone, size: 28, color: Colors.white),
+        icon: const Icon(Icons.phone, size: 28, color: AppTheme.cardColor),
         label: const Text(
           '拨打电话',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
-            color: Colors.white,
+            color: AppTheme.cardColor,
           ),
         ),
         style: OutlinedButton.styleFrom(
-          side: const BorderSide(color: Colors.white, width: 2),
+          side: const BorderSide(color: AppTheme.cardColor, width: 2),
           shape: RoundedRectangleBorder(
             borderRadius: AppTheme.radius3XL,
           ),

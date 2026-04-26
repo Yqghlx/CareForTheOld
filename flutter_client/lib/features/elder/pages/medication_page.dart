@@ -249,7 +249,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
                     child: log.status == MedicationStatus.taken
                         ? const Icon(
                             Icons.check_circle_rounded,
-                            color: Colors.white,
+                            color: AppTheme.cardColor,
                             size: 32,
                           )
                         : const Icon(

@@ -107,7 +107,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                       width: 56,
                       height: 56,
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
+                        color: AppTheme.cardColor.withValues(alpha: 0.2),
                         borderRadius: AppTheme.radiusM,
                       ),
                       child: ClipRRect(
@@ -120,9 +120,9 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                                 memCacheHeight: 256,
                                 maxWidthDiskCache: 512,
                                 maxHeightDiskCache: 512,
-                                errorWidget: (_, __, ___) => const Icon(Icons.person, size: 32, color: Colors.white),
+                                errorWidget: (_, __, ___) => const Icon(Icons.person, size: 32, color: AppTheme.cardColor),
                               )
-                            : const Icon(Icons.person, size: 32, color: Colors.white),
+                            : const Icon(Icons.person, size: 32, color: AppTheme.cardColor),
                       ),
                     ),
                     AppTheme.hSpacer16,
@@ -134,14 +134,14 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: AppTheme.cardColor,
                           ),
                         ),
                         AppTheme.spacer4,
                         Text(
                           '关注家人的健康状况',
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.9),
+                            color: AppTheme.cardColor.withValues(alpha: 0.9),
                           ),
                         ),
                       ],
@@ -718,7 +718,7 @@ class _EmergencyPulseBannerState extends State<_EmergencyPulseBanner>
           padding: AppTheme.paddingAll16,
           child: Row(
             children: [
-              const Icon(Icons.emergency, color: Colors.white, size: 36),
+              const Icon(Icons.emergency, color: AppTheme.cardColor, size: 36),
               AppTheme.hSpacer12,
               Expanded(
                 child: Column(
@@ -727,7 +727,7 @@ class _EmergencyPulseBannerState extends State<_EmergencyPulseBanner>
                     const Text(
                       '有紧急呼叫待处理！',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: AppTheme.cardColor,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -735,14 +735,14 @@ class _EmergencyPulseBannerState extends State<_EmergencyPulseBanner>
                     Text(
                       '${widget.unreadCount} 条待处理，点击查看',
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.9),
+                        color: AppTheme.cardColor.withValues(alpha: 0.9),
                         fontSize: 16,
                       ),
                     ),
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right, color: Colors.white, size: 28),
+              const Icon(Icons.chevron_right, color: AppTheme.cardColor, size: 28),
             ],
           ),
         ),

@@ -226,7 +226,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
               return Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.8),
+                  color: AppTheme.cardColor.withValues(alpha: 0.8),
                   borderRadius: AppTheme.radius10,
                 ),
                 child: Column(
@@ -667,14 +667,14 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                       children: [
                                         Icon(
                                           isListening ? Icons.stop : Icons.mic,
-                                          color: Colors.white,
+                                          color: AppTheme.cardColor,
                                           size: 32,
                                         ),
                                         AppTheme.spacer8,
                                         Text(
                                           isListening ? '停止' : '语音输入',
                                           style: const TextStyle(
-                                            color: Colors.white,
+                                            color: AppTheme.cardColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -764,14 +764,14 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                       children: [
                                         Icon(
                                           Icons.camera_alt,
-                                          color: Colors.white,
+                                          color: AppTheme.cardColor,
                                           size: 32,
                                         ),
                                         AppTheme.spacer8,
                                         Text(
                                           '拍照识别',
                                           style: TextStyle(
-                                            color: Colors.white,
+                                            color: AppTheme.cardColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -1103,7 +1103,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                 },
                 child: const Icon(
                   Icons.check_circle_rounded,
-                  color: Colors.white,
+                  color: AppTheme.cardColor,
                   size: 28,
                 ),
               ),

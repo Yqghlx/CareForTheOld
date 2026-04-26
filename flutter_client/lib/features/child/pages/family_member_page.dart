@@ -295,10 +295,10 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
+                        color: AppTheme.cardColor.withValues(alpha: 0.2),
                         borderRadius: AppTheme.radiusS,
                       ),
-                      child: const Icon(Icons.home, color: Colors.white, size: 28),
+                      child: const Icon(Icons.home, color: AppTheme.cardColor, size: 28),
                     ),
                     AppTheme.hSpacer16,
                     Expanded(
@@ -310,13 +310,13 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                             style: const TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: AppTheme.cardColor,
                             ),
                           ),
                           Text(
                             '共 ${family.members.length} 位成员',
                             style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.9),
+                              color: AppTheme.cardColor.withValues(alpha: 0.9),
                             ),
                           ),
                         ],
@@ -342,7 +342,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
     return Container(
       padding: AppTheme.paddingAll16,
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.15),
+        color: AppTheme.cardColor.withValues(alpha: 0.15),
         borderRadius: AppTheme.radiusS,
       ),
       child: Column(
@@ -359,7 +359,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                 child: Text(
                   family.inviteCode,
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: AppTheme.cardColor,
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 8,
@@ -368,7 +368,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               ),
               // 复制按钮
               IconButton(
-                icon: const Icon(Icons.copy, color: Colors.white),
+                icon: const Icon(Icons.copy, color: AppTheme.cardColor),
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: family.inviteCode));
                   context.showSuccessSnackBar(AppTheme.msgInviteCodeCopied);
@@ -377,7 +377,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               ),
               // 刷新按钮
               IconButton(
-                icon: const Icon(Icons.refresh, color: Colors.white),
+                icon: const Icon(Icons.refresh, color: AppTheme.cardColor),
                 onPressed: () async {
                   final confirmed = await showDialog<bool>(
                     context: context,
@@ -415,7 +415,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
           Text(
             '将邀请码分享给家人，提交后需审批通过',
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.8),
+              color: AppTheme.cardColor.withValues(alpha: 0.8),
               fontSize: 12,
             ),
           ),

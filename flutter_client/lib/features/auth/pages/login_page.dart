@@ -138,7 +138,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                       child: const Icon(
                         Icons.favorite,
                         size: 56,
-                        color: Colors.white,
+                        color: AppTheme.cardColor,
                       ),
                     ),
                   ),
@@ -158,7 +158,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                   // 手机号输入
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: AppTheme.cardColor,
                       borderRadius: AppTheme.radiusS,
                       boxShadow: [
                         BoxShadow(
@@ -186,7 +186,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                   // 密码输入
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: AppTheme.cardColor,
                       borderRadius: AppTheme.radiusS,
                       boxShadow: [
                         BoxShadow(

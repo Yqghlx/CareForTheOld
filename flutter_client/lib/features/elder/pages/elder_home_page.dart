@@ -159,7 +159,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                           child: Container(
                             width: 64,
                             height: 64,
-                            color: Colors.white.withValues(alpha: 0.2),
+                            color: AppTheme.cardColor.withValues(alpha: 0.2),
                             child: authState.user?.avatarUrl != null
                                 ? CachedNetworkImage(
                                     imageUrl: authState.user!.avatarUrl!.startsWith('http')
@@ -172,9 +172,9 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                                     memCacheHeight: 256,
                                     maxWidthDiskCache: 512,
                                     maxHeightDiskCache: 512,
-                                    errorWidget: (_, __, ___) => const Icon(Icons.person, size: 40, color: Colors.white),
+                                    errorWidget: (_, __, ___) => const Icon(Icons.person, size: 40, color: AppTheme.cardColor),
                                   )
-                                : const Icon(Icons.person, size: 40, color: Colors.white),
+                                : const Icon(Icons.person, size: 40, color: AppTheme.cardColor),
                           ),
                         ),
                         // 上传中遮罩
@@ -192,7 +192,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                                 height: 24,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation(Colors.white),
+                                  valueColor: AlwaysStoppedAnimation(AppTheme.cardColor),
                                 ),
                               ),
                             ),
@@ -205,7 +205,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                             child: Container(
                               padding: AppTheme.paddingAll4,
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: AppTheme.cardColor,
                                 borderRadius: AppTheme.radiusXS,
                               ),
                               child: const Icon(
@@ -228,7 +228,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                         style: const TextStyle(
                           fontSize: 26,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: AppTheme.cardColor,
                         ),
                       ),
                       const SizedBox(height: 6),
@@ -236,7 +236,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                         '今天感觉怎么样？',
                         style: TextStyle(
                           fontSize: 18,
-                          color: Colors.white.withValues(alpha: 0.9),
+                          color: AppTheme.cardColor.withValues(alpha: 0.9),
                         ),
                       ),
                     ],
@@ -366,8 +366,8 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                   child: CircularProgressIndicator(
                     value: _longPressProgress,
                     strokeWidth: 6,
-                    backgroundColor: Colors.white.withValues(alpha: 0.3),
-                    valueColor: const AlwaysStoppedAnimation(Colors.white),
+                    backgroundColor: AppTheme.cardColor.withValues(alpha: 0.3),
+                    valueColor: const AlwaysStoppedAnimation(AppTheme.cardColor),
                   ),
                 ),
               ),
@@ -380,7 +380,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                   children: [
                     Icon(
                       _isLongPressing ? Icons.phone_in_talk : Icons.emergency,
-                      color: Colors.white,
+                      color: AppTheme.cardColor,
                       size: 40,
                     ),
                     AppTheme.hSpacer12,
@@ -389,7 +389,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                       style: const TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: AppTheme.cardColor,
                       ),
                     ),
                   ],
@@ -402,7 +402,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                       '松手取消',
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.white.withValues(alpha: 0.9),
+                        color: AppTheme.cardColor.withValues(alpha: 0.9),
                       ),
                     ),
                   ),

@@ -176,7 +176,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                   children: [
                     Icon(
                       type.icon,
-                      color: isSelected ? Colors.white : AppTheme.grey500,
+                      color: isSelected ? AppTheme.cardColor : AppTheme.grey500,
                       size: 20,
                     ),
                     const SizedBox(height: 2),
@@ -186,7 +186,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                         type.label,
                         style: TextStyle(
                           fontSize: 16,
-                          color: isSelected ? Colors.white : AppTheme.grey700,
+                          color: isSelected ? AppTheme.cardColor : AppTheme.grey700,
                           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                         ),
                         maxLines: 1,
@@ -243,7 +243,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
             label,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: isSelected ? Colors.white : AppTheme.grey700,
+              color: isSelected ? AppTheme.cardColor : AppTheme.grey700,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
           ),

@@ -60,10 +60,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         memCacheHeight: 256,
         maxWidthDiskCache: 512,
         maxHeightDiskCache: 512,
-        errorWidget: (_, __, ___) => Icon(Icons.person, size: iconSize, color: Colors.white),
+        errorWidget: (_, __, ___) => Icon(Icons.person, size: iconSize, color: AppTheme.cardColor),
       );
     }
-    return Icon(Icons.person, size: iconSize, color: Colors.white);
+    return Icon(Icons.person, size: iconSize, color: AppTheme.cardColor);
   }
 
   /// 加载定位设置
@@ -143,7 +143,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       width: 64,
                       height: 64,
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
+                        color: AppTheme.cardColor.withValues(alpha: 0.2),
                         borderRadius: AppTheme.radiusL,
                       ),
                       child: ClipRRect(
@@ -164,7 +164,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: AppTheme.cardColor,
                             ),
                           ),
                           AppTheme.spacer4,
@@ -172,7 +172,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             userState.user?.phoneNumber ?? authState.user?.phoneNumber ?? '',
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.white.withValues(alpha: 0.9),
+                              color: AppTheme.cardColor.withValues(alpha: 0.9),
                             ),
                           ),
                         ],
