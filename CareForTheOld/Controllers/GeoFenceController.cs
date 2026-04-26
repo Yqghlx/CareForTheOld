@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Models.DTOs.Requests.GeoFences;
@@ -51,7 +52,7 @@ public class GeoFenceController : ControllerBase
         var userFamilyId = await _familyService.GetMyFamilyAsync(userId);
         var elderFamilyId = await _familyService.GetMyFamilyAsync(elderId);
         if (userFamilyId == null || elderFamilyId == null || userFamilyId.Id != elderFamilyId.Id)
-            return ApiResponse<GeoFenceResponse?>.Fail("无权查看该老人的围栏信息");
+            return ApiResponse<GeoFenceResponse?>.Fail(ErrorMessages.GeoFence.NoPermissionToView);
 
         var result = await _geoFenceService.GetElderFenceAsync(elderId);
         return ApiResponse<GeoFenceResponse?>.Ok(result);

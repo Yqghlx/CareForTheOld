@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
 using CareForTheOld.Common.Filters;
 using CareForTheOld.Common.Helpers;
@@ -80,9 +81,9 @@ public class LocationController : ControllerBase
         // 验证当前用户和被查询成员都是该家庭成员
         var members = await _familyService.GetMembersAsync(familyId);
         if (!members.Any(m => m.UserId == userId))
-            return ApiResponse<LocationRecordResponse?>.Fail("您不是该家庭成员");
+            return ApiResponse<LocationRecordResponse?>.Fail(ErrorMessages.Family.NotFamilyMember);
         if (!members.Any(m => m.UserId == memberId))
-            return ApiResponse<LocationRecordResponse?>.Fail("该成员不在您的家庭中");
+            return ApiResponse<LocationRecordResponse?>.Fail(ErrorMessages.Family.MemberNotInFamily);
 
         var record = await _locationService.GetFamilyMemberLatestLocationAsync(familyId, memberId);
         return ApiResponse<LocationRecordResponse?>.Ok(record);
@@ -103,9 +104,9 @@ public class LocationController : ControllerBase
         // 验证当前用户和被查询成员都是该家庭成员
         var members = await _familyService.GetMembersAsync(familyId);
         if (!members.Any(m => m.UserId == userId))
-            return ApiResponse<List<LocationRecordResponse>>.Fail("您不是该家庭成员");
+            return ApiResponse<List<LocationRecordResponse>>.Fail(ErrorMessages.Family.NotFamilyMember);
         if (!members.Any(m => m.UserId == memberId))
-            return ApiResponse<List<LocationRecordResponse>>.Fail("该成员不在您的家庭中");
+            return ApiResponse<List<LocationRecordResponse>>.Fail(ErrorMessages.Family.MemberNotInFamily);
 
         var records = await _locationService.GetFamilyMemberLocationHistoryAsync(familyId, memberId, skip, limit);
         return ApiResponse<List<LocationRecordResponse>>.Ok(records);

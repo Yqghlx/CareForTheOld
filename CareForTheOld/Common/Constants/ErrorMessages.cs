@@ -94,6 +94,12 @@ public static class ErrorMessages
 
         /// <summary>不在任何家庭组中</summary>
         public const string NotInAnyFamily = "您不在任何家庭组中，无法发起紧急呼叫";
+
+        /// <summary>该成员不在您的家庭中</summary>
+        public const string MemberNotInFamily = "该成员不在您的家庭中";
+
+        /// <summary>未加入家庭</summary>
+        public const string NotJoinedFamily = "未加入家庭";
     }
 
     /// <summary>
@@ -229,6 +235,27 @@ public static class ErrorMessages
 
         /// <summary>无权删除此围栏</summary>
         public const string NoPermissionToDelete = "无权删除此围栏";
+
+        /// <summary>无权查看该老人的围栏信息</summary>
+        public const string NoPermissionToView = "无权查看该老人的围栏信息";
+    }
+
+    /// <summary>
+    /// 文件上传相关错误消息
+    /// </summary>
+    public static class FileUpload
+    {
+        /// <summary>未选择上传文件</summary>
+        public const string NoFileSelected = "请选择要上传的头像文件";
+
+        /// <summary>文件大小超限</summary>
+        public const string FileTooLarge = "文件大小不能超过 2MB";
+
+        /// <summary>文件格式不支持</summary>
+        public const string InvalidFormat = "仅支持 JPG 和 PNG 格式的图片";
+
+        /// <summary>文件内容类型不支持</summary>
+        public const string InvalidContentType = "文件内容类型不支持";
     }
 
     /// <summary>

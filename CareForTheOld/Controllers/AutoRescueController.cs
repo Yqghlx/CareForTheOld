@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Data;
@@ -49,7 +50,7 @@ public class AutoRescueController : ControllerBase
         var familyMember = await _context.FamilyMembers
             .FirstOrDefaultAsync(fm => fm.UserId == userId);
         if (familyMember == null)
-            return ApiResponse<object>.Fail("未加入家庭");
+            return ApiResponse<object>.Fail(ErrorMessages.Family.NotJoinedFamily);
 
         var records = await _autoRescueService.GetHistoryAsync(familyMember.FamilyId, skip, limit);
         var result = records.Select(r => new

@@ -31,7 +31,7 @@ class EmptyStateWidget extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               title,
-              style: const TextStyle(fontSize: 18, color: Colors.grey),
+              style: const TextStyle(fontSize: 18, color: AppTheme.grey500),
               textAlign: TextAlign.center,
             ),
             if (subtitle != null) ...[
@@ -189,7 +189,7 @@ class SkeletonListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return const SkeletonLoader(
       child: ListTile(
-        leading: CircleAvatar(backgroundColor: Colors.grey, radius: 24),
+        leading: CircleAvatar(backgroundColor: AppTheme.grey300, radius: 24),
         title: Align(
           alignment: Alignment.centerLeft,
           child: SizedBox(
@@ -197,7 +197,7 @@ class SkeletonListTile extends StatelessWidget {
             height: 14,
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: Colors.grey,
+                color: AppTheme.grey300,
                 borderRadius: BorderRadius.all(Radius.circular(4)),
               ),
             ),
@@ -210,7 +210,7 @@ class SkeletonListTile extends StatelessWidget {
             height: 12,
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: Colors.grey,
+                color: AppTheme.grey300,
                 borderRadius: BorderRadius.all(Radius.circular(4)),
               ),
             ),
@@ -245,7 +245,7 @@ class SkeletonCard extends StatelessWidget {
                 height: 16,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: Colors.grey,
+                    color: AppTheme.grey300,
                     borderRadius: BorderRadius.all(Radius.circular(4)),
                   ),
                 ),
@@ -258,7 +258,7 @@ class SkeletonCard extends StatelessWidget {
                       height: 48,
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: Colors.grey,
+                          color: AppTheme.grey300,
                           borderRadius: BorderRadius.all(Radius.circular(8)),
                         ),
                       ),
@@ -270,7 +270,7 @@ class SkeletonCard extends StatelessWidget {
                       height: 48,
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: Colors.grey,
+                          color: AppTheme.grey300,
                           borderRadius: BorderRadius.all(Radius.circular(8)),
                         ),
                       ),

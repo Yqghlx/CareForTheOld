@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
 using CareForTheOld.Common.Filters;
 using CareForTheOld.Common.Helpers;
@@ -93,7 +94,7 @@ public class FamilyController : ControllerBase
         var userId = this.GetUserId();
         var members = await _familyService.GetMembersAsync(id);
         if (!members.Any(m => m.UserId == userId))
-            return ApiResponse<List<FamilyMemberResponse>>.Fail("您不是该家庭成员");
+            return ApiResponse<List<FamilyMemberResponse>>.Fail(ErrorMessages.Family.NotFamilyMember);
         return ApiResponse<List<FamilyMemberResponse>>.Ok(members);
     }
 

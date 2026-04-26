@@ -75,24 +75,24 @@ public class UserController : ControllerBase
     {
         if (file == null || file.Length == 0)
         {
-            return ApiResponse<object>.Fail("请选择要上传的头像文件");
+            return ApiResponse<object>.Fail(ErrorMessages.FileUpload.NoFileSelected);
         }
 
         // 文件大小验证
         if (file.Length > AppConstants.FileUpload.MaxAvatarSizeBytes)
         {
-            return ApiResponse<object>.Fail("文件大小不能超过 2MB");
+            return ApiResponse<object>.Fail(ErrorMessages.FileUpload.FileTooLarge);
         }
 
         // 文件类型验证（扩展名 + MIME 类型双重校验）
         var extension = Path.GetExtension(file.FileName);
         if (!AppConstants.FileUpload.AllowedAvatarExtensions.Contains(extension))
         {
-            return ApiResponse<object>.Fail("仅支持 JPG 和 PNG 格式的图片");
+            return ApiResponse<object>.Fail(ErrorMessages.FileUpload.InvalidFormat);
         }
         if (!AppConstants.FileUpload.AllowedAvatarContentTypes.Contains(file.ContentType))
         {
-            return ApiResponse<object>.Fail("文件内容类型不支持");
+            return ApiResponse<object>.Fail(ErrorMessages.FileUpload.InvalidContentType);
         }
 
         var userId = this.GetUserId();

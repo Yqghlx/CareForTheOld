@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
 using CareForTheOld.Common.Filters;
 using CareForTheOld.Common.Helpers;
@@ -90,7 +91,7 @@ public class HealthController : ControllerBase
         // 验证当前用户是否是该家庭成员
         var members = await _familyService.GetMembersAsync(familyId);
         if (!members.Any(m => m.UserId == userId))
-            return ApiResponse<List<HealthRecordResponse>>.Fail("您不是该家庭成员");
+            return ApiResponse<List<HealthRecordResponse>>.Fail(ErrorMessages.Family.NotFamilyMember);
 
         var result = await _healthService.GetFamilyMemberRecordsAsync(familyId, memberId, type, skip, limit);
         return ApiResponse<List<HealthRecordResponse>>.Ok(result);
@@ -123,7 +124,7 @@ public class HealthController : ControllerBase
         // 验证当前用户是否是该家庭成员
         var members = await _familyService.GetMembersAsync(familyId);
         if (!members.Any(m => m.UserId == userId))
-            return ApiResponse<List<HealthStatsResponse>>.Fail("您不是该家庭成员");
+            return ApiResponse<List<HealthStatsResponse>>.Fail(ErrorMessages.Family.NotFamilyMember);
 
         var result = await _healthQueryService.GetUserStatsAsync(memberId);
         return ApiResponse<List<HealthStatsResponse>>.Ok(result);
@@ -229,7 +230,7 @@ public class HealthController : ControllerBase
         // 验证当前用户是否是该家庭成员
         var members = await _familyService.GetMembersAsync(familyId);
         if (!members.Any(m => m.UserId == userId))
-            return ApiResponse<TrendAnomalyDetectionResponse>.Fail("您不是该家庭成员");
+            return ApiResponse<TrendAnomalyDetectionResponse>.Fail(ErrorMessages.Family.NotFamilyMember);
 
         var healthType = type ?? HealthType.BloodPressure;
         var records = await _healthService.GetFamilyMemberRecordsAsync(familyId, memberId, healthType, 0, 100);
