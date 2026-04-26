@@ -111,12 +111,11 @@ class _NeighborHelpRatingPageState
 
   Future<void> _submitRating() async {
     setState(() => _isSubmitting = true);
+    final trimmedComment = _commentController.text.trim();
     final success = await ref.read(neighborHelpProvider.notifier).rateRequest(
           requestId: widget.requestId,
           rating: _rating,
-          comment: _commentController.text.trim().isEmpty
-              ? null
-              : _commentController.text.trim(),
+          comment: trimmedComment.isEmpty ? null : trimmedComment,
         );
     if (mounted) {
       setState(() => _isSubmitting = false);

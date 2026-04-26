@@ -1,5 +1,4 @@
 import '../../../core/router/route_paths.dart';
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -585,7 +584,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                     } else {
                                       // 初始化并开始录音
                                       final available = await voiceService.initialize();
-                                      if (!mounted || !context.mounted) return;
+                                      if (!mounted) return;
                                       if (!available) {
                                         if (mounted) {
                                           context.showWarningSnackBar(AppTheme.msgVoiceNotAvailable);
