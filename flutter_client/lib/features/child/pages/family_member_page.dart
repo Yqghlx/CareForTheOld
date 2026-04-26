@@ -156,7 +156,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
                         decoration: BoxDecoration(
                           color: Colors.orange.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: AppTheme.radius4,
                         ),
                         child: Text(
                           '待审批',
@@ -570,7 +570,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
                           color: (member.role.isElder ? Colors.orange : Colors.blue).withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(6),
+                          borderRadius: AppTheme.radius6,
                         ),
                         child: Text(
                           member.role.label,

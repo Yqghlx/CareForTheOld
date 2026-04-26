@@ -38,7 +38,7 @@ public class GeoFenceController : ControllerBase
     {
         var userId = this.GetUserId();
         var result = await _geoFenceService.CreateFenceAsync(userId, request);
-        return ApiResponse<GeoFenceResponse>.Ok(result, "围栏创建成功");
+        return ApiResponse<GeoFenceResponse>.Ok(result, SuccessMessages.GeoFence.CreateSuccess);
     }
 
     /// <summary>
@@ -66,7 +66,7 @@ public class GeoFenceController : ControllerBase
     {
         var userId = this.GetUserId();
         var result = await _geoFenceService.UpdateFenceAsync(id, userId, request);
-        return ApiResponse<GeoFenceResponse>.Ok(result, "围栏更新成功");
+        return ApiResponse<GeoFenceResponse>.Ok(result, SuccessMessages.GeoFence.UpdateSuccess);
     }
 
     /// <summary>
@@ -77,6 +77,6 @@ public class GeoFenceController : ControllerBase
     {
         var userId = this.GetUserId();
         await _geoFenceService.DeleteFenceAsync(id, userId);
-        return ApiResponse<object>.Ok(null!, "围栏删除成功");
+        return ApiResponse<object>.Ok(null!, SuccessMessages.GeoFence.DeleteSuccess);
     }
 }

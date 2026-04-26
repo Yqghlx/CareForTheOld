@@ -61,7 +61,9 @@ class AppTheme {
   static const double buttonRadius = 12.0;
 
   /// 预定义 BorderRadius 常量（统一项目中圆角使用）
+  static const BorderRadius radius4 = BorderRadius.all(Radius.circular(4));
   static const BorderRadius radiusXS = BorderRadius.all(Radius.circular(8));
+  static const BorderRadius radius6 = BorderRadius.all(Radius.circular(6));
   static const BorderRadius radiusS = BorderRadius.all(Radius.circular(12));
   static const BorderRadius radiusM = BorderRadius.all(Radius.circular(14));
   static const BorderRadius radiusL = BorderRadius.all(Radius.circular(16));

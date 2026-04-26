@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
 using CareForTheOld.Common.Filters;
 using CareForTheOld.Common.Helpers;
@@ -71,7 +72,7 @@ public class NeighborHelpController : ControllerBase
     {
         var userId = this.GetUserId();
         var result = await _helpService.AcceptHelpRequestAsync(id, userId);
-        return ApiResponse<NeighborHelpRequestResponse>.Ok(result, "已接受求助");
+        return ApiResponse<NeighborHelpRequestResponse>.Ok(result, SuccessMessages.NeighborHelp.AcceptSuccess);
     }
 
     /// <summary>
@@ -82,7 +83,7 @@ public class NeighborHelpController : ControllerBase
     {
         var userId = this.GetUserId();
         await _helpService.CancelHelpRequestAsync(id, userId);
-        return ApiResponse<object>.Ok(null!, "已取消求助");
+        return ApiResponse<object>.Ok(null!, SuccessMessages.NeighborHelp.CancelSuccess);
     }
 
     /// <summary>
@@ -94,6 +95,6 @@ public class NeighborHelpController : ControllerBase
     {
         var userId = this.GetUserId();
         var result = await _helpService.RateHelpRequestAsync(id, userId, request);
-        return ApiResponse<NeighborHelpRatingResponse>.Ok(result, "评价成功");
+        return ApiResponse<NeighborHelpRatingResponse>.Ok(result, SuccessMessages.NeighborHelp.RateSuccess);
     }
 }

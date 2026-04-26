@@ -285,3 +285,113 @@ public static class ErrorMessages
         public const string NoPermissionToView = "您不是该用户的家庭成员，无权查看";
     }
 }
+
+/// <summary>
+/// 统一成功消息常量
+/// 集中管理 Controller 返回的成功消息，确保表述一致
+/// </summary>
+public static class SuccessMessages
+{
+    /// <summary>认证相关成功消息</summary>
+    public static class Auth
+    {
+        public const string RegisterSuccess = "注册成功";
+        public const string LoginSuccess = "登录成功";
+        public const string RefreshSuccess = "刷新成功";
+    }
+
+    /// <summary>家庭组相关成功消息</summary>
+    public static class Family
+    {
+        public const string CreateSuccess = "创建成功";
+        public const string InviteSuccess = "邀请成功";
+        public const string ApplySubmitted = "申请已提交";
+        public const string InviteCodeRefreshed = "邀请码已刷新";
+        public const string ApproveSuccess = "审批通过";
+        public const string RejectSuccess = "已拒绝";
+        public const string RemoveSuccess = "移除成功";
+    }
+
+    /// <summary>围栏相关成功消息</summary>
+    public static class GeoFence
+    {
+        public const string CreateSuccess = "围栏创建成功";
+        public const string UpdateSuccess = "围栏更新成功";
+        public const string DeleteSuccess = "围栏删除成功";
+    }
+
+    /// <summary>用户相关成功消息</summary>
+    public static class User
+    {
+        public const string UpdateSuccess = "更新成功";
+        public const string PasswordChanged = "密码修改成功";
+        public const string AvatarUploaded = "头像上传成功";
+    }
+
+    /// <summary>用药相关成功消息</summary>
+    public static class Medication
+    {
+        public const string CreateSuccess = "创建成功";
+        public const string UpdateSuccess = "更新成功";
+        public const string DeleteSuccess = "删除成功";
+        public const string LogSuccess = "记录成功";
+    }
+
+    /// <summary>健康相关成功消息</summary>
+    public static class Health
+    {
+        public const string RecordSuccess = "记录成功";
+        public const string DeleteSuccess = "删除成功";
+    }
+
+    /// <summary>邻里圈相关成功消息</summary>
+    public static class NeighborCircle
+    {
+        public const string CreateSuccess = "创建成功";
+        public const string JoinSuccess = "加入成功";
+        public const string LeaveSuccess = "已退出邻里圈";
+        public const string InviteCodeRefreshed = "邀请码已刷新";
+    }
+
+    /// <summary>邻里互助相关成功消息</summary>
+    public static class NeighborHelp
+    {
+        public const string AcceptSuccess = "已接受求助";
+        public const string CancelSuccess = "已取消求助";
+        public const string RateSuccess = "评价成功";
+    }
+
+    /// <summary>自动救援相关成功消息</summary>
+    public static class AutoRescue
+    {
+        public const string RespondConfirmed = "已确认响应";
+    }
+
+    /// <summary>紧急呼叫相关成功消息</summary>
+    public static class Emergency
+    {
+        public const string CallSent = "紧急呼叫已发送，已通知家人和附近邻居";
+        public const string MarkHandled = "已标记处理";
+    }
+
+    /// <summary>位置相关成功消息</summary>
+    public static class Location
+    {
+        public const string ReportSuccess = "位置上报成功";
+    }
+
+    /// <summary>设备相关成功消息</summary>
+    public static class Device
+    {
+        public const string TokenRegistered = "设备令牌注册成功";
+        public const string TokenCleared = "设备令牌已清除";
+    }
+
+    /// <summary>通知相关成功消息</summary>
+    public static class Notification
+    {
+        public const string NotFound = "通知不存在";
+        public const string MarkedRead = "已标记为已读";
+        public const string AllMarkedRead = "全部标记为已读";
+    }
+}

@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
 using CareForTheOld.Common.Filters;
 using CareForTheOld.Common.Helpers;
@@ -37,7 +38,7 @@ public class MedicationController : ControllerBase
     {
         var userId = this.GetUserId();
         var result = await _medicationService.CreatePlanAsync(userId, request);
-        return ApiResponse<MedicationPlanResponse>.Ok(result, "创建成功");
+        return ApiResponse<MedicationPlanResponse>.Ok(result, SuccessMessages.Medication.CreateSuccess);
     }
 
     /// <summary>
@@ -75,7 +76,7 @@ public class MedicationController : ControllerBase
     {
         var userId = this.GetUserId();
         var result = await _medicationService.UpdatePlanAsync(id, userId, request);
-        return ApiResponse<MedicationPlanResponse>.Ok(result, "更新成功");
+        return ApiResponse<MedicationPlanResponse>.Ok(result, SuccessMessages.Medication.UpdateSuccess);
     }
 
     /// <summary>
@@ -87,7 +88,7 @@ public class MedicationController : ControllerBase
     {
         var userId = this.GetUserId();
         await _medicationService.DeletePlanAsync(id, userId);
-        return ApiResponse<object>.Ok(null!, "删除成功");
+        return ApiResponse<object>.Ok(null!, SuccessMessages.Medication.DeleteSuccess);
     }
 
     /// <summary>
@@ -99,7 +100,7 @@ public class MedicationController : ControllerBase
     {
         var userId = this.GetUserId();
         var result = await _medicationService.RecordLogAsync(userId, request);
-        return ApiResponse<MedicationLogResponse>.Ok(result, "记录成功");
+        return ApiResponse<MedicationLogResponse>.Ok(result, SuccessMessages.Medication.LogSuccess);
     }
 
     /// <summary>

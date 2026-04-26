@@ -1088,7 +1088,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
                               color: severityColor.withValues(alpha: 0.15),
-                              borderRadius: BorderRadius.circular(6),
+                              borderRadius: AppTheme.radius6,
                             ),
                             child: Text(
                               severityText,
@@ -1194,7 +1194,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                             decoration: BoxDecoration(
                               color: Colors.green.withValues(alpha: 0.12),
-                              borderRadius: BorderRadius.circular(6),
+                              borderRadius: AppTheme.radius6,
                             ),
                             child: Text(
                               '连续${anomaly.positiveFeedback!.daysStable}天平稳',
@@ -1341,7 +1341,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppTheme.grey200,
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: AppTheme.radius6,
                 ),
                 child: Text(
                   timeStr,
@@ -1383,7 +1383,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: AppTheme.radius6,
                 ),
                 child: Text(
                   event.severityScore.toStringAsFixed(0),

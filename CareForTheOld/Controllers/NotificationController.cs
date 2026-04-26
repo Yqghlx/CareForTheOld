@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Filters;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Models.DTOs.Responses;
@@ -60,9 +61,9 @@ public class NotificationController : ControllerBase
         var success = await _notificationService.MarkAsReadAsync(id, this.GetUserId());
 
         if (!success)
-            return ApiResponse<object>.Ok(new { success = false }, "通知不存在");
+            return ApiResponse<object>.Ok(new { success = false }, SuccessMessages.Notification.NotFound);
 
-        return ApiResponse<object>.Ok(new { success = true }, "已标记为已读");
+        return ApiResponse<object>.Ok(new { success = true }, SuccessMessages.Notification.MarkedRead);
     }
 
     /// <summary>
@@ -72,6 +73,6 @@ public class NotificationController : ControllerBase
     public async Task<ApiResponse<object>> MarkAllAsRead()
     {
         await _notificationService.MarkAllAsReadAsync(this.GetUserId());
-        return ApiResponse<object>.Ok(new { success = true }, "全部标记为已读");
+        return ApiResponse<object>.Ok(new { success = true }, SuccessMessages.Notification.AllMarkedRead);
     }
 }

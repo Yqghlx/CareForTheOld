@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Asp.Versioning;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
 using CareForTheOld.Data;
 using CareForTheOld.Common.Helpers;
@@ -72,7 +73,7 @@ public class DeviceController : ControllerBase
         await _context.SaveChangesAsync();
 
         _logger.LogInformation("FCM token 已注册: 用户={UserId}, 平台={Platform}", userId, request.Platform);
-        return ApiResponse<object>.Ok(null!, "设备令牌注册成功");
+        return ApiResponse<object>.Ok(null!, SuccessMessages.Device.TokenRegistered);
     }
 
     /// <summary>
@@ -88,7 +89,7 @@ public class DeviceController : ControllerBase
             .ExecuteDeleteAsync();
 
         _logger.LogInformation("FCM token 已清除: 用户={UserId}, 数量={Count}", userId, deleted);
-        return ApiResponse<object>.Ok(null!, "设备令牌已清除");
+        return ApiResponse<object>.Ok(null!, SuccessMessages.Device.TokenCleared);
     }
 }
 

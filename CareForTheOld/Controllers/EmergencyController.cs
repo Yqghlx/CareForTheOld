@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
 using CareForTheOld.Common.Filters;
 using CareForTheOld.Common.Helpers;
@@ -42,7 +43,7 @@ public class EmergencyController : ControllerBase
             request?.Latitude,
             request?.Longitude,
             request?.BatteryLevel);
-        return ApiResponse<EmergencyCallResponse>.Ok(call, "紧急呼叫已发送，已通知家人和附近邻居");
+        return ApiResponse<EmergencyCallResponse>.Ok(call, SuccessMessages.Emergency.CallSent);
     }
 
     /// <summary>
@@ -80,6 +81,6 @@ public class EmergencyController : ControllerBase
     {
         var userId = this.GetUserId();
         var call = await _emergencyService.RespondCallAsync(id, userId);
-        return ApiResponse<EmergencyCallResponse>.Ok(call, "已标记处理");
+        return ApiResponse<EmergencyCallResponse>.Ok(call, SuccessMessages.Emergency.MarkHandled);
     }
 }

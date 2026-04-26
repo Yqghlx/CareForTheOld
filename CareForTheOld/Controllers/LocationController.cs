@@ -40,7 +40,7 @@ public class LocationController : ControllerBase
     {
         var userId = this.GetUserId();
         var record = await _locationService.ReportLocationAsync(userId, request.Latitude, request.Longitude, request.Accuracy);
-        return ApiResponse<LocationRecordResponse>.Ok(record, "位置上报成功");
+        return ApiResponse<LocationRecordResponse>.Ok(record, SuccessMessages.Location.ReportSuccess);
     }
 
     /// <summary>

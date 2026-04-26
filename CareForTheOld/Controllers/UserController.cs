@@ -52,7 +52,7 @@ public class UserController : ControllerBase
     {
         var userId = this.GetUserId();
         var result = await _userService.UpdateUserAsync(userId, request);
-        return ApiResponse<UserResponse>.Ok(result, "更新成功");
+        return ApiResponse<UserResponse>.Ok(result, SuccessMessages.User.UpdateSuccess);
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class UserController : ControllerBase
     {
         var userId = this.GetUserId();
         await _userService.ChangePasswordAsync(userId, request);
-        return ApiResponse<object>.Ok(null!, "密码修改成功");
+        return ApiResponse<object>.Ok(null!, SuccessMessages.User.PasswordChanged);
     }
 
     /// <summary>
@@ -111,7 +111,7 @@ public class UserController : ControllerBase
         // 更新用户头像 URL
         await _userService.UpdateAvatarUrlAsync(userId, avatarUrl);
 
-        return ApiResponse<object>.Ok(new { avatarUrl }, "头像上传成功");
+        return ApiResponse<object>.Ok(new { avatarUrl }, SuccessMessages.User.AvatarUploaded);
     }
 
     [HttpGet("{id:guid}")]

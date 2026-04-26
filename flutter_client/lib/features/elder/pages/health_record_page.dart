@@ -396,7 +396,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
                             color: Colors.orange.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(6),
+                            borderRadius: AppTheme.radius6,
                           ),
                           child: Text(
                             abnormalLabel,

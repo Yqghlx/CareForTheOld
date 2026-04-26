@@ -189,7 +189,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
                   color: isSelected ? type.color : Colors.transparent,
-                  borderRadius: BorderRadius.circular(isSelected ? 16 : 0),
+                  borderRadius: isSelected ? AppTheme.radiusL : BorderRadius.zero,
                 ),
                 child: Column(
                   children: [

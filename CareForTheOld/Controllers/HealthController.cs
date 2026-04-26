@@ -53,7 +53,7 @@ public class HealthController : ControllerBase
     {
         var userId = this.GetUserId();
         var result = await _healthService.CreateRecordAsync(userId, request);
-        return ApiResponse<HealthRecordResponse>.Ok(result, "记录成功");
+        return ApiResponse<HealthRecordResponse>.Ok(result, SuccessMessages.Health.RecordSuccess);
     }
 
     /// <summary>
@@ -139,7 +139,7 @@ public class HealthController : ControllerBase
     {
         var userId = this.GetUserId();
         await _healthService.DeleteRecordAsync(userId, id);
-        return ApiResponse<object>.Ok(null!, "删除成功");
+        return ApiResponse<object>.Ok(null!, SuccessMessages.Health.DeleteSuccess);
     }
 
     /// <summary>

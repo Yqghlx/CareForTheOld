@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
 using CareForTheOld.Common.Filters;
 using CareForTheOld.Common.Helpers;
@@ -47,7 +48,7 @@ public class NeighborCircleController : ControllerBase
     {
         var userId = this.GetUserId();
         var result = await _circleService.CreateCircleAsync(userId, request);
-        return ApiResponse<NeighborCircleResponse>.Ok(result, "创建成功");
+        return ApiResponse<NeighborCircleResponse>.Ok(result, SuccessMessages.NeighborCircle.CreateSuccess);
     }
 
     /// <summary>
@@ -102,7 +103,7 @@ public class NeighborCircleController : ControllerBase
     {
         var userId = this.GetUserId();
         var result = await _circleService.JoinCircleByCodeAsync(userId, request);
-        return ApiResponse<NeighborCircleResponse>.Ok(result, "加入成功");
+        return ApiResponse<NeighborCircleResponse>.Ok(result, SuccessMessages.NeighborCircle.JoinSuccess);
     }
 
     /// <summary>
@@ -113,7 +114,7 @@ public class NeighborCircleController : ControllerBase
     {
         var userId = this.GetUserId();
         await _circleService.LeaveCircleAsync(id, userId);
-        return ApiResponse<object>.Ok(null!, "已退出邻里圈");
+        return ApiResponse<object>.Ok(null!, SuccessMessages.NeighborCircle.LeaveSuccess);
     }
 
     /// <summary>
@@ -124,7 +125,7 @@ public class NeighborCircleController : ControllerBase
     {
         var userId = this.GetUserId();
         var result = await _circleService.RefreshInviteCodeAsync(id, userId);
-        return ApiResponse<NeighborCircleResponse>.Ok(result, "邀请码已刷新");
+        return ApiResponse<NeighborCircleResponse>.Ok(result, SuccessMessages.NeighborCircle.InviteCodeRefreshed);
     }
 
     /// <summary>

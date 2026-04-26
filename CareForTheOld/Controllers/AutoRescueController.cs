@@ -42,7 +42,7 @@ public class AutoRescueController : ControllerBase
     {
         var userId = this.GetUserId();
         await _autoRescueService.ChildRespondAsync(recordId, userId);
-        return ApiResponse<object>.Ok(null!, "已确认响应");
+        return ApiResponse<object>.Ok(null!, SuccessMessages.AutoRescue.RespondConfirmed);
     }
 
     /// <summary>

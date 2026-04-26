@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Models.DTOs.Requests.Auth;
 using CareForTheOld.Models.DTOs.Responses;
@@ -29,7 +30,7 @@ public class AuthController : ControllerBase
     public async Task<ApiResponse<AuthResponse>> Register([FromBody] RegisterRequest request)
     {
         var result = await _authService.RegisterAsync(request);
-        return ApiResponse<AuthResponse>.Ok(result, "注册成功");
+        return ApiResponse<AuthResponse>.Ok(result, SuccessMessages.Auth.RegisterSuccess);
     }
 
     /// <summary>用户登录</summary>
@@ -37,7 +38,7 @@ public class AuthController : ControllerBase
     public async Task<ApiResponse<AuthResponse>> Login([FromBody] LoginRequest request)
     {
         var result = await _authService.LoginAsync(request);
-        return ApiResponse<AuthResponse>.Ok(result, "登录成功");
+        return ApiResponse<AuthResponse>.Ok(result, SuccessMessages.Auth.LoginSuccess);
     }
 
     /// <summary>刷新令牌</summary>
@@ -45,6 +46,6 @@ public class AuthController : ControllerBase
     public async Task<ApiResponse<AuthResponse>> Refresh([FromBody] RefreshTokenRequest request)
     {
         var result = await _authService.RefreshTokenAsync(request.RefreshToken);
-        return ApiResponse<AuthResponse>.Ok(result, "刷新成功");
+        return ApiResponse<AuthResponse>.Ok(result, SuccessMessages.Auth.RefreshSuccess);
     }
 }

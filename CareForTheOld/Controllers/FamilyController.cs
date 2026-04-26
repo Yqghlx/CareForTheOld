@@ -49,7 +49,7 @@ public class FamilyController : ControllerBase
     {
         var userId = this.GetUserId();
         var result = await _familyService.CreateFamilyAsync(userId, request);
-        return ApiResponse<FamilyResponse>.Ok(result, "创建成功");
+        return ApiResponse<FamilyResponse>.Ok(result, SuccessMessages.Family.CreateSuccess);
     }
 
     /// <summary>
@@ -61,7 +61,7 @@ public class FamilyController : ControllerBase
     {
         var userId = this.GetUserId();
         var result = await _familyService.AddMemberAsync(id, userId, request);
-        return ApiResponse<FamilyResponse>.Ok(result, "邀请成功");
+        return ApiResponse<FamilyResponse>.Ok(result, SuccessMessages.Family.InviteSuccess);
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ public class FamilyController : ControllerBase
     {
         var userId = this.GetUserId();
         var result = await _familyService.JoinFamilyByCodeAsync(userId, request);
-        return ApiResponse<JoinFamilyResponse>.Ok(result, "申请已提交");
+        return ApiResponse<JoinFamilyResponse>.Ok(result, SuccessMessages.Family.ApplySubmitted);
     }
 
     /// <summary>
@@ -85,7 +85,7 @@ public class FamilyController : ControllerBase
     {
         var userId = this.GetUserId();
         var result = await _familyService.RefreshInviteCodeAsync(id, userId);
-        return ApiResponse<FamilyResponse>.Ok(result, "邀请码已刷新");
+        return ApiResponse<FamilyResponse>.Ok(result, SuccessMessages.Family.InviteCodeRefreshed);
     }
 
     /// <summary>
@@ -124,7 +124,7 @@ public class FamilyController : ControllerBase
     {
         var userId = this.GetUserId();
         await _familyService.ApproveMemberAsync(id, memberId, userId);
-        return ApiResponse<object>.Ok(null!, "审批通过");
+        return ApiResponse<object>.Ok(null!, SuccessMessages.Family.ApproveSuccess);
     }
 
     /// <summary>
@@ -136,7 +136,7 @@ public class FamilyController : ControllerBase
     {
         var userId = this.GetUserId();
         await _familyService.RejectMemberAsync(id, memberId, userId);
-        return ApiResponse<object>.Ok(null!, "已拒绝");
+        return ApiResponse<object>.Ok(null!, SuccessMessages.Family.RejectSuccess);
     }
 
     [HttpDelete("{id:guid}/members/{userId:guid}")]
@@ -145,6 +145,6 @@ public class FamilyController : ControllerBase
     {
         var currentUserId = this.GetUserId();
         await _familyService.RemoveMemberAsync(id, userId, currentUserId);
-        return ApiResponse<object>.Ok(null!, "移除成功");
+        return ApiResponse<object>.Ok(null!, SuccessMessages.Family.RemoveSuccess);
     }
 }
