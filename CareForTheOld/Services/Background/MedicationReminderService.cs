@@ -273,16 +273,17 @@ public class MedicationReminderService : BackgroundService
 
             foreach (var other in otherMembers)
             {
+                var elderName = plan.Elder?.RealName ?? AppConstants.HealthTypeLabels.DefaultElderName;
                 var familyMessage = new NotificationMessage
                 {
                     Type = AppConstants.NotificationTypes.MedicationReminderFamily,
                     Title = NotificationMessages.Medication.FamilyReminderTitle,
-                    Content = string.Format(NotificationMessages.Medication.FamilyReminderContentTemplate, plan.Elder.RealName, plan.MedicineName),
+                    Content = string.Format(NotificationMessages.Medication.FamilyReminderContentTemplate, elderName, plan.MedicineName),
                     Timestamp = DateTime.UtcNow,
                     Data = new
                     {
                         ElderId = plan.ElderId,
-                        ElderName = plan.Elder.RealName,
+                        ElderName = elderName,
                         PlanId = plan.Id,
                         MedicineName = plan.MedicineName,
                         ScheduledAt = scheduledAt

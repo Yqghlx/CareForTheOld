@@ -180,12 +180,11 @@ public class NotificationService : INotificationService
     /// </summary>
     private static (string title, string content, string payload) ExtractNotificationData(object data)
     {
-        var dict = JsonSerializer.Deserialize<Dictionary<string, object>>(
-            JsonSerializer.Serialize(data));
+        var payload = JsonSerializer.Serialize(data);
+        var dict = JsonSerializer.Deserialize<Dictionary<string, object>>(payload);
 
         var title = dict?.GetValueOrDefault("Title")?.ToString() ?? NotificationMessages.DefaultTitle;
         var content = dict?.GetValueOrDefault("Content")?.ToString() ?? "";
-        var payload = JsonSerializer.Serialize(data);
         return (title, content, payload);
     }
 }
