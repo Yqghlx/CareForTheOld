@@ -93,7 +93,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
               // 当前位置
               const Text(
                 '当前位置',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: AppTheme.textTitle,
               ),
               const SizedBox(height: 12),
               latestLocationAsync.when(
@@ -113,7 +113,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
               // 历史轨迹
               const Text(
                 '历史轨迹',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: AppTheme.textTitle,
               ),
               const SizedBox(height: 12),
               historyAsync.when(
@@ -273,12 +273,12 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                           if (centerLat != 0)
                             Text(
                               '纬度: ${centerLat.toStringAsFixed(4)}',
-                              style: const TextStyle(fontSize: 14),
+                              style: AppTheme.textBody,
                             ),
                           if (centerLon != 0)
                             Text(
                               '经度: ${centerLon.toStringAsFixed(4)}',
-                              style: const TextStyle(fontSize: 14),
+                              style: AppTheme.textBody,
                             ),
                           if (centerLat == 0)
                             const Text('暂无位置数据，请等待老人上报位置', style: TextStyle(fontSize: 14, color: AppTheme.grey600)),
@@ -455,7 +455,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                       children: [
                         Text(
                           elderName,
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          style: AppTheme.textTitle,
                         ),
                         Text(
                           '更新于 ${location.relativeTime}',
@@ -481,7 +481,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                           const SizedBox(width: 8),
                           Text(
                             '纬度: ${location.latitude.toStringAsFixed(4)}',
-                            style: const TextStyle(fontSize: 16),
+                            style: AppTheme.textBody16,
                           ),
                         ],
                       ),
@@ -492,7 +492,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                           const SizedBox(width: 8),
                           Text(
                             '经度: ${location.longitude.toStringAsFixed(4)}',
-                            style: const TextStyle(fontSize: 16),
+                            style: AppTheme.textBody16,
                           ),
                         ],
                       ),

@@ -536,7 +536,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
                     children: [
                       Text(
                         log.medicineName,
-                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        style: AppTheme.textLargeTitle,
                       ),
                       const SizedBox(height: 4),
                       Text(

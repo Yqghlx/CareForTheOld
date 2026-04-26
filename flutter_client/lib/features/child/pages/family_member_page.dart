@@ -60,7 +60,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text('家庭成员',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        style: AppTheme.textTitle),
                     if (!isElder)
                       TextButton.icon(
                         onPressed: () => _showAddMemberDialog(),
@@ -90,7 +90,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
         Row(
           children: [
             const Text('待审批',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                style: AppTheme.textTitle),
             const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -147,7 +147,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                 children: [
                   Text(
                     member.realName.isEmpty ? '未设置姓名' : member.realName,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: AppTheme.textHeading,
                   ),
                   const SizedBox(height: 2),
                   Row(
@@ -442,7 +442,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               child: const Icon(Icons.home, size: 40, color: AppTheme.primaryColor),
             ),
             const SizedBox(height: 16),
-            const Text('您还没有创建家庭组', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text('您还没有创建家庭组', style: AppTheme.textTitle),
             const SizedBox(height: 8),
             const Text('创建家庭组后，可以邀请家人加入', style: TextStyle(color: AppTheme.grey600)),
             const SizedBox(height: 20),
@@ -474,7 +474,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               child: const Icon(Icons.group_add, size: 40, color: AppTheme.warningColor),
             ),
             const SizedBox(height: 16),
-            const Text('您还未加入家庭组', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text('您还未加入家庭组', style: AppTheme.textTitle),
             const SizedBox(height: 8),
             const Text('请让子女分享邀请码给您', style: TextStyle(color: AppTheme.grey600)),
             const SizedBox(height: 20),
@@ -561,7 +561,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                 children: [
                   Text(
                     member.realName.isEmpty ? '未设置姓名' : member.realName,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: AppTheme.textTitle,
                   ),
                   const SizedBox(height: 4),
                   Row(

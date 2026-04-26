@@ -258,7 +258,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     icon: const Icon(Icons.calendar_today, size: 16),
                     label: Text(
                       _selectedLogDate ?? '全部日期',
-                      style: const TextStyle(fontSize: 14),
+                      style: AppTheme.textBody,
                     ),
                   ),
                   if (_selectedLogDate != null)
@@ -1159,7 +1159,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               const SizedBox(height: 16),
               const Text(
                 '检测到的异常',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                style: AppTheme.textCardTitle,
               ),
               const SizedBox(height: 8),
               ...anomaly.anomalies.take(3).map((event) => _buildAnomalyEventItem(event)),
@@ -1292,7 +1292,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         ),
         Text(
           baselineText,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: AppTheme.textHeading,
         ),
         const SizedBox(width: 4),
         Text(
@@ -1476,7 +1476,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   children: [
                     Text(
                       '最近7天统计',
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      style: AppTheme.textCardTitle,
                     ),
                     const SizedBox(height: 8),
                     _buildRecentStatsRow('平均值', anomaly.recentStats.avg7Days),
@@ -1498,7 +1498,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 const SizedBox(height: 16),
                 Text(
                   '异常事件时间线',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  style: AppTheme.textCardTitle,
                 ),
                 const SizedBox(height: 8),
                 ...anomaly.anomalies.map((event) => _buildAnomalyEventItem(event)),
