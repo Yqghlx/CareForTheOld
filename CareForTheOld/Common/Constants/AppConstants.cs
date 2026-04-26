@@ -366,4 +366,75 @@ public static class AppConstants
         /// <summary>长期统计天数（30天）</summary>
         public const int LongTermDays = 30;
     }
+
+    /// <summary>
+    /// 健康报告相关常量
+    /// </summary>
+    public static class HealthReport
+    {
+        /// <summary>PDF 报告中显示的最大记录条数</summary>
+        public const int MaxPdfRecords = 20;
+    }
+
+    /// <summary>
+    /// 安全令牌相关常量
+    /// </summary>
+    public static class SecurityToken
+    {
+        /// <summary>刷新令牌随机字节长度</summary>
+        public const int RefreshTokenBytes = 64;
+
+        /// <summary>JWT 密钥最小长度（字节），低于此值视为不安全</summary>
+        public const int MinKeyLengthBytes = 32;
+    }
+
+    /// <summary>
+    /// 异常检测评估阈值常量
+    /// 变异系数（CV）用于衡量数据波动性：CV = 标准差 / 均值
+    /// </summary>
+    public static class AnomalyEvaluation
+    {
+        /// <summary>变异系数极佳阈值（CV &lt; 5%）：波动极小，控制极佳</summary>
+        public const double CoefficientOfVariationExcellent = 0.05;
+
+        /// <summary>变异系数良好阈值（CV &lt; 10%）：波动在正常范围</summary>
+        public const double CoefficientOfVariationGood = 0.10;
+    }
+
+    /// <summary>
+    /// 健康数据输入验证范围
+    /// 定义极端异常值的拒绝阈值，超出此范围的值视为输入错误而非真实生理数据
+    /// </summary>
+    public static class HealthInputValidation
+    {
+        /// <summary>收缩压输入下限（mmHg）</summary>
+        public const int SystolicMin = 60;
+
+        /// <summary>收缩压输入上限（mmHg）</summary>
+        public const int SystolicMax = 300;
+
+        /// <summary>舒张压输入下限（mmHg）</summary>
+        public const int DiastolicMin = 30;
+
+        /// <summary>舒张压输入上限（mmHg）</summary>
+        public const int DiastolicMax = 200;
+
+        /// <summary>血糖输入下限（mmol/L）</summary>
+        public const decimal BloodSugarMin = 1.0m;
+
+        /// <summary>血糖输入上限（mmol/L）</summary>
+        public const decimal BloodSugarMax = 35.0m;
+
+        /// <summary>心率输入下限（次/分）</summary>
+        public const int HeartRateMin = 30;
+
+        /// <summary>心率输入上限（次/分）</summary>
+        public const int HeartRateMax = 250;
+
+        /// <summary>体温输入下限（°C）</summary>
+        public const decimal TemperatureMin = 34.0m;
+
+        /// <summary>体温输入上限（°C）</summary>
+        public const decimal TemperatureMax = 43.0m;
+    }
 }

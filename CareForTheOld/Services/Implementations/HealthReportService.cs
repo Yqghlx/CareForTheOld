@@ -208,7 +208,7 @@ public class HealthReportService : IHealthReportService
                 });
 
                 // 记录行（最多显示最近20条）
-                foreach (var record in records.Take(20))
+                foreach (var record in records.Take(AppConstants.HealthReport.MaxPdfRecords))
                 {
                     var isAbnormal = IsAbnormal(type, record);
                     var backgroundColor = isAbnormal ? "#FFEBEE" : "#FFFFFF";
@@ -223,7 +223,7 @@ public class HealthReportService : IHealthReportService
                 }
             });
 
-            if (records.Count > 20)
+            if (records.Count > AppConstants.HealthReport.MaxPdfRecords)
             {
                 column.Item().PaddingTop(5).AlignCenter().Text($"... 共 {records.Count} 条记录，仅显示最近 20 条")
                     .FontSize(10).FontColor("#666666");
@@ -335,11 +335,16 @@ public class HealthReportService : IHealthReportService
     {
         return type switch
         {
-            HealthType.BloodPressure => (record.Systolic > 140 || record.Systolic < 90 ||
-                                          record.Diastolic > 90 || record.Diastolic < 60),
-            HealthType.BloodSugar => (record.BloodSugar > 6.1m || record.BloodSugar < 3.9m),
-            HealthType.HeartRate => (record.HeartRate > 100 || record.HeartRate < 60),
-            HealthType.Temperature => (record.Temperature > 37.3m || record.Temperature < 36.0m),
+            HealthType.BloodPressure => (record.Systolic > AppConstants.HealthThresholds.BloodPressureSystolicMax ||
+                                          record.Systolic < AppConstants.HealthThresholds.BloodPressureSystolicMin ||
+                                          record.Diastolic > AppConstants.HealthThresholds.BloodPressureDiastolicMax ||
+                                          record.Diastolic < AppConstants.HealthThresholds.BloodPressureDiastolicMin),
+            HealthType.BloodSugar => (record.BloodSugar > AppConstants.HealthThresholds.BloodSugarMax ||
+                                      record.BloodSugar < AppConstants.HealthThresholds.BloodSugarMin),
+            HealthType.HeartRate => (record.HeartRate > AppConstants.HealthThresholds.HeartRateMax ||
+                                     record.HeartRate < AppConstants.HealthThresholds.HeartRateMin),
+            HealthType.Temperature => (record.Temperature > AppConstants.HealthThresholds.TemperatureMax ||
+                                       record.Temperature < AppConstants.HealthThresholds.TemperatureMin),
             _ => false
         };
     }
@@ -356,9 +361,9 @@ public class HealthReportService : IHealthReportService
         if (bpRecords.Count > 0)
         {
             var avgSystolic = bpRecords.Average(r => r.Systolic ?? 0);
-            if (avgSystolic > 140)
+            if (avgSystolic > AppConstants.HealthThresholds.BloodPressureSystolicMax)
                 suggestions.Add("血压偏高，建议减少盐分摄入，保持规律作息，必要时就医检查。");
-            else if (avgSystolic < 90)
+            else if (avgSystolic < AppConstants.HealthThresholds.BloodPressureSystolicMin)
                 suggestions.Add("血压偏低，建议适当增加营养，避免突然站立，必要时就医检查。");
             else
                 suggestions.Add("血压在正常范围内，请继续保持良好的生活习惯。");
@@ -369,9 +374,9 @@ public class HealthReportService : IHealthReportService
         if (bsRecords.Count > 0)
         {
             var avgBs = bsRecords.Average(r => r.BloodSugar ?? 0m);
-            if (avgBs > 6.1m)
+            if (avgBs > AppConstants.HealthThresholds.BloodSugarMax)
                 suggestions.Add("血糖偏高，建议控制饮食，减少糖分摄入，必要时就医检查。");
-            else if (avgBs < 3.9m)
+            else if (avgBs < AppConstants.HealthThresholds.BloodSugarMin)
                 suggestions.Add("血糖偏低，建议随身携带糖果，定时进餐，必要时就医检查。");
             else
                 suggestions.Add("血糖在正常范围内，请继续保持健康的饮食习惯。");
@@ -382,9 +387,9 @@ public class HealthReportService : IHealthReportService
         if (hrRecords.Count > 0)
         {
             var avgHr = hrRecords.Average(r => r.HeartRate ?? 0);
-            if (avgHr > 100)
+            if (avgHr > AppConstants.HealthThresholds.HeartRateMax)
                 suggestions.Add("心率偏快，建议保持心情平和，适当运动，必要时就医检查。");
-            else if (avgHr < 60)
+            else if (avgHr < AppConstants.HealthThresholds.HeartRateMin)
                 suggestions.Add("心率偏慢，如感到不适请及时就医检查。");
             else
                 suggestions.Add("心率在正常范围内，请继续保持适度运动。");
@@ -395,9 +400,9 @@ public class HealthReportService : IHealthReportService
         if (tempRecords.Count > 0)
         {
             var avgTemp = tempRecords.Average(r => r.Temperature ?? 0m);
-            if (avgTemp > 37.3m)
+            if (avgTemp > AppConstants.HealthThresholds.TemperatureMax)
                 suggestions.Add("体温偏高，建议注意休息，多喝水，如持续发热请就医。");
-            else if (avgTemp < 36.0m)
+            else if (avgTemp < AppConstants.HealthThresholds.TemperatureMin)
                 suggestions.Add("体温偏低，建议注意保暖，适当增加衣物。");
             else
                 suggestions.Add("体温正常，请继续保持良好的生活习惯。");

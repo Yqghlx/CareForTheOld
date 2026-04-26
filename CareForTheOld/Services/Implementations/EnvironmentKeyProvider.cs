@@ -23,7 +23,7 @@ public class EnvironmentKeyProvider : IKeyProvider
     {
         var key = Environment.GetEnvironmentVariable(_envVarName);
 
-        if (string.IsNullOrWhiteSpace(key) || key.Length < 32)
+        if (string.IsNullOrWhiteSpace(key) || key.Length < AppConstants.SecurityToken.MinKeyLengthBytes)
         {
             throw new InvalidOperationException(ErrorMessages.Configuration.JwtSecretKeyNotConfiguredInEnv);
         }

@@ -230,27 +230,32 @@ public class HealthService : IHealthService
             case HealthType.BloodPressure:
                 if (!request.Systolic.HasValue || !request.Diastolic.HasValue)
                     throw new ArgumentException(ErrorMessages.Health.BloodPressureRequired);
-                if (request.Systolic.Value < 60 || request.Systolic.Value > 300)
+                if (request.Systolic.Value < AppConstants.HealthInputValidation.SystolicMin ||
+                    request.Systolic.Value > AppConstants.HealthInputValidation.SystolicMax)
                     throw new ArgumentException(ErrorMessages.Health.SystolicOutOfRange);
-                if (request.Diastolic.Value < 30 || request.Diastolic.Value > 200)
+                if (request.Diastolic.Value < AppConstants.HealthInputValidation.DiastolicMin ||
+                    request.Diastolic.Value > AppConstants.HealthInputValidation.DiastolicMax)
                     throw new ArgumentException(ErrorMessages.Health.DiastolicOutOfRange);
                 break;
             case HealthType.BloodSugar:
                 if (!request.BloodSugar.HasValue)
                     throw new ArgumentException(ErrorMessages.Health.BloodSugarRequired);
-                if (request.BloodSugar.Value < 1.0m || request.BloodSugar.Value > 35.0m)
+                if (request.BloodSugar.Value < AppConstants.HealthInputValidation.BloodSugarMin ||
+                    request.BloodSugar.Value > AppConstants.HealthInputValidation.BloodSugarMax)
                     throw new ArgumentException(ErrorMessages.Health.BloodSugarOutOfRange);
                 break;
             case HealthType.HeartRate:
                 if (!request.HeartRate.HasValue)
                     throw new ArgumentException(ErrorMessages.Health.HeartRateRequired);
-                if (request.HeartRate.Value < 30 || request.HeartRate.Value > 250)
+                if (request.HeartRate.Value < AppConstants.HealthInputValidation.HeartRateMin ||
+                    request.HeartRate.Value > AppConstants.HealthInputValidation.HeartRateMax)
                     throw new ArgumentException(ErrorMessages.Health.HeartRateOutOfRange);
                 break;
             case HealthType.Temperature:
                 if (!request.Temperature.HasValue)
                     throw new ArgumentException(ErrorMessages.Health.TemperatureRequired);
-                if (request.Temperature.Value < 34.0m || request.Temperature.Value > 43.0m)
+                if (request.Temperature.Value < AppConstants.HealthInputValidation.TemperatureMin ||
+                    request.Temperature.Value > AppConstants.HealthInputValidation.TemperatureMax)
                     throw new ArgumentException(ErrorMessages.Health.TemperatureOutOfRange);
                 break;
         }

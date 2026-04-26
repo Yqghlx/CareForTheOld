@@ -111,8 +111,8 @@ public class HealthAnomalyDetector
         // 变异系数 < 10% 视为极佳控制
         var quality = coefficientOfVariation switch
         {
-            < 0.05 => "极佳",
-            < 0.10 => "良好",
+            < AppConstants.AnomalyEvaluation.CoefficientOfVariationExcellent => "极佳",
+            < AppConstants.AnomalyEvaluation.CoefficientOfVariationGood => "良好",
             _ => "平稳",
         };
 

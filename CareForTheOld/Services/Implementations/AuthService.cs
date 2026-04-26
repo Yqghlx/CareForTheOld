@@ -194,7 +194,7 @@ public class AuthService : IAuthService
     }
 
     private static string GenerateRefreshToken()
-        => Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+        => Convert.ToBase64String(RandomNumberGenerator.GetBytes(AppConstants.SecurityToken.RefreshTokenBytes));
 
     /// <summary>
     /// 手机号脱敏：138****1234

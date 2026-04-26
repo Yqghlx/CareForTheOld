@@ -25,7 +25,7 @@ public class ConfigurationKeyProvider : IKeyProvider
     {
         var key = _configuration[ConfigurationKeys.Jwt.Key];
 
-        if (string.IsNullOrWhiteSpace(key) || key.Length < 32)
+        if (string.IsNullOrWhiteSpace(key) || key.Length < AppConstants.SecurityToken.MinKeyLengthBytes)
         {
             throw new InvalidOperationException(ErrorMessages.Configuration.JwtSecretKeyNotConfiguredInConfig);
         }
