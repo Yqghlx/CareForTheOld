@@ -131,7 +131,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                       children: [
                         const Icon(Icons.error_outline, size: 48, color: AppTheme.errorColor),
                         const SizedBox(height: 12),
-                        const Text('加载失败，请重试', style: TextStyle(color: AppTheme.errorColor)),
+                        const Text('加载失败，请重试', style: AppTheme.textError),
                         const SizedBox(height: 12),
                         ElevatedButton(
                           onPressed: () => ref.invalidate(filteredHealthRecordsProvider(_selectedType)),
