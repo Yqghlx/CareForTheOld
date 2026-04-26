@@ -60,7 +60,7 @@ public class LocationController : ControllerBase
     /// </summary>
     [HttpGet("me/history")]
     [CacheControl(MaxAgeSeconds = 60)]
-    public async Task<ApiResponse<List<LocationRecordResponse>>> GetMyHistory([FromQuery] int skip = 0, [FromQuery] int limit = 50)
+    public async Task<ApiResponse<List<LocationRecordResponse>>> GetMyHistory([FromQuery] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery] int limit = AppConstants.Pagination.DefaultPageSize)
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
@@ -96,7 +96,7 @@ public class LocationController : ControllerBase
     [CacheControl(MaxAgeSeconds = 60)]
     [Authorize(Roles = "Child")]
     public async Task<ApiResponse<List<LocationRecordResponse>>> GetFamilyMemberHistory(
-        Guid familyId, Guid memberId, [FromQuery] int skip = 0, [FromQuery] int limit = 50)
+        Guid familyId, Guid memberId, [FromQuery] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery] int limit = AppConstants.Pagination.DefaultPageSize)
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();

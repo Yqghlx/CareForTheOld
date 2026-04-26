@@ -49,7 +49,7 @@ public class AutoRescueController : ControllerBase
     /// 获取自动救援历史记录
     /// </summary>
     [HttpGet("history")]
-    public async Task<ApiResponse<object>> GetHistory([FromQuery] int skip = 0, [FromQuery] int limit = 20)
+    public async Task<ApiResponse<object>> GetHistory([FromQuery] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery] int limit = AppConstants.Pagination.DefaultHistoryPageSize)
     {
         var userId = this.GetUserId();
         var familyMember = await _context.FamilyMembers

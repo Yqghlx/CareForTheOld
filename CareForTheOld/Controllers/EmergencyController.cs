@@ -64,7 +64,7 @@ public class EmergencyController : ControllerBase
     /// </summary>
     [HttpGet("history")]
     [CacheControl(MaxAgeSeconds = 60)]
-    public async Task<ApiResponse<List<EmergencyCallResponse>>> GetHistory([FromQuery] int skip = 0, [FromQuery] int limit = 20)
+    public async Task<ApiResponse<List<EmergencyCallResponse>>> GetHistory([FromQuery] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery] int limit = AppConstants.Pagination.DefaultHistoryPageSize)
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();

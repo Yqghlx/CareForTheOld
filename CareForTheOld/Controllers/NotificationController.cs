@@ -35,7 +35,7 @@ public class NotificationController : ControllerBase
     /// </summary>
     [HttpGet("me")]
     [CacheControl(MaxAgeSeconds = 30)]
-    public async Task<ApiResponse<List<NotificationResponse>>> GetMyNotifications([FromQuery] int limit = 50)
+    public async Task<ApiResponse<List<NotificationResponse>>> GetMyNotifications([FromQuery] int limit = AppConstants.Pagination.DefaultPageSize)
     {
         var notifications = await _notificationService.GetUserNotificationsAsync(this.GetUserId(), limit);
         return ApiResponse<List<NotificationResponse>>.Ok(notifications);

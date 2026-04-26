@@ -127,6 +127,12 @@ public static class AppConstants
 
         /// <summary>默认每页条数</summary>
         public const int DefaultPageSize = 50;
+
+        /// <summary>历史记录默认每页条数（数据量较大时使用）</summary>
+        public const int DefaultHistoryPageSize = 20;
+
+        /// <summary>默认跳过条数</summary>
+        public const int DefaultSkip = 0;
     }
 
     /// <summary>

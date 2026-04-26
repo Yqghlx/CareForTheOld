@@ -112,8 +112,8 @@ public class MedicationController : ControllerBase
     public async Task<ApiResponse<List<MedicationLogResponse>>> GetLogs(
         Guid elderId,
         [FromQuery] DateOnly? date,
-        [FromQuery] int skip = 0,
-        [FromQuery] int limit = 50)
+        [FromQuery] int skip = AppConstants.Pagination.DefaultSkip,
+        [FromQuery] int limit = AppConstants.Pagination.DefaultPageSize)
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
@@ -129,8 +129,8 @@ public class MedicationController : ControllerBase
     [Authorize(Roles = "Elder")]
     public async Task<ApiResponse<List<MedicationLogResponse>>> GetMyLogs(
         [FromQuery] DateOnly? date,
-        [FromQuery] int skip = 0,
-        [FromQuery] int limit = 50)
+        [FromQuery] int skip = AppConstants.Pagination.DefaultSkip,
+        [FromQuery] int limit = AppConstants.Pagination.DefaultPageSize)
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();

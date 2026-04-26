@@ -46,7 +46,7 @@ public class NeighborHelpController : ControllerBase
     [HttpGet("history")]
     [CacheControl(MaxAgeSeconds = 60)]
     public async Task<ApiResponse<List<NeighborHelpRequestResponse>>> GetHistory(
-        [FromQuery] int skip = 0, [FromQuery] int limit = 20)
+        [FromQuery] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery] int limit = AppConstants.Pagination.DefaultHistoryPageSize)
     {
         var userId = this.GetUserId();
         var result = await _helpService.GetHistoryAsync(userId, skip, limit);
