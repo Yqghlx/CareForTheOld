@@ -354,7 +354,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               text: '退出登录',
               onPressed: () => _showLogoutDialog(),
               gradient: const LinearGradient(
-                colors: [Colors.red, Colors.redAccent],
+                colors: [AppTheme.errorColor, AppTheme.errorAccent],
               ),
             ),
           ],
@@ -522,7 +522,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 strengthColor = AppTheme.warningColor;
               } else {
                 strengthText = '密码强度：弱';
-                strengthColor = Colors.red;
+                strengthColor = AppTheme.errorColor;
               }
             }
             return AlertDialog(
@@ -764,10 +764,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: Colors.red.withValues(alpha: 0.15),
+                color: AppTheme.errorColor.withValues(alpha: 0.15),
                 borderRadius: AppTheme.radius10,
               ),
-              child: const Icon(Icons.logout, color: Colors.red),
+              child: const Icon(Icons.logout, color: AppTheme.errorColor),
             ),
             const SizedBox(width: 12),
             const Text('退出登录'),
@@ -795,7 +795,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               context.go('/login');
             },
             gradient: const LinearGradient(
-              colors: [Colors.red, Colors.redAccent],
+              colors: [AppTheme.errorColor, AppTheme.errorAccent],
             ),
           ),
         ],

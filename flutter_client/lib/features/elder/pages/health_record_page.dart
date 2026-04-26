@@ -344,10 +344,10 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 20),
         decoration: BoxDecoration(
-          color: Colors.red.withValues(alpha: 0.1),
+          color: AppTheme.errorColor.withValues(alpha: 0.1),
           borderRadius: AppTheme.radiusL,
         ),
-        child: const Icon(Icons.delete, color: Colors.red, size: 28),
+        child: const Icon(Icons.delete, color: AppTheme.errorColor, size: 28),
       ),
       child: Card(
       elevation: 4,
@@ -641,7 +641,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                     decoration: BoxDecoration(
                                       gradient: isListening
                                           ? const LinearGradient(
-                                              colors: [Colors.red, Colors.redAccent],
+                                              colors: [AppTheme.errorColor, AppTheme.errorAccent],
                                             )
                                           : LinearGradient(
                                               colors: [
@@ -653,7 +653,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                       boxShadow: isListening
                                           ? [
                                               BoxShadow(
-                                                color: Colors.red.withValues(alpha: 0.4),
+                                                color: AppTheme.errorColor.withValues(alpha: 0.4),
                                                 blurRadius: 16 + soundLevel.abs(),
                                                 spreadRadius: 4,
                                               ),

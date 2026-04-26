@@ -350,7 +350,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                         context.showSuccessSnackBar('安全区域已删除');
                       }
                     },
-                    child: const Text('删除', style: TextStyle(color: Colors.red)),
+                    child: const Text('删除', style: TextStyle(color: AppTheme.errorColor)),
                   ),
                 TextButton(
                   onPressed: () => Navigator.pop(ctx),
@@ -548,10 +548,10 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: Colors.blue.withValues(alpha: 0.15),
+                color: AppTheme.infoBlue.withValues(alpha: 0.15),
                 borderRadius: AppTheme.radiusXS,
               ),
-              child: const Icon(Icons.location_history, color: Colors.blue, size: 20),
+              child: const Icon(Icons.location_history, color: AppTheme.infoBlue, size: 20),
             ),
             const SizedBox(width: 12),
             Expanded(

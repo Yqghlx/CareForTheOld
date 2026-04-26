@@ -216,7 +216,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                 child: Row(
                   children: [
                     if (call.hasLocation) ...[
-                      Icon(Icons.location_on, size: 18, color: Colors.blue.shade700),
+                      Icon(Icons.location_on, size: 18, color: AppTheme.infoBlueDark),
                       const SizedBox(width: 4),
                       Text(
                         '${call.latitude!.toStringAsFixed(4)}, ${call.longitude!.toStringAsFixed(4)}',
@@ -252,8 +252,8 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                       icon: const Icon(Icons.phone, size: 20),
                       label: const Text('拨打电话'),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.blue,
-                        side: const BorderSide(color: Colors.blue),
+                        foregroundColor: AppTheme.infoBlue,
+                        side: const BorderSide(color: AppTheme.infoBlue),
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusS),
                       ),

@@ -183,7 +183,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                   tooltip: '通过',
                 ),
                 IconButton(
-                  icon: Icon(Icons.cancel, color: Colors.red.shade300),
+                  icon: Icon(Icons.cancel, color: AppTheme.errorMedium),
                   onPressed: () => _rejectMember(member),
                   tooltip: '拒绝',
                 ),
@@ -242,7 +242,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
           ),
           PrimaryButton(
             text: '拒绝',
-            gradient: const LinearGradient(colors: [Colors.red, Colors.redAccent]),
+            gradient: const LinearGradient(colors: [AppTheme.errorColor, AppTheme.errorAccent]),
             onPressed: () => Navigator.pop(ctx, true),
           ),
         ],
@@ -527,7 +527,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               width: 52,
               height: 52,
               decoration: BoxDecoration(
-                color: (member.role.isElder ? AppTheme.warningColor : Colors.blue).withValues(alpha: 0.15),
+                color: (member.role.isElder ? AppTheme.warningColor : AppTheme.infoBlue).withValues(alpha: 0.15),
                 borderRadius: AppTheme.radiusM,
               ),
               child: ClipRRect(
@@ -542,13 +542,13 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                         maxHeightDiskCache: 512,
                         errorWidget: (_, __, ___) => Icon(
                           member.role.isElder ? Icons.elderly : Icons.person,
-                          color: member.role.isElder ? AppTheme.warningColor : Colors.blue,
+                          color: member.role.isElder ? AppTheme.warningColor : AppTheme.infoBlue,
                           size: 28,
                         ),
                       )
                     : Icon(
                         member.role.isElder ? Icons.elderly : Icons.person,
-                        color: member.role.isElder ? AppTheme.warningColor : Colors.blue,
+                        color: member.role.isElder ? AppTheme.warningColor : AppTheme.infoBlue,
                         size: 28,
                       ),
               ),
@@ -569,14 +569,14 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
-                          color: (member.role.isElder ? AppTheme.warningColor : Colors.blue).withValues(alpha: 0.1),
+                          color: (member.role.isElder ? AppTheme.warningColor : AppTheme.infoBlue).withValues(alpha: 0.1),
                           borderRadius: AppTheme.radius6,
                         ),
                         child: Text(
                           member.role.label,
                           style: TextStyle(
                             fontSize: 12,
-                            color: member.role.isElder ? AppTheme.warningColor : Colors.blue,
+                            color: member.role.isElder ? AppTheme.warningColor : AppTheme.infoBlue,
                           ),
                         ),
                       ),
@@ -593,7 +593,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
             // 移除按钮（子女端可操作）
             if (!isElder)
               IconButton(
-                icon: Icon(Icons.remove_circle_outline, color: Colors.red.shade300),
+                icon: Icon(Icons.remove_circle_outline, color: AppTheme.errorMedium),
                 onPressed: () => _confirmRemove(member),
                 tooltip: '移除成员',
               ),
@@ -917,7 +917,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
           ),
           PrimaryButton(
             text: '移除',
-            gradient: const LinearGradient(colors: [Colors.red, Colors.redAccent]),
+            gradient: const LinearGradient(colors: [AppTheme.errorColor, AppTheme.errorAccent]),
             onPressed: () async {
               Navigator.pop(ctx);
               final success = await ref.read(familyProvider.notifier).removeMember(member.userId);

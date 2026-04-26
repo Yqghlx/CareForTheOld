@@ -205,7 +205,7 @@ class _HelpRequestCard extends StatelessWidget {
       HelpRequestStatus.pending => ('待响应', AppTheme.warningColor),
       HelpRequestStatus.accepted => ('已响应', AppTheme.successColor),
       HelpRequestStatus.cancelled => ('已取消', AppTheme.grey500),
-      HelpRequestStatus.resolved => ('已完成', Colors.blue),
+      HelpRequestStatus.resolved => ('已完成', AppTheme.infoBlue),
       HelpRequestStatus.expired => ('已过期', AppTheme.grey500),
     };
     return Chip(label: Text(label, style: const TextStyle(fontSize: 12)), materialTapTargetSize: MaterialTapTargetSize.shrinkWrap);

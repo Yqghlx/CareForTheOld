@@ -19,6 +19,13 @@ class AppTheme {
   static const Color successMedium = Color(0xFF66BB6A); // ~green.shade400
   static const Color warningLight = Color(0xFFFFCC80);  // ~orange.shade200
   static const Color warningDark = Color(0xFFF57C00);   // ~orange.shade700
+  static const Color errorLight = Color(0xFFFFCDD2);    // ~red.shade100
+  static const Color errorMedium = Color(0xFFEF9A9A);   // ~red.shade200
+  static const Color errorDark = Color(0xFFD32F2F);     // ~red.shade700
+  static const Color errorAccent = Color(0xFFFF5252);   // ~redAccent
+  static const Color infoBlue = Color(0xFF2196F3);      // ~blue.shade500
+  static const Color infoBlueLight = Color(0xFFBBDEFB); // ~blue.shade100
+  static const Color infoBlueDark = Color(0xFF1976D2);  // ~blue.shade700
 
   /// 背景色
   static const Color backgroundColor = Color(0xFFF5F5F5);

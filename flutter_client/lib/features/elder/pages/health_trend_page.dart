@@ -266,10 +266,10 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: Colors.blue.withValues(alpha: 0.15),
+                color: AppTheme.infoBlue.withValues(alpha: 0.15),
                 borderRadius: AppTheme.radius10,
               ),
-              child: const Icon(Icons.picture_as_pdf, color: Colors.blue),
+              child: const Icon(Icons.picture_as_pdf, color: AppTheme.infoBlue),
             ),
             const SizedBox(width: 12),
             const Text('导出健康报告'),

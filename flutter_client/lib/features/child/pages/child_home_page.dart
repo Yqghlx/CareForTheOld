@@ -65,7 +65,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     width: 12,
                     height: 12,
                     decoration: BoxDecoration(
-                      color: Colors.red,
+                      color: AppTheme.errorColor,
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -92,7 +92,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                       width: 10,
                       height: 10,
                       decoration: const BoxDecoration(
-                        color: Colors.red,
+                        color: AppTheme.errorColor,
                         shape: BoxShape.circle,
                       ),
                     );
@@ -230,7 +230,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     icon: Icons.add,
                     onPressed: () => _showAddPlanDialog(context),
                     gradient: const LinearGradient(
-                      colors: [Colors.blue, Colors.lightBlue],
+                      colors: [AppTheme.infoBlue, Colors.lightBlue],
                     ),
                   ),
                 ),
@@ -300,7 +300,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         width: 56,
                         height: 56,
                         decoration: BoxDecoration(
-                          color: Colors.blue.withValues(alpha: 0.15),
+                          color: AppTheme.infoBlue.withValues(alpha: 0.15),
                           borderRadius: AppTheme.radiusM,
                         ),
                         child: ClipRRect(
@@ -378,8 +378,8 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         icon: const Icon(Icons.favorite, size: 18),
                         label: const Text('查看健康'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.red,
-                          side: const BorderSide(color: Colors.red),
+                          foregroundColor: AppTheme.errorColor,
+                          side: const BorderSide(color: AppTheme.errorColor),
                         ),
                       ),
                     ),
@@ -424,10 +424,10 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: Colors.blue.withValues(alpha: 0.15),
+                      color: AppTheme.infoBlue.withValues(alpha: 0.15),
                       borderRadius: AppTheme.radius10,
                     ),
-                    child: const Icon(Icons.medication, color: Colors.blue),
+                    child: const Icon(Icons.medication, color: AppTheme.infoBlue),
                   ),
                   const SizedBox(width: 12),
                   const Text('添加用药计划'),
@@ -583,7 +583,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                             ),
                             if (timeControllers.length > 1)
                               IconButton(
-                                icon: const Icon(Icons.remove_circle, color: Colors.red),
+                                icon: const Icon(Icons.remove_circle, color: AppTheme.errorColor),
                                 tooltip: '移除时间点',
                                 onPressed: () => setDialogState(
                                     () => timeControllers.removeAt(entry.key)),
@@ -719,12 +719,12 @@ class _EmergencyPulseBannerState extends State<_EmergencyPulseBanner>
           margin: const EdgeInsets.only(bottom: 16),
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [Colors.red, Colors.redAccent],
+              colors: [AppTheme.errorColor, AppTheme.errorAccent],
             ),
             borderRadius: AppTheme.radiusL,
             boxShadow: [
               BoxShadow(
-                color: Colors.red.withValues(alpha: alpha),
+                color: AppTheme.errorColor.withValues(alpha: alpha),
                 blurRadius: 8 + _animation.value * 16,
                 spreadRadius: _animation.value * 4,
               ),

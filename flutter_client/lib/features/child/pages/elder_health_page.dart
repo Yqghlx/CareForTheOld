@@ -316,7 +316,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
             title: '血压',
             value: _getStatsValue(typeMap, '血压'),
             subtitle: _getStatsSubtitle(typeMap, '血压'),
-            color: Colors.red,
+            color: AppTheme.errorColor,
           ),
         ),
         Semantics(
@@ -326,7 +326,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
             title: '血糖',
             value: _getStatsValue(typeMap, '血糖'),
             subtitle: _getStatsSubtitle(typeMap, '血糖'),
-            color: Colors.blue,
+            color: AppTheme.infoBlue,
           ),
         ),
         Semantics(
@@ -410,13 +410,13 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: (plan.isActive ? Colors.blue : AppTheme.grey500)
+                        color: (plan.isActive ? AppTheme.infoBlue : AppTheme.grey500)
                             .withValues(alpha: 0.15),
                         borderRadius: AppTheme.radiusS,
                       ),
                       child: Icon(
                         Icons.medication,
-                        color: plan.isActive ? Colors.blue : AppTheme.grey500,
+                        color: plan.isActive ? AppTheme.infoBlue : AppTheme.grey500,
                         size: 28,
                       ),
                     ),
@@ -492,8 +492,8 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       if (!plan.isActive) ...[
                         TextButton.icon(
                           onPressed: () => _deletePlan(plan),
-                          icon: const Icon(Icons.delete_outline, size: 18, color: Colors.red),
-                          label: const Text('删除', style: TextStyle(color: Colors.red)),
+                          icon: const Icon(Icons.delete_outline, size: 18, color: AppTheme.errorColor),
+                          label: const Text('删除', style: TextStyle(color: AppTheme.errorColor)),
                           style: TextButton.styleFrom(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                           ),
@@ -509,8 +509,8 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       alignment: Alignment.centerRight,
                       child: TextButton.icon(
                         onPressed: () => _deletePlan(plan),
-                        icon: const Icon(Icons.delete_outline, size: 18, color: Colors.red),
-                        label: const Text('删除计划', style: TextStyle(color: Colors.red)),
+                        icon: const Icon(Icons.delete_outline, size: 18, color: AppTheme.errorColor),
+                        label: const Text('删除计划', style: TextStyle(color: AppTheme.errorColor)),
                         style: TextButton.styleFrom(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                         ),
@@ -898,10 +898,10 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: Colors.blue.withValues(alpha: 0.15),
+                color: AppTheme.infoBlue.withValues(alpha: 0.15),
                 borderRadius: AppTheme.radius10,
               ),
-              child: const Icon(Icons.picture_as_pdf, color: Colors.blue),
+              child: const Icon(Icons.picture_as_pdf, color: AppTheme.infoBlue),
             ),
             const SizedBox(width: 12),
             const Text('导出健康报告'),
@@ -1032,7 +1032,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       severityText = '需要关注';
       severityIcon = Icons.warning_amber;
     } else {
-      severityColor = Colors.red.shade700;
+      severityColor = AppTheme.errorDark;
       severityText = '需要重视';
       severityIcon = Icons.error_outline;
     }
@@ -1317,7 +1317,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     } else if (event.severityScore < 66) {
       color = AppTheme.grey800;
     } else {
-      color = Colors.red.shade700;
+      color = AppTheme.errorDark;
     }
 
     final time = event.detectedAt.toLocal();
@@ -1403,19 +1403,19 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               width: double.infinity,
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: Colors.blue.shade50,
+                color: AppTheme.grey50,
                 borderRadius: AppTheme.radiusXS,
-                border: Border.all(color: Colors.blue.shade100),
+                border: Border.all(color: AppTheme.infoBlueLight),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.lightbulb_outline, size: 16, color: Colors.blue.shade600),
+                  Icon(Icons.lightbulb_outline, size: 16, color: AppTheme.infoBlue),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       event.recommendedAction!,
-                      style: TextStyle(fontSize: 13, color: Colors.blue.shade700),
+                      style: TextStyle(fontSize: 13, color: AppTheme.infoBlueDark),
                     ),
                   ),
                 ],

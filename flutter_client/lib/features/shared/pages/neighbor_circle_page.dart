@@ -150,7 +150,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                 child: OutlinedButton.icon(
                   icon: const Icon(Icons.exit_to_app),
                   label: const Text('退出圈子'),
-                  style: OutlinedButton.styleFrom(foregroundColor: Colors.red),
+                  style: OutlinedButton.styleFrom(foregroundColor: AppTheme.errorColor),
                   onPressed: () => _leaveCircle(),
                 ),
               ),
@@ -307,7 +307,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
           TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('取消')),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            style: TextButton.styleFrom(foregroundColor: AppTheme.errorColor),
             child: const Text('退出'),
           ),
         ],

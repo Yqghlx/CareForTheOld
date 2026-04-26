@@ -52,14 +52,14 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
     return PopScope(
       canPop: false, // 禁止返回键关闭
       child: Scaffold(
-        backgroundColor: Colors.red,
+        backgroundColor: AppTheme.errorColor,
         body: AnimatedBuilder(
           animation: _pulseAnimation,
           builder: (context, child) {
             return Container(
               width: size.width,
               height: size.height,
-              color: Colors.red.withValues(alpha: (0.7 + _pulseAnimation.value).clamp(0.0, 1.0)),
+              color: AppTheme.errorColor.withValues(alpha: (0.7 + _pulseAnimation.value).clamp(0.0, 1.0)),
               child: SafeArea(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -150,7 +150,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
                 height: 20,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: Colors.red,
+                  color: AppTheme.errorColor,
                 ),
               )
             : const Icon(Icons.check_circle_outline, size: 28),
@@ -160,7 +160,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
         ),
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.white,
-          foregroundColor: Colors.red,
+          foregroundColor: AppTheme.errorColor,
           shape: RoundedRectangleBorder(
             borderRadius: AppTheme.radius3XL,
           ),

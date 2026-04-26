@@ -89,7 +89,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                         width: 10,
                         height: 10,
                         decoration: const BoxDecoration(
-                          color: Colors.red,
+                          color: AppTheme.errorColor,
                           shape: BoxShape.circle,
                         ),
                       );
@@ -292,14 +292,14 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                 icon: Icons.favorite,
                 title: '记录健康',
                 subtitle: '血压、血糖、心率',
-                color: Colors.red,
+                color: AppTheme.errorColor,
                 onTap: () => setState(() => _selectedIndex = 1),
               ),
               AnimatedQuickCard(
                 icon: Icons.medication,
                 title: '用药提醒',
                 subtitle: '查看今日用药',
-                color: Colors.blue,
+                color: AppTheme.infoBlue,
                 onTap: () => setState(() => _selectedIndex = 2),
               ),
               AnimatedQuickCard(
@@ -363,15 +363,15 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: _isLongPressing
-                ? [Colors.redAccent, Colors.red]
-                : [Colors.red, Colors.redAccent],
+                ? [AppTheme.errorAccent, AppTheme.errorColor]
+                : [AppTheme.errorColor, AppTheme.errorAccent],
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
           ),
           borderRadius: AppTheme.radiusXL,
           boxShadow: [
             BoxShadow(
-              color: Colors.red.withValues(alpha: _isLongPressing ? 0.7 : 0.4),
+              color: AppTheme.errorColor.withValues(alpha: _isLongPressing ? 0.7 : 0.4),
               blurRadius: _isLongPressing ? 24 : 16,
               spreadRadius: _isLongPressing ? 4 : 0,
               offset: const Offset(0, 6),

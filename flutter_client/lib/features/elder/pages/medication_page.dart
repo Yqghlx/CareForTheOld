@@ -54,7 +54,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
           IconButton(
             icon: Icon(
               _isListening ? Icons.mic : Icons.mic_none,
-              color: _isListening ? Colors.red : null,
+              color: _isListening ? AppTheme.errorColor : null,
             ),
             onPressed: _startVoiceConfirm,
             tooltip: '语音确认服药',
