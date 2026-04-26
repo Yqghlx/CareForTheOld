@@ -124,6 +124,7 @@ public class NeighborHelpService : INeighborHelpService
             .ToList();
 
         // 创建求助请求记录
+        var now = DateTime.UtcNow;
         var helpRequest = new NeighborHelpRequest
         {
             Id = Guid.NewGuid(),
@@ -133,8 +134,8 @@ public class NeighborHelpService : INeighborHelpService
             Status = HelpRequestStatus.Pending,
             Latitude = call.Latitude,
             Longitude = call.Longitude,
-            RequestedAt = DateTime.UtcNow,
-            ExpiresAt = DateTime.UtcNow.Add(_defaultExpiration),
+            RequestedAt = now,
+            ExpiresAt = now.Add(_defaultExpiration),
         };
 
         _context.NeighborHelpRequests.Add(helpRequest);
@@ -534,6 +535,7 @@ public class NeighborHelpService : INeighborHelpService
 
         if (memberIds.Count == 0) return;
 
+        var requestNow = DateTime.UtcNow;
         var helpRequest = new NeighborHelpRequest
         {
             Id = Guid.NewGuid(),
@@ -543,8 +545,8 @@ public class NeighborHelpService : INeighborHelpService
             Status = HelpRequestStatus.Pending,
             Latitude = call.Latitude,
             Longitude = call.Longitude,
-            RequestedAt = DateTime.UtcNow,
-            ExpiresAt = DateTime.UtcNow.Add(_defaultExpiration),
+            RequestedAt = requestNow,
+            ExpiresAt = requestNow.Add(_defaultExpiration),
         };
 
         _context.NeighborHelpRequests.Add(helpRequest);
