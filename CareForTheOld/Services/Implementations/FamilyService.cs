@@ -253,6 +253,7 @@ public class FamilyService : IFamilyService
             throw new UnauthorizedAccessException(ErrorMessages.Family.OnlyChildCanApprove);
 
         var member = await _context.FamilyMembers
+            .AsTracking()
             .Include(fm => fm.User)
             .FirstOrDefaultAsync(fm => fm.FamilyId == familyId && fm.UserId == memberId && fm.Status == FamilyMemberStatus.Pending)
             ?? throw new KeyNotFoundException(ErrorMessages.Family.PendingMemberNotFound);
