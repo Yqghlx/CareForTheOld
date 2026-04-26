@@ -517,6 +517,15 @@ public static class AppConstants
 
         /// <summary>波动性的严重度权重系数</summary>
         public const double VolatilitySeverityWeight = 20.0;
+
+        /// <summary>关键健康类型（血压、血糖）的严重度权重倍率</summary>
+        public const double CriticalTypeWeight = 1.5;
+
+        /// <summary>普通健康类型的严重度权重倍率</summary>
+        public const double NormalTypeWeight = 1.0;
+
+        /// <summary>严重度评分最大值</summary>
+        public const double MaxSeverityScore = 100.0;
     }
 
     /// <summary>

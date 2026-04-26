@@ -416,13 +416,11 @@ public class HealthAnomalyDetector
     private static double CalculateSeverityScore(double rawScore, HealthType healthType)
     {
         // 根据健康类型调整严重度权重：血压和血糖异常更严重
-        const double criticalTypeWeight = 1.5;
-        const double normalTypeWeight = 1.0;
         var weight = healthType == HealthType.BloodPressure || healthType == HealthType.BloodSugar
-            ? criticalTypeWeight
-            : normalTypeWeight;
+            ? AppConstants.AnomalyEvaluation.CriticalTypeWeight
+            : AppConstants.AnomalyEvaluation.NormalTypeWeight;
 
         var score = rawScore * weight;
-        return Math.Min(Math.Max(score, 0), 100);
+        return Math.Min(Math.Max(score, 0), AppConstants.AnomalyEvaluation.MaxSeverityScore);
     }
 }
