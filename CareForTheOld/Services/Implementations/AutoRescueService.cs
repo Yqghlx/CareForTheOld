@@ -130,16 +130,6 @@ public class AutoRescueService : IAutoRescueService
 
         foreach (var record in pendingRecords)
         {
-            // 检查子女是否已读通知（查 NotificationRecord 的 IsRead）
-            var hasRead = await context.NotificationRecords
-                .AnyAsync(n => n.Type == AppConstants.NotificationTypes.AutoRescueAlert &&
-                               context.FamilyMembers
-                                   .Where(fm => fm.FamilyId == record.FamilyId && fm.Role == UserRole.Child)
-                                   .Select(fm => fm.UserId)
-                                   .Contains(n.UserId) &&
-                               n.IsRead);
-
-            // 更简洁的检查：查该救援关联的通知是否有子女已读
             var childIds = await context.FamilyMembers
                 .Where(fm => fm.FamilyId == record.FamilyId && fm.Role == UserRole.Child)
                 .Select(fm => fm.UserId)
