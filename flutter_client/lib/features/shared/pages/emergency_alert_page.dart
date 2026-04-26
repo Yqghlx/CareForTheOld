@@ -6,6 +6,8 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 import '../../shared/providers/emergency_provider.dart';
 import '../services/emergency_alert_service.dart';
+import 'package:dio/dio.dart';
+import '../../../core/extensions/api_error_extension.dart';
 
 /// 全屏紧急警报页面
 ///
@@ -210,6 +212,10 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
         // 返回到紧急页面查看详情
         Navigator.of(context).pop();
         context.showSuccessSnackBar(AppTheme.msgMarkHandled);
+      }
+    } on DioException catch (e) {
+      if (mounted) {
+        context.showErrorSnackBar(e.toDisplayMessage(fallback: AppTheme.msgOperationFailed));
       }
     } catch (e) {
       if (mounted) {

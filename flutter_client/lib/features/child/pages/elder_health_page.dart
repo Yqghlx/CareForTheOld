@@ -20,6 +20,8 @@ import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_states.dart';
 import '../../../shared/widgets/confirm_dialog.dart';
 import '../../shared/services/health_report_service.dart';
+import 'package:dio/dio.dart';
+import '../../../core/extensions/api_error_extension.dart';
 
 /// 老人健康数据 Provider（按 elderId 区分）
 final elderHealthStatsProvider =
@@ -667,6 +669,10 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         } else {
           context.showSnackBar(AppTheme.msgReminderDisabled(plan.medicineName));
         }
+      }
+    } on DioException catch (e) {
+      if (mounted) {
+        context.showErrorSnackBar(e.toDisplayMessage(fallback: AppTheme.msgOperationFailed));
       }
     } catch (e) {
       if (mounted) {

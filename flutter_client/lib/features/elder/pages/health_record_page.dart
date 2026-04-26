@@ -21,6 +21,8 @@ import '../../../core/services/ocr_parser_service.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 import '../../../core/extensions/date_format_extension.dart';
 import '../../../shared/widgets/confirm_dialog.dart';
+import 'package:dio/dio.dart';
+import '../../../core/extensions/api_error_extension.dart';
 
 /// 健康记录页面
 class HealthRecordPage extends ConsumerStatefulWidget {
@@ -436,6 +438,10 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
       ref.read(healthRecordsProvider.notifier).loadRecords();
       if (mounted) {
         context.showSnackBar(AppTheme.msgRecordDeleted);
+      }
+    } on DioException catch (e) {
+      if (mounted) {
+        context.showErrorSnackBar(e.toDisplayMessage(fallback: AppTheme.msgOperationFailed));
       }
     } catch (e) {
       if (mounted) {
