@@ -204,7 +204,7 @@ public class MedicationService : IMedicationService
 
         if (date.HasValue)
         {
-            var start = DateTime.SpecifyKind(date.Value.ToDateTime(TimeOnly.MinValue), DateTimeKind.Utc);
+            var start = ToUtcDate(date.Value);
             var end = start.AddDays(1);
             query = query.Where(l => l.ScheduledAt >= start && l.ScheduledAt < end);
         }
@@ -224,7 +224,7 @@ public class MedicationService : IMedicationService
     {
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
         // PostgreSQL timestamp with time zone 要求 DateTime.Kind 必须是 UTC
-        var start = DateTime.SpecifyKind(today.ToDateTime(TimeOnly.MinValue), DateTimeKind.Utc);
+        var start = ToUtcDate(today);
         var end = start.AddDays(1);
 
         // 获取所有激活的计划
@@ -245,7 +245,7 @@ public class MedicationService : IMedicationService
         {
             if (plan.EndDate.HasValue && plan.EndDate.Value < today) continue;
 
-            var reminderTimes = JsonSerializer.Deserialize<List<string>>(plan.ReminderTimes) ?? new();
+            var reminderTimes = DeserializeReminderTimes(plan.ReminderTimes);
             // 从批量查询结果中筛选当前计划的记录
             var existingLogs = allExistingLogs.Where(l => l.PlanId == plan.Id).ToList();
 
@@ -253,7 +253,7 @@ public class MedicationService : IMedicationService
             {
                 if (!TimeOnly.TryParse(timeStr, out var time)) continue;
 
-                var scheduledAt = DateTime.SpecifyKind(today.ToDateTime(time), DateTimeKind.Utc);
+                var scheduledAt = DateTime.SpecifyKind(today.ToDateTime(time), DateTimeKind.Utc); // TimeOnly 组合，非午夜零点
                 var existingLog = existingLogs.FirstOrDefault(l => l.ScheduledAt == scheduledAt);
 
                 if (existingLog != null)
@@ -303,6 +303,18 @@ public class MedicationService : IMedicationService
         }
     }
 
+    /// <summary>
+    /// 反序列化提醒时间 JSON
+    /// </summary>
+    private static List<string> DeserializeReminderTimes(string json)
+        => JsonSerializer.Deserialize<List<string>>(json) ?? [];
+
+    /// <summary>
+    /// 将 DateOnly 转换为 UTC DateTime（午夜零点），满足 PostgreSQL timestamp with time zone 要求
+    /// </summary>
+    private static DateTime ToUtcDate(DateOnly date)
+        => DateTime.SpecifyKind(date.ToDateTime(TimeOnly.MinValue), DateTimeKind.Utc);
+
     private static MedicationPlanResponse MapToPlanResponse(MedicationPlan plan, string? elderName)
     {
         return new MedicationPlanResponse
@@ -313,7 +325,7 @@ public class MedicationService : IMedicationService
             MedicineName = plan.MedicineName,
             Dosage = plan.Dosage,
             Frequency = plan.Frequency,
-            ReminderTimes = JsonSerializer.Deserialize<List<string>>(plan.ReminderTimes) ?? new(),
+            ReminderTimes = DeserializeReminderTimes(plan.ReminderTimes),
             StartDate = plan.StartDate,
             EndDate = plan.EndDate,
             IsActive = plan.IsActive,
@@ -332,7 +344,7 @@ public class MedicationService : IMedicationService
             MedicineName = p.MedicineName,
             Dosage = p.Dosage,
             Frequency = p.Frequency,
-            ReminderTimes = JsonSerializer.Deserialize<List<string>>(p.ReminderTimes) ?? new(),
+            ReminderTimes = DeserializeReminderTimes(p.ReminderTimes),
             StartDate = p.StartDate,
             EndDate = p.EndDate,
             IsActive = p.IsActive,

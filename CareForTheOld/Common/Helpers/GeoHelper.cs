@@ -11,6 +11,11 @@ public static class GeoHelper
     private const double EarthRadiusMeters = 6_371_000;
 
     /// <summary>
+    /// 角度转弧度因子
+    /// </summary>
+    private const double DegToRad = Math.PI / 180.0;
+
+    /// <summary>
     /// 使用 Haversine 公式计算两个经纬度坐标之间的球面距离
     /// </summary>
     /// <param name="lat1">起点纬度</param>
@@ -20,10 +25,10 @@ public static class GeoHelper
     /// <returns>两点之间的球面距离（米）</returns>
     public static double HaversineDistance(double lat1, double lon1, double lat2, double lon2)
     {
-        var dLat = (lat2 - lat1) * Math.PI / 180.0;
-        var dLon = (lon2 - lon1) * Math.PI / 180.0;
+        var dLat = (lat2 - lat1) * DegToRad;
+        var dLon = (lon2 - lon1) * DegToRad;
         var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
-                Math.Cos(lat1 * Math.PI / 180.0) * Math.Cos(lat2 * Math.PI / 180.0) *
+                Math.Cos(lat1 * DegToRad) * Math.Cos(lat2 * DegToRad) *
                 Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
         var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
         return EarthRadiusMeters * c;
@@ -39,7 +44,7 @@ public static class GeoHelper
     public static (double LatThreshold, double LngThreshold) CalculateDegreeThresholds(double radiusMeters, double latitude)
     {
         var latThreshold = radiusMeters / 111_000.0;
-        var lngThreshold = radiusMeters / (111_000.0 * Math.Cos(latitude * Math.PI / 180.0));
+        var lngThreshold = radiusMeters / (111_000.0 * Math.Cos(latitude * DegToRad));
         return (latThreshold, lngThreshold);
     }
 }

@@ -36,8 +36,8 @@ class GeoFenceService {
       final response = await _dio.get(ApiEndpoints.geoFenceByElder(elderId));
       if (response.data == null) return null;
       return GeoFence.fromJson(response.data);
-    } catch (e) {
-      if (e.toString().contains('404')) return null;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) return null;
       rethrow;
     }
   }

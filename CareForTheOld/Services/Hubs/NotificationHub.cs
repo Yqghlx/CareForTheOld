@@ -164,7 +164,7 @@ public class NotificationHub : Hub
     /// </summary>
     public async Task LeaveCircleGroup(Guid circleId)
     {
-        await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"circle_{circleId}");
+        await Groups.RemoveFromGroupAsync(Context.ConnectionId, AppConstants.SignalRGroups.CircleGroupName(circleId));
         _logger.LogDebug("用户 {UserId} 离开邻里圈组 {CircleId}", Context.UserIdentifier, circleId);
     }
 }
