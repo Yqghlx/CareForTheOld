@@ -206,7 +206,7 @@ class GradientCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 6,
+      elevation: AppTheme.cardElevationHigh,
       shape: RoundedRectangleBorder(
         borderRadius: AppTheme.radiusL,
       ),

@@ -117,6 +117,7 @@ class AppTheme {
   /// 卡片阴影
   static const double cardElevation = 4.0;
   static const double cardElevationLow = 2.0;
+  static const double cardElevationHigh = 6.0;
 
   /// 按钮圆角
   static const double buttonRadius = 12.0;
