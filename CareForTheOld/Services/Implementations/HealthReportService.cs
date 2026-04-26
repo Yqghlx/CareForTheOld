@@ -55,8 +55,8 @@ public class HealthReportService : IHealthReportService
                 // 页脚
                 page.Footer().AlignCenter().Text(x =>
                 {
-                    x.Span("关爱老人 App - 健康报告");
-                    x.Span("  |  页码: ");
+                    x.Span(HealthReportMessages.FooterTitle);
+                    x.Span(HealthReportMessages.FooterPageNumberPrefix);
                     x.CurrentPageNumber();
                 });
             });
@@ -74,16 +74,16 @@ public class HealthReportService : IHealthReportService
         {
             column.Spacing(10);
 
-            column.Item().AlignCenter().Text("健康数据报告")
+            column.Item().AlignCenter().Text(HealthReportMessages.CoverTitle)
                 .FontSize(24).Bold().FontColor("#1976D2");
 
-            column.Item().AlignCenter().Text($"用户: {user.RealName}")
+            column.Item().AlignCenter().Text($"{HealthReportMessages.CoverUserPrefix}{user.RealName}")
                 .FontSize(16);
 
-            column.Item().AlignCenter().Text($"报告范围: 最近 {daysRange} 天")
+            column.Item().AlignCenter().Text($"{HealthReportMessages.CoverRangePrefix}{daysRange}{HealthReportMessages.CoverRangeSuffix}")
                 .FontSize(14).FontColor("#666666");
 
-            column.Item().AlignCenter().Text($"生成时间: {DateTime.UtcNow:yyyy-MM-dd HH:mm}")
+            column.Item().AlignCenter().Text($"{HealthReportMessages.CoverTimePrefix}{DateTime.UtcNow:yyyy-MM-dd HH:mm}")
                 .FontSize(12).FontColor("#666666");
 
             column.Item().PaddingTop(10).LineHorizontal(1).LineColor("#CCCCCC");
@@ -126,7 +126,7 @@ public class HealthReportService : IHealthReportService
         {
             column.Spacing(5);
 
-            column.Item().Text("数据摘要")
+            column.Item().Text(HealthReportMessages.SummaryTitle)
                 .FontSize(18).Bold().FontColor("#1565C0");
 
             column.Item().PaddingTop(5).LineHorizontal(0.5f).LineColor("#CCCCCC");
@@ -146,11 +146,11 @@ public class HealthReportService : IHealthReportService
                 // 表头
                 table.Header(header =>
                 {
-                    header.Cell().Background("#E0E0E0").Padding(5).Text("类型").Bold();
-                    header.Cell().Background("#E0E0E0").Padding(5).Text("记录数").Bold();
-                    header.Cell().Background("#E0E0E0").Padding(5).Text("平均值").Bold();
-                    header.Cell().Background("#E0E0E0").Padding(5).Text("最高值").Bold();
-                    header.Cell().Background("#E0E0E0").Padding(5).Text("最低值").Bold();
+                    header.Cell().Background("#E0E0E0").Padding(5).Text(HealthReportMessages.ColumnType).Bold();
+                    header.Cell().Background("#E0E0E0").Padding(5).Text(HealthReportMessages.ColumnRecordCount).Bold();
+                    header.Cell().Background("#E0E0E0").Padding(5).Text(HealthReportMessages.ColumnAverage).Bold();
+                    header.Cell().Background("#E0E0E0").Padding(5).Text(HealthReportMessages.ColumnMaximum).Bold();
+                    header.Cell().Background("#E0E0E0").Padding(5).Text(HealthReportMessages.ColumnMinimum).Bold();
                 });
 
                 // 各类型数据行
@@ -184,7 +184,7 @@ public class HealthReportService : IHealthReportService
         {
             column.Spacing(5);
 
-            column.Item().PaddingTop(10).Text($"{GetTypeLabel(type)}详细记录")
+            column.Item().PaddingTop(10).Text($"{GetTypeLabel(type)}{HealthReportMessages.DetailRecordsSuffix}")
                 .FontSize(16).Bold().FontColor(typeColor);
 
             column.Item().LineHorizontal(0.5f).LineColor("#CCCCCC");
@@ -202,9 +202,9 @@ public class HealthReportService : IHealthReportService
                 // 表头
                 table.Header(header =>
                 {
-                    header.Cell().Background("#E0E0E0").Padding(5).Text("时间").Bold();
-                    header.Cell().Background("#E0E0E0").Padding(5).Text("数值").Bold();
-                    header.Cell().Background("#E0E0E0").Padding(5).Text("备注").Bold();
+                    header.Cell().Background("#E0E0E0").Padding(5).Text(HealthReportMessages.ColumnTime).Bold();
+                    header.Cell().Background("#E0E0E0").Padding(5).Text(HealthReportMessages.ColumnValue).Bold();
+                    header.Cell().Background("#E0E0E0").Padding(5).Text(HealthReportMessages.ColumnNote).Bold();
                 });
 
                 // 记录行（最多显示最近20条）
@@ -225,7 +225,7 @@ public class HealthReportService : IHealthReportService
 
             if (records.Count > AppConstants.HealthReport.MaxPdfRecords)
             {
-                column.Item().PaddingTop(5).AlignCenter().Text($"... 共 {records.Count} 条记录，仅显示最近 20 条")
+                column.Item().PaddingTop(5).AlignCenter().Text(string.Format(HealthReportMessages.RecordsTruncatedTemplate, records.Count, AppConstants.HealthReport.MaxPdfRecords))
                     .FontSize(10).FontColor("#666666");
             }
         });
@@ -242,7 +242,7 @@ public class HealthReportService : IHealthReportService
         {
             column.Spacing(5);
 
-            column.Item().PaddingTop(15).Text("健康建议")
+            column.Item().PaddingTop(15).Text(HealthReportMessages.SuggestionsTitle)
                 .FontSize(18).Bold().FontColor("#2E7D32");
 
             column.Item().LineHorizontal(0.5f).LineColor("#CCCCCC");
@@ -257,7 +257,7 @@ public class HealthReportService : IHealthReportService
                 });
             }
 
-            column.Item().PaddingTop(10).AlignCenter().Text("以上建议仅供参考，如有异常请及时就医。")
+            column.Item().PaddingTop(10).AlignCenter().Text(HealthReportMessages.Disclaimer)
                 .FontSize(10).FontColor("#666666");
         });
     }
@@ -362,11 +362,11 @@ public class HealthReportService : IHealthReportService
         {
             var avgSystolic = bpRecords.Average(r => r.Systolic ?? 0);
             if (avgSystolic > AppConstants.HealthThresholds.BloodPressureSystolicMax)
-                suggestions.Add("血压偏高，建议减少盐分摄入，保持规律作息，必要时就医检查。");
+                suggestions.Add(HealthReportMessages.Suggestions.BloodPressureHigh);
             else if (avgSystolic < AppConstants.HealthThresholds.BloodPressureSystolicMin)
-                suggestions.Add("血压偏低，建议适当增加营养，避免突然站立，必要时就医检查。");
+                suggestions.Add(HealthReportMessages.Suggestions.BloodPressureLow);
             else
-                suggestions.Add("血压在正常范围内，请继续保持良好的生活习惯。");
+                suggestions.Add(HealthReportMessages.Suggestions.BloodPressureNormal);
         }
 
         // 血糖建议
@@ -375,11 +375,11 @@ public class HealthReportService : IHealthReportService
         {
             var avgBs = bsRecords.Average(r => r.BloodSugar ?? 0m);
             if (avgBs > AppConstants.HealthThresholds.BloodSugarMax)
-                suggestions.Add("血糖偏高，建议控制饮食，减少糖分摄入，必要时就医检查。");
+                suggestions.Add(HealthReportMessages.Suggestions.BloodSugarHigh);
             else if (avgBs < AppConstants.HealthThresholds.BloodSugarMin)
-                suggestions.Add("血糖偏低，建议随身携带糖果，定时进餐，必要时就医检查。");
+                suggestions.Add(HealthReportMessages.Suggestions.BloodSugarLow);
             else
-                suggestions.Add("血糖在正常范围内，请继续保持健康的饮食习惯。");
+                suggestions.Add(HealthReportMessages.Suggestions.BloodSugarNormal);
         }
 
         // 心率建议
@@ -388,11 +388,11 @@ public class HealthReportService : IHealthReportService
         {
             var avgHr = hrRecords.Average(r => r.HeartRate ?? 0);
             if (avgHr > AppConstants.HealthThresholds.HeartRateMax)
-                suggestions.Add("心率偏快，建议保持心情平和，适当运动，必要时就医检查。");
+                suggestions.Add(HealthReportMessages.Suggestions.HeartRateHigh);
             else if (avgHr < AppConstants.HealthThresholds.HeartRateMin)
-                suggestions.Add("心率偏慢，如感到不适请及时就医检查。");
+                suggestions.Add(HealthReportMessages.Suggestions.HeartRateLow);
             else
-                suggestions.Add("心率在正常范围内，请继续保持适度运动。");
+                suggestions.Add(HealthReportMessages.Suggestions.HeartRateNormal);
         }
 
         // 体温建议
@@ -401,15 +401,15 @@ public class HealthReportService : IHealthReportService
         {
             var avgTemp = tempRecords.Average(r => r.Temperature ?? 0m);
             if (avgTemp > AppConstants.HealthThresholds.TemperatureMax)
-                suggestions.Add("体温偏高，建议注意休息，多喝水，如持续发热请就医。");
+                suggestions.Add(HealthReportMessages.Suggestions.TemperatureHigh);
             else if (avgTemp < AppConstants.HealthThresholds.TemperatureMin)
-                suggestions.Add("体温偏低，建议注意保暖，适当增加衣物。");
+                suggestions.Add(HealthReportMessages.Suggestions.TemperatureLow);
             else
-                suggestions.Add("体温正常，请继续保持良好的生活习惯。");
+                suggestions.Add(HealthReportMessages.Suggestions.TemperatureNormal);
         }
 
         if (suggestions.Count == 0)
-            suggestions.Add("暂无足够数据生成建议，请继续记录健康数据。");
+            suggestions.Add(HealthReportMessages.Suggestions.NoData);
 
         return suggestions;
     }
