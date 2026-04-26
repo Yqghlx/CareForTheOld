@@ -176,7 +176,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
                       children: [
                         Text(
                           notification.formattedTime,
-                          style: TextStyle(fontSize: 12, color: AppTheme.grey600),
+                          style: AppTheme.textCaptionDark,
                         ),
                         // 展开/收起提示
                         if (notification.content.length > 60)

@@ -315,7 +315,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                   ),
                   Text(
                     call.relativeTime,
-                    style: TextStyle(fontSize: 12, color: AppTheme.grey600),
+                    style: AppTheme.textCaptionDark,
                   ),
                 ],
               ),
@@ -330,7 +330,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                 if (call.respondedByRealName != null)
                   Text(
                     '处理人: ${call.respondedByRealName}',
-                    style: TextStyle(fontSize: 12, color: AppTheme.grey600),
+                    style: AppTheme.textCaptionDark,
                   ),
                 if (call.respondedAt != null)
                   Text(

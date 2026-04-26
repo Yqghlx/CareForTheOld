@@ -545,7 +545,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
                       const SizedBox(height: 4),
                       Text(
                         '计划时间: $timeStr',
-                        style: TextStyle(fontSize: 16, color: AppTheme.grey600),
+                        style: AppTheme.textSecondary16,
                       ),
                     ],
                   ),
