@@ -75,7 +75,7 @@ class _ElderLocationMapState extends State<ElderLocationMap> {
             children: [
               Icon(Icons.map_outlined, size: 48, color: AppTheme.grey400),
               const SizedBox(height: 12),
-              const Text('暂无位置数据', style: TextStyle(color: AppTheme.grey500)),
+              const Text('暂无位置数据', style: AppTheme.textGreyLight),
             ],
           ),
         ),

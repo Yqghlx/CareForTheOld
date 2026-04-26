@@ -136,7 +136,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                 borderRadius: AppTheme.radiusL,
               ),
               child: const Center(
-                child: Text('暂无呼叫记录', style: TextStyle(color: AppTheme.grey600)),
+                child: Text('暂无呼叫记录', style: AppTheme.textGrey),
               ),
             )
           else
@@ -208,7 +208,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
             // 位置和电量信息
             if (call.hasLocation || call.batteryLevel != null)
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: AppTheme.paddingH12V8,
                 decoration: BoxDecoration(
                   color: AppTheme.grey100,
                   borderRadius: AppTheme.radius10,

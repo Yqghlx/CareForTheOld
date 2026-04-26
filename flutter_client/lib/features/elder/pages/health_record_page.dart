@@ -119,11 +119,11 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                     borderRadius: AppTheme.radiusS,
                   ),
                   child: const Center(
-                    child: Text('加载统计中...', style: TextStyle(color: AppTheme.grey600)),
+                    child: Text('加载统计中...', style: AppTheme.textGrey),
                   ),
                 ),
                 error: (_, __) => const Center(
-                    child: Text('统计加载失败', style: TextStyle(color: AppTheme.grey600)),
+                    child: Text('统计加载失败', style: AppTheme.textGrey),
                   ),
               ),
               const SizedBox(height: 16),
@@ -386,7 +386,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       if (abnormal) ...[
                         const SizedBox(width: 8),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          padding: AppTheme.paddingH8V2,
                           decoration: BoxDecoration(
                             color: AppTheme.warningColor.withValues(alpha: 0.15),
                             borderRadius: AppTheme.radius6,
@@ -518,7 +518,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                   children: [
                     // 正常范围提示
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      padding: AppTheme.paddingH12V8,
                       decoration: BoxDecoration(
                         color: type.color.withValues(alpha: 0.08),
                         borderRadius: AppTheme.radiusXS,

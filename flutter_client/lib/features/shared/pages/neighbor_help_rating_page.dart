@@ -60,7 +60,7 @@ class _NeighborHelpRatingPageState
             Center(
               child: Text(
                 _ratingLabel,
-                style: TextStyle(color: AppTheme.grey600),
+                style: AppTheme.textGrey,
               ),
             ),
             const SizedBox(height: 24),

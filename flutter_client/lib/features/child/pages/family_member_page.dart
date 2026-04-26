@@ -93,7 +93,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                 style: AppTheme.textTitle),
             const SizedBox(width: 8),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              padding: AppTheme.paddingH8V2,
               decoration: BoxDecoration(
                 color: AppTheme.grey100,
                 borderRadius: AppTheme.radius10,
@@ -444,7 +444,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
             const SizedBox(height: 16),
             const Text('您还没有创建家庭组', style: AppTheme.textTitle),
             const SizedBox(height: 8),
-            const Text('创建家庭组后，可以邀请家人加入', style: TextStyle(color: AppTheme.grey600)),
+            const Text('创建家庭组后，可以邀请家人加入', style: AppTheme.textGrey),
             const SizedBox(height: 20),
             PrimaryButton(
               text: '创建家庭组',
@@ -476,7 +476,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
             const SizedBox(height: 16),
             const Text('您还未加入家庭组', style: AppTheme.textTitle),
             const SizedBox(height: 8),
-            const Text('请让子女分享邀请码给您', style: TextStyle(color: AppTheme.grey600)),
+            const Text('请让子女分享邀请码给您', style: AppTheme.textGrey),
             const SizedBox(height: 20),
             PrimaryButton(
               text: '输入邀请码加入',
@@ -567,7 +567,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                   Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        padding: AppTheme.paddingH8V2,
                         decoration: BoxDecoration(
                           color: (member.role.isElder ? AppTheme.warningColor : AppTheme.infoBlue).withValues(alpha: 0.1),
                           borderRadius: AppTheme.radius6,
