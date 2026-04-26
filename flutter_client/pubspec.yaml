@@ -113,4 +113,5 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/
+    # 图标资源按需添加到此目录
+    # - assets/images/
