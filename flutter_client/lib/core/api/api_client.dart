@@ -101,11 +101,11 @@ class ApiClient {
 
         // 通用 HTTP 错误码提示（不影响调用方的错误处理逻辑）
         if (statusCode == 403) {
-          showGlobalSnackBar('权限不足，无法执行此操作');
+          showGlobalSnackBar(AppTheme.msgForbidden);
         } else if (statusCode == 404) {
-          showGlobalSnackBar('请求的资源不存在');
+          showGlobalSnackBar(AppTheme.msgNotFound);
         } else if (statusCode != null && statusCode >= 500) {
-          showGlobalSnackBar('服务器繁忙，请稍后重试');
+          showGlobalSnackBar(AppTheme.msgServerError);
         }
 
         // 上报服务端错误到 Sentry（4xx/5xx）
@@ -266,7 +266,7 @@ final apiClientProvider = Provider<ApiClient>((ref) {
           );
     },
     onUnauthorized: () {
-      showGlobalSnackBar('登录已过期，请重新登录');
+      showGlobalSnackBar(AppTheme.msgSessionExpired);
       ref.read(authProvider.notifier).logout();
     },
   );

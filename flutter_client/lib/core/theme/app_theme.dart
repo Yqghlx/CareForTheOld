@@ -129,6 +129,12 @@ class AppTheme {
   static const String msgSaveSuccess = '保存成功';
   static const String msgDeleteSuccess = '删除成功';
 
+  // API 错误消息
+  static const String msgForbidden = '权限不足，无法执行此操作';
+  static const String msgNotFound = '请求的资源不存在';
+  static const String msgServerError = '服务器繁忙，请稍后重试';
+  static const String msgSessionExpired = '登录已过期，请重新登录';
+
   // 用药相关消息
   static const String msgMedicationTaken = '已标记为已服用';
   static const String msgMedicationSkipped = '已跳过本次用药';
