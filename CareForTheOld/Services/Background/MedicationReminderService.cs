@@ -311,7 +311,7 @@ public class MedicationReminderService : BackgroundService
                 await sendAction();
                 return; // 发送成功，直接返回
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is TimeoutException or HttpRequestException or TaskCanceledException)
             {
                 _logger.LogWarning(ex, "通知发送失败（第 {Attempt}/{MaxRetries} 次）: {Description}",
                     attempt, maxRetries, description);
@@ -325,6 +325,12 @@ public class MedicationReminderService : BackgroundService
                     _logger.LogError(ex, "通知发送最终失败（已重试 {MaxRetries} 次）: {Description}",
                         maxRetries, description);
                 }
+            }
+            catch (Exception ex)
+            {
+                // 非临时性错误（参数异常、权限异常等）不重试，直接记录
+                _logger.LogError(ex, "通知发送失败（不可重试）: {Description}", description);
+                return;
             }
         }
     }
