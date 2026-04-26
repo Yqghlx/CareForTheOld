@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Models.DTOs.Responses;
 
 namespace CareForTheOld.Services.Interfaces;
@@ -25,7 +26,7 @@ public interface INotificationService
     /// <summary>
     /// 获取用户通知列表
     /// </summary>
-    Task<List<NotificationResponse>> GetUserNotificationsAsync(Guid userId, int limit = 50);
+    Task<List<NotificationResponse>> GetUserNotificationsAsync(Guid userId, int limit = AppConstants.Pagination.DefaultPageSize);
 
     /// <summary>
     /// 获取未读通知数量

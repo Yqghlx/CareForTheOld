@@ -123,7 +123,7 @@ public class NotificationService : INotificationService
     /// <summary>
     /// 获取用户通知列表（分页）
     /// </summary>
-    public async Task<List<NotificationResponse>> GetUserNotificationsAsync(Guid userId, int limit = 50)
+    public async Task<List<NotificationResponse>> GetUserNotificationsAsync(Guid userId, int limit = AppConstants.Pagination.DefaultPageSize)
     {
         limit = Math.Clamp(limit, 1, 100);
         return await _context.NotificationRecords
