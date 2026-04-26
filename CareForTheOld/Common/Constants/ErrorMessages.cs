@@ -543,3 +543,49 @@ public static class NotificationMessages
         public const string SmsReminderContentTemplate = "【紧急提醒】{0}的紧急呼叫已超过3分钟未响应，请尽快处理！";
     }
 }
+
+/// <summary>
+/// 健康预警消息常量
+/// 集中管理 HealthAlertService 中的预警消息，确保表述一致
+/// </summary>
+public static class HealthAlertMessages
+{
+    /// <summary>血压预警</summary>
+    public static class BloodPressure
+    {
+        public const string CriticalHigh = "血压严重偏高，建议立即就医！";
+        public const string ModerateHigh = "血压偏高（中度高血压），建议尽快就医检查。";
+        public const string MildHigh = "血压偏高，建议注意休息并监测。";
+        public const string CriticalLow = "血压严重偏低，建议立即就医！";
+        public const string MildLow = "血压偏低，建议注意营养补充。";
+    }
+
+    /// <summary>血糖预警</summary>
+    public static class BloodSugar
+    {
+        public const string CriticalHigh = "血糖严重偏高（可能为糖尿病），建议立即就医！";
+        public const string ModerateHigh = "血糖偏高，建议尽快就医检查。";
+        public const string MildHigh = "血糖偏高，建议注意饮食控制。";
+        public const string CriticalLow = "血糖严重偏低（低血糖危险），建议立即补充糖分！";
+        public const string MildLow = "血糖偏低，建议适当补充糖分。";
+    }
+
+    /// <summary>心率预警</summary>
+    public static class HeartRate
+    {
+        public const string CriticalHigh = "心率过快，建议立即就医检查！";
+        public const string MildHigh = "心率偏快，建议注意休息放松。";
+        public const string CriticalLow = "心率过慢，建议立即就医检查！";
+        public const string MildLow = "心率偏慢，建议关注身体状况。";
+    }
+
+    /// <summary>体温预警</summary>
+    public static class Temperature
+    {
+        public const string CriticalHigh = "高烧，建议立即就医！";
+        public const string ModerateHigh = "发烧，建议及时就医检查。";
+        public const string MildHigh = "低烧，建议注意休息观察。";
+        public const string CriticalLow = "体温过低，建议立即就医！";
+        public const string MildLow = "体温偏低，建议注意保暖。";
+    }
+}

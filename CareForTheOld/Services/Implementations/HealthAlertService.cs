@@ -99,11 +99,11 @@ public class HealthAlertService : IHealthAlertService
         {
             if (systolic >= AppConstants.HealthThresholds.BloodPressureCriticalHighSystolic ||
                 diastolic >= AppConstants.HealthThresholds.BloodPressureCriticalHighDiastolic)
-                return "血压严重偏高，建议立即就医！";
+                return HealthAlertMessages.BloodPressure.CriticalHigh;
             if (systolic >= AppConstants.HealthThresholds.BloodPressureModerateHighSystolic ||
                 diastolic >= AppConstants.HealthThresholds.BloodPressureModerateHighDiastolic)
-                return "血压偏高（中度高血压），建议尽快就医检查。";
-            return "血压偏高，建议注意休息并监测。";
+                return HealthAlertMessages.BloodPressure.ModerateHigh;
+            return HealthAlertMessages.BloodPressure.MildHigh;
         }
 
         // 低血压判断
@@ -112,8 +112,8 @@ public class HealthAlertService : IHealthAlertService
         {
             if (systolic < AppConstants.HealthThresholds.BloodPressureCriticalLowSystolic ||
                 diastolic < AppConstants.HealthThresholds.BloodPressureCriticalLowDiastolic)
-                return "血压严重偏低，建议立即就医！";
-            return "血压偏低，建议注意营养补充。";
+                return HealthAlertMessages.BloodPressure.CriticalLow;
+            return HealthAlertMessages.BloodPressure.MildLow;
         }
 
         return null;
@@ -132,18 +132,18 @@ public class HealthAlertService : IHealthAlertService
         if (bloodSugar > AppConstants.HealthThresholds.BloodSugarMax)
         {
             if (bloodSugar >= AppConstants.HealthThresholds.BloodSugarCriticalHigh)
-                return "血糖严重偏高（可能为糖尿病），建议立即就医！";
+                return HealthAlertMessages.BloodSugar.CriticalHigh;
             if (bloodSugar >= AppConstants.HealthThresholds.BloodSugarModerateHigh)
-                return "血糖偏高，建议尽快就医检查。";
-            return "血糖偏高，建议注意饮食控制。";
+                return HealthAlertMessages.BloodSugar.ModerateHigh;
+            return HealthAlertMessages.BloodSugar.MildHigh;
         }
 
         // 低血糖判断
         if (bloodSugar < AppConstants.HealthThresholds.BloodSugarMin)
         {
             if (bloodSugar < AppConstants.HealthThresholds.BloodSugarCriticalLow)
-                return "血糖严重偏低（低血糖危险），建议立即补充糖分！";
-            return "血糖偏低，建议适当补充糖分。";
+                return HealthAlertMessages.BloodSugar.CriticalLow;
+            return HealthAlertMessages.BloodSugar.MildLow;
         }
 
         return null;
@@ -162,16 +162,16 @@ public class HealthAlertService : IHealthAlertService
         if (heartRate > AppConstants.HealthThresholds.HeartRateMax)
         {
             if (heartRate >= AppConstants.HealthThresholds.HeartRateCriticalHigh)
-                return "心率过快，建议立即就医检查！";
-            return "心率偏快，建议注意休息放松。";
+                return HealthAlertMessages.HeartRate.CriticalHigh;
+            return HealthAlertMessages.HeartRate.MildHigh;
         }
 
         // 心率过慢
         if (heartRate < AppConstants.HealthThresholds.HeartRateMin)
         {
             if (heartRate < AppConstants.HealthThresholds.HeartRateCriticalLow)
-                return "心率过慢，建议立即就医检查！";
-            return "心率偏慢，建议关注身体状况。";
+                return HealthAlertMessages.HeartRate.CriticalLow;
+            return HealthAlertMessages.HeartRate.MildLow;
         }
 
         return null;
@@ -190,18 +190,18 @@ public class HealthAlertService : IHealthAlertService
         if (temperature > AppConstants.HealthThresholds.TemperatureMax)
         {
             if (temperature >= AppConstants.HealthThresholds.TemperatureCriticalHigh)
-                return "高烧，建议立即就医！";
+                return HealthAlertMessages.Temperature.CriticalHigh;
             if (temperature >= AppConstants.HealthThresholds.TemperatureModerateHigh)
-                return "发烧，建议及时就医检查。";
-            return "低烧，建议注意休息观察。";
+                return HealthAlertMessages.Temperature.ModerateHigh;
+            return HealthAlertMessages.Temperature.MildHigh;
         }
 
         // 体温过低判断
         if (temperature < AppConstants.HealthThresholds.TemperatureMin)
         {
             if (temperature < AppConstants.HealthThresholds.TemperatureCriticalLow)
-                return "体温过低，建议立即就医！";
-            return "体温偏低，建议注意保暖。";
+                return HealthAlertMessages.Temperature.CriticalLow;
+            return HealthAlertMessages.Temperature.MildLow;
         }
 
         return null;
