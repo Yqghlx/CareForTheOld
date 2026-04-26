@@ -173,7 +173,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                         labelText: '手机号',
                         prefixIcon: Icon(Icons.phone, color: AppTheme.primaryColor),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        contentPadding: AppTheme.paddingAll16,
                       ),
                       keyboardType: TextInputType.phone,
                       style: AppTheme.textBody18,
@@ -201,7 +201,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                         labelText: '密码',
                         prefixIcon: const Icon(Icons.lock, color: AppTheme.primaryColor),
                         border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        contentPadding: AppTheme.paddingAll16,
                         suffixIcon: IconButton(
                           icon: Icon(
                             _obscurePassword ? Icons.visibility_off : Icons.visibility,
@@ -228,7 +228,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                     Container(
                       width: double.infinity,
                       padding: AppTheme.paddingH16V12,
-                      margin: const EdgeInsets.only(bottom: 16),
+                      margin: AppTheme.marginBottom16,
                       decoration: BoxDecoration(
                         color: AppTheme.errorColor.withValues(alpha: 0.1),
                         borderRadius: AppTheme.radiusXS,

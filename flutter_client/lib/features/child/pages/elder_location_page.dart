@@ -134,7 +134,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
     final radius = fence.radius as int;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: AppTheme.marginBottom16,
       padding: AppTheme.paddingAll16,
       decoration: BoxDecoration(
         gradient: LinearGradient(

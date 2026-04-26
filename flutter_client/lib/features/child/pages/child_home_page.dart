@@ -694,7 +694,7 @@ class _EmergencyPulseBannerState extends State<_EmergencyPulseBanner>
       builder: (context, child) {
         final alpha = 0.3 + _animation.value * 0.4;
         return Container(
-          margin: const EdgeInsets.only(bottom: 16),
+          margin: AppTheme.marginBottom16,
           decoration: BoxDecoration(
             gradient: const LinearGradient(
               colors: [AppTheme.errorColor, AppTheme.errorAccent],

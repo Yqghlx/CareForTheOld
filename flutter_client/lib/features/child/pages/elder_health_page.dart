@@ -470,7 +470,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 ),
                 // 操作按钮行
                 Padding(
-                  padding: const EdgeInsets.only(top: 12),
+                  padding: AppTheme.marginTop12,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -497,7 +497,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 ),
                 if (!plan.isActive)
                   Padding(
-                    padding: const EdgeInsets.only(top: 12),
+                    padding: AppTheme.marginTop12,
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: TextButton.icon(
@@ -800,7 +800,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
             borderRadius: AppTheme.radiusM,
           ),
           child: Padding(
-            padding: const EdgeInsets.all(14),
+            padding: AppTheme.paddingAll14,
             child: Row(
               children: [
                 // 状态图标
@@ -1154,7 +1154,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               // 正向激励反馈（数据平稳时展示）
               if (anomaly.positiveFeedback != null) ...[
                 Container(
-                  padding: const EdgeInsets.all(14),
+                  padding: AppTheme.paddingAll14,
                   decoration: BoxDecoration(
                     color: AppTheme.successColor.withValues(alpha: 0.06),
                     borderRadius: AppTheme.radiusS,

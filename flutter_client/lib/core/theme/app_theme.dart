@@ -163,6 +163,8 @@ class AppTheme {
   static const EdgeInsets marginBottom12 = EdgeInsets.only(bottom: 12);
   static const EdgeInsets marginTop8 = EdgeInsets.only(top: 8);
   static const EdgeInsets marginTop12 = EdgeInsets.only(top: 12);
+  static const EdgeInsets paddingAll14 = EdgeInsets.all(14);
+  static const EdgeInsets marginBottom16 = EdgeInsets.only(bottom: 16);
 
   /// 统一用户消息常量
   static const String msgLoadFailed = '加载失败，请重试';
