@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.GeoFences;
@@ -107,7 +108,7 @@ public class GeoFenceService : IGeoFenceService
             .AsTracking()
             .Include(f => f.Elder)
             .FirstOrDefaultAsync(f => f.Id == fenceId)
-            ?? throw new KeyNotFoundException("围栏不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.GeoFence.NotFound);
 
         // 验证操作者是否是创建者或家庭成员
         var isFamilyMember = await IsInSameFamilyAsync(operatorId, fence.ElderId);
@@ -135,7 +136,7 @@ public class GeoFenceService : IGeoFenceService
         var fence = await _context.GeoFences
             .AsTracking()
             .FirstOrDefaultAsync(f => f.Id == fenceId)
-            ?? throw new KeyNotFoundException("围栏不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.GeoFence.NotFound);
 
         // 验证操作者是否是创建者或家庭成员
         var isFamilyMember = await IsInSameFamilyAsync(operatorId, fence.ElderId);

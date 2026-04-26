@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.Families;
 using CareForTheOld.Models.DTOs.Responses;
@@ -14,8 +15,8 @@ public class FamilyService : IFamilyService
     private readonly AppDbContext _context;
     private readonly INotificationService _notificationService;
 
-    /// <summary>邀请码有效期（7天）</summary>
-    private static readonly TimeSpan _inviteCodeExpiration = TimeSpan.FromDays(7);
+    /// <summary>邀请码有效期</summary>
+    private static readonly TimeSpan _inviteCodeExpiration = TimeSpan.FromDays(AppConstants.InviteCode.ExpirationDays);
 
     public FamilyService(AppDbContext context, INotificationService notificationService)
     {
@@ -49,13 +50,13 @@ public class FamilyService : IFamilyService
     {
         // 验证创建者角色：只有子女才能创建家庭组
         var creator = await _context.Users.FindAsync(creatorId)
-            ?? throw new KeyNotFoundException("用户不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
         if (creator.Role != UserRole.Child)
             throw new UnauthorizedAccessException("只有子女才能创建家庭组");
 
         // 检查用户是否已加入其他家庭
         if (await _context.FamilyMembers.AnyAsync(fm => fm.UserId == creatorId))
-            throw new ArgumentException("您已加入家庭组，不能重复创建");
+            throw new ArgumentException(ErrorMessages.Family.AlreadyInFamily);
 
         var family = new Family
         {
@@ -85,7 +86,7 @@ public class FamilyService : IFamilyService
         }
         catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
         {
-            throw new ArgumentException("您已加入家庭组，不能重复创建");
+            throw new ArgumentException(ErrorMessages.Family.AlreadyInFamily);
         }
 
         return await GetFamilyResponse(family.Id);
@@ -132,15 +133,15 @@ public class FamilyService : IFamilyService
     {
         // 检查用户是否已在某个家庭中（含待审批记录）
         if (await _context.FamilyMembers.AnyAsync(fm => fm.UserId == userId))
-            throw new ArgumentException("您已提交加入申请或已加入家庭组，不能重复申请");
+            throw new ArgumentException(ErrorMessages.Family.AlreadyAppliedOrJoined);
 
         var user = await _context.Users.FindAsync(userId)
-            ?? throw new KeyNotFoundException("用户不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
         // 根据邀请码查找家庭
         var family = await _context.Families
             .FirstOrDefaultAsync(f => f.InviteCode == request.InviteCode)
-            ?? throw new KeyNotFoundException("邀请码无效，请检查后重试");
+            ?? throw new KeyNotFoundException(ErrorMessages.Family.InvalidInviteCode);
 
         // 验证邀请码是否过期
         if (family.InviteCodeExpiresAt.HasValue && family.InviteCodeExpiresAt.Value < DateTime.UtcNow)
@@ -165,7 +166,7 @@ public class FamilyService : IFamilyService
         }
         catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
         {
-            throw new ArgumentException("您已提交加入申请或已加入家庭组，不能重复申请");
+            throw new ArgumentException(ErrorMessages.Family.AlreadyAppliedOrJoined);
         }
 
         // 通知家庭中所有子女角色成员审批

@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.Users;
 using CareForTheOld.Models.DTOs.Responses;
@@ -13,28 +14,28 @@ public class UserService : IUserService
     public UserService(AppDbContext context) => _context = context;
 
     public async Task<UserResponse> GetCurrentUserAsync(Guid userId)
-        => await MapToResponse(userId) ?? throw new KeyNotFoundException("用户不存在");
+        => await MapToResponse(userId) ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
     public async Task<UserResponse> GetUserByIdAsync(Guid userId)
-        => await MapToResponse(userId) ?? throw new KeyNotFoundException("用户不存在");
+        => await MapToResponse(userId) ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
     public async Task<UserResponse> UpdateUserAsync(Guid userId, UpdateUserRequest request)
     {
         var user = await _context.Users.AsTracking().FirstOrDefaultAsync(u => u.Id == userId)
-            ?? throw new KeyNotFoundException("用户不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
         if (request.RealName is not null) user.RealName = request.RealName;
         if (request.AvatarUrl is not null) user.AvatarUrl = request.AvatarUrl;
         user.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
-        return await MapToResponse(userId) ?? throw new KeyNotFoundException("用户不存在");
+        return await MapToResponse(userId) ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
     }
 
     public async Task<bool> ChangePasswordAsync(Guid userId, ChangePasswordRequest request)
     {
         var user = await _context.Users.AsTracking().FirstOrDefaultAsync(u => u.Id == userId)
-            ?? throw new KeyNotFoundException("用户不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
         // 验证旧密码
         if (!BCrypt.Net.BCrypt.Verify(request.OldPassword, user.PasswordHash))
@@ -56,7 +57,7 @@ public class UserService : IUserService
     public async Task UpdateAvatarUrlAsync(Guid userId, string avatarUrl)
     {
         var user = await _context.Users.AsTracking().FirstOrDefaultAsync(u => u.Id == userId)
-            ?? throw new KeyNotFoundException("用户不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
         user.AvatarUrl = avatarUrl;
         user.UpdatedAt = DateTime.UtcNow;

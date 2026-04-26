@@ -1,3 +1,5 @@
+using CareForTheOld.Common.Constants;
+
 namespace CareForTheOld.Models.Entities;
 
 /// <summary>
@@ -25,7 +27,7 @@ public class GeoFence
     /// <summary>
     /// 围栏半径（米），默认500米
     /// </summary>
-    public int Radius { get; set; } = 500;
+    public int Radius { get; set; } = AppConstants.GeoFence.DefaultRadiusMeters;
 
     /// <summary>
     /// 是否启用

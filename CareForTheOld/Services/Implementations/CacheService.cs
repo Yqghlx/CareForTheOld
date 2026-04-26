@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Text.Json;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.Extensions.Caching.Distributed;
 using StackExchange.Redis;
@@ -80,7 +81,7 @@ public class CacheService : ICacheService
         if (expiration.HasValue)
             options.AbsoluteExpirationRelativeToNow = expiration;
         else
-            options.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
+            options.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(AppConstants.Cache.DefaultExpirationMinutes);
         await _cache.SetAsync(key, bytes, options);
     }
 

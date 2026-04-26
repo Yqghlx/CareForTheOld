@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.Neighbor;
@@ -17,8 +18,8 @@ public class NeighborCircleService : INeighborCircleService
 {
     private readonly AppDbContext _context;
 
-    /// <summary>邀请码有效期（7天）</summary>
-    private static readonly TimeSpan _inviteCodeExpiration = TimeSpan.FromDays(7);
+    /// <summary>邀请码有效期</summary>
+    private static readonly TimeSpan _inviteCodeExpiration = TimeSpan.FromDays(AppConstants.InviteCode.ExpirationDays);
 
     public NeighborCircleService(AppDbContext context) => _context = context;
 
@@ -27,10 +28,10 @@ public class NeighborCircleService : INeighborCircleService
     {
         // 一个用户同一时间只能加入一个邻里圈
         if (await _context.NeighborCircleMembers.AnyAsync(m => m.UserId == creatorId))
-            throw new ArgumentException("您已加入邻里圈，不能重复创建");
+            throw new ArgumentException(ErrorMessages.NeighborCircle.AlreadyInCircleCreate);
 
         var creator = await _context.Users.FindAsync(creatorId)
-            ?? throw new KeyNotFoundException("用户不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
         var circle = new NeighborCircle
         {
@@ -65,7 +66,7 @@ public class NeighborCircleService : INeighborCircleService
         }
         catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
         {
-            throw new ArgumentException("您已加入邻里圈，不能重复创建");
+            throw new ArgumentException(ErrorMessages.NeighborCircle.AlreadyInCircleCreate);
         }
 
         return await BuildCircleResponse(circle.Id);
@@ -94,15 +95,15 @@ public class NeighborCircleService : INeighborCircleService
     {
         // 检查用户是否已在某个圈子中
         if (await _context.NeighborCircleMembers.AnyAsync(m => m.UserId == userId))
-            throw new ArgumentException("您已加入邻里圈，不能重复加入");
+            throw new ArgumentException(ErrorMessages.NeighborCircle.AlreadyInCircleJoin);
 
         var user = await _context.Users.FindAsync(userId)
-            ?? throw new KeyNotFoundException("用户不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
         // 根据邀请码查找活跃的圈子
         var circle = await _context.NeighborCircles
             .FirstOrDefaultAsync(c => c.InviteCode == request.InviteCode && c.IsActive)
-            ?? throw new KeyNotFoundException("邀请码无效，请检查后重试");
+            ?? throw new KeyNotFoundException(ErrorMessages.NeighborCircle.InvalidInviteCode);
 
         // 验证邀请码是否过期
         if (circle.InviteCodeExpiresAt.HasValue && circle.InviteCodeExpiresAt.Value < DateTime.UtcNow)
@@ -131,7 +132,7 @@ public class NeighborCircleService : INeighborCircleService
         }
         catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
         {
-            throw new ArgumentException("您已加入邻里圈，不能重复加入");
+            throw new ArgumentException(ErrorMessages.NeighborCircle.AlreadyInCircleJoin);
         }
 
         return await BuildCircleResponse(circle.Id);

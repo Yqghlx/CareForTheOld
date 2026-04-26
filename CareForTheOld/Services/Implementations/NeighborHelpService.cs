@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.Neighbor;
@@ -19,11 +20,11 @@ public class NeighborHelpService : INeighborHelpService
     private readonly ITrustScoreService _trustScoreService;
     private readonly ILogger<NeighborHelpService> _logger;
 
-    /// <summary>求助请求默认过期时间（15 分钟）</summary>
-    private static readonly TimeSpan _defaultExpiration = TimeSpan.FromMinutes(15);
+    /// <summary>求助请求默认过期时间</summary>
+    private static readonly TimeSpan _defaultExpiration = TimeSpan.FromMinutes(AppConstants.NeighborHelp.DefaultExpirationMinutes);
 
-    /// <summary>广播距离阈值（500 米）</summary>
-    private const double BroadcastRadiusMeters = 500;
+    /// <summary>广播距离阈值（米），只通知此范围内的邻居</summary>
+    private const double BroadcastRadiusMeters = AppConstants.NeighborHelp.BroadcastRadiusMeters;
 
     public NeighborHelpService(
         AppDbContext context,
@@ -90,7 +91,7 @@ public class NeighborHelpService : INeighborHelpService
             .Select(g => g.OrderByDescending(l => l.RecordedAt).First())
             .ToListAsync();
 
-        // 粗筛 + Haversine 精算，筛选 500 米内的邻居
+        // 粗筛 + Haversine 精算，筛选广播半径内的邻居
         var nearbyUserIds = new List<Guid>();
         var lat = call.Latitude.Value;
         var lng = call.Longitude.Value;
@@ -111,7 +112,8 @@ public class NeighborHelpService : INeighborHelpService
         // 如果附近没有邻居，广播给全圈作为兜底
         if (nearbyUserIds.Count == 0)
         {
-            _logger.LogInformation("紧急呼叫 {CallId} 附近 500 米无邻居，广播给全圈成员", emergencyCallId);
+            _logger.LogInformation("紧急呼叫 {CallId} 附近 {Radius} 米无邻居，广播给全圈成员",
+                emergencyCallId, BroadcastRadiusMeters);
             nearbyUserIds = memberIds;
         }
 
@@ -186,7 +188,7 @@ public class NeighborHelpService : INeighborHelpService
             .AsTracking()
             .Include(r => r.Requester)
             .FirstOrDefaultAsync(r => r.Id == requestId)
-            ?? throw new KeyNotFoundException("求助请求不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.NeighborHelp.RequestNotFound);
 
         if (request.Status != HelpRequestStatus.Pending)
             throw new InvalidOperationException($"求助请求当前状态为 {request.Status}，无法接受");
@@ -286,7 +288,7 @@ public class NeighborHelpService : INeighborHelpService
             .AsTracking()
             .Include(r => r.Requester)
             .FirstOrDefaultAsync(r => r.Id == requestId)
-            ?? throw new KeyNotFoundException("求助请求不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.NeighborHelp.RequestNotFound);
 
         if (request.Status != HelpRequestStatus.Pending && request.Status != HelpRequestStatus.Accepted)
             throw new InvalidOperationException($"求助请求当前状态为 {request.Status}，无法取消");
@@ -349,7 +351,7 @@ public class NeighborHelpService : INeighborHelpService
     {
         var helpRequest = await _context.NeighborHelpRequests
             .FirstOrDefaultAsync(r => r.Id == requestId)
-            ?? throw new KeyNotFoundException("求助请求不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.NeighborHelp.RequestNotFound);
 
         if (helpRequest.Status != HelpRequestStatus.Accepted)
             throw new InvalidOperationException("只能评价已接受的求助请求");
@@ -377,7 +379,7 @@ public class NeighborHelpService : INeighborHelpService
 
         // 应用层检查：同一用户对同一请求不能重复评价
         if (await _context.NeighborHelpRatings.AnyAsync(r => r.HelpRequestId == requestId && r.RaterId == raterId))
-            throw new ArgumentException("您已评价过该求助请求");
+            throw new ArgumentException(ErrorMessages.NeighborHelp.AlreadyRated);
 
         var rating = new NeighborHelpRating
         {
@@ -398,7 +400,7 @@ public class NeighborHelpService : INeighborHelpService
         }
         catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
         {
-            throw new ArgumentException("您已评价过该求助请求");
+            throw new ArgumentException(ErrorMessages.NeighborHelp.AlreadyRated);
         }
 
         return new NeighborHelpRatingResponse

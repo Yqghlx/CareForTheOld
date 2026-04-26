@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.Medication;
 using CareForTheOld.Models.DTOs.Responses;
@@ -78,7 +79,7 @@ public class MedicationService : IMedicationService
             .AsTracking()
             .Include(p => p.Elder)
             .FirstOrDefaultAsync(p => p.Id == planId)
-            ?? throw new KeyNotFoundException("用药计划不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.Medication.PlanNotFound);
 
         // 验证操作者权限
         await _familyService.EnsureFamilyMemberAsync(plan.ElderId, operatorId);
@@ -102,7 +103,7 @@ public class MedicationService : IMedicationService
     public async Task DeletePlanAsync(Guid planId, Guid operatorId)
     {
         var plan = await _context.MedicationPlans.FindAsync(planId)
-            ?? throw new KeyNotFoundException("用药计划不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.Medication.PlanNotFound);
 
         await _familyService.EnsureFamilyMemberAsync(plan.ElderId, operatorId);
 
@@ -118,7 +119,7 @@ public class MedicationService : IMedicationService
             .AsTracking()
             .Include(p => p.Elder)
             .FirstOrDefaultAsync(p => p.Id == request.PlanId)
-            ?? throw new KeyNotFoundException("用药计划不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.Medication.PlanNotFound);
 
         await _familyService.EnsureFamilyMemberAsync(plan.ElderId, operatorId);
 

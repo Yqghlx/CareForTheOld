@@ -1,9 +1,11 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.Health;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Interfaces;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 
 namespace CareForTheOld.Services.Implementations;
@@ -51,21 +53,34 @@ public class HealthService : IHealthService
         var alertMessage = _alertService.CheckAbnormal(record);
         if (alertMessage != null)
         {
-            // 异步发送预警通知，不阻塞主流程，但捕获异常记录日志
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    await _alertService.SendAlertToChildrenAsync(userId, record, alertMessage);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "健康预警通知发送失败，用户 {UserId}", userId);
-                }
-            });
+            // 通过 Hangfire 异步发送预警通知，支持持久化和自动重试
+            BackgroundJob.Enqueue(() => SendHealthAlertJobAsync(userId, record.Id, alertMessage));
         }
 
-        return await MapToResponse(record.Id) ?? throw new KeyNotFoundException("记录不存在");
+        return await MapToResponse(record.Id) ?? throw new KeyNotFoundException(ErrorMessages.Health.RecordNotFound);
+    }
+
+    /// <summary>
+    /// Hangfire 后台任务：发送健康预警通知
+    /// 通过 recordId 重新获取记录，避免序列化复杂对象
+    /// </summary>
+    public async Task SendHealthAlertJobAsync(Guid userId, Guid recordId, string alertMessage)
+    {
+        try
+        {
+            var record = await _context.HealthRecords.FindAsync(recordId);
+            if (record == null)
+            {
+                _logger.LogWarning("健康预警任务：记录 {RecordId} 不存在，跳过通知", recordId);
+                return;
+            }
+
+            await _alertService.SendAlertToChildrenAsync(userId, record, alertMessage);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "健康预警通知发送失败，用户 {UserId}，记录 {RecordId}", userId, recordId);
+        }
     }
 
     public async Task<List<HealthRecordResponse>> GetUserRecordsAsync(Guid userId, HealthType? type, int skip = 0, int limit = 50)

@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
@@ -25,7 +26,7 @@ public class HealthReportService : IHealthReportService
     {
         // 获取用户信息
         var user = await _context.Users.FindAsync(userId)
-            ?? throw new KeyNotFoundException("用户不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
         // 获取指定时间范围内的健康记录
         var startDate = DateTime.UtcNow.AddDays(-daysRange);

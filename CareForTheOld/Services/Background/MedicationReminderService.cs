@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Models.Entities;
@@ -127,15 +128,15 @@ public class MedicationReminderService : BackgroundService
     {
         try
         {
-            // 10 分钟后检查是否已服药，未服则二次提醒
+            // 二次提醒：首次提醒后未确认，再次强提醒
             BackgroundJob.Schedule<MedicationReminderService>(
                 svc => svc.CheckAndSendFollowUpAsync(plan.ElderId, plan.Id, scheduledAt, isEscalation: false),
-                TimeSpan.FromMinutes(10));
+                TimeSpan.FromMinutes(AppConstants.Medication.FollowUpDelayMinutes));
 
-            // 30 分钟后检查是否已服药，未服则通知子女
+            // 子女介入：二次提醒后仍未确认，通知子女跟进
             BackgroundJob.Schedule<MedicationReminderService>(
                 svc => svc.CheckAndSendFollowUpAsync(plan.ElderId, plan.Id, scheduledAt, isEscalation: true),
-                TimeSpan.FromMinutes(30));
+                TimeSpan.FromMinutes(AppConstants.Medication.EscalationDelayMinutes));
         }
         catch (Exception ex)
         {
@@ -212,7 +213,7 @@ public class MedicationReminderService : BackgroundService
                         () => notificationService.SendToUserAsync(child.UserId, "MedicationMissed", new
                         {
                             Title = "老人未服药提醒",
-                            Content = $"{elderName} 在 {scheduledAt:HH:mm} 的 {plan.MedicineName}（{plan.Dosage}）已超过 30 分钟未确认服药，请电话确认。",
+                            Content = $"{elderName} 在 {scheduledAt:HH:mm} 的 {plan.MedicineName}（{plan.Dosage}）已超过 {AppConstants.Medication.EscalationDelayMinutes} 分钟未确认服药，请电话确认。",
                             ElderId = elderId,
                             ElderName = elderName,
                             PlanId = planId,
@@ -224,8 +225,8 @@ public class MedicationReminderService : BackgroundService
                 }
             }
 
-            _logger.LogWarning("[用药跟进] 已通知子女: 老人 {ElderId} 超过 30 分钟未服 {Medicine}",
-                elderId, plan.MedicineName);
+            _logger.LogWarning("[用药跟进] 已通知子女: 老人 {ElderId} 超过 {Delay} 分钟未服 {Medicine}",
+                elderId, AppConstants.Medication.EscalationDelayMinutes, plan.MedicineName);
         }
     }
 
@@ -297,11 +298,11 @@ public class MedicationReminderService : BackgroundService
     }
 
     /// <summary>
-    /// 带重试的通知发送方法，最多重试3次，每次间隔1秒
+    /// 带重试的通知发送方法，最多重试指定次数，每次间隔指定秒数
     /// </summary>
     private async Task SendWithRetryAsync(Func<Task> sendAction, string description)
     {
-        const int maxRetries = 3;
+        const int maxRetries = AppConstants.Medication.MaxNotifyRetries;
         for (int attempt = 1; attempt <= maxRetries; attempt++)
         {
             try
@@ -316,7 +317,7 @@ public class MedicationReminderService : BackgroundService
 
                 if (attempt < maxRetries)
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    await Task.Delay(TimeSpan.FromSeconds(AppConstants.Medication.NotifyRetryDelaySeconds));
                 }
                 else
                 {

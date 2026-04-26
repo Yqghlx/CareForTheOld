@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Models.Entities;
@@ -42,7 +43,7 @@ public class LocationService : ILocationService
     public async Task<LocationRecordResponse> ReportLocationAsync(Guid userId, double latitude, double longitude, double? accuracy = null)
     {
         var user = await _context.Users.FindAsync(userId)
-            ?? throw new KeyNotFoundException("用户不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
         var record = new LocationRecord
         {

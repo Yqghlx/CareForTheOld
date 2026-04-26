@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Options;
 using CareForTheOld.Data;
 using CareForTheOld.Services.Implementations;
@@ -106,7 +107,7 @@ public static class ServiceCollectionExtensions
                 ValidIssuer = configuration["Jwt:Issuer"] ?? "CareForTheOld",
                 ValidAudience = configuration["Jwt:Audience"] ?? "CareForTheOld",
                 IssuerSigningKey = new SymmetricSecurityKey(signingKey),
-                ClockSkew = TimeSpan.FromMinutes(5),
+                ClockSkew = TimeSpan.FromMinutes(AppConstants.Security.JwtClockSkewMinutes),
                 // SignalR 的 Context.UserIdentifier 依赖此配置
                 NameClaimType = System.Security.Claims.ClaimTypes.NameIdentifier
             };

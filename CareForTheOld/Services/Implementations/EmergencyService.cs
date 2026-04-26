@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Responses;
@@ -180,41 +181,17 @@ public class EmergencyService : IEmergencyService
                 }
             );
 
-            // FCM 推送通知（后台/锁屏唤醒），与 SMS 并行发送
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    await _pushNotificationService.SendAsync(
-                        childUserIds,
-                        title,
-                        content,
-                        new Dictionary<string, string>
-                        {
-                            ["type"] = isReminder ? "emergency_reminder" : "emergency_call",
-                            ["callId"] = callId.ToString(),
-                            ["elderId"] = elderId.ToString(),
-                            ["elderName"] = elderName,
-                        });
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "紧急呼叫 FCM 推送失败，呼叫 {CallId}", callId);
-                }
-            });
+            // FCM 推送通知（后台/锁屏唤醒），通过 Hangfire 异步发送
+            var fcmChildIds = childUserIds;
+            var fcmTitle = title;
+            var fcmContent = content;
+            var fcmType = isReminder ? "emergency_reminder" : "emergency_call";
+            BackgroundJob.Enqueue(() => SendFcmPushJobAsync(
+                fcmChildIds, fcmTitle, fcmContent, fcmType,
+                callId.ToString(), elderId.ToString(), elderName));
 
-            // SMS 多通道告警（最终兜底）
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    await SendSmsAlertToChildrenAsync(children, elderName, callId, isReminder);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "紧急呼叫 SMS 告警发送失败，呼叫 {CallId}", callId);
-                }
-            });
+            // SMS 多通道告警（最终兜底），通过 Hangfire 异步发送
+            BackgroundJob.Enqueue(() => SendSmsAlertJobAsync(callId, isReminder));
         }
     }
 
@@ -268,6 +245,66 @@ public class EmergencyService : IEmergencyService
         {
             _context.SmsRecords.AddRange(smsRecords);
             await _context.SaveChangesAsync();
+        }
+    }
+
+    /// <summary>
+    /// Hangfire 后台任务：发送 FCM 推送通知
+    /// 参数为简单类型，确保 Hangfire 可序列化
+    /// </summary>
+    public async Task SendFcmPushJobAsync(
+        List<Guid> childUserIds, string title, string content, string type,
+        string callIdStr, string elderIdStr, string elderName)
+    {
+        try
+        {
+            await _pushNotificationService.SendAsync(
+                childUserIds,
+                title,
+                content,
+                new Dictionary<string, string>
+                {
+                    ["type"] = type,
+                    ["callId"] = callIdStr,
+                    ["elderId"] = elderIdStr,
+                    ["elderName"] = elderName,
+                });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "紧急呼叫 FCM 推送失败，呼叫 {CallId}", callIdStr);
+        }
+    }
+
+    /// <summary>
+    /// Hangfire 后台任务：发送 SMS 多通道告警
+    /// 通过 callId 重新获取子女信息，避免序列化复杂对象
+    /// </summary>
+    public async Task SendSmsAlertJobAsync(Guid callId, bool isReminder)
+    {
+        try
+        {
+            var call = await _context.EmergencyCalls
+                .Include(c => c.Elder)
+                .FirstOrDefaultAsync(c => c.Id == callId);
+
+            if (call == null) return;
+
+            var familyMember = await _context.FamilyMembers
+                .FirstOrDefaultAsync(fm => fm.UserId == call.ElderId);
+
+            if (familyMember == null) return;
+
+            var children = await _context.FamilyMembers
+                .Include(fm => fm.User)
+                .Where(fm => fm.FamilyId == familyMember.FamilyId && fm.Role == UserRole.Child)
+                .ToListAsync();
+
+            await SendSmsAlertToChildrenAsync(children, call.Elder.RealName, callId, isReminder);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "紧急呼叫 SMS 告警发送失败，呼叫 {CallId}", callId);
         }
     }
 
@@ -351,7 +388,7 @@ public class EmergencyService : IEmergencyService
     {
         // 获取用户信息
         var user = await _context.Users.FindAsync(userId)
-            ?? throw new KeyNotFoundException("用户不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
         // 获取呼叫记录
         var call = await _context.EmergencyCalls
