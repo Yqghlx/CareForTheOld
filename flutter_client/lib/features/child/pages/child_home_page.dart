@@ -179,7 +179,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
 
             const Text(
               '关注的老人',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: AppTheme.textLargeTitle,
             ),
             const SizedBox(height: 16),
 
@@ -220,7 +220,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     icon: Icons.diversity_3,
                     onPressed: () => context.push(RoutePaths.neighborCircle),
                     gradient: const LinearGradient(
-                      colors: [Colors.teal, Colors.cyan],
+                      colors: [AppTheme.tealColor, AppTheme.cyanColor],
                     ),
                   ),
                 ),
@@ -474,7 +474,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                         ),
-                        style: const TextStyle(fontSize: 16),
+                        style: AppTheme.textBody16,
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -490,7 +490,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                         ),
-                        style: const TextStyle(fontSize: 16),
+                        style: AppTheme.textBody16,
                       ),
                     ),
                     const SizedBox(height: 12),

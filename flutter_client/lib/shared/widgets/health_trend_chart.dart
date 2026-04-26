@@ -43,11 +43,11 @@ class HealthTrendChart extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const _LegendDot(color: Colors.red),
+                const _LegendDot(color: AppTheme.errorColor),
                 const SizedBox(width: 4),
                 const Text('收缩压', style: TextStyle(fontSize: 13)),
                 const SizedBox(width: 20),
-                const _LegendDot(color: Colors.blue),
+                const _LegendDot(color: AppTheme.infoBlue),
                 const SizedBox(width: 4),
                 const Text('舒张压', style: TextStyle(fontSize: 13)),
               ],
@@ -111,28 +111,28 @@ class HealthTrendChart extends StatelessWidget {
           // 收缩压正常上限 140
           HorizontalLine(
             y: 140,
-            color: Colors.red.withValues(alpha: 0.3),
+            color: AppTheme.errorColor.withValues(alpha: 0.3),
             strokeWidth: 1,
             dashArray: [5, 5],
             label: HorizontalLineLabel(
               show: true,
               alignment: Alignment.topRight,
               padding: const EdgeInsets.only(bottom: 4),
-              style: TextStyle(color: Colors.red.withValues(alpha: 0.6), fontSize: 12),
+              style: TextStyle(color: AppTheme.errorColor.withValues(alpha: 0.6), fontSize: 12),
               labelResolver: (_) => '收缩压上限',
             ),
           ),
           // 舒张压正常上限 90
           HorizontalLine(
             y: 90,
-            color: Colors.blue.withValues(alpha: 0.3),
+            color: AppTheme.infoBlue.withValues(alpha: 0.3),
             strokeWidth: 1,
             dashArray: [5, 5],
             label: HorizontalLineLabel(
               show: true,
               alignment: Alignment.bottomRight,
               padding: const EdgeInsets.only(top: 4),
-              style: TextStyle(color: Colors.blue.withValues(alpha: 0.6), fontSize: 12),
+              style: TextStyle(color: AppTheme.infoBlue.withValues(alpha: 0.6), fontSize: 12),
               labelResolver: (_) => '舒张压上限',
             ),
           ),
@@ -141,53 +141,53 @@ class HealthTrendChart extends StatelessWidget {
         return [
           HorizontalLine(
             y: 7.0,
-            color: Colors.orange.withValues(alpha: 0.4),
+            color: AppTheme.warningColor.withValues(alpha: 0.4),
             strokeWidth: 1,
             dashArray: [5, 5],
             label: HorizontalLineLabel(
               show: true,
               alignment: Alignment.topRight,
               padding: const EdgeInsets.only(bottom: 4),
-              style: TextStyle(color: Colors.orange.withValues(alpha: 0.7), fontSize: 12),
+              style: TextStyle(color: AppTheme.warningColor.withValues(alpha: 0.7), fontSize: 12),
               labelResolver: (_) => '空腹上限',
             ),
           ),
           HorizontalLine(
             y: 11.1,
-            color: Colors.red.withValues(alpha: 0.4),
+            color: AppTheme.errorColor.withValues(alpha: 0.4),
             strokeWidth: 1,
             dashArray: [5, 5],
             label: HorizontalLineLabel(
               show: true,
               alignment: Alignment.topRight,
               padding: const EdgeInsets.only(bottom: 4),
-              style: TextStyle(color: Colors.red.withValues(alpha: 0.7), fontSize: 12),
+              style: TextStyle(color: AppTheme.errorColor.withValues(alpha: 0.7), fontSize: 12),
               labelResolver: (_) => '餐后上限',
             ),
           ),
         ];
       case HealthType.heartRate:
         return [
-          HorizontalLine(y: 60, color: Colors.green.withValues(alpha: 0.3), strokeWidth: 1, dashArray: [5, 5]),
-          HorizontalLine(y: 100, color: Colors.red.withValues(alpha: 0.3), strokeWidth: 1, dashArray: [5, 5],
+          HorizontalLine(y: 60, color: AppTheme.successColor.withValues(alpha: 0.3), strokeWidth: 1, dashArray: [5, 5]),
+          HorizontalLine(y: 100, color: AppTheme.errorColor.withValues(alpha: 0.3), strokeWidth: 1, dashArray: [5, 5],
             label: HorizontalLineLabel(
               show: true,
               alignment: Alignment.topRight,
               padding: const EdgeInsets.only(bottom: 4),
-              style: TextStyle(color: Colors.red.withValues(alpha: 0.6), fontSize: 12),
+              style: TextStyle(color: AppTheme.errorColor.withValues(alpha: 0.6), fontSize: 12),
               labelResolver: (_) => '正常 60-100',
             ),
           ),
         ];
       case HealthType.temperature:
         return [
-          HorizontalLine(y: 36.0, color: Colors.blue.withValues(alpha: 0.3), strokeWidth: 1, dashArray: [5, 5]),
-          HorizontalLine(y: 37.3, color: Colors.red.withValues(alpha: 0.3), strokeWidth: 1, dashArray: [5, 5],
+          HorizontalLine(y: 36.0, color: AppTheme.infoBlue.withValues(alpha: 0.3), strokeWidth: 1, dashArray: [5, 5]),
+          HorizontalLine(y: 37.3, color: AppTheme.errorColor.withValues(alpha: 0.3), strokeWidth: 1, dashArray: [5, 5],
             label: HorizontalLineLabel(
               show: true,
               alignment: Alignment.topRight,
               padding: const EdgeInsets.only(bottom: 4),
-              style: TextStyle(color: Colors.red.withValues(alpha: 0.6), fontSize: 12),
+              style: TextStyle(color: AppTheme.errorColor.withValues(alpha: 0.6), fontSize: 12),
               labelResolver: (_) => '正常 36-37.3',
             ),
           ),
@@ -257,7 +257,7 @@ class HealthTrendChart extends StatelessWidget {
           extraLinesData: ExtraLinesData(horizontalLines: _getNormalRangeLines()),
           lineTouchData: LineTouchData(
             touchTooltipData: LineTouchTooltipData(
-              tooltipBgColor: Colors.blueGrey.shade800,
+              tooltipBgColor: AppTheme.blueGrey800,
               getTooltipItems: (spots) => spots.map((spot) {
                 final idx = spot.spotIndex;
                 if (idx >= data.length) return null;
@@ -273,13 +273,13 @@ class HealthTrendChart extends StatelessWidget {
             // 收缩压线（红色）
             LineChartBarData(
               isCurved: true,
-              color: Colors.red,
+              color: AppTheme.errorColor,
               barWidth: 3,
               dotData: FlDotData(
                 show: true,
                 getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
                   radius: 4,
-                  color: Colors.red,
+                  color: AppTheme.errorColor,
                   strokeWidth: 0,
                 ),
               ),
@@ -291,13 +291,13 @@ class HealthTrendChart extends StatelessWidget {
             // 舒张压线（蓝色）
             LineChartBarData(
               isCurved: true,
-              color: Colors.blue,
+              color: AppTheme.infoBlue,
               barWidth: 3,
               dotData: FlDotData(
                 show: true,
                 getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
                   radius: 4,
-                  color: Colors.blue,
+                  color: AppTheme.infoBlue,
                   strokeWidth: 0,
                 ),
               ),
@@ -373,7 +373,7 @@ class HealthTrendChart extends StatelessWidget {
         extraLinesData: ExtraLinesData(horizontalLines: _getNormalRangeLines()),
         lineTouchData: LineTouchData(
           touchTooltipData: LineTouchTooltipData(
-            tooltipBgColor: Colors.blueGrey.shade800,
+            tooltipBgColor: AppTheme.blueGrey800,
             getTooltipItems: (spots) => spots.map((spot) {
               final idx = spot.spotIndex;
               if (idx >= data.length) return null;
@@ -420,10 +420,10 @@ class HealthTrendChart extends StatelessWidget {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStatItem('收缩压', '最高', maxSys.toString(), Colors.red),
-          _buildStatItem('收缩压', '最低', minSys.toString(), Colors.red),
-          _buildStatItem('舒张压', '平均', avgSys.toStringAsFixed(0), Colors.blue),
-          _buildStatItem('舒张压', '平均', avgDia.toStringAsFixed(0), Colors.blue),
+          _buildStatItem('收缩压', '最高', maxSys.toString(), AppTheme.errorColor),
+          _buildStatItem('收缩压', '最低', minSys.toString(), AppTheme.errorColor),
+          _buildStatItem('舒张压', '平均', avgSys.toStringAsFixed(0), AppTheme.infoBlue),
+          _buildStatItem('舒张压', '平均', avgDia.toStringAsFixed(0), AppTheme.infoBlue),
         ],
       );
     }

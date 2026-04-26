@@ -336,7 +336,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
             title: '心率',
             value: _getStatsValue(typeMap, '心率'),
             subtitle: _getStatsSubtitle(typeMap, '心率'),
-            color: Colors.purple,
+            color: AppTheme.purpleColor,
           ),
         ),
         Semantics(

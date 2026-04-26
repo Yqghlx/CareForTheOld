@@ -314,7 +314,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                 icon: Icons.diversity_3,
                 title: '邻里圈',
                 subtitle: '附近邻居互助',
-                color: Colors.teal,
+                color: AppTheme.tealColor,
                 onTap: () => context.push(RoutePaths.neighborCircle),
               ),
               AnimatedQuickCard(
@@ -625,7 +625,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
               padding: AppTheme.paddingAll16,
               child: Text(
                 '更换头像',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: AppTheme.textLargeTitle,
               ),
             ),
             ListTile(
