@@ -451,6 +451,18 @@ public static class AppConstants
 
         /// <summary>变异系数良好阈值（CV &lt; 10%）：波动在正常范围</summary>
         public const double CoefficientOfVariationGood = 0.10;
+
+        /// <summary>质量评价 - 极佳</summary>
+        public const string QualityExcellent = "极佳";
+
+        /// <summary>质量评价 - 良好</summary>
+        public const string QualityGood = "良好";
+
+        /// <summary>质量评价 - 平稳</summary>
+        public const string QualityStable = "平稳";
+
+        /// <summary>默认健康指标名称</summary>
+        public const string DefaultHealthLabel = "健康指标";
     }
 
     /// <summary>

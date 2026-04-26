@@ -111,9 +111,9 @@ public class HealthAnomalyDetector
         // 变异系数 < 10% 视为极佳控制
         var quality = coefficientOfVariation switch
         {
-            < AppConstants.AnomalyEvaluation.CoefficientOfVariationExcellent => "极佳",
-            < AppConstants.AnomalyEvaluation.CoefficientOfVariationGood => "良好",
-            _ => "平稳",
+            < AppConstants.AnomalyEvaluation.CoefficientOfVariationExcellent => AppConstants.AnomalyEvaluation.QualityExcellent,
+            < AppConstants.AnomalyEvaluation.CoefficientOfVariationGood => AppConstants.AnomalyEvaluation.QualityGood,
+            _ => AppConstants.AnomalyEvaluation.QualityStable,
         };
 
         var healthLabel = healthType switch
@@ -122,12 +122,12 @@ public class HealthAnomalyDetector
             HealthType.BloodSugar => AppConstants.HealthTypeLabels.BloodSugar,
             HealthType.HeartRate => AppConstants.HealthTypeLabels.HeartRate,
             HealthType.Temperature => AppConstants.HealthTypeLabels.Temperature,
-            _ => "健康指标",
+            _ => AppConstants.AnomalyEvaluation.DefaultHealthLabel,
         };
 
-        var message = quality == "极佳"
+        var message = quality == AppConstants.AnomalyEvaluation.QualityExcellent
             ? $"过去一周{healthLabel}控制极佳，波动极小，请继续保持良好的生活习惯！"
-            : quality == "良好"
+            : quality == AppConstants.AnomalyEvaluation.QualityGood
                 ? $"过去一周{healthLabel}控制良好，数据波动在正常范围内。"
                 : $"过去一周{healthLabel}数据保持平稳，一切正常。";
 
