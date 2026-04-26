@@ -89,17 +89,23 @@ class AppTheme {
     end: Alignment.centerRight,
   );
 
-  static const LinearGradient warmGradient = LinearGradient(
-    colors: [Color(0xFFE86B4A), Color(0xFFFF9A6B)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
   /// 登录页渐变背景（暖白 → 纯白）
   static const LinearGradient warmBackgroundGradient = LinearGradient(
     colors: [Color(0xFFFFF5F0), Color(0xFFFFFFFF)],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
+  );
+
+  /// ElevatedButton 样式：主色背景 + 圆角
+  static final ButtonStyle elevatedPrimaryStyle = ElevatedButton.styleFrom(
+    backgroundColor: primaryColor,
+    shape: RoundedRectangleBorder(borderRadius: radiusS),
+  );
+
+  static const LinearGradient warmGradient = LinearGradient(
+    colors: [Color(0xFFE86B4A), Color(0xFFFF9A6B)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
   );
 
   /// 卡片圆角

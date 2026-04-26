@@ -797,4 +797,34 @@ public static class HealthAlertMessages
         /// <summary>及时就医关键词</summary>
         public const string TimelyTreatment = "及时就医";
     }
+
+    /// <summary>
+    /// 异常检测消息模板（HealthAnomalyDetector 使用）
+    /// </summary>
+    public static class AnomalyDetection
+    {
+        /// <summary>积极反馈 - 极佳（占位符：健康标签）</summary>
+        public const string FeedbackExcellentTemplate = "过去一周{0}控制极佳，波动极小，请继续保持良好的生活习惯！";
+
+        /// <summary>积极反馈 - 良好（占位符：健康标签）</summary>
+        public const string FeedbackGoodTemplate = "过去一周{0}控制良好，数据波动在正常范围内。";
+
+        /// <summary>积极反馈 - 平稳（占位符：健康标签）</summary>
+        public const string FeedbackStableTemplate = "过去一周{0}数据保持平稳，一切正常。";
+
+        /// <summary>峰值突增描述模板（占位符：健康类型、数值、偏离百分比）</summary>
+        public const string SpikeUpTemplate = "{0}值突增至{1}，超过基线{2}%";
+
+        /// <summary>峰值突降描述模板（占位符：健康类型、数值、偏离百分比）</summary>
+        public const string SpikeDownTemplate = "{0}值突降至{1}，低于基线{2}%";
+
+        /// <summary>持续偏高描述模板（占位符：健康类型、天数、阈值百分比）</summary>
+        public const string ContinuousHighTemplate = "{0}连续{1}天高于基线{2}%以上";
+
+        /// <summary>持续偏低描述模板（占位符：健康类型、天数、阈值百分比）</summary>
+        public const string ContinuousLowTemplate = "{0}连续{1}天低于基线{2}%以上";
+
+        /// <summary>波动性增大描述模板（占位符：基线天数、健康类型、倍数）</summary>
+        public const string VolatilityTemplate = "最近{0}天{1}波动性增大，标准差较历史升高{2}倍";
+    }
 }

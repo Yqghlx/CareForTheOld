@@ -633,7 +633,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   }
                 }
               },
-              style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryColor),
+              style: AppTheme.elevatedPrimaryStyle,
               child: const Text('保存', style: AppTheme.textWhite),
             ),
           ],
@@ -915,12 +915,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       Navigator.pop(ctx);
                       _exportReport(context, 7);
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: AppTheme.radiusS,
-                      ),
-                    ),
+                    style: AppTheme.elevatedPrimaryStyle,
                     child: const Text('最近7天', style: AppTheme.textWhite),
                   ),
                 ),
@@ -931,12 +926,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       Navigator.pop(ctx);
                       _exportReport(context, 30);
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: AppTheme.radiusS,
-                      ),
-                    ),
+                    style: AppTheme.elevatedPrimaryStyle,
                     child: const Text('最近30天', style: AppTheme.textWhite),
                   ),
                 ),

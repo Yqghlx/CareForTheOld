@@ -126,10 +126,10 @@ public class HealthAnomalyDetector
         };
 
         var message = quality == AppConstants.AnomalyEvaluation.QualityExcellent
-            ? $"过去一周{healthLabel}控制极佳，波动极小，请继续保持良好的生活习惯！"
+            ? string.Format(HealthAlertMessages.AnomalyDetection.FeedbackExcellentTemplate, healthLabel)
             : quality == AppConstants.AnomalyEvaluation.QualityGood
-                ? $"过去一周{healthLabel}控制良好，数据波动在正常范围内。"
-                : $"过去一周{healthLabel}数据保持平稳，一切正常。";
+                ? string.Format(HealthAlertMessages.AnomalyDetection.FeedbackGoodTemplate, healthLabel)
+                : string.Format(HealthAlertMessages.AnomalyDetection.FeedbackStableTemplate, healthLabel);
 
         return new PositiveFeedback
         {
@@ -242,8 +242,8 @@ public class HealthAnomalyDetector
                     DetectedAt = record.Date,
                     Type = AnomalyType.Spike,
                     Description = deviation > 0
-                        ? $"{healthType}值突增至{record.Value:F1}，超过基线{Math.Abs(deviation):F0}%"
-                        : $"{healthType}值突降至{record.Value:F1}，低于基线{Math.Abs(deviation):F0}%",
+                        ? string.Format(HealthAlertMessages.AnomalyDetection.SpikeUpTemplate, healthType, $"{record.Value:F1}", $"{Math.Abs(deviation):F0}")
+                        : string.Format(HealthAlertMessages.AnomalyDetection.SpikeDownTemplate, healthType, $"{record.Value:F1}", $"{Math.Abs(deviation):F0}"),
                     SeverityScore = CalculateSeverityScore(Math.Abs(deviation), healthType),
                     AnomalyValue = record.Value,
                     BaselineValue = baselineValue,
@@ -287,7 +287,7 @@ public class HealthAnomalyDetector
                 {
                     DetectedAt = continuousHighStart,
                     Type = AnomalyType.ContinuousHigh,
-                    Description = $"{healthType}连续{continuousHighDays}天高于基线{_options.ContinuousThresholdPercent}%以上",
+                    Description = string.Format(HealthAlertMessages.AnomalyDetection.ContinuousHighTemplate, healthType, continuousHighDays, _options.ContinuousThresholdPercent),
                     SeverityScore = CalculateSeverityScore(continuousHighDays * 10, healthType),
                     RecommendedAction = GetRecommendedAction(AnomalyType.ContinuousHigh, healthType, 0),
                 });
@@ -300,7 +300,7 @@ public class HealthAnomalyDetector
                 {
                     DetectedAt = continuousLowStart,
                     Type = AnomalyType.ContinuousLow,
-                    Description = $"{healthType}连续{continuousLowDays}天低于基线{_options.ContinuousThresholdPercent}%以上",
+                    Description = string.Format(HealthAlertMessages.AnomalyDetection.ContinuousLowTemplate, healthType, continuousLowDays, _options.ContinuousThresholdPercent),
                     SeverityScore = CalculateSeverityScore(continuousLowDays * 10, healthType),
                     RecommendedAction = GetRecommendedAction(AnomalyType.ContinuousLow, healthType, 0),
                 });
@@ -331,7 +331,7 @@ public class HealthAnomalyDetector
                 {
                     DetectedAt = DateTime.UtcNow,
                     Type = AnomalyType.Volatility,
-                    Description = $"最近{_options.BaselineDays}天{healthType}波动性增大，标准差较历史升高{(recentStdDev / olderStdDev):F1}倍",
+                    Description = string.Format(HealthAlertMessages.AnomalyDetection.VolatilityTemplate, _options.BaselineDays, healthType, $"{(recentStdDev / olderStdDev):F1}"),
                     SeverityScore = CalculateSeverityScore(recentStdDev / olderStdDev * 20, healthType),
                     RecommendedAction = GetRecommendedAction(AnomalyType.Volatility, healthType, 0),
                 });
