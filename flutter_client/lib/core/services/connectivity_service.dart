@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'app_logger.dart';
 
 /// 网络连接状态服务
 ///
@@ -34,7 +34,7 @@ class ConnectivityService {
         if (!_connectivityController.isClosed) {
           _connectivityController.add(_isOnline);
         }
-        debugPrint('网络状态变化: ${_isOnline ? "在线" : "离线"} ($results)');
+        AppLogger.debug('网络状态变化: ${_isOnline ? "在线" : "离线"} ($results)');
       },
     );
 
@@ -49,7 +49,7 @@ class ConnectivityService {
       _isOnline = _resultsToOnline(results);
       _connectivityController.add(_isOnline);
     } catch (e) {
-      debugPrint('初始网络检查失败: $e');
+      AppLogger.warning('初始网络检查失败: $e');
       // 检查失败时默认为在线，避免误判阻断用户操作
       _isOnline = true;
     }
@@ -77,7 +77,7 @@ class ConnectivityService {
       _isOnline = _resultsToOnline(results);
       return _isOnline;
     } catch (e) {
-      debugPrint('网络检查异常: $e');
+      AppLogger.error('网络检查异常: $e');
       return _isOnline;
     }
   }

@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 
 /// DioException 的扩展方法，用于从后端响应中提取错误信息
 ///
@@ -31,7 +30,6 @@ extension DioExceptionExtension on DioException {
       }
     } catch (_) {
       // 解析响应数据失败，使用默认错误信息
-      debugPrint('解析错误响应失败: ${response?.statusCode}');
     }
     switch (type) {
       case DioExceptionType.connectionError:

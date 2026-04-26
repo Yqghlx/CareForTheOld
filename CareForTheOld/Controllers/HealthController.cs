@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Asp.Versioning;
 using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
@@ -143,7 +144,7 @@ public class HealthController : ControllerBase
     /// </summary>
     [HttpGet("me/report")]
     [Authorize(Roles = "Elder")]
-    public async Task<IActionResult> ExportMyReport([FromQuery] int days = 7)
+    public async Task<IActionResult> ExportMyReport([FromQuery][Range(1, 365)] int days = 7)
     {
         var userId = this.GetUserId();
         var pdfBytes = await _reportService.GeneratePdfReportAsync(userId, days);
@@ -158,7 +159,7 @@ public class HealthController : ControllerBase
     public async Task<IActionResult> ExportFamilyMemberReport(
         Guid familyId,
         Guid memberId,
-        [FromQuery] int days = 7)
+        [FromQuery][Range(1, 365)] int days = 7)
     {
         var userId = this.GetUserId();
 
