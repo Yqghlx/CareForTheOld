@@ -191,7 +191,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             ),
             const SizedBox(height: 12),
             Card(
-              elevation: 2,
+              elevation: AppTheme.cardElevationLow,
               shape: RoundedRectangleBorder(
                 borderRadius: AppTheme.radiusL,
               ),
@@ -223,7 +223,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               ),
               const SizedBox(height: 12),
               Card(
-                elevation: 2,
+                elevation: AppTheme.cardElevationLow,
                 shape: RoundedRectangleBorder(
                   borderRadius: AppTheme.radiusL,
                 ),
@@ -255,7 +255,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             ),
             const SizedBox(height: 12),
             Card(
-              elevation: 2,
+              elevation: AppTheme.cardElevationLow,
               shape: RoundedRectangleBorder(
                 borderRadius: AppTheme.radiusL,
               ),
@@ -330,7 +330,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             ),
             const SizedBox(height: 12),
             Card(
-              elevation: 2,
+              elevation: AppTheme.cardElevationLow,
               shape: RoundedRectangleBorder(
                 borderRadius: AppTheme.radiusL,
               ),

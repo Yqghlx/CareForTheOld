@@ -23,7 +23,7 @@ class StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 4,
+      elevation: AppTheme.cardElevation,
       shape: RoundedRectangleBorder(
         borderRadius: AppTheme.radiusL,
       ),
@@ -145,7 +145,7 @@ class InfoCard extends StatelessWidget {
     }
 
     return Card(
-      elevation: 4,
+      elevation: AppTheme.cardElevation,
       color: backgroundColor,
       shape: RoundedRectangleBorder(
         borderRadius: AppTheme.radiusL,
@@ -291,7 +291,7 @@ class _AnimatedQuickCardState extends State<AnimatedQuickCard>
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: Card(
-          elevation: 4,
+          elevation: AppTheme.cardElevation,
           shape: RoundedRectangleBorder(
             borderRadius: AppTheme.radiusL,
           ),

@@ -383,7 +383,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     return Column(
       children: plans.map((plan) {
         return Card(
-          elevation: 4,
+          elevation: AppTheme.cardElevation,
           margin: AppTheme.marginBottom12,
           shape: RoundedRectangleBorder(
             borderRadius: AppTheme.radiusL,
@@ -709,7 +709,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         final time = record.recordedAt.toLocal();
         final timeStr = time.toShortDateTimeString();
         return Card(
-          elevation: 4,
+          elevation: AppTheme.cardElevation,
           margin: AppTheme.marginBottom8,
           shape: RoundedRectangleBorder(
             borderRadius: AppTheme.radiusM,
@@ -785,7 +785,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         }
 
         return Card(
-          elevation: 4,
+          elevation: AppTheme.cardElevation,
           margin: const EdgeInsets.only(bottom: 10),
           shape: RoundedRectangleBorder(
             borderRadius: AppTheme.radiusM,
@@ -1022,7 +1022,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
           ? 'AI健康趋势分析: 检测到${anomaly.anomalies.length}个异常，$severityText'
           : 'AI健康趋势分析: 健康状态良好',
       child: Card(
-        elevation: 4,
+        elevation: AppTheme.cardElevation,
         shape: RoundedRectangleBorder(
           borderRadius: AppTheme.radiusL,
           side: hasAnomalies && maxSeverity >= 66

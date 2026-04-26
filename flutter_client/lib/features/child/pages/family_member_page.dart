@@ -118,7 +118,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
   /// 待审批成员卡片
   Widget _buildPendingCard(FamilyMember member) {
     return Card(
-      elevation: 2,
+      elevation: AppTheme.cardElevationLow,
       margin: AppTheme.marginBottom12,
       shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusL),
       child: Padding(
@@ -515,7 +515,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
   /// 成员卡片
   Widget _buildMemberCard(FamilyMember member, bool isElder) {
     return Card(
-      elevation: 2,
+      elevation: AppTheme.cardElevationLow,
       margin: AppTheme.marginBottom12,
       shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusL),
       child: Padding(

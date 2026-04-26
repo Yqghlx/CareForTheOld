@@ -345,7 +345,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
         child: const Icon(Icons.delete, color: AppTheme.errorColor, size: 28),
       ),
       child: Card(
-      elevation: 4,
+      elevation: AppTheme.cardElevation,
       margin: AppTheme.marginBottom12,
       shape: RoundedRectangleBorder(
         borderRadius: AppTheme.radiusL,

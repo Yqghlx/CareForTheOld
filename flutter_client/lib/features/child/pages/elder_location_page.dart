@@ -429,7 +429,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
 
         // 位置详情卡片
         Card(
-          elevation: 4,
+          elevation: AppTheme.cardElevation,
           shape: RoundedRectangleBorder(
             borderRadius: AppTheme.radiusL,
           ),
@@ -535,7 +535,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
   /// 单条历史记录
   Widget _buildHistoryItem(LocationRecord record) {
     return Card(
-      elevation: 2,
+      elevation: AppTheme.cardElevationLow,
       margin: AppTheme.marginBottom8,
       shape: RoundedRectangleBorder(
         borderRadius: AppTheme.radiusM,

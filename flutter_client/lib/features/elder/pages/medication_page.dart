@@ -204,7 +204,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
     final timeStr = scheduledTime.toTimeString();
 
     return Card(
-      elevation: 4,
+      elevation: AppTheme.cardElevation,
       margin: AppTheme.marginBottom12,
       shape: RoundedRectangleBorder(
         borderRadius: AppTheme.radiusL,
@@ -506,7 +506,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
   /// 卡片内容（动画和非动画共用）
   Widget _buildCardContent(MedicationLog log, String timeStr) {
     return Card(
-      elevation: 4,
+      elevation: AppTheme.cardElevation,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: AppTheme.radiusL,

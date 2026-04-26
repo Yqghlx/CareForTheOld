@@ -113,6 +113,10 @@ class AppTheme {
   static const double cardRadius = 16.0;
   static const double cardRadiusLarge = 20.0;
 
+  /// 卡片阴影
+  static const double cardElevation = 4.0;
+  static const double cardElevationLow = 2.0;
+
   /// 按钮圆角
   static const double buttonRadius = 12.0;
 
