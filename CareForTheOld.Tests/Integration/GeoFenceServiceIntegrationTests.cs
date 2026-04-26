@@ -7,6 +7,7 @@ using CareForTheOld.Services.Interfaces;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace CareForTheOld.Tests.Integration;
@@ -43,7 +44,7 @@ public class GeoFenceServiceIntegrationTests : IAsyncLifetime
             .Returns((string _, Func<Task<GeoFenceCacheEntry?>> factory, TimeSpan? _) => factory());
 
         var mockNotification = new Mock<INotificationService>();
-        _service = new GeoFenceService(_context, _mockCacheService.Object, new FamilyService(_context, mockNotification.Object));
+        _service = new GeoFenceService(_context, _mockCacheService.Object, new FamilyService(_context, mockNotification.Object, NullLogger<FamilyService>.Instance));
     }
 
     public Task DisposeAsync()
@@ -166,7 +167,7 @@ public class GeoFenceServiceIntegrationTests : IAsyncLifetime
             var cache = new Mock<ICacheService>();
             cache.Setup(c => c.RemoveAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
             var mockN1 = new Mock<INotificationService>();
-            var svc = new GeoFenceService(ctx, cache.Object, new FamilyService(ctx, mockN1.Object));
+            var svc = new GeoFenceService(ctx, cache.Object, new FamilyService(ctx, mockN1.Object, NullLogger<FamilyService>.Instance));
             return await svc.CreateFenceAsync(child.Id, new CreateGeoFenceRequest
             {
                 ElderId = elder.Id,
@@ -183,7 +184,7 @@ public class GeoFenceServiceIntegrationTests : IAsyncLifetime
             var cache = new Mock<ICacheService>();
             cache.Setup(c => c.RemoveAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
             var mockN2 = new Mock<INotificationService>();
-            var svc = new GeoFenceService(ctx, cache.Object, new FamilyService(ctx, mockN2.Object));
+            var svc = new GeoFenceService(ctx, cache.Object, new FamilyService(ctx, mockN2.Object, NullLogger<FamilyService>.Instance));
             return await svc.CreateFenceAsync(child.Id, new CreateGeoFenceRequest
             {
                 ElderId = elder.Id,

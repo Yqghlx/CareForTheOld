@@ -6,6 +6,7 @@ using CareForTheOld.Services.Implementations;
 using CareForTheOld.Services.Interfaces;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Xunit;
 
@@ -28,7 +29,7 @@ public class FamilyServiceTests
             .Options;
         _context = new AppDbContext(options);
         _mockNotification = new Mock<INotificationService>();
-        _service = new FamilyService(_context, _mockNotification.Object);
+        _service = new FamilyService(_context, _mockNotification.Object, NullLogger<FamilyService>.Instance);
     }
 
     /// <summary>

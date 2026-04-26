@@ -18,14 +18,16 @@ public class FamilyService : IFamilyService
 {
     private readonly AppDbContext _context;
     private readonly INotificationService _notificationService;
+    private readonly ILogger<FamilyService> _logger;
 
     /// <summary>邀请码有效期</summary>
     private static readonly TimeSpan _inviteCodeExpiration = TimeSpan.FromDays(AppConstants.InviteCode.ExpirationDays);
 
-    public FamilyService(AppDbContext context, INotificationService notificationService)
+    public FamilyService(AppDbContext context, INotificationService notificationService, ILogger<FamilyService> logger)
     {
         _context = context;
         _notificationService = notificationService;
+        _logger = logger;
     }
 
     /// <summary>
@@ -184,16 +186,23 @@ public class FamilyService : IFamilyService
 
         if (childMembers.Any())
         {
-            await _notificationService.SendToUsersAsync(childMembers, AppConstants.NotificationTypes.FamilyJoinRequest, new
+            try
             {
-                Title = NotificationMessages.Family.JoinRequestTitle,
-                Content = string.Format(NotificationMessages.Family.JoinRequestContentTemplate, user.RealName, request.Relation, family.FamilyName),
-                FamilyId = family.Id,
-                FamilyName = family.FamilyName,
-                ApplicantId = userId,
-                ApplicantName = user.RealName,
-                Relation = request.Relation
-            });
+                await _notificationService.SendToUsersAsync(childMembers, AppConstants.NotificationTypes.FamilyJoinRequest, new
+                {
+                    Title = NotificationMessages.Family.JoinRequestTitle,
+                    Content = string.Format(NotificationMessages.Family.JoinRequestContentTemplate, user.RealName, request.Relation, family.FamilyName),
+                    FamilyId = family.Id,
+                    FamilyName = family.FamilyName,
+                    ApplicantId = userId,
+                    ApplicantName = user.RealName,
+                    Relation = request.Relation
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "家庭加入申请通知发送失败，家庭 {FamilyId}，申请人 {UserId}", family.Id, userId);
+            }
         }
 
         return new JoinFamilyResponse
@@ -399,7 +408,7 @@ public class FamilyService : IFamilyService
             .Include(f => f.Members).ThenInclude(fm => fm.User)
             .FirstAsync(f => f.Id == familyId);
 
-        // 只返回已通过审批的成员
+        // 只返回已通过审批的成员（内存过滤，兼容 InMemory 测试提供程序）
         return new FamilyResponse
         {
             Id = family.Id,

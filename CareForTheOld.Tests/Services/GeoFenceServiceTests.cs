@@ -7,6 +7,7 @@ using CareForTheOld.Services.Interfaces;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace CareForTheOld.Tests.Services;
@@ -37,7 +38,7 @@ public class GeoFenceServiceTests
             .Returns(Task.CompletedTask);
 
         var mockNotification = new Mock<INotificationService>();
-        _service = new GeoFenceService(_context, _mockCacheService.Object, new FamilyService(_context, mockNotification.Object));
+        _service = new GeoFenceService(_context, _mockCacheService.Object, new FamilyService(_context, mockNotification.Object, NullLogger<FamilyService>.Instance));
     }
 
     private async Task<Guid> CreateTestUserAsync(string realName = "测试老人", UserRole role = UserRole.Elder)

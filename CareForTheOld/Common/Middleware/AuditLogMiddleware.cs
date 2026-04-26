@@ -41,13 +41,12 @@ public class AuditLogMiddleware
 
         var statusCode = context.Response.StatusCode;
 
-        // 403 权限校验失败是重要的安全事件，需要单独记录
+        // 403 权限校验失败是重要的安全事件，额外记录角色信息
         if (statusCode == StatusCodes.Status403Forbidden)
         {
             _logger.LogWarning(
                 "权限校验失败 | 时间: {Timestamp:O} | 方法: {Method} | 路径: {Path} | 用户: {UserId} | 角色: {UserRole} | IP: {ClientIp} | UA: {UserAgent}",
                 timestamp, method, path, userId ?? "匿名", userRole ?? "无", clientIp, userAgent);
-            return;
         }
 
         var logLevel = statusCode >= 400 ? LogLevel.Warning : LogLevel.Information;

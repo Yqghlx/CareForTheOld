@@ -7,6 +7,7 @@ using CareForTheOld.Services.Interfaces;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace CareForTheOld.Tests.Services;
@@ -27,7 +28,7 @@ public class MedicationServiceTests
             .Options;
         _context = new AppDbContext(options);
         var mockNotification = new Mock<INotificationService>();
-        _service = new MedicationService(_context, new FamilyService(_context, mockNotification.Object));
+        _service = new MedicationService(_context, new FamilyService(_context, mockNotification.Object, NullLogger<FamilyService>.Instance));
     }
 
     /// <summary>

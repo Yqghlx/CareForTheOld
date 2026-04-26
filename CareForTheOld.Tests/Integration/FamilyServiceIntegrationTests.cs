@@ -7,6 +7,7 @@ using CareForTheOld.Services.Interfaces;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace CareForTheOld.Tests.Integration;
@@ -33,7 +34,7 @@ public class FamilyServiceIntegrationTests : IAsyncLifetime
         _context = _fixture.CreateDbContext();
         // 确保表结构最新
         await _context.Database.EnsureCreatedAsync();
-        _service = new FamilyService(_context, _mockNotification.Object);
+        _service = new FamilyService(_context, _mockNotification.Object, NullLogger<FamilyService>.Instance);
     }
 
     public Task DisposeAsync()
@@ -92,7 +93,7 @@ public class FamilyServiceIntegrationTests : IAsyncLifetime
             using var ctx = _fixture.CreateDbContext();
             await ctx.Database.EnsureCreatedAsync();
             var mockN = new Mock<INotificationService>();
-            var svc = new FamilyService(ctx, mockN.Object);
+            var svc = new FamilyService(ctx, mockN.Object, NullLogger<FamilyService>.Instance);
             return await svc.CreateFamilyAsync(user.Id, new CreateFamilyRequest { FamilyName = "家庭A" });
         });
 
@@ -101,7 +102,7 @@ public class FamilyServiceIntegrationTests : IAsyncLifetime
             using var ctx = _fixture.CreateDbContext();
             await ctx.Database.EnsureCreatedAsync();
             var mockN = new Mock<INotificationService>();
-            var svc = new FamilyService(ctx, mockN.Object);
+            var svc = new FamilyService(ctx, mockN.Object, NullLogger<FamilyService>.Instance);
             return await svc.CreateFamilyAsync(user.Id, new CreateFamilyRequest { FamilyName = "家庭B" });
         });
 
