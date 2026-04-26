@@ -168,14 +168,10 @@ public class EmergencyService : IEmergencyService
     {
         var children = await GetChildrenAsync(elderId);
 
-        if (children.Any())
-        {
-            var childUserIds = children.Select(c => c.UserId).ToList();
+        if (!children.Any()) return;
 
-            var title = isReminder ? NotificationMessages.Emergency.CallReminderTitle : NotificationMessages.Emergency.CallTitle;
-            var content = isReminder
-                ? string.Format(NotificationMessages.Emergency.CallReminderContentTemplate, elderName)
-                : string.Format(NotificationMessages.Emergency.CallContentTemplate, elderName);
+        var childUserIds = children.Select(c => c.UserId).ToList();
+        var (title, content) = BuildNotificationContent(isReminder, elderName);
 
             // SignalR 推送通知（前台实时）
             await _notificationService.SendToUsersAsync(
@@ -217,7 +213,6 @@ public class EmergencyService : IEmergencyService
             {
                 _logger.LogError(ex, "SMS 告警入队失败，呼叫 {CallId}", callId);
             }
-        }
     }
 
     /// <summary>
@@ -433,6 +428,18 @@ public class EmergencyService : IEmergencyService
         Longitude = c.Longitude,
         BatteryLevel = c.BatteryLevel,
     };
+
+    /// <summary>
+    /// 根据是否为二次提醒构建通知标题和内容
+    /// </summary>
+    private static (string Title, string Content) BuildNotificationContent(bool isReminder, string elderName)
+    {
+        return isReminder
+            ? (NotificationMessages.Emergency.CallReminderTitle,
+               string.Format(NotificationMessages.Emergency.CallReminderContentTemplate, elderName))
+            : (NotificationMessages.Emergency.CallTitle,
+               string.Format(NotificationMessages.Emergency.CallContentTemplate, elderName));
+    }
 
     /// <summary>
     /// 查询指定老人所在家庭的子女成员列表（含用户信息）

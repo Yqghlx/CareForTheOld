@@ -8,6 +8,7 @@ import '../../../core/router/route_paths.dart';
 import '../providers/neighbor_help_provider.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 import '../../../core/extensions/date_format_extension.dart';
+import '../../../shared/widgets/confirm_dialog.dart';
 
 /// 邻里互助页面（待响应求助 + 历史列表）
 class NeighborHelpPage extends ConsumerStatefulWidget {
@@ -103,18 +104,13 @@ class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
   }
 
   Future<void> _acceptRequest(String requestId) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('确认响应'),
-        content: const Text('确定要响应此求助吗？您将是第一个响应的邻居。'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('取消')),
-          ElevatedButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('我来帮忙')),
-        ],
-      ),
+    final confirmed = await showConfirmDialog(
+      context,
+      title: '确认响应',
+      message: '确定要响应此求助吗？您将是第一个响应的邻居。',
+      confirmText: '我来帮忙',
     );
-    if (confirmed != true) return;
+    if (!confirmed) return;
 
     final success =
         await ref.read(neighborHelpProvider.notifier).acceptRequest(requestId);

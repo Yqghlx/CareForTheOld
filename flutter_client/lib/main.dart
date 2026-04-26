@@ -45,9 +45,9 @@ void main() async {
   // 初始化 Firebase（FCM 推送通知）
   try {
     await Firebase.initializeApp();
-    debugPrint('Firebase 初始化成功');
+    AppLogger.info('Firebase 初始化成功');
   } catch (e) {
-    debugPrint('Firebase 初始化失败（可能是模拟器无 Google Play Services）: $e');
+    AppLogger.warning('Firebase 初始化失败（可能是模拟器无 Google Play Services）: $e');
   }
 
   // 初始化本地通知
@@ -135,7 +135,7 @@ class _CareForTheOldAppState extends ConsumerState<CareForTheOldApp> {
     try {
       await ref.read(fcmServiceProvider).initialize();
     } catch (e) {
-      debugPrint('FCM 初始化异常: $e');
+      AppLogger.error('FCM 初始化异常: $e');
     }
   }
 
