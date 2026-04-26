@@ -196,11 +196,20 @@ public class HealthAnomalyDetector
         {
             var firstAvg = firstHalf.Average(r => r.Value);
             var secondAvg = secondHalf.Average(r => r.Value);
-            var trendDiff = (secondAvg - firstAvg) / firstAvg * 100;
 
-            if (trendDiff > AppConstants.AnomalyEvaluation.TrendDirectionThresholdPercent) trend = "rising";
-            else if (trendDiff < -AppConstants.AnomalyEvaluation.TrendDirectionThresholdPercent) trend = "falling";
-            else trend = "stable";
+            // 避免除零：基线为零时无法计算百分比变化
+            if (firstAvg > 0)
+            {
+                var trendDiff = (secondAvg - firstAvg) / firstAvg * 100;
+
+                if (trendDiff > AppConstants.AnomalyEvaluation.TrendDirectionThresholdPercent) trend = "rising";
+                else if (trendDiff < -AppConstants.AnomalyEvaluation.TrendDirectionThresholdPercent) trend = "falling";
+                else trend = "stable";
+            }
+            else
+            {
+                trend = "stable";
+            }
         }
 
         // 计算与基线的偏离
