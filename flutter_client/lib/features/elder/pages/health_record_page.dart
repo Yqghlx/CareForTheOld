@@ -2,6 +2,7 @@ import '../../../core/router/route_paths.dart';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -810,6 +811,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                             contentPadding: AppTheme.paddingH16V12,
                           ),
                           keyboardType: TextInputType.number,
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                           style: AppTheme.textBody18,
                         ),
                       ),
@@ -828,6 +830,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                             contentPadding: AppTheme.paddingH16V12,
                           ),
                           keyboardType: TextInputType.number,
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                           style: AppTheme.textBody18,
                         ),
                       ),
@@ -847,6 +850,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                             contentPadding: AppTheme.paddingH16V12,
                           ),
                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
                           style: AppTheme.textBody18,
                         ),
                       ),
@@ -865,6 +869,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                             contentPadding: AppTheme.paddingH16V12,
                           ),
                           keyboardType: TextInputType.number,
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                           style: AppTheme.textBody18,
                         ),
                       ),
@@ -883,6 +888,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                             contentPadding: AppTheme.paddingH16V12,
                           ),
                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
                           style: AppTheme.textBody18,
                         ),
                       ),
