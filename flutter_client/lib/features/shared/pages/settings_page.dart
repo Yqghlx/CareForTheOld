@@ -31,11 +31,18 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   bool _isLoadingLocation = true;
   String _appVersion = '';
 
+  // 通知偏好
+  bool _notifyHealth = true;
+  bool _notifyMedication = true;
+  bool _notifyNeighbor = true;
+  bool _isLoadingPrefs = true;
+
   @override
   void initState() {
     super.initState();
     _loadLocationSetting();
     _loadAppVersion();
+    _loadNotificationPrefs();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(userProvider.notifier).loadUser();
     });
@@ -70,6 +77,23 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Future<void> _loadAppVersion() async {
     final info = await PackageInfo.fromPlatform();
     setState(() => _appVersion = '${info.version} (${info.buildNumber})');
+  }
+
+  /// 加载通知偏好设置
+  Future<void> _loadNotificationPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _notifyHealth = prefs.getBool('notify_health') ?? true;
+      _notifyMedication = prefs.getBool('notify_medication') ?? true;
+      _notifyNeighbor = prefs.getBool('notify_neighbor') ?? true;
+      _isLoadingPrefs = false;
+    });
+  }
+
+  /// 保存通知偏好
+  Future<void> _saveNotificationPref(String key, bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(key, value);
   }
 
   /// 保存定位设置并实际控制位置上报服务
@@ -217,6 +241,81 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               ),
               const SizedBox(height: 24),
             ],
+
+            // 通知设置
+            const Text(
+              '通知设置',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                children: [
+                  _buildSettingItem(
+                    icon: Icons.emergency,
+                    title: '紧急呼叫通知',
+                    subtitle: '始终开启，保障安全',
+                    trailing: Icon(Icons.lock, color: Colors.grey.shade400, size: 20),
+                  ),
+                  const Divider(height: 1),
+                  _buildSettingItem(
+                    icon: Icons.favorite_outline,
+                    title: '健康数据通知',
+                    subtitle: '健康异常预警、趋势提醒',
+                    trailing: _isLoadingPrefs
+                        ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2))
+                        : Switch(
+                            value: _notifyHealth,
+                            onChanged: (v) {
+                              setState(() => _notifyHealth = v);
+                              _saveNotificationPref('notify_health', v);
+                            },
+                            activeTrackColor: AppTheme.primaryColor,
+                            activeThumbColor: AppTheme.primaryColor,
+                          ),
+                  ),
+                  const Divider(height: 1),
+                  _buildSettingItem(
+                    icon: Icons.medication_outlined,
+                    title: '用药提醒通知',
+                    subtitle: '用药时间到了提醒',
+                    trailing: _isLoadingPrefs
+                        ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2))
+                        : Switch(
+                            value: _notifyMedication,
+                            onChanged: (v) {
+                              setState(() => _notifyMedication = v);
+                              _saveNotificationPref('notify_medication', v);
+                            },
+                            activeTrackColor: AppTheme.primaryColor,
+                            activeThumbColor: AppTheme.primaryColor,
+                          ),
+                  ),
+                  const Divider(height: 1),
+                  _buildSettingItem(
+                    icon: Icons.diversity_3_outlined,
+                    title: '邻里动态通知',
+                    subtitle: '邻里圈、邻里互助消息',
+                    trailing: _isLoadingPrefs
+                        ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2))
+                        : Switch(
+                            value: _notifyNeighbor,
+                            onChanged: (v) {
+                              setState(() => _notifyNeighbor = v);
+                              _saveNotificationPref('notify_neighbor', v);
+                            },
+                            activeTrackColor: AppTheme.primaryColor,
+                            activeThumbColor: AppTheme.primaryColor,
+                          ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
 
             // 其他设置
             const Text(
