@@ -139,7 +139,7 @@ class _SkeletonLoaderState extends State<SkeletonLoader>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 400),
+      duration: AppTheme.duration400ms,
       vsync: this,
     );
     _animation = Tween<double>(begin: 0.15, end: 0.35).animate(

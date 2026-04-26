@@ -255,7 +255,7 @@ class _AnimatedQuickCardState extends State<AnimatedQuickCard>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 250),
+      duration: AppTheme.duration250ms,
       vsync: this,
     );
     _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(

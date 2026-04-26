@@ -332,7 +332,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
         }
       },
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 100),
+        duration: AppTheme.duration100ms,
         width: double.infinity,
         height: 80,
         decoration: BoxDecoration(
@@ -424,7 +424,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
 
     // 使用动画驱动进度
     Future<void> updateProgress() async {
-      const updateInterval = Duration(milliseconds: 50);
+      final updateInterval = AppTheme.duration50ms;
       final totalSteps = (_longPressDurationSeconds * 1000 / updateInterval.inMilliseconds).round();
 
       for (int i = 0; i <= totalSteps && _isLongPressing && !_longPressCancelled; i++) {

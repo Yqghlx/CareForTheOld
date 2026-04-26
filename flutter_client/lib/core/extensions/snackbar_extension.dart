@@ -8,7 +8,7 @@ import '../theme/app_theme.dart';
 ///       context.showErrorSnackBar('加载失败');
 extension SnackBarExtension on BuildContext {
   /// 适老化 SnackBar 时长（默认 4 秒，老人阅读更从容）
-  static const _duration = Duration(seconds: 4);
+  static const _duration = AppTheme.duration4s;
 
   /// 显示普通 SnackBar
   void showSnackBar(String message) {

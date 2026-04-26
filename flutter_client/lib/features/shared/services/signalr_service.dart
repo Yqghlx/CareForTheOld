@@ -6,6 +6,7 @@ import 'package:logging/logging.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 
 import '../../../core/config/app_config.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../shared/providers/auth_provider.dart';
 import '../../shared/providers/emergency_provider.dart';
 import '../../shared/providers/neighbor_help_provider.dart';
@@ -251,7 +252,7 @@ class SignalRService {
   /// 启动心跳定时器（每 60 秒发送一次心跳，保持后端感知在线状态）
   void _startHeartbeat() {
     _heartbeatTimer?.cancel();
-    _heartbeatTimer = Timer.periodic(const Duration(seconds: 60), (_) async {
+    _heartbeatTimer = Timer.periodic(AppTheme.duration60s, (_) async {
       if (_hubConnection != null && isConnected) {
         try {
           await _hubConnection!.invoke('Heartbeat');

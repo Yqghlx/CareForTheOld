@@ -350,10 +350,22 @@ class AppTheme {
   );
 
   // 常用时长常量
+  static const Duration duration50ms = Duration(milliseconds: 50);
   static const Duration duration100ms = Duration(milliseconds: 100);
+  static const Duration duration200ms = Duration(milliseconds: 200);
+  static const Duration duration250ms = Duration(milliseconds: 250);
   static const Duration duration300ms = Duration(milliseconds: 300);
+  static const Duration duration400ms = Duration(milliseconds: 400);
+  static const Duration duration500ms = Duration(milliseconds: 500);
+  static const Duration duration1s = Duration(seconds: 1);
   static const Duration duration1500ms = Duration(milliseconds: 1500);
+  static const Duration duration2s = Duration(seconds: 2);
+  static const Duration duration3s = Duration(seconds: 3);
+  static const Duration duration4s = Duration(seconds: 4);
   static const Duration duration5s = Duration(seconds: 5);
   static const Duration duration10s = Duration(seconds: 10);
+  static const Duration duration15s = Duration(seconds: 15);
   static const Duration duration30s = Duration(seconds: 30);
+  static const Duration duration60s = Duration(seconds: 60);
+  static const Duration duration5min = Duration(minutes: 5);
 }

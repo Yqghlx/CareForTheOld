@@ -30,7 +30,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
     // 脉冲动画（红色背景呼吸灯效果）
     _pulseController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000),
+      duration: AppTheme.duration1s,
     )..repeat(reverse: true);
 
     _pulseAnimation = Tween<double>(begin: 0.0, end: 0.3).animate(

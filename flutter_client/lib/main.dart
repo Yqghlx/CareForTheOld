@@ -31,7 +31,7 @@ void showGlobalSnackBar(String message, {Color? backgroundColor}) {
       content: Text(message),
       backgroundColor: backgroundColor,
       behavior: SnackBarBehavior.floating,
-      duration: const Duration(seconds: 3),
+      duration: AppTheme.duration3s,
     ),
   );
 }

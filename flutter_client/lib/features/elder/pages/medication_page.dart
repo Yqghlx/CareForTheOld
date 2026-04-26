@@ -222,7 +222,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
             // 已服用时添加打勾弹出动画
             TweenAnimationBuilder<double>(
               tween: Tween(begin: 0, end: 1),
-              duration: const Duration(milliseconds: 400),
+              duration: AppTheme.duration400ms,
               curve: Curves.elasticOut,
               builder: (context, value, child) {
                 return Transform.scale(

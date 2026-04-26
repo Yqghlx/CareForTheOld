@@ -626,7 +626,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                     }
                                   },
                                   child: AnimatedContainer(
-                                    duration: const Duration(milliseconds: 200),
+                                    duration: AppTheme.duration200ms,
                                     padding: const EdgeInsets.symmetric(vertical: 16),
                                     decoration: BoxDecoration(
                                       gradient: isListening
@@ -1082,7 +1082,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
             children: [
               TweenAnimationBuilder<double>(
                 tween: Tween(begin: 0, end: 1),
-                duration: const Duration(milliseconds: 500),
+                duration: AppTheme.duration500ms,
                 curve: Curves.elasticOut,
                 builder: (context, value, child) {
                   return Transform.scale(
@@ -1113,7 +1113,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
             borderRadius: AppTheme.radiusS,
           ),
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          duration: const Duration(seconds: 2),
+          duration: AppTheme.duration2s,
         ),
       );
       // 保存成功后刷新统计

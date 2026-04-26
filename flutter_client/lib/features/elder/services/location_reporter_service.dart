@@ -25,7 +25,7 @@ class LocationReporterService {
   bool _isRunning = false;
 
   /// 上报间隔（默认 5 分钟）
-  static const Duration _reportInterval = Duration(minutes: 5);
+  static const Duration _reportInterval = AppTheme.duration5min;
 
   /// 最大重试次数
   static const int _maxRetries = 3;
@@ -205,7 +205,7 @@ class LocationReporterService {
     try {
       final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
-        timeLimit: const Duration(seconds: 15),
+        timeLimit: AppTheme.duration15s,
       );
 
       await _service.reportLocation(position.latitude, position.longitude);
