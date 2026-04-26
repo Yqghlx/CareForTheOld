@@ -502,7 +502,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                 const SizedBox(height: 12),
                 Text(
                   '精确时间: ${location.formattedTime}',
-                  style: TextStyle(fontSize: 12, color: AppTheme.grey500),
+                  style: AppTheme.textCaption,
                 ),
               ],
             ),
@@ -571,7 +571,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
             ),
             Text(
               record.formattedTime.split(' ').last,
-              style: TextStyle(fontSize: 12, color: AppTheme.grey500),
+              style: AppTheme.textCaption,
             ),
           ],
         ),

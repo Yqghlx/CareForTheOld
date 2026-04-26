@@ -1302,7 +1302,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         const Spacer(),
         Text(
           '(${anomaly.baseline.baselineRecordCount} 条记录)',
-          style: TextStyle(fontSize: 12, color: AppTheme.grey500),
+          style: AppTheme.textCaption,
         ),
       ],
     );
