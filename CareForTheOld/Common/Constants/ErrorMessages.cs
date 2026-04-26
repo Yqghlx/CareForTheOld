@@ -588,4 +588,53 @@ public static class HealthAlertMessages
         public const string CriticalLow = "体温过低，建议立即就医！";
         public const string MildLow = "体温偏低，建议注意保暖。";
     }
+
+    /// <summary>异常检测建议（HealthAnomalyDetector 使用）</summary>
+    public static class AnomalySuggestions
+    {
+        /// <summary>峰值异常建议</summary>
+        public static class Spike
+        {
+            public const string BloodPressureHigh = "建议安静休息10分钟后复测，若仍高于180/110请及时就医";
+            public const string BloodPressureLow = "建议平躺休息、适量饮水，若伴有头晕请及时就医";
+            public const string BloodSugarHigh = "建议1小时后复测，避免进食甜食，若持续高于15请就医";
+            public const string BloodSugarLow = "建议立即补充糖分（如糖果、果汁），若持续低于3请就医";
+            public const string HeartRateHigh = "建议静坐休息，避免咖啡因和剧烈运动，若持续高于150请就医";
+            public const string HeartRateLow = "建议缓慢起身、避免突然体位变化，若持续低于40请就医";
+            public const string TemperatureHigh = "建议多饮水、物理降温，若超过39°C请就医";
+            public const string TemperatureLow = "建议保暖、喝温水，若持续低于35°C请就医";
+        }
+
+        /// <summary>持续偏高建议</summary>
+        public static class ContinuousHigh
+        {
+            public const string BloodPressure = "血压已连续偏高数日，建议减少盐分摄入、保持规律作息，若情况持续请就诊";
+            public const string BloodSugar = "血糖已连续偏高数日，建议控制碳水摄入、适当运动，若情况持续请就诊";
+            public const string HeartRate = "心率已连续偏高，建议减少咖啡因摄入、保证充足睡眠，若情况持续请就诊";
+            public const string Temperature = "体温已连续偏高，建议多饮水、注意休息，若情况持续请就诊";
+        }
+
+        /// <summary>持续偏低建议</summary>
+        public static class ContinuousLow
+        {
+            public const string BloodPressure = "血压已连续偏低，建议适量增加盐分和水分摄入，起身时动作放缓";
+            public const string BloodSugar = "血糖已连续偏低，建议规律进餐、适当加餐，避免空腹运动";
+            public const string HeartRate = "心率已连续偏低，建议避免过度劳累，起身时注意防止眩晕";
+            public const string Temperature = "体温已连续偏低，建议注意保暖、适当增加衣物";
+        }
+
+        /// <summary>波动性异常建议</summary>
+        public static class Volatility
+        {
+            public const string BloodPressure = "近期血压波动较大，建议定时测量（早晚各一次）、记录饮食和用药情况";
+            public const string BloodSugar = "近期血糖波动较大，建议固定时间测量、注意饮食规律";
+            public const string HeartRate = "近期心率波动较大，建议记录活动与心率的关系、避免过度劳累";
+        }
+
+        /// <summary>通用建议</summary>
+        public const string General = "建议关注身体状况，如有不适请及时就医";
+        public const string GeneralHigh = "指标已连续偏高，建议关注身体状况，必要时就医";
+        public const string GeneralLow = "指标已连续偏低，建议关注身体状况，保持规律作息";
+        public const string GeneralVolatility = "近期数据波动较大，建议规律测量并记录生活情况，必要时咨询医生";
+    }
 }

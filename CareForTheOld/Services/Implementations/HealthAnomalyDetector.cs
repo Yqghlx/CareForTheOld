@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Models.Enums;
 using Microsoft.Extensions.Logging;
@@ -357,43 +358,43 @@ public class HealthAnomalyDetector
             AnomalyType.Spike => healthType switch
             {
                 HealthType.BloodPressure => deviation > 0
-                    ? "建议安静休息10分钟后复测，若仍高于180/110请及时就医"
-                    : "建议平躺休息、适量饮水，若伴有头晕请及时就医",
+                    ? HealthAlertMessages.AnomalySuggestions.Spike.BloodPressureHigh
+                    : HealthAlertMessages.AnomalySuggestions.Spike.BloodPressureLow,
                 HealthType.BloodSugar => deviation > 0
-                    ? "建议1小时后复测，避免进食甜食，若持续高于15请就医"
-                    : "建议立即补充糖分（如糖果、果汁），若持续低于3请就医",
+                    ? HealthAlertMessages.AnomalySuggestions.Spike.BloodSugarHigh
+                    : HealthAlertMessages.AnomalySuggestions.Spike.BloodSugarLow,
                 HealthType.HeartRate => deviation > 0
-                    ? "建议静坐休息，避免咖啡因和剧烈运动，若持续高于150请就医"
-                    : "建议缓慢起身、避免突然体位变化，若持续低于40请就医",
+                    ? HealthAlertMessages.AnomalySuggestions.Spike.HeartRateHigh
+                    : HealthAlertMessages.AnomalySuggestions.Spike.HeartRateLow,
                 HealthType.Temperature => deviation > 0
-                    ? "建议多饮水、物理降温，若超过39°C请就医"
-                    : "建议保暖、喝温水，若持续低于35°C请就医",
-                _ => "建议关注身体状况，如有不适请及时就医",
+                    ? HealthAlertMessages.AnomalySuggestions.Spike.TemperatureHigh
+                    : HealthAlertMessages.AnomalySuggestions.Spike.TemperatureLow,
+                _ => HealthAlertMessages.AnomalySuggestions.General,
             },
             AnomalyType.ContinuousHigh => healthType switch
             {
-                HealthType.BloodPressure => "血压已连续偏高数日，建议减少盐分摄入、保持规律作息，若情况持续请就诊",
-                HealthType.BloodSugar => "血糖已连续偏高数日，建议控制碳水摄入、适当运动，若情况持续请就诊",
-                HealthType.HeartRate => "心率已连续偏高，建议减少咖啡因摄入、保证充足睡眠，若情况持续请就诊",
-                HealthType.Temperature => "体温已连续偏高，建议多饮水、注意休息，若情况持续请就诊",
-                _ => "指标已连续偏高，建议关注身体状况，必要时就医",
+                HealthType.BloodPressure => HealthAlertMessages.AnomalySuggestions.ContinuousHigh.BloodPressure,
+                HealthType.BloodSugar => HealthAlertMessages.AnomalySuggestions.ContinuousHigh.BloodSugar,
+                HealthType.HeartRate => HealthAlertMessages.AnomalySuggestions.ContinuousHigh.HeartRate,
+                HealthType.Temperature => HealthAlertMessages.AnomalySuggestions.ContinuousHigh.Temperature,
+                _ => HealthAlertMessages.AnomalySuggestions.GeneralHigh,
             },
             AnomalyType.ContinuousLow => healthType switch
             {
-                HealthType.BloodPressure => "血压已连续偏低，建议适量增加盐分和水分摄入，起身时动作放缓",
-                HealthType.BloodSugar => "血糖已连续偏低，建议规律进餐、适当加餐，避免空腹运动",
-                HealthType.HeartRate => "心率已连续偏低，建议避免过度劳累，起身时注意防止眩晕",
-                HealthType.Temperature => "体温已连续偏低，建议注意保暖、适当增加衣物",
-                _ => "指标已连续偏低，建议关注身体状况，保持规律作息",
+                HealthType.BloodPressure => HealthAlertMessages.AnomalySuggestions.ContinuousLow.BloodPressure,
+                HealthType.BloodSugar => HealthAlertMessages.AnomalySuggestions.ContinuousLow.BloodSugar,
+                HealthType.HeartRate => HealthAlertMessages.AnomalySuggestions.ContinuousLow.HeartRate,
+                HealthType.Temperature => HealthAlertMessages.AnomalySuggestions.ContinuousLow.Temperature,
+                _ => HealthAlertMessages.AnomalySuggestions.GeneralLow,
             },
             AnomalyType.Volatility => healthType switch
             {
-                HealthType.BloodPressure => "近期血压波动较大，建议定时测量（早晚各一次）、记录饮食和用药情况",
-                HealthType.BloodSugar => "近期血糖波动较大，建议固定时间测量、注意饮食规律",
-                HealthType.HeartRate => "近期心率波动较大，建议记录活动与心率的关系、避免过度劳累",
-                _ => "近期数据波动较大，建议规律测量并记录生活情况，必要时咨询医生",
+                HealthType.BloodPressure => HealthAlertMessages.AnomalySuggestions.Volatility.BloodPressure,
+                HealthType.BloodSugar => HealthAlertMessages.AnomalySuggestions.Volatility.BloodSugar,
+                HealthType.HeartRate => HealthAlertMessages.AnomalySuggestions.Volatility.HeartRate,
+                _ => HealthAlertMessages.AnomalySuggestions.GeneralVolatility,
             },
-            _ => "建议关注身体状况，如有不适请及时就医",
+            _ => HealthAlertMessages.AnomalySuggestions.General,
         };
     }
 
