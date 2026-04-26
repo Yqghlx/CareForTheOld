@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../shared/widgets/common_states.dart';
+import '../../../shared/widgets/confirm_dialog.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 import '../providers/neighbor_circle_provider.dart';
@@ -298,22 +299,13 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
   }
 
   Future<void> _leaveCircle() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('确认退出'),
-        content: const Text('确定要退出邻里圈吗？如果您是圈主，退出后圈子将解散。'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('取消')),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: TextButton.styleFrom(foregroundColor: AppTheme.errorColor),
-            child: const Text('退出'),
-          ),
-        ],
-      ),
+    final confirmed = await showConfirmDialog(
+      context,
+      title: '确认退出',
+      message: '确定要退出邻里圈吗？如果您是圈主，退出后圈子将解散。',
+      confirmText: '退出',
     );
-    if (confirmed != true) return;
+    if (!confirmed) return;
     final success =
         await ref.read(neighborCircleProvider.notifier).leaveCircle();
     if (mounted) {
