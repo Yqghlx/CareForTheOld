@@ -487,14 +487,32 @@ public static class NotificationMessages
         /// <summary>家庭加入申请标题</summary>
         public const string JoinRequestTitle = "家庭加入申请";
 
+        /// <summary>加入申请内容模板（占位符：申请人姓名、关系、家庭名称）</summary>
+        public const string JoinRequestContentTemplate = "{0}（{1}）申请加入{2}，请审批";
+
         /// <summary>加入申请已通过标题</summary>
         public const string JoinApprovedTitle = "加入申请已通过";
+
+        /// <summary>加入申请已通过内容模板（占位符：操作者姓名、家庭名称）</summary>
+        public const string JoinApprovedContentTemplate = "{0}已同意您加入{1}";
 
         /// <summary>加入申请被拒绝标题</summary>
         public const string JoinRejectedTitle = "加入申请被拒绝";
 
         /// <summary>加入申请被拒绝内容（占位符：家庭名称）</summary>
         public const string JoinRejectedContentTemplate = "{0}的管理员拒绝了您的加入申请";
+
+        /// <summary>申请已提交默认回复</summary>
+        public const string JoinAppliedMessage = "申请已提交，等待子女审批";
+
+        /// <summary>创建者角色名称</summary>
+        public const string CreatorRole = "创建者";
+
+        /// <summary>默认家庭名称（信息缺失时使用）</summary>
+        public const string DefaultFamilyName = "家庭组";
+
+        /// <summary>默认操作者名称（信息缺失时使用）</summary>
+        public const string DefaultOperatorName = "管理员";
     }
 
     /// <summary>邻里互助相关通知</summary>
@@ -520,6 +538,18 @@ public static class NotificationMessages
 
         /// <summary>紧急求助内容（邻居广播版，占位符：老人姓名）</summary>
         public const string EmergencyRequestNeighborContentTemplate = "{0}发起紧急求助，您是附近邻居，请帮忙！";
+
+        /// <summary>邻居正在赶来内容模板（占位符：邻居姓名）</summary>
+        public const string HelperComingContentTemplate = "邻居{0}已接受您的求助，正在赶来！";
+
+        /// <summary>邻居已响应紧急呼叫内容模板（占位符：邻居姓名、老人姓名）</summary>
+        public const string HelperRespondedContentTemplate = "邻居{0}已响应{1}的紧急呼叫";
+
+        /// <summary>求助已被接受内容模板（占位符：老人姓名、邻居姓名）</summary>
+        public const string RequestAcceptedContentTemplate = "{0}的紧急求助已被{1}接受";
+
+        /// <summary>求助已取消内容模板（占位符：老人姓名）</summary>
+        public const string RequestCancelledContentTemplate = "{0}的紧急求助已被取消";
     }
 
     /// <summary>位置相关通知</summary>
@@ -544,6 +574,18 @@ public static class NotificationMessages
 
         /// <summary>已自动通知邻里圈标题</summary>
         public const string AutoNotifiedTitle = "已自动通知邻里圈";
+
+        /// <summary>围栏越界触发描述</summary>
+        public const string GeoFenceBreachText = "走出安全区域";
+
+        /// <summary>心跳超时触发描述</summary>
+        public const string HeartbeatTimeoutText = "设备长时间无响应";
+
+        /// <summary>紧急确认内容模板（占位符：老人姓名、触发描述、等待分钟数）</summary>
+        public const string UrgentConfirmContentTemplate = "{0}{1}，请在 {2} 分钟内确认安全，否则将自动通知邻里圈求助。";
+
+        /// <summary>已自动通知邻里圈内容模板（占位符：老人姓名）</summary>
+        public const string AutoNotifiedContentTemplate = "{0}的告警您未及时确认，已自动通知邻里圈求助。";
     }
 
     /// <summary>紧急呼叫相关通知</summary>
@@ -567,6 +609,9 @@ public static class NotificationMessages
         /// <summary>SMS 紧急提醒内容模板（占位符：老人姓名）</summary>
         public const string SmsReminderContentTemplate = "【紧急提醒】{0}的紧急呼叫已超过3分钟未响应，请尽快处理！";
     }
+
+    /// <summary>默认通知标题（SignalR 投递时无 Title 字段的兜底值）</summary>
+    public const string DefaultTitle = "通知";
 }
 
 /// <summary>

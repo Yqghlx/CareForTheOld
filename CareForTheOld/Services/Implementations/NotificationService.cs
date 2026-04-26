@@ -36,7 +36,7 @@ public class NotificationService : INotificationService
         var dict = JsonSerializer.Deserialize<Dictionary<string, object>>(
             JsonSerializer.Serialize(data));
 
-        var title = dict?.GetValueOrDefault("Title")?.ToString() ?? "通知";
+        var title = dict?.GetValueOrDefault("Title")?.ToString() ?? NotificationMessages.DefaultTitle;
         var content = dict?.GetValueOrDefault("Content")?.ToString() ?? "";
 
         // 写入通知记录（供用户查询历史通知）
@@ -76,7 +76,7 @@ public class NotificationService : INotificationService
         var dict = JsonSerializer.Deserialize<Dictionary<string, object>>(
             JsonSerializer.Serialize(data));
 
-        var title = dict?.GetValueOrDefault("Title")?.ToString() ?? "通知";
+        var title = dict?.GetValueOrDefault("Title")?.ToString() ?? NotificationMessages.DefaultTitle;
         var content = dict?.GetValueOrDefault("Content")?.ToString() ?? "";
         var now = DateTime.UtcNow;
         var payload = JsonSerializer.Serialize(data);

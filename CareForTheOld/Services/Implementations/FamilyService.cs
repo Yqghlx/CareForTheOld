@@ -78,7 +78,7 @@ public class FamilyService : IFamilyService
             Id = Guid.NewGuid(),
             UserId = creatorId,
             Role = creator.Role,
-            Relation = "创建者",
+            Relation = NotificationMessages.Family.CreatorRole,
             Status = FamilyMemberStatus.Approved
         });
 
@@ -187,7 +187,7 @@ public class FamilyService : IFamilyService
             await _notificationService.SendToUsersAsync(childMembers, "FamilyJoinRequest", new
             {
                 Title = NotificationMessages.Family.JoinRequestTitle,
-                Content = $"{user.RealName}（{request.Relation}）申请加入{family.FamilyName}，请审批",
+                Content = string.Format(NotificationMessages.Family.JoinRequestContentTemplate, user.RealName, request.Relation, family.FamilyName),
                 FamilyId = family.Id,
                 FamilyName = family.FamilyName,
                 ApplicantId = userId,
@@ -198,7 +198,7 @@ public class FamilyService : IFamilyService
 
         return new JoinFamilyResponse
         {
-            Message = "申请已提交，等待子女审批",
+            Message = NotificationMessages.Family.JoinAppliedMessage,
             FamilyName = family.FamilyName,
             Status = FamilyMemberStatus.Pending
         };
@@ -256,7 +256,9 @@ public class FamilyService : IFamilyService
         await _notificationService.SendToUserAsync(memberId, "FamilyJoinApproved", new
         {
             Title = NotificationMessages.Family.JoinApprovedTitle,
-            Content = $"{operatorUser?.RealName ?? "管理员"}已同意您加入{family?.FamilyName ?? "家庭组"}",
+            Content = string.Format(NotificationMessages.Family.JoinApprovedContentTemplate,
+                operatorUser?.RealName ?? NotificationMessages.Family.DefaultOperatorName,
+                family?.FamilyName ?? NotificationMessages.Family.DefaultFamilyName),
             FamilyId = familyId,
             FamilyName = family?.FamilyName ?? ""
         });

@@ -73,8 +73,8 @@ public class AutoRescueService : IAutoRescueService
         var elderName = elder?.RealName ?? AppConstants.HealthTypeLabels.DefaultElderName;
 
         var triggerText = triggerType == RescueTriggerType.GeoFenceBreach
-            ? "走出安全区域"
-            : "设备长时间无响应";
+            ? NotificationMessages.AutoRescue.GeoFenceBreachText
+            : NotificationMessages.AutoRescue.HeartbeatTimeoutText;
 
         var childIds = await context.FamilyMembers
             .Where(fm => fm.FamilyId == familyId && fm.Role == UserRole.Child)
@@ -89,7 +89,7 @@ public class AutoRescueService : IAutoRescueService
                 new
                 {
                     Title = NotificationMessages.AutoRescue.UrgentConfirmTitle,
-                    Content = $"{elderName}{triggerText}，请在 {_delayMinutes} 分钟内确认安全，否则将自动通知邻里圈求助。",
+                    Content = string.Format(NotificationMessages.AutoRescue.UrgentConfirmContentTemplate, elderName, triggerText, _delayMinutes),
                     AutoRescueId = record.Id,
                     ElderId = elderId,
                     ElderName = elderName,
@@ -183,7 +183,7 @@ public class AutoRescueService : IAutoRescueService
                     new
                     {
                         Title = NotificationMessages.AutoRescue.AutoNotifiedTitle,
-                        Content = $"{elderName}的告警您未及时确认，已自动通知邻里圈求助。",
+                        Content = string.Format(NotificationMessages.AutoRescue.AutoNotifiedContentTemplate, elderName),
                         AutoRescueId = record.Id,
                         ElderId = record.ElderId,
                         ElderName = elderName,

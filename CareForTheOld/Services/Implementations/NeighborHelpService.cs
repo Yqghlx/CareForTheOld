@@ -225,7 +225,7 @@ public class NeighborHelpService : INeighborHelpService
             new
             {
                 Title = NotificationMessages.NeighborHelp.HelperComingTitle,
-                Content = $"邻居{responder.RealName}已接受您的求助，正在赶来！",
+                Content = string.Format(NotificationMessages.NeighborHelp.HelperComingContentTemplate, responder.RealName),
                 HelpRequestId = requestId,
                 ResponderName = responder.RealName,
             });
@@ -248,7 +248,7 @@ public class NeighborHelpService : INeighborHelpService
                     new
                     {
                         Title = NotificationMessages.NeighborHelp.HelperRespondedTitle,
-                        Content = $"邻居{responder.RealName}已响应{request.Requester.RealName}的紧急呼叫",
+                        Content = string.Format(NotificationMessages.NeighborHelp.HelperRespondedContentTemplate, responder.RealName, request.Requester.RealName),
                         HelpRequestId = requestId,
                         EmergencyCallId = request.EmergencyCallId,
                         ResponderName = responder.RealName,
@@ -272,7 +272,7 @@ public class NeighborHelpService : INeighborHelpService
                 new
                 {
                     Title = NotificationMessages.NeighborHelp.RequestRespondedTitle,
-                    Content = $"{request.Requester.RealName}的紧急求助已被{responder.RealName}接受",
+                    Content = string.Format(NotificationMessages.NeighborHelp.RequestAcceptedContentTemplate, request.Requester.RealName, responder.RealName),
                     HelpRequestId = requestId,
                 });
         }
@@ -336,7 +336,7 @@ public class NeighborHelpService : INeighborHelpService
                 new
                 {
                     Title = NotificationMessages.NeighborHelp.RequestCancelledTitle,
-                    Content = $"{request.Requester.RealName}的紧急求助已被取消",
+                    Content = string.Format(NotificationMessages.NeighborHelp.RequestCancelledContentTemplate, request.Requester.RealName),
                     HelpRequestId = requestId,
                 });
         }
