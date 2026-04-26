@@ -43,7 +43,7 @@ public class FcmPushNotificationService : IPushNotificationService
     public async Task SendAsync(IEnumerable<Guid> userIds, string title, string body, Dictionary<string, string>? data = null)
     {
         var userIdList = userIds.ToList();
-        if (userIdList.Count == 0) return;
+        if (!userIdList.Any()) return;
 
         // 查询目标用户的所有设备 token
         var tokens = await _context.DeviceTokens
@@ -51,7 +51,7 @@ public class FcmPushNotificationService : IPushNotificationService
             .Select(dt => dt.Token)
             .ToListAsync();
 
-        if (tokens.Count == 0)
+        if (!tokens.Any())
         {
             _logger.LogDebug("无设备 token 可推送，目标用户数: {Count}", userIdList.Count);
             return;

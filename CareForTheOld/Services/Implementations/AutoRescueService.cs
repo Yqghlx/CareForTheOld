@@ -36,7 +36,7 @@ public class AutoRescueService : IAutoRescueService
     {
         if (!_enabled)
         {
-            _logger.LogInformation("自动救援功能已禁用，跳过");
+            _logger.LogDebug("自动救援功能已禁用，跳过");
             return;
         }
 
@@ -49,7 +49,7 @@ public class AutoRescueService : IAutoRescueService
                            a.Status == AutoRescueStatus.WaitingChildResponse);
         if (existing)
         {
-            _logger.LogInformation("老人 {ElderId} 已有待处理的自动救援记录，跳过", elderId);
+            _logger.LogDebug("老人 {ElderId} 已有待处理的自动救援记录，跳过", elderId);
             return;
         }
 
@@ -123,7 +123,7 @@ public class AutoRescueService : IAutoRescueService
             .Where(a => a.Status == AutoRescueStatus.WaitingChildResponse && a.TriggeredAt < cutoff)
             .ToListAsync();
 
-        if (pendingRecords.Count == 0) return;
+        if (!pendingRecords.Any()) return;
 
         foreach (var record in pendingRecords)
         {

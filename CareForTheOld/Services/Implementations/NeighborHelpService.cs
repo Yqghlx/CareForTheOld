@@ -289,21 +289,7 @@ public class NeighborHelpService : INeighborHelpService
             throw new InvalidOperationException(ErrorMessages.NeighborHelp.InvalidStatus);
 
         // 验证操作者：老人本人或其子女
-        var isRequester = request.RequesterId == operatorId;
-        var isChild = false;
-        if (!isRequester)
-        {
-            var familyMember = await _context.FamilyMembers
-                .FirstOrDefaultAsync(fm => fm.UserId == request.RequesterId);
-            if (familyMember != null)
-            {
-                isChild = await _context.FamilyMembers
-                    .AnyAsync(fm => fm.FamilyId == familyMember.FamilyId &&
-                                    fm.UserId == operatorId && fm.Role == UserRole.Child);
-            }
-        }
-
-        if (!isRequester && !isChild)
+        if (!await IsRequesterOrFamilyChildAsync(request.RequesterId, operatorId))
             throw new UnauthorizedAccessException(ErrorMessages.NeighborHelp.OnlyRequesterOrChildCancel);
 
         request.Status = HelpRequestStatus.Cancelled;
@@ -355,21 +341,7 @@ public class NeighborHelpService : INeighborHelpService
             throw new InvalidOperationException(ErrorMessages.NeighborHelp.NotRespondedCannotRate);
 
         // 验证评价者：老人本人或其子女
-        var isRequester = helpRequest.RequesterId == raterId;
-        var isChild = false;
-        if (!isRequester)
-        {
-            var familyMember = await _context.FamilyMembers
-                .FirstOrDefaultAsync(fm => fm.UserId == helpRequest.RequesterId);
-            if (familyMember != null)
-            {
-                isChild = await _context.FamilyMembers
-                    .AnyAsync(fm => fm.FamilyId == familyMember.FamilyId &&
-                                    fm.UserId == raterId && fm.Role == UserRole.Child);
-            }
-        }
-
-        if (!isRequester && !isChild)
+        if (!await IsRequesterOrFamilyChildAsync(helpRequest.RequesterId, raterId))
             throw new UnauthorizedAccessException(ErrorMessages.NeighborHelp.OnlyRequesterOrChildRate);
 
         // 应用层检查：同一用户对同一请求不能重复评价
@@ -533,7 +505,7 @@ public class NeighborHelpService : INeighborHelpService
             .Select(m => m.UserId)
             .ToListAsync();
 
-        if (memberIds.Count == 0) return;
+        if (!memberIds.Any()) return;
 
         var requestNow = DateTime.UtcNow;
         var helpRequest = new NeighborHelpRequest
@@ -608,5 +580,22 @@ public class NeighborHelpService : INeighborHelpService
             RespondedAt = request.RespondedAt,
             ExpiresAt = request.ExpiresAt,
         };
+    }
+
+    /// <summary>
+    /// 验证操作者是否为请求者本人或其家庭成员（子女）
+    /// </summary>
+    private async Task<bool> IsRequesterOrFamilyChildAsync(Guid requesterId, Guid operatorId)
+    {
+        if (requesterId == operatorId) return true;
+
+        var familyMember = await _context.FamilyMembers
+            .FirstOrDefaultAsync(fm => fm.UserId == requesterId);
+
+        if (familyMember == null) return false;
+
+        return await _context.FamilyMembers
+            .AnyAsync(fm => fm.FamilyId == familyMember.FamilyId &&
+                            fm.UserId == operatorId && fm.Role == UserRole.Child);
     }
 }

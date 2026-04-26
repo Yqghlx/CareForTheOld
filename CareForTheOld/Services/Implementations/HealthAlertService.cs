@@ -41,8 +41,9 @@ public class HealthAlertService : IHealthAlertService
     /// </summary>
     public async Task SendAlertToChildrenAsync(Guid elderId, HealthRecord record, string alertMessage)
     {
-        // 获取老人所在的家庭
+        // 获取老人所在的家庭（含用户信息，避免额外查询）
         var familyMember = await _context.FamilyMembers
+            .Include(fm => fm.User)
             .FirstOrDefaultAsync(fm => fm.UserId == elderId);
 
         if (familyMember == null) return; // 老人没有加入家庭，无法通知
@@ -53,11 +54,10 @@ public class HealthAlertService : IHealthAlertService
             .Where(fm => fm.FamilyId == familyMember.FamilyId && fm.Role == UserRole.Child)
             .ToListAsync();
 
-        if (children.Count == 0) return; // 没有子女成员
+        if (!children.Any()) return; // 没有子女成员
 
-        // 获取老人姓名
-        var elder = await _context.Users.FindAsync(elderId);
-        var elderName = elder?.RealName ?? AppConstants.HealthTypeLabels.DefaultElderName;
+        // 直接从 familyMember 获取老人姓名，无需额外查询
+        var elderName = familyMember.User?.RealName ?? AppConstants.HealthTypeLabels.DefaultElderName;
 
         // 构建通知内容
         var typeLabel = record.Type.GetLabel();

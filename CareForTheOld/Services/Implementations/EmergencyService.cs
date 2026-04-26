@@ -211,9 +211,18 @@ public class EmergencyService : IEmergencyService
                 ? string.Format(NotificationMessages.Emergency.SmsReminderContentTemplate, elderName)
                 : string.Format(NotificationMessages.Emergency.SmsCallContentTemplate, elderName);
 
-            var (success, errorMessage) = await _smsService.SendAsync(child.User.PhoneNumber, content);
+            var (success, errorMessage) = (false, "未知错误");
+            try
+            {
+                (success, errorMessage) = await _smsService.SendAsync(child.User.PhoneNumber, content);
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+                _logger.LogError(ex, "紧急呼叫 SMS 发送异常: 呼叫={CallId}, 子女={ChildId}",
+                    callId, child.UserId);
+            }
 
-            // 记录短信发送结果
             smsRecords.Add(new SmsRecord
             {
                 Id = Guid.NewGuid(),
@@ -230,11 +239,6 @@ public class EmergencyService : IEmergencyService
             {
                 _logger.LogInformation("紧急呼叫 SMS 已发送: 呼叫={CallId}, 子女={ChildId}, 服务={Service}",
                     callId, child.UserId, _smsService.ServiceName);
-            }
-            else
-            {
-                _logger.LogWarning("紧急呼叫 SMS 发送失败: 呼叫={CallId}, 子女={ChildId}, 错误={Error}",
-                    callId, child.UserId, errorMessage);
             }
         }
 
