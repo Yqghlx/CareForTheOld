@@ -447,6 +447,18 @@ public static class AppConstants
 
         /// <summary>趋势下降消息模板（占位符：类型名称、百分比）</summary>
         public const string TrendFallingTemplate = "近7天{0}均值较30天均值降低约{1}%，请关注";
+
+        /// <summary>血压趋势关注阈值（百分比），超过此值需提醒关注</summary>
+        public const double BloodPressureTrendThresholdPercent = 8.0;
+
+        /// <summary>血糖趋势关注阈值（百分比），超过此值需提醒关注</summary>
+        public const double BloodSugarTrendThresholdPercent = 10.0;
+
+        /// <summary>心率趋势关注阈值（百分比），超过此值需提醒关注</summary>
+        public const double HeartRateTrendThresholdPercent = 10.0;
+
+        /// <summary>体温趋势关注阈值（百分比），超过此值需提醒关注</summary>
+        public const double TemperatureTrendThresholdPercent = 1.0;
     }
 
     /// <summary>
@@ -493,6 +505,18 @@ public static class AppConstants
 
         /// <summary>默认健康指标名称</summary>
         public const string DefaultHealthLabel = "健康指标";
+
+        /// <summary>正面反馈最少所需天数（基线稳定性评估）</summary>
+        public const int MinimumPositiveFeedbackDays = 5;
+
+        /// <summary>趋势判定阈值（百分比），超过此值视为上升/下降趋势</summary>
+        public const double TrendDirectionThresholdPercent = 5.0;
+
+        /// <summary>持续偏高/偏低的严重度权重系数</summary>
+        public const double ContinuousSeverityWeight = 10.0;
+
+        /// <summary>波动性的严重度权重系数</summary>
+        public const double VolatilitySeverityWeight = 20.0;
     }
 
     /// <summary>

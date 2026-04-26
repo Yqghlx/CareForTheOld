@@ -139,11 +139,11 @@ public class DapperHealthQueryService : IHealthQueryService
         // 不同健康类型使用不同的变化阈值
         var threshold = type switch
         {
-            HealthType.BloodPressure => 8.0,   // 血压波动 8% 以上关注
-            HealthType.BloodSugar => 10.0,      // 血糖波动 10% 以上关注
-            HealthType.HeartRate => 10.0,        // 心率波动 10% 以上关注
-            HealthType.Temperature => 1.0,       // 体温变化 1% 以上关注（体温基数小，1%约0.36度）
-            _ => 10.0
+            HealthType.BloodPressure => AppConstants.HealthStatsDays.BloodPressureTrendThresholdPercent,
+            HealthType.BloodSugar => AppConstants.HealthStatsDays.BloodSugarTrendThresholdPercent,
+            HealthType.HeartRate => AppConstants.HealthStatsDays.HeartRateTrendThresholdPercent,
+            HealthType.Temperature => AppConstants.HealthStatsDays.TemperatureTrendThresholdPercent,
+            _ => AppConstants.HealthStatsDays.BloodSugarTrendThresholdPercent
         };
 
         if (percentChange < threshold)

@@ -103,7 +103,7 @@ public class HealthAnomalyDetector
         double baselineValue,
         List<(DateTime Date, double Value)> recentDays)
     {
-        if (recentDays.Count < Math.Max(5, _options.RecentStatsDays - 2)) return null;
+        if (recentDays.Count < Math.Max(AppConstants.AnomalyEvaluation.MinimumPositiveFeedbackDays, _options.RecentStatsDays - 2)) return null;
 
         var stdDev = CalculateStdDev(recentDays.Select(r => r.Value).ToList());
         var coefficientOfVariation = baselineValue > 0 ? stdDev / baselineValue : 0;
@@ -198,8 +198,8 @@ public class HealthAnomalyDetector
             var secondAvg = secondHalf.Average(r => r.Value);
             var trendDiff = (secondAvg - firstAvg) / firstAvg * 100;
 
-            if (trendDiff > 5) trend = "rising";
-            else if (trendDiff < -5) trend = "falling";
+            if (trendDiff > AppConstants.AnomalyEvaluation.TrendDirectionThresholdPercent) trend = "rising";
+            else if (trendDiff < -AppConstants.AnomalyEvaluation.TrendDirectionThresholdPercent) trend = "falling";
             else trend = "stable";
         }
 
@@ -288,7 +288,7 @@ public class HealthAnomalyDetector
                     DetectedAt = continuousHighStart,
                     Type = AnomalyType.ContinuousHigh,
                     Description = string.Format(HealthAlertMessages.AnomalyDetection.ContinuousHighTemplate, healthType, continuousHighDays, _options.ContinuousThresholdPercent),
-                    SeverityScore = CalculateSeverityScore(continuousHighDays * 10, healthType),
+                    SeverityScore = CalculateSeverityScore(continuousHighDays * AppConstants.AnomalyEvaluation.ContinuousSeverityWeight, healthType),
                     RecommendedAction = GetRecommendedAction(AnomalyType.ContinuousHigh, healthType, 0),
                 });
                 break;
@@ -301,7 +301,7 @@ public class HealthAnomalyDetector
                     DetectedAt = continuousLowStart,
                     Type = AnomalyType.ContinuousLow,
                     Description = string.Format(HealthAlertMessages.AnomalyDetection.ContinuousLowTemplate, healthType, continuousLowDays, _options.ContinuousThresholdPercent),
-                    SeverityScore = CalculateSeverityScore(continuousLowDays * 10, healthType),
+                    SeverityScore = CalculateSeverityScore(continuousLowDays * AppConstants.AnomalyEvaluation.ContinuousSeverityWeight, healthType),
                     RecommendedAction = GetRecommendedAction(AnomalyType.ContinuousLow, healthType, 0),
                 });
                 break;
@@ -332,7 +332,7 @@ public class HealthAnomalyDetector
                     DetectedAt = DateTime.UtcNow,
                     Type = AnomalyType.Volatility,
                     Description = string.Format(HealthAlertMessages.AnomalyDetection.VolatilityTemplate, _options.BaselineDays, healthType, $"{(recentStdDev / olderStdDev):F1}"),
-                    SeverityScore = CalculateSeverityScore(recentStdDev / olderStdDev * 20, healthType),
+                    SeverityScore = CalculateSeverityScore(recentStdDev / olderStdDev * AppConstants.AnomalyEvaluation.VolatilitySeverityWeight, healthType),
                     RecommendedAction = GetRecommendedAction(AnomalyType.Volatility, healthType, 0),
                 });
             }

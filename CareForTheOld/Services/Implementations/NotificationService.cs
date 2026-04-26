@@ -125,7 +125,7 @@ public class NotificationService : INotificationService
     /// </summary>
     public async Task<List<NotificationResponse>> GetUserNotificationsAsync(Guid userId, int limit = AppConstants.Pagination.DefaultPageSize)
     {
-        limit = Math.Clamp(limit, 1, 100);
+        limit = Math.Clamp(limit, AppConstants.Pagination.MinPageSize, AppConstants.Pagination.MaxPageSize);
         return await _context.NotificationRecords
             .Where(n => n.UserId == userId)
             .OrderByDescending(n => n.CreatedAt)
