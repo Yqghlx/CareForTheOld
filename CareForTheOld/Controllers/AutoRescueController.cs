@@ -7,6 +7,7 @@ using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using CareForTheOld.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace CareForTheOld.Controllers;
@@ -63,8 +64,8 @@ public class AutoRescueController : ControllerBase
             r.Id,
             r.ElderId,
             ElderName = r.Elder.RealName,
-            TriggerType = r.TriggerType.ToString(),
-            Status = r.Status.ToString(),
+            TriggerType = r.TriggerType.GetLabel(),
+            Status = r.Status.GetLabel(),
             r.TriggeredAt,
             r.ChildNotifiedAt,
             r.ChildRespondedAt,

@@ -174,7 +174,7 @@ public class MedicationReminderService : BackgroundService
 
         if (plan == null) return;
 
-        var elderName = plan.Elder?.RealName ?? "老人";
+        var elderName = plan.Elder?.RealName ?? AppConstants.HealthTypeLabels.DefaultElderName;
 
         if (!isEscalation)
         {
