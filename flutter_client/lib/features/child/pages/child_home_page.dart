@@ -204,7 +204,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     icon: Icons.volunteer_activism,
                     onPressed: () => context.push('/neighbor-help'),
                     gradient: const LinearGradient(
-                      colors: [Colors.orange, Colors.deepOrange],
+                      colors: [AppTheme.warningColor, Colors.deepOrange],
                     ),
                   ),
                 ),
@@ -313,9 +313,9 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                                   memCacheHeight: 256,
                                   maxWidthDiskCache: 512,
                                   maxHeightDiskCache: 512,
-                                  errorWidget: (_, __, ___) => const Icon(Icons.elderly, size: 32, color: Colors.orange),
+                                  errorWidget: (_, __, ___) => const Icon(Icons.elderly, size: 32, color: AppTheme.warningColor),
                                 )
-                              : const Icon(Icons.elderly, size: 32, color: Colors.orange),
+                              : const Icon(Icons.elderly, size: 32, color: AppTheme.warningColor),
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -366,8 +366,8 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         icon: const Icon(Icons.location_on, size: 18),
                         label: const Text('查看位置'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.green,
-                          side: const BorderSide(color: Colors.green),
+                          foregroundColor: AppTheme.successColor,
+                          side: const BorderSide(color: AppTheme.successColor),
                         ),
                       ),
                     ),

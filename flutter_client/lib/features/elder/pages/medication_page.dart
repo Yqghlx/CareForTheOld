@@ -115,8 +115,8 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _buildStatItem('待服用', '${state.pendingCount}', Colors.orange),
-            _buildStatItem('已服用', '${state.takenCount}', Colors.green),
+            _buildStatItem('待服用', '${state.pendingCount}', AppTheme.warningColor),
+            _buildStatItem('已服用', '${state.takenCount}', AppTheme.successColor),
             _buildStatItem('已跳过', '${state.skippedCount}', AppTheme.grey500),
           ],
         ),
@@ -212,7 +212,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
       shape: RoundedRectangleBorder(
         borderRadius: AppTheme.radiusL,
         side: log.status == MedicationStatus.taken
-            ? BorderSide(color: Colors.green.withValues(alpha: 0.3), width: 1.5)
+            ? BorderSide(color: AppTheme.successColor.withValues(alpha: 0.3), width: 1.5)
             : BorderSide.none,
       ),
       child: Padding(
@@ -272,7 +272,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: log.status == MedicationStatus.taken
-                          ? Colors.green.shade700
+                          ? AppTheme.successDark
                           : null,
                     ),
                   ),
@@ -471,7 +471,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
         decoration: BoxDecoration(
           borderRadius: AppTheme.radiusL,
           border: Border.all(
-            color: Colors.orange.withValues(alpha: 0.4),
+            color: AppTheme.warningColor.withValues(alpha: 0.4),
             width: 2,
           ),
         ),
@@ -487,12 +487,12 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
           decoration: BoxDecoration(
             borderRadius: AppTheme.radiusL,
             border: Border.all(
-              color: Colors.orange.withValues(alpha: glowAlpha),
+              color: AppTheme.warningColor.withValues(alpha: glowAlpha),
               width: 2,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.orange.withValues(alpha: glowAlpha * 0.5),
+                color: AppTheme.warningColor.withValues(alpha: glowAlpha * 0.5),
                 blurRadius: 12,
                 spreadRadius: 2,
               ),
@@ -524,10 +524,10 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
                   width: 56,
                   height: 56,
                   decoration: BoxDecoration(
-                    color: Colors.orange.withValues(alpha: 0.15),
+                    color: AppTheme.warningColor.withValues(alpha: 0.15),
                     borderRadius: AppTheme.radiusM,
                   ),
-                  child: const Icon(Icons.medication, color: Colors.orange, size: 28),
+                  child: const Icon(Icons.medication, color: AppTheme.warningColor, size: 28),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -546,7 +546,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
                     ],
                   ),
                 ),
-                StatusChip(label: log.status.label, color: Colors.orange),
+                StatusChip(label: log.status.label, color: AppTheme.warningColor),
               ],
             ),
             Padding(
@@ -559,7 +559,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
                       icon: Icons.check,
                       onPressed: widget.isSubmitting ? null : widget.onTaken,
                       isLoading: widget.isSubmitting,
-                      gradient: const LinearGradient(colors: [Colors.green, Colors.lightGreen]),
+                      gradient: const LinearGradient(colors: [AppTheme.successColor, Colors.lightGreen]),
                     ),
                   ),
                   const SizedBox(width: 12),

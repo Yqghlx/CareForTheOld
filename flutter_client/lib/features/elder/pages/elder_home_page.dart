@@ -306,7 +306,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                 icon: Icons.people,
                 title: '家庭成员',
                 subtitle: '查看家人信息',
-                color: Colors.green,
+                color: AppTheme.successColor,
                 onTap: () => context.push('/elder/family'),
               ),
               AnimatedQuickCard(
@@ -320,7 +320,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                 icon: Icons.volunteer_activism,
                 title: '邻里互助',
                 subtitle: '求助与帮助邻居',
-                color: Colors.orange,
+                color: AppTheme.warningColor,
                 onTap: () => context.push('/neighbor-help'),
               ),
               AnimatedQuickCard(
@@ -570,10 +570,10 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: Colors.green.withValues(alpha: 0.15),
+                color: AppTheme.successColor.withValues(alpha: 0.15),
                 borderRadius: AppTheme.radiusS,
               ),
-              child: const Icon(Icons.check_circle, color: Colors.green, size: 32),
+              child: const Icon(Icons.check_circle, color: AppTheme.successColor, size: 32),
             ),
             const SizedBox(width: 16),
             const Text('呼叫已发送'),
@@ -598,7 +598,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
             text: '确定',
             onPressed: () => Navigator.pop(ctx),
             gradient: const LinearGradient(
-              colors: [Colors.green, Colors.lightGreen],
+              colors: [AppTheme.successColor, Colors.lightGreen],
             ),
           ),
         ],

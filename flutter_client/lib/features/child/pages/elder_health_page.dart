@@ -346,7 +346,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
             title: '体温',
             value: _getStatsValue(typeMap, '体温'),
             subtitle: _getStatsSubtitle(typeMap, '体温'),
-            color: Colors.orange,
+            color: AppTheme.warningColor,
           ),
         ),
       ],
@@ -443,7 +443,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     // 启用/停用开关
                     Switch(
                       value: plan.isActive,
-                      activeThumbColor: Colors.green,
+                      activeThumbColor: AppTheme.successColor,
                       onChanged: (value) => _togglePlan(plan, value),
                     ),
                   ],
@@ -844,8 +844,8 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                           style: TextStyle(
                             fontSize: 13,
                             color: delayInfo != null
-                                ? Colors.orange.shade700
-                                : Colors.green.shade700,
+                                ? AppTheme.warningDark
+                                : AppTheme.successDark,
                           ),
                         ),
                       if (delayInfo != null)
@@ -853,7 +853,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                           delayInfo,
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.orange.shade700,
+                            color: AppTheme.warningDark,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -1020,15 +1020,15 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     String severityText;
     IconData severityIcon;
     if (!hasAnomalies) {
-      severityColor = Colors.green;
+      severityColor = AppTheme.successColor;
       severityText = '健康状态良好';
       severityIcon = Icons.check_circle;
     } else if (maxSeverity < 33) {
-      severityColor = Colors.orange.shade600;
+      severityColor = AppTheme.warningColor;
       severityText = '轻度关注';
       severityIcon = Icons.info_outline;
     } else if (maxSeverity < 66) {
-      severityColor = Colors.orange.shade800;
+      severityColor = AppTheme.grey800;
       severityText = '需要关注';
       severityIcon = Icons.warning_amber;
     } else {
@@ -1170,35 +1170,35 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: Colors.green.withValues(alpha: 0.06),
+                    color: AppTheme.successColor.withValues(alpha: 0.06),
                     borderRadius: AppTheme.radiusS,
-                    border: Border.all(color: Colors.green.withValues(alpha: 0.15)),
+                    border: Border.all(color: AppTheme.successColor.withValues(alpha: 0.15)),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.emoji_events_outlined, color: Colors.green.shade600, size: 22),
+                          Icon(Icons.emoji_events_outlined, color: AppTheme.successColor, size: 22),
                           const SizedBox(width: 8),
                           Text(
                             anomaly.positiveFeedback!.quality,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Colors.green.shade700,
+                              color: AppTheme.successDark,
                             ),
                           ),
                           const Spacer(),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                             decoration: BoxDecoration(
-                              color: Colors.green.withValues(alpha: 0.12),
+                              color: AppTheme.successColor.withValues(alpha: 0.12),
                               borderRadius: AppTheme.radius6,
                             ),
                             child: Text(
                               '连续${anomaly.positiveFeedback!.daysStable}天平稳',
-                              style: TextStyle(fontSize: 12, color: Colors.green.shade600),
+                              style: TextStyle(fontSize: 12, color: AppTheme.successColor),
                             ),
                           ),
                         ],
@@ -1206,16 +1206,16 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       const SizedBox(height: 10),
                       Text(
                         anomaly.positiveFeedback!.message,
-                        style: TextStyle(fontSize: 14, color: Colors.green.shade700, height: 1.4),
+                        style: TextStyle(fontSize: 14, color: AppTheme.successDark, height: 1.4),
                       ),
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          Icon(Icons.show_chart, size: 14, color: Colors.green.shade500),
+                          Icon(Icons.show_chart, size: 14, color: AppTheme.successMedium),
                           const SizedBox(width: 4),
                           Text(
                             '变异系数: ${anomaly.positiveFeedback!.coefficientOfVariation.toStringAsFixed(1)}%',
-                            style: TextStyle(fontSize: 12, color: Colors.green.shade500),
+                            style: TextStyle(fontSize: 12, color: AppTheme.successMedium),
                           ),
                         ],
                       ),
@@ -1226,17 +1226,17 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 Container(
                   padding: AppTheme.paddingAll12,
                   decoration: BoxDecoration(
-                    color: Colors.green.withValues(alpha: 0.08),
+                    color: AppTheme.successColor.withValues(alpha: 0.08),
                     borderRadius: AppTheme.radiusS,
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.check_circle_outline, color: Colors.green.shade600, size: 20),
+                      Icon(Icons.check_circle_outline, color: AppTheme.successColor, size: 20),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           '$elderName 的健康数据趋势稳定，未发现异常',
-                          style: TextStyle(fontSize: 14, color: Colors.green.shade700),
+                          style: TextStyle(fontSize: 14, color: AppTheme.successDark),
                         ),
                       ),
                     ],
@@ -1313,9 +1313,9 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     // 根据严重度选择颜色
     Color color;
     if (event.severityScore < 33) {
-      color = Colors.orange.shade600;
+      color = AppTheme.warningColor;
     } else if (event.severityScore < 66) {
-      color = Colors.orange.shade800;
+      color = AppTheme.grey800;
     } else {
       color = Colors.red.shade700;
     }

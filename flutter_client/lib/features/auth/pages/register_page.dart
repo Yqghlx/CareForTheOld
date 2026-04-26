@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/api/api_client.dart';
+import '../../../core/constants/api_endpoints.dart';
 import '../../../core/extensions/api_error_extension.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 import '../../../core/extensions/date_format_extension.dart';
@@ -46,7 +47,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
 
     try {
       final apiClient = ref.read(apiClientProvider);
-      final response = await apiClient.dio.post('/auth/register', data: {
+      final response = await apiClient.dio.post(ApiEndpoints.authRegister, data: {
         'phoneNumber': _phoneController.text,
         'password': _passwordController.text,
         'realName': _nameController.text,
@@ -163,7 +164,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                         labelText: '出生日期（选填）',
                         prefixIcon: const Icon(Icons.cake),
                         suffixIcon: _selectedBirthDate != null
-                            ? const Icon(Icons.check_circle, color: Colors.green)
+                            ? const Icon(Icons.check_circle, color: AppTheme.successColor)
                             : null,
                         hintText: '点击选择出生日期',
                       ),

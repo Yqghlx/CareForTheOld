@@ -95,14 +95,14 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
-                color: Colors.orange.shade100,
+                color: AppTheme.grey100,
                 borderRadius: AppTheme.radius10,
               ),
               child: Text(
                 '${pending.length}',
                 style: TextStyle(
                   fontSize: 12,
-                  color: Colors.orange.shade700,
+                  color: AppTheme.warningDark,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -130,12 +130,12 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: Colors.orange.withValues(alpha: 0.15),
+                color: AppTheme.warningColor.withValues(alpha: 0.15),
                 borderRadius: AppTheme.radiusS,
               ),
               child: Icon(
                 member.role.isElder ? Icons.elderly : Icons.person,
-                color: Colors.orange,
+                color: AppTheme.warningColor,
                 size: 26,
               ),
             ),
@@ -155,12 +155,12 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
                         decoration: BoxDecoration(
-                          color: Colors.orange.withValues(alpha: 0.1),
+                          color: AppTheme.warningColor.withValues(alpha: 0.1),
                           borderRadius: AppTheme.radius4,
                         ),
                         child: Text(
                           '待审批',
-                          style: TextStyle(fontSize: 11, color: Colors.orange.shade700),
+                          style: TextStyle(fontSize: 11, color: AppTheme.warningDark),
                         ),
                       ),
                       const SizedBox(width: 6),
@@ -178,7 +178,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  icon: Icon(Icons.check_circle, color: Colors.green.shade600),
+                  icon: Icon(Icons.check_circle, color: AppTheme.successColor),
                   onPressed: () => _approveMember(member),
                   tooltip: '通过',
                 ),
@@ -468,10 +468,10 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: Colors.orange.withValues(alpha: 0.1),
+                color: AppTheme.warningColor.withValues(alpha: 0.1),
                 borderRadius: AppTheme.radiusXL,
               ),
-              child: const Icon(Icons.group_add, size: 40, color: Colors.orange),
+              child: const Icon(Icons.group_add, size: 40, color: AppTheme.warningColor),
             ),
             const SizedBox(height: 16),
             const Text('您还未加入家庭组', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
@@ -482,7 +482,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               text: '输入邀请码加入',
               onPressed: () => _showJoinFamilyDialog(),
               gradient: const LinearGradient(
-                colors: [Colors.orange, Colors.deepOrange],
+                colors: [AppTheme.warningColor, Colors.deepOrange],
               ),
             ),
           ],
@@ -527,7 +527,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               width: 52,
               height: 52,
               decoration: BoxDecoration(
-                color: (member.role.isElder ? Colors.orange : Colors.blue).withValues(alpha: 0.15),
+                color: (member.role.isElder ? AppTheme.warningColor : Colors.blue).withValues(alpha: 0.15),
                 borderRadius: AppTheme.radiusM,
               ),
               child: ClipRRect(
@@ -542,13 +542,13 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                         maxHeightDiskCache: 512,
                         errorWidget: (_, __, ___) => Icon(
                           member.role.isElder ? Icons.elderly : Icons.person,
-                          color: member.role.isElder ? Colors.orange : Colors.blue,
+                          color: member.role.isElder ? AppTheme.warningColor : Colors.blue,
                           size: 28,
                         ),
                       )
                     : Icon(
                         member.role.isElder ? Icons.elderly : Icons.person,
-                        color: member.role.isElder ? Colors.orange : Colors.blue,
+                        color: member.role.isElder ? AppTheme.warningColor : Colors.blue,
                         size: 28,
                       ),
               ),
@@ -569,14 +569,14 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
-                          color: (member.role.isElder ? Colors.orange : Colors.blue).withValues(alpha: 0.1),
+                          color: (member.role.isElder ? AppTheme.warningColor : Colors.blue).withValues(alpha: 0.1),
                           borderRadius: AppTheme.radius6,
                         ),
                         child: Text(
                           member.role.label,
                           style: TextStyle(
                             fontSize: 12,
-                            color: member.role.isElder ? Colors.orange : Colors.blue,
+                            color: member.role.isElder ? AppTheme.warningColor : Colors.blue,
                           ),
                         ),
                       ),
@@ -681,10 +681,10 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: Colors.orange.withValues(alpha: 0.15),
+                      color: AppTheme.warningColor.withValues(alpha: 0.15),
                       borderRadius: AppTheme.radius10,
                     ),
-                    child: const Icon(Icons.vpn_key, color: Colors.orange),
+                    child: const Icon(Icons.vpn_key, color: AppTheme.warningColor),
                   ),
                   const SizedBox(width: 12),
                   const Text('加入家庭'),
@@ -733,7 +733,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                 PrimaryButton(
                   text: '提交申请',
                   gradient: const LinearGradient(
-                    colors: [Colors.orange, Colors.deepOrange],
+                    colors: [AppTheme.warningColor, Colors.deepOrange],
                   ),
                   onPressed: () async {
                     final code = codeController.text.trim();

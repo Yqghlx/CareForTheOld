@@ -159,10 +159,10 @@ public class EmergencyService : IEmergencyService
         {
             var childUserIds = children.Select(c => c.UserId).ToList();
 
-            var title = isReminder ? "紧急呼叫仍未响应" : "紧急呼叫";
+            var title = isReminder ? NotificationMessages.Emergency.CallReminderTitle : NotificationMessages.Emergency.CallTitle;
             var content = isReminder
-                ? $"{elderName}的紧急呼叫已超过3分钟未得到响应，请尽快处理！"
-                : $"{elderName}发起了紧急呼叫，请尽快处理！";
+                ? string.Format(NotificationMessages.Emergency.CallReminderContentTemplate, elderName)
+                : string.Format(NotificationMessages.Emergency.CallContentTemplate, elderName);
 
             // SignalR 推送通知（前台实时）
             await _notificationService.SendToUsersAsync(
@@ -208,8 +208,8 @@ public class EmergencyService : IEmergencyService
         foreach (var child in children)
         {
             var content = isReminder
-                ? $"【紧急提醒】{elderName}的紧急呼叫已超过3分钟未响应，请尽快处理！"
-                : $"【紧急呼叫】{elderName}发起了紧急呼叫，请立即查看并处理！";
+                ? string.Format(NotificationMessages.Emergency.SmsReminderContentTemplate, elderName)
+                : string.Format(NotificationMessages.Emergency.SmsCallContentTemplate, elderName);
 
             var (success, errorMessage) = await _smsService.SendAsync(child.User.PhoneNumber, content);
 

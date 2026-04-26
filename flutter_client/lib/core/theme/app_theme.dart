@@ -13,6 +13,13 @@ class AppTheme {
   static const Color warningColor = Color(0xFFFAAD14);
   static const Color errorColor = Color(0xFFFF4D4F);
 
+  /// 辅助色变体（对应 MaterialColor shade）
+  static const Color successLight = Color(0xFFA5D6A7);  // ~green.shade200
+  static const Color successDark = Color(0xFF388E3C);   // ~green.shade700
+  static const Color successMedium = Color(0xFF66BB6A); // ~green.shade400
+  static const Color warningLight = Color(0xFFFFCC80);  // ~orange.shade200
+  static const Color warningDark = Color(0xFFF57C00);   // ~orange.shade700
+
   /// 背景色
   static const Color backgroundColor = Color(0xFFF5F5F5);
   static const Color cardColor = Colors.white;

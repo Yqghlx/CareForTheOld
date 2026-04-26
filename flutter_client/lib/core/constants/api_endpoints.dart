@@ -6,6 +6,7 @@ class ApiEndpoints {
   // ==================== 认证 ====================
   static const authLogin = '/auth/login';
   static const authRegister = '/auth/register';
+  static const authRefresh = '/auth/refresh';
 
   // ==================== 用户 ====================
   static const userMe = '/user/me';

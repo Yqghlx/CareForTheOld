@@ -90,18 +90,18 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                   margin: AppTheme.marginBottom12,
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
-                    color: Colors.orange.withValues(alpha: 0.1),
+                    color: AppTheme.warningColor.withValues(alpha: 0.1),
                     borderRadius: AppTheme.radius10,
-                    border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
+                    border: Border.all(color: AppTheme.warningColor.withValues(alpha: 0.3)),
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.cloud_off, size: 18, color: Colors.orange.shade700),
+                      Icon(Icons.cloud_off, size: 18, color: AppTheme.warningDark),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           '网络未连接，当前显示缓存数据',
-                          style: TextStyle(fontSize: 16, color: Colors.orange.shade700),
+                          style: TextStyle(fontSize: 16, color: AppTheme.warningDark),
                         ),
                       ),
                     ],
@@ -183,9 +183,9 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
             margin: AppTheme.marginBottom8,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
-              color: Colors.orange.withValues(alpha: 0.1),
+              color: AppTheme.warningColor.withValues(alpha: 0.1),
               borderRadius: AppTheme.radiusS,
-              border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
+              border: Border.all(color: AppTheme.warningColor.withValues(alpha: 0.3)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,7 +196,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                   Expanded(
                     child: Text(
                       w.trendWarning ?? '',
-                      style: TextStyle(fontSize: 16, color: Colors.orange.shade800),
+                      style: TextStyle(fontSize: 16, color: AppTheme.grey800),
                     ),
                   ),
                 ],
@@ -355,7 +355,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
       shape: RoundedRectangleBorder(
         borderRadius: AppTheme.radiusL,
         side: abnormal
-            ? BorderSide(color: Colors.orange.withValues(alpha: 0.5), width: 1.5)
+            ? BorderSide(color: AppTheme.warningColor.withValues(alpha: 0.5), width: 1.5)
             : BorderSide.none,
       ),
       child: Padding(
@@ -366,12 +366,12 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
               width: 52,
               height: 52,
               decoration: BoxDecoration(
-                color: (abnormal ? Colors.orange : record.type.color).withValues(alpha: 0.15),
+                color: (abnormal ? AppTheme.warningColor : record.type.color).withValues(alpha: 0.15),
                 borderRadius: AppTheme.radiusS,
               ),
               child: Icon(
                 abnormal ? Icons.warning_amber : record.type.icon,
-                color: abnormal ? Colors.orange : record.type.color,
+                color: abnormal ? AppTheme.warningColor : record.type.color,
                 size: 28,
               ),
             ),
@@ -387,7 +387,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: abnormal ? Colors.orange.shade700 : null,
+                          color: abnormal ? AppTheme.warningDark : null,
                         ),
                       ),
                       if (abnormal) ...[
@@ -395,12 +395,12 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
-                            color: Colors.orange.withValues(alpha: 0.15),
+                            color: AppTheme.warningColor.withValues(alpha: 0.15),
                             borderRadius: AppTheme.radius6,
                           ),
                           child: Text(
                             abnormalLabel,
-                            style: const TextStyle(fontSize: 16, color: Colors.orange, fontWeight: FontWeight.w600),
+                            style: const TextStyle(fontSize: 16, color: AppTheme.warningColor, fontWeight: FontWeight.w600),
                           ),
                         ),
                       ],

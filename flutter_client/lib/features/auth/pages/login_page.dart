@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../shared/providers/auth_provider.dart';
 import '../../../core/api/api_client.dart';
+import '../../../core/constants/api_endpoints.dart';
 import '../../../shared/models/user.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../core/theme/app_theme.dart';
@@ -66,7 +67,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
 
     try {
       final apiClient = ref.read(apiClientProvider);
-      final response = await apiClient.dio.post('/auth/login', data: {
+      final response = await apiClient.dio.post(ApiEndpoints.authLogin, data: {
         'phoneNumber': phoneController.text,
         'password': passwordController.text,
       });

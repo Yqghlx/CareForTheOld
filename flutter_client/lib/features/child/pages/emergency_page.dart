@@ -102,17 +102,17 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
             Container(
               padding: AppTheme.paddingAll24,
               decoration: BoxDecoration(
-                color: Colors.green.withValues(alpha: 0.1),
+                color: AppTheme.successColor.withValues(alpha: 0.1),
                 borderRadius: AppTheme.radiusL,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.check_circle_outline, color: Colors.green),
+                  Icon(Icons.check_circle_outline, color: AppTheme.successColor),
                   const SizedBox(width: 8),
                   const Text(
                     '暂无待处理的紧急呼叫',
-                    style: TextStyle(color: Colors.green),
+                    style: TextStyle(color: AppTheme.successColor),
                   ),
                 ],
               ),
@@ -267,7 +267,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                     icon: Icons.check,
                     onPressed: () => _respondCall(call),
                     gradient: const LinearGradient(
-                      colors: [Colors.green, Colors.lightGreen],
+                      colors: [AppTheme.successColor, Colors.lightGreen],
                     ),
                   ),
                 ),

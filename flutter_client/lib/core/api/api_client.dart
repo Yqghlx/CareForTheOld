@@ -6,6 +6,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import '../../main.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../config/app_config.dart';
+import '../constants/api_endpoints.dart';
 
 /// API 客户端配置
 class ApiClient {
@@ -120,7 +121,7 @@ class ApiClient {
         }
 
         // 排除刷新接口本身的 401，避免无限递归
-        if (error.requestOptions.path.contains('/auth/refresh')) {
+        if (error.requestOptions.path.contains(ApiEndpoints.authRefresh)) {
           debugPrint('刷新令牌接口返回 401，令牌已失效');
           _onUnauthorized?.call();
           _processPendingRequests(refreshed: false);
@@ -178,7 +179,7 @@ class ApiClient {
   Future<Map<String, String>?> _refreshTokens(String refreshToken) async {
     try {
       final response = await _refreshDio.post(
-        '/auth/refresh',
+        ApiEndpoints.authRefresh,
         data: {'refreshToken': refreshToken},
       );
 

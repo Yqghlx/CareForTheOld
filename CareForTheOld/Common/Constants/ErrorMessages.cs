@@ -520,4 +520,26 @@ public static class NotificationMessages
         /// <summary>已自动通知邻里圈标题</summary>
         public const string AutoNotifiedTitle = "已自动通知邻里圈";
     }
+
+    /// <summary>紧急呼叫相关通知</summary>
+    public static class Emergency
+    {
+        /// <summary>紧急呼叫标题</summary>
+        public const string CallTitle = "紧急呼叫";
+
+        /// <summary>紧急呼叫提醒标题</summary>
+        public const string CallReminderTitle = "紧急呼叫仍未响应";
+
+        /// <summary>紧急呼叫内容模板（占位符：老人姓名）</summary>
+        public const string CallContentTemplate = "{0}发起了紧急呼叫，请尽快处理！";
+
+        /// <summary>紧急呼叫提醒内容模板（占位符：老人姓名）</summary>
+        public const string CallReminderContentTemplate = "{0}的紧急呼叫已超过3分钟未得到响应，请尽快处理！";
+
+        /// <summary>SMS 紧急呼叫内容模板（占位符：老人姓名）</summary>
+        public const string SmsCallContentTemplate = "【紧急呼叫】{0}发起了紧急呼叫，请立即查看并处理！";
+
+        /// <summary>SMS 紧急提醒内容模板（占位符：老人姓名）</summary>
+        public const string SmsReminderContentTemplate = "【紧急提醒】{0}的紧急呼叫已超过3分钟未响应，请尽快处理！";
+    }
 }

@@ -70,7 +70,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                   ? Icons.security
                   : Icons.security_outlined,
               color: geoFenceState.fence?.isEnabled ?? false
-                  ? Colors.green
+                  ? AppTheme.successColor
                   : AppTheme.grey500,
             ),
             onPressed: () => _showGeoFenceDialog(context, elderName, latestLocationAsync),
@@ -139,12 +139,12 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: isEnabled
-              ? [Colors.green.withValues(alpha: 0.15), Colors.green.withValues(alpha: 0.05)]
+              ? [AppTheme.successColor.withValues(alpha: 0.15), AppTheme.successColor.withValues(alpha: 0.05)]
               : [AppTheme.grey300.withValues(alpha: 0.15), AppTheme.grey300.withValues(alpha: 0.05)],
         ),
         borderRadius: AppTheme.radiusL,
         border: Border.all(
-          color: isEnabled ? Colors.green.withValues(alpha: 0.3) : AppTheme.grey500.withValues(alpha: 0.3),
+          color: isEnabled ? AppTheme.successColor.withValues(alpha: 0.3) : AppTheme.grey500.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
@@ -153,12 +153,12 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: isEnabled ? Colors.green.withValues(alpha: 0.2) : AppTheme.grey500.withValues(alpha: 0.2),
+              color: isEnabled ? AppTheme.successColor.withValues(alpha: 0.2) : AppTheme.grey500.withValues(alpha: 0.2),
               borderRadius: AppTheme.radius10,
             ),
             child: Icon(
               isEnabled ? Icons.security : Icons.security_outlined,
-              color: isEnabled ? Colors.green : AppTheme.grey500,
+              color: isEnabled ? AppTheme.successColor : AppTheme.grey500,
               size: 24,
             ),
           ),
@@ -172,7 +172,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: isEnabled ? Colors.green : AppTheme.grey500,
+                    color: isEnabled ? AppTheme.successColor : AppTheme.grey500,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -196,7 +196,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                 radius: radius,
               );
             },
-            activeThumbColor: Colors.green,
+            activeThumbColor: AppTheme.successColor,
           ),
         ],
       ),
@@ -238,10 +238,10 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: Colors.green.withValues(alpha: 0.15),
+                      color: AppTheme.successColor.withValues(alpha: 0.15),
                       borderRadius: AppTheme.radius10,
                     ),
-                    child: const Icon(Icons.security, color: Colors.green),
+                    child: const Icon(Icons.security, color: AppTheme.successColor),
                   ),
                   const SizedBox(width: 12),
                   const Text('设置安全区域'),
@@ -376,7 +376,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                           }
                         },
                   gradient: const LinearGradient(
-                    colors: [Colors.green, Colors.lightGreen],
+                    colors: [AppTheme.successColor, Colors.lightGreen],
                   ),
                 ),
               ],

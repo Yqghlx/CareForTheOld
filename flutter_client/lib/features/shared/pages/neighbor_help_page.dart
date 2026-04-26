@@ -168,10 +168,10 @@ class _HelpRequestCard extends StatelessWidget {
             const SizedBox(height: 8),
             if (request.responderName != null)
               Text('响应者：${request.responderName}',
-                  style: TextStyle(color: Colors.green[700])),
+                  style: TextStyle(color: AppTheme.successDark)),
             if (!isHistory && expiresIn.inMinutes > 0)
               Text('${expiresIn.inMinutes} 分钟后过期',
-                  style: TextStyle(color: Colors.orange[700], fontSize: 12)),
+                  style: TextStyle(color: AppTheme.warningDark, fontSize: 12)),
             if (isHistory && onRate != null) ...[
               const SizedBox(height: 8),
               Align(
@@ -202,8 +202,8 @@ class _HelpRequestCard extends StatelessWidget {
 
   Widget _buildStatusChip(BuildContext context) {
     final (label, color) = switch (request.status) {
-      HelpRequestStatus.pending => ('待响应', Colors.orange),
-      HelpRequestStatus.accepted => ('已响应', Colors.green),
+      HelpRequestStatus.pending => ('待响应', AppTheme.warningColor),
+      HelpRequestStatus.accepted => ('已响应', AppTheme.successColor),
       HelpRequestStatus.cancelled => ('已取消', AppTheme.grey500),
       HelpRequestStatus.resolved => ('已完成', Colors.blue),
       HelpRequestStatus.expired => ('已过期', AppTheme.grey500),
