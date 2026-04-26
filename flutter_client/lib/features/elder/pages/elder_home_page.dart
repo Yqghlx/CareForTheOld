@@ -573,7 +573,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
             text: '确定',
             onPressed: () => Navigator.pop(ctx),
             gradient: const LinearGradient(
-              colors: [AppTheme.successColor, Colors.lightGreen],
+              colors: [AppTheme.successColor, AppTheme.successLight],
             ),
           ),
         ],

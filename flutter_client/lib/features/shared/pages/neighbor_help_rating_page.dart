@@ -50,7 +50,7 @@ class _NeighborHelpRatingPageState
                     iconSize: 48,
                     icon: Icon(
                       star <= _rating ? Icons.star : Icons.star_border,
-                      color: star <= _rating ? Colors.amber : AppTheme.grey400,
+                      color: star <= _rating ? AppTheme.amberColor : AppTheme.grey400,
                     ),
                     onPressed: () => setState(() => _rating = star),
                   );

@@ -267,7 +267,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                     icon: Icons.check,
                     onPressed: () => _respondCall(call),
                     gradient: const LinearGradient(
-                      colors: [AppTheme.successColor, Colors.lightGreen],
+                      colors: [AppTheme.successColor, AppTheme.successLight],
                     ),
                   ),
                 ),

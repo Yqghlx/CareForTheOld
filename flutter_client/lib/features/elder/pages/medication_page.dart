@@ -561,7 +561,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
                       icon: Icons.check,
                       onPressed: widget.isSubmitting ? null : widget.onTaken,
                       isLoading: widget.isSubmitting,
-                      gradient: const LinearGradient(colors: [AppTheme.successColor, Colors.lightGreen]),
+                      gradient: const LinearGradient(colors: [AppTheme.successColor, AppTheme.successLight]),
                     ),
                   ),
                   const SizedBox(width: 12),

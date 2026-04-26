@@ -376,7 +376,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                           }
                         },
                   gradient: const LinearGradient(
-                    colors: [AppTheme.successColor, Colors.lightGreen],
+                    colors: [AppTheme.successColor, AppTheme.successLight],
                   ),
                 ),
               ],

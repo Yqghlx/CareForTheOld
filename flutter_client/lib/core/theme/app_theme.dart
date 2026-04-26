@@ -33,6 +33,8 @@ class AppTheme {
   static const Color cyanColor = Color(0xFF00BCD4);      // ~cyan.shade500
   static const Color deepOrangeColor = Color(0xFFFF5722); // ~deepOrange.shade500
   static const Color blueGrey800 = Color(0xFF37474F);    // ~blueGrey.shade800
+  static const Color amberColor = Color(0xFFFFC107);      // ~amber.shade500（评分星星、奖牌金）
+  static const Color brownColor = Color(0xFF795548);      // ~brown.shade500（奖牌铜）
 
   /// 背景色
   static const Color backgroundColor = Color(0xFFF5F5F5);

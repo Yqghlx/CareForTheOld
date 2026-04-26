@@ -205,7 +205,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     icon: Icons.add,
                     onPressed: () => _showAddPlanDialog(context),
                     gradient: const LinearGradient(
-                      colors: [AppTheme.infoBlue, Colors.lightBlue],
+                      colors: [AppTheme.infoBlue, AppTheme.infoBlueLight],
                     ),
                   ),
                 ),
