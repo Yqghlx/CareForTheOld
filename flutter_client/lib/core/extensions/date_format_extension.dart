@@ -23,4 +23,13 @@ extension DateTimeFormatting on DateTime {
 
   /// 格式化为文件名日期：20240115（用于导出文件命名）
   String toFileNameDate() => DateFormat('yyyyMMdd').format(this);
+
+  /// 友好时间差：刚刚 / X 分钟前 / X 小时前 / X 天前
+  String toTimeAgoString() {
+    final diff = DateTime.now().difference(this);
+    if (diff.inMinutes < 1) return '刚刚';
+    if (diff.inMinutes < 60) return '${diff.inMinutes} 分钟前';
+    if (diff.inHours < 24) return '${diff.inHours} 小时前';
+    return '${diff.inDays} 天前';
+  }
 }

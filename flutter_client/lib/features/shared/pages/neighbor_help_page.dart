@@ -7,6 +7,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/router/route_paths.dart';
 import '../providers/neighbor_help_provider.dart';
 import '../../../core/extensions/snackbar_extension.dart';
+import '../../../core/extensions/date_format_extension.dart';
 
 /// 邻里互助页面（待响应求助 + 历史列表）
 class NeighborHelpPage extends ConsumerStatefulWidget {
@@ -139,7 +140,7 @@ class _HelpRequestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final timeAgo = _formatTimeAgo(request.requestedAt);
+    final timeAgo = request.requestedAt.toTimeAgoString();
     final expiresIn = request.expiresAt.difference(DateTime.now());
 
     return Card(
@@ -210,13 +211,5 @@ class _HelpRequestCard extends StatelessWidget {
       HelpRequestStatus.expired => ('已过期', AppTheme.grey500),
     };
     return Chip(label: Text(label, style: AppTheme.textCaption), materialTapTargetSize: MaterialTapTargetSize.shrinkWrap);
-  }
-
-  String _formatTimeAgo(DateTime time) {
-    final diff = DateTime.now().difference(time);
-    if (diff.inMinutes < 1) return '刚刚';
-    if (diff.inMinutes < 60) return '${diff.inMinutes} 分钟前';
-    if (diff.inHours < 24) return '${diff.inHours} 小时前';
-    return '${diff.inDays} 天前';
   }
 }
