@@ -178,12 +178,12 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  icon: Icon(Icons.check_circle, color: AppTheme.successColor),
+                  icon: const Icon(Icons.check_circle, color: AppTheme.successColor),
                   onPressed: () => _approveMember(member),
                   tooltip: '通过',
                 ),
                 IconButton(
-                  icon: Icon(Icons.cancel, color: AppTheme.errorMedium),
+                  icon: const Icon(Icons.cancel, color: AppTheme.errorMedium),
                   onPressed: () => _rejectMember(member),
                   tooltip: '拒绝',
                 ),
@@ -593,7 +593,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
             // 移除按钮（子女端可操作）
             if (!isElder)
               IconButton(
-                icon: Icon(Icons.remove_circle_outline, color: AppTheme.errorMedium),
+                icon: const Icon(Icons.remove_circle_outline, color: AppTheme.errorMedium),
                 onPressed: () => _confirmRemove(member),
                 tooltip: '移除成员',
               ),

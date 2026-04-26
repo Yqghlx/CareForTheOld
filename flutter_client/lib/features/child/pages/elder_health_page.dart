@@ -541,7 +541,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
           shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
           title: Row(
             children: [
-              Icon(Icons.edit, color: AppTheme.primaryColor),
+              const Icon(Icons.edit, color: AppTheme.primaryColor),
               const SizedBox(width: 12),
               const Text('编辑用药计划'),
             ],

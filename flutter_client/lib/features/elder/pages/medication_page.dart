@@ -252,7 +252,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
                             color: Colors.white,
                             size: 32,
                           )
-                        : Icon(
+                        : const Icon(
                             Icons.skip_next,
                             color: AppTheme.grey600,
                             size: 28,
