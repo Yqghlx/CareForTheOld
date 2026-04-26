@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import '../api/api_client.dart';
@@ -123,7 +122,7 @@ class OfflineQueueService {
       }
 
       if (successCount > 0 || failCount > 0) {
-        debugPrint(
+        AppLogger.info(
             '[离线队列] 上传完成: 成功=$successCount, 失败=$failCount, 剩余=${_box!.length}');
       }
     } finally {

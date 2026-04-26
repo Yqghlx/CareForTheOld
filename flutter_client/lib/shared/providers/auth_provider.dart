@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -9,6 +8,7 @@ import '../models/user.dart';
 import '../../features/shared/services/signalr_service.dart';
 import '../../core/services/fcm_service.dart';
 import '../../core/constants/pref_keys.dart';
+import '../../core/services/app_logger.dart';
 
 /// 认证状态
 class AuthState {
@@ -142,7 +142,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       _ref.read(signalrServiceProvider).connect();
     } catch (e) {
-      debugPrint('SignalR 连接失败: $e');
+      AppLogger.warning('SignalR 连接失败: $e');
     }
   }
 
@@ -151,7 +151,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       await _ref.read(signalrServiceProvider).disconnect();
     } catch (e) {
-      debugPrint('SignalR 断开失败: $e');
+      AppLogger.warning('SignalR 断开失败: $e');
     }
   }
 
@@ -174,7 +174,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       _ref.read(fcmServiceProvider).registerTokenToBackend();
     } catch (e) {
-      debugPrint('FCM token 注册失败: $e');
+      AppLogger.warning('FCM token 注册失败: $e');
     }
   }
 
@@ -183,7 +183,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       await _ref.read(fcmServiceProvider).unregisterTokenFromBackend();
     } catch (e) {
-      debugPrint('FCM token 清除失败: $e');
+      AppLogger.warning('FCM token 清除失败: $e');
     }
   }
 }
