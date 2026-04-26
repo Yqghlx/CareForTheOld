@@ -92,7 +92,7 @@ public class NotificationHub : Hub
                 {
                     connections.Remove(Context.ConnectionId);
                 }
-                if (connections.Count == 0)
+                if (!connections.Any())
                 {
                     _onlineUsers.TryRemove(userId, out _);
                     // 用户完全离线时清理心跳记录

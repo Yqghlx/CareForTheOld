@@ -78,7 +78,7 @@ public class NeighborHelpService : INeighborHelpService
             .Select(m => m.UserId)
             .ToListAsync();
 
-        if (memberIds.Count == 0)
+        if (!memberIds.Any())
         {
             _logger.LogInformation("邻里圈 {CircleId} 无其他成员", circleId);
             return;
@@ -109,7 +109,7 @@ public class NeighborHelpService : INeighborHelpService
         }
 
         // 如果附近没有邻居，广播给全圈作为兜底
-        if (nearbyUserIds.Count == 0)
+        if (!nearbyUserIds.Any())
         {
             _logger.LogInformation("紧急呼叫 {CallId} 附近 {Radius} 米无邻居，广播给全圈成员",
                 emergencyCallId, BroadcastRadiusMeters);
@@ -473,7 +473,7 @@ public class NeighborHelpService : INeighborHelpService
             .Where(r => r.Status == HelpRequestStatus.Pending && r.ExpiresAt < now)
             .ToListAsync();
 
-        if (expiredRequests.Count == 0)
+        if (!expiredRequests.Any())
             return;
 
         var expiredIds = expiredRequests.Select(r => r.Id).ToList();

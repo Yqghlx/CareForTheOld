@@ -323,6 +323,9 @@ public static class AppConstants
 
         /// <summary>互助次数封顶值，超过此数不再额外加分</summary>
         public const int MaxHelpsCap = 20;
+
+        /// <summary>评分显示的小数位数</summary>
+        public const int DisplayDecimalPlaces = 1;
     }
 
     /// <summary>

@@ -265,7 +265,7 @@ public class MedicationReminderService : BackgroundService
             .Select(fm => fm.FamilyId)
             .ToListAsync(stoppingToken);
 
-        if (familyIds.Count > 0)
+        if (familyIds.Any())
         {
             var otherMembers = await context.FamilyMembers
                 .Where(fm => familyIds.Contains(fm.FamilyId) && fm.UserId != plan.ElderId)

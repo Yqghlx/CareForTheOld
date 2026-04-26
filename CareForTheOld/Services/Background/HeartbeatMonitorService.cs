@@ -66,7 +66,7 @@ public class HeartbeatMonitorService
     public async Task CheckHeartbeatsAsync()
     {
         var heartbeats = NotificationHub.LastHeartbeats;
-        if (heartbeats.Count == 0) return;
+        if (!heartbeats.Any()) return;
 
         var now = DateTime.UtcNow;
 
@@ -99,30 +99,27 @@ public class HeartbeatMonitorService
                 .Where(fm => fm.FamilyId == familyMember.FamilyId && fm.Role == UserRole.Child)
                 .ToListAsync();
 
-            if (children.Count == 0) continue;
+            if (!children.Any()) continue;
 
             var offlineMinutes = (int)elapsed.TotalMinutes;
 
             _logger.LogWarning("[心跳监控] 老人 {Name}({UserId}) 已 {Minutes} 分钟无心跳，触发离线告警",
                 user.RealName, userId, offlineMinutes);
 
-            if (children.Count > 0)
-            {
-                await notificationService.SendToUsersAsync(
-                    children.Select(c => c.UserId),
-                    AppConstants.NotificationTypes.ElderOffline,
-                    new
-                    {
-                        Title = NotificationMessages.Heartbeat.OfflineTitle,
-                        Content = string.Format(NotificationMessages.Heartbeat.OfflineContentTemplate, user.RealName, offlineMinutes),
-                        ElderId = userId,
-                        ElderName = user.RealName,
-                        OfflineMinutes = offlineMinutes,
-                        LastHeartbeat = lastHeartbeat,
-                        AlertLevel = AppConstants.AlertLevels.Critical
-                    }
-                );
-            }
+            await notificationService.SendToUsersAsync(
+                children.Select(c => c.UserId),
+                AppConstants.NotificationTypes.ElderOffline,
+                new
+                {
+                    Title = NotificationMessages.Heartbeat.OfflineTitle,
+                    Content = string.Format(NotificationMessages.Heartbeat.OfflineContentTemplate, user.RealName, offlineMinutes),
+                    ElderId = userId,
+                    ElderName = user.RealName,
+                    OfflineMinutes = offlineMinutes,
+                    LastHeartbeat = lastHeartbeat,
+                    AlertLevel = AppConstants.AlertLevels.Critical
+                }
+            );
 
             // 检查老人是否在邻里圈中，若在则启动自动救援计时器
             var circleMembership = await context.NeighborCircleMembers

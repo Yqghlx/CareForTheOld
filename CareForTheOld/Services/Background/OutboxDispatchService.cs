@@ -46,7 +46,7 @@ public class OutboxDispatchService
             .AsTracking()
             .ToListAsync();
 
-        if (pendingMessages.Count == 0) return;
+        if (!pendingMessages.Any()) return;
 
         _logger.LogDebug("[Outbox] 开始投递 {Count} 条待发送通知", pendingMessages.Count);
 

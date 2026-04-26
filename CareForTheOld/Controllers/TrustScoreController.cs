@@ -48,9 +48,9 @@ public class TrustScoreController : ControllerBase
             r.UserId,
             UserName = r.User.RealName,
             r.TotalHelps,
-            AvgRating = Math.Round(r.AvgRating, 1),
-            ResponseRate = Math.Round(r.ResponseRate * 100, 1),
-            Score = Math.Round(r.Score, 1),
+            AvgRating = Math.Round(r.AvgRating, AppConstants.TrustScore.DisplayDecimalPlaces),
+            ResponseRate = Math.Round(r.ResponseRate * 100, AppConstants.TrustScore.DisplayDecimalPlaces),
+            Score = Math.Round(r.Score, AppConstants.TrustScore.DisplayDecimalPlaces),
         });
         return ApiResponse<object>.Ok(result);
     }
@@ -65,6 +65,6 @@ public class TrustScoreController : ControllerBase
         await _circleService.EnsureCircleMemberAsync(circleId, userId);
 
         var score = await _trustScoreService.GetUserScoreAsync(userId, circleId);
-        return ApiResponse<object>.Ok(new { Score = Math.Round(score, 1) });
+        return ApiResponse<object>.Ok(new { Score = Math.Round(score, AppConstants.TrustScore.DisplayDecimalPlaces) });
     }
 }

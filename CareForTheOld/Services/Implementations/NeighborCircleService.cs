@@ -225,7 +225,7 @@ public class NeighborCircleService : INeighborCircleService
             }
         }
 
-        if (nearbyUserIds.Count == 0)
+        if (!nearbyUserIds.Any())
             return [];
 
         // 查询成员详情并附加距离

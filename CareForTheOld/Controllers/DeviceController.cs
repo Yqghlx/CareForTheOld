@@ -44,6 +44,7 @@ public class DeviceController : ControllerBase
     public async Task<ApiResponse<object>> RegisterToken([FromBody] RegisterTokenRequest request)
     {
         var userId = this.GetUserId();
+        var now = DateTime.UtcNow;
 
         // 查找是否已有相同 token 的记录（同一设备可能换了用户）
         var existingToken = await _context.DeviceTokens
@@ -54,7 +55,7 @@ public class DeviceController : ControllerBase
             // 更新关联用户和活跃时间
             existingToken.UserId = userId;
             existingToken.Platform = request.Platform;
-            existingToken.LastActiveAt = DateTime.UtcNow;
+            existingToken.LastActiveAt = now;
         }
         else
         {
@@ -65,8 +66,8 @@ public class DeviceController : ControllerBase
                 UserId = userId,
                 Token = request.Token,
                 Platform = request.Platform,
-                CreatedAt = DateTime.UtcNow,
-                LastActiveAt = DateTime.UtcNow,
+                CreatedAt = now,
+                LastActiveAt = now,
             });
         }
 

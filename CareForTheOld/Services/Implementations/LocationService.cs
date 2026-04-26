@@ -204,7 +204,7 @@ public class LocationService : ILocationService
             .Where(fm => fm.FamilyId == familyMember.FamilyId && fm.Role == UserRole.Child)
             .ToListAsync();
 
-        if (children.Count == 0) return; // 没有子女成员
+        if (!children.Any()) return; // 没有子女成员
 
         // 构建通知内容
         var distanceText = distance > AppConstants.Location.DistanceDisplayThresholdMeters

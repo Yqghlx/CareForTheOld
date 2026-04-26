@@ -74,7 +74,7 @@ public class TrustScoreService : ITrustScoreService
             .AsTracking()
             .ToListAsync();
 
-        if (allScores.Count == 0)
+        if (!allScores.Any())
         {
             _logger.LogInformation("没有信任评分记录需要重算");
             return;
