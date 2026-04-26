@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Services.Interfaces;
@@ -35,7 +36,7 @@ public class TrustScoreController : ControllerBase
     /// 获取圈内信任排行榜
     /// </summary>
     [HttpGet("ranking")]
-    public async Task<ApiResponse<object>> GetRanking(Guid circleId, [FromQuery] int top = 20)
+    public async Task<ApiResponse<object>> GetRanking(Guid circleId, [FromQuery] int top = AppConstants.Pagination.DefaultHistoryPageSize)
     {
         var userId = this.GetUserId();
         await _circleService.EnsureCircleMemberAsync(circleId, userId);

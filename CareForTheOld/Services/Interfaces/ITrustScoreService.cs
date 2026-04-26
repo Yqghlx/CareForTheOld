@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Models.Entities;
 
 namespace CareForTheOld.Services.Interfaces;
@@ -8,7 +9,7 @@ public interface ITrustScoreService
     Task<decimal> GetUserScoreAsync(Guid userId, Guid circleId);
 
     /// <summary>获取圈内信任排行榜</summary>
-    Task<IReadOnlyList<TrustScore>> GetCircleRankingAsync(Guid circleId, int top = 20);
+    Task<IReadOnlyList<TrustScore>> GetCircleRankingAsync(Guid circleId, int top = AppConstants.Pagination.DefaultHistoryPageSize);
 
     /// <summary>重新计算所有信任评分（Hangfire 每日定时调用）</summary>
     Task RecalculateAllScoresAsync();
