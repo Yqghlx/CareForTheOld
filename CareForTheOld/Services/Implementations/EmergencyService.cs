@@ -325,19 +325,7 @@ public class EmergencyService : IEmergencyService
             .OrderByDescending(c => c.CalledAt)
             .ToListAsync();
 
-        return calls.Select(c => new EmergencyCallResponse
-        {
-            Id = c.Id,
-            ElderId = c.ElderId,
-            ElderName = c.Elder.RealName,
-            ElderPhoneNumber = c.Elder.PhoneNumber.MaskPhoneNumber(),
-            FamilyId = c.FamilyId,
-            CalledAt = c.CalledAt,
-            Status = c.Status,
-            Latitude = c.Latitude,
-            Longitude = c.Longitude,
-            BatteryLevel = c.BatteryLevel,
-        }).ToList();
+        return calls.Select(MapToResponse).ToList();
     }
 
     /// <summary>
@@ -361,22 +349,7 @@ public class EmergencyService : IEmergencyService
             .Take(limit)
             .ToListAsync();
 
-        return calls.Select(c => new EmergencyCallResponse
-        {
-            Id = c.Id,
-            ElderId = c.ElderId,
-            ElderName = c.Elder.RealName,
-            ElderPhoneNumber = c.Elder.PhoneNumber.MaskPhoneNumber(),
-            FamilyId = c.FamilyId,
-            CalledAt = c.CalledAt,
-            Status = c.Status,
-            RespondedBy = c.RespondedBy,
-            RespondedByRealName = c.RespondedByRealName,
-            RespondedAt = c.RespondedAt,
-            Latitude = c.Latitude,
-            Longitude = c.Longitude,
-            BatteryLevel = c.BatteryLevel,
-        }).ToList();
+        return calls.Select(MapToResponse).ToList();
     }
 
     /// <summary>
@@ -415,21 +388,26 @@ public class EmergencyService : IEmergencyService
 
         await _context.SaveChangesAsync();
 
-        return new EmergencyCallResponse
-        {
-            Id = call.Id,
-            ElderId = call.ElderId,
-            ElderName = call.Elder.RealName,
-            ElderPhoneNumber = call.Elder.PhoneNumber.MaskPhoneNumber(),
-            FamilyId = call.FamilyId,
-            CalledAt = call.CalledAt,
-            Status = call.Status,
-            RespondedBy = call.RespondedBy,
-            RespondedByRealName = call.RespondedByRealName,
-            RespondedAt = call.RespondedAt,
-            Latitude = call.Latitude,
-            Longitude = call.Longitude,
-            BatteryLevel = call.BatteryLevel,
-        };
+        return MapToResponse(call);
     }
+
+    /// <summary>
+    /// 将 EmergencyCall 实体映射为响应 DTO
+    /// </summary>
+    private static EmergencyCallResponse MapToResponse(EmergencyCall c) => new()
+    {
+        Id = c.Id,
+        ElderId = c.ElderId,
+        ElderName = c.Elder.RealName,
+        ElderPhoneNumber = c.Elder.PhoneNumber.MaskPhoneNumber(),
+        FamilyId = c.FamilyId,
+        CalledAt = c.CalledAt,
+        Status = c.Status,
+        RespondedBy = c.RespondedBy,
+        RespondedByRealName = c.RespondedByRealName,
+        RespondedAt = c.RespondedAt,
+        Latitude = c.Latitude,
+        Longitude = c.Longitude,
+        BatteryLevel = c.BatteryLevel,
+    };
 }

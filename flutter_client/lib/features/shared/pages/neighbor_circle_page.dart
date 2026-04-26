@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../core/router/route_paths.dart';
 
 import '../../../shared/widgets/common_states.dart';
 import '../../../shared/widgets/confirm_dialog.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 import '../providers/neighbor_circle_provider.dart';
-import 'trust_ranking_page.dart';
+
 
 /// 邻里圈管理页面（创建/搜索/加入/退出）
 class NeighborCirclePage extends ConsumerStatefulWidget {
@@ -166,12 +169,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
               icon: const Icon(Icons.emoji_events),
               label: const Text('信任排行榜'),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => TrustRankingPage(circleId: circle.id),
-                  ),
-                );
+                context.push(RoutePaths.trustRanking(circle.id));
               },
             ),
           ),

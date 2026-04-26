@@ -26,4 +26,5 @@ class RoutePaths {
   static const String neighborCircle = '/neighbor-circle';
   static const String neighborHelp = '/neighbor-help';
   static String neighborHelpRate(String requestId) => '/neighbor-help/$requestId/rate';
+  static String trustRanking(String circleId) => '/trust-ranking/$circleId';
 }

@@ -19,6 +19,7 @@ import '../../features/shared/pages/notification_page.dart';
 import '../../features/shared/pages/neighbor_circle_page.dart';
 import '../../features/shared/pages/neighbor_help_page.dart';
 import '../../features/shared/pages/neighbor_help_rating_page.dart';
+import '../../features/shared/pages/trust_ranking_page.dart';
 import '../../shared/providers/auth_provider.dart';
 import 'page_transitions.dart';
 
@@ -158,6 +159,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         pageBuilder: (context, state) {
           final id = state.pathParameters['id']!;
           return SlidePageTransition(child: NeighborHelpRatingPage(requestId: id));
+        },
+      ),
+      GoRoute(
+        path: '/trust-ranking/:circleId',
+        pageBuilder: (context, state) {
+          final circleId = state.pathParameters['circleId']!;
+          return SlidePageTransition(child: TrustRankingPage(circleId: circleId));
         },
       ),
     ],
