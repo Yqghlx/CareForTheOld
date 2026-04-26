@@ -415,7 +415,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                     child: Text(
                       '松手取消',
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 16,
                         color: Colors.white.withValues(alpha: 0.9),
                       ),
                     ),
@@ -577,7 +577,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
             const SizedBox(height: 12),
             Text(
               '呼叫时间: ${call.formattedTime}',
-              style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+              style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
             ),
           ],
         ),

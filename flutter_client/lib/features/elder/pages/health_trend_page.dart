@@ -110,7 +110,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                             const SizedBox(height: 8),
                             Text(
                               '请先在健康页面记录${_selectedType.label}数据',
-                              style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
+                              style: TextStyle(fontSize: 16, color: Colors.grey.shade500),
                             ),
                           ],
                         ),
@@ -131,7 +131,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                       children: [
                         Icon(Icons.error_outline, size: 48, color: AppTheme.errorColor),
                         const SizedBox(height: 12),
-                        Text('加载失败: $e', style: const TextStyle(color: AppTheme.errorColor)),
+                        const Text('加载失败，请重试', style: TextStyle(color: AppTheme.errorColor)),
                         const SizedBox(height: 12),
                         ElevatedButton(
                           onPressed: () => ref.invalidate(filteredHealthRecordsProvider(_selectedType)),
@@ -185,7 +185,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                       child: Text(
                         type.label,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 16,
                           color: isSelected ? Colors.white : Colors.grey.shade700,
                           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                         ),

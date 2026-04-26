@@ -273,7 +273,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       child: Text(
                         '30天: ${stat.average30Days?.toStringAsFixed(1) ?? '--'} | 共${stat.totalCount}条',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 16,
                           color: Colors.grey.shade500,
                         ),
                       ),
