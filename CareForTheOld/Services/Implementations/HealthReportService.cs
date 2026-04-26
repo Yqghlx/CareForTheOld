@@ -342,61 +342,67 @@ public class HealthReportService : IHealthReportService
     {
         var suggestions = new List<string>();
 
-        // 血压建议
-        var bpRecords = records.Where(r => r.Type == HealthType.BloodPressure).ToList();
-        if (bpRecords.Any())
-        {
-            var avgSystolic = bpRecords.Average(r => r.Systolic ?? 0);
-            if (avgSystolic > AppConstants.HealthThresholds.BloodPressureSystolicMax)
-                suggestions.Add(HealthReportMessages.Suggestions.BloodPressureHigh);
-            else if (avgSystolic < AppConstants.HealthThresholds.BloodPressureSystolicMin)
-                suggestions.Add(HealthReportMessages.Suggestions.BloodPressureLow);
-            else
-                suggestions.Add(HealthReportMessages.Suggestions.BloodPressureNormal);
-        }
+        AddThresholdSuggestion(suggestions, records, HealthType.BloodPressure,
+            r => r.Systolic ?? 0,
+            AppConstants.HealthThresholds.BloodPressureSystolicMax,
+            AppConstants.HealthThresholds.BloodPressureSystolicMin,
+            HealthReportMessages.Suggestions.BloodPressureHigh,
+            HealthReportMessages.Suggestions.BloodPressureLow,
+            HealthReportMessages.Suggestions.BloodPressureNormal);
 
-        // 血糖建议
-        var bsRecords = records.Where(r => r.Type == HealthType.BloodSugar).ToList();
-        if (bsRecords.Any())
-        {
-            var avgBs = bsRecords.Average(r => r.BloodSugar ?? 0m);
-            if (avgBs > AppConstants.HealthThresholds.BloodSugarMax)
-                suggestions.Add(HealthReportMessages.Suggestions.BloodSugarHigh);
-            else if (avgBs < AppConstants.HealthThresholds.BloodSugarMin)
-                suggestions.Add(HealthReportMessages.Suggestions.BloodSugarLow);
-            else
-                suggestions.Add(HealthReportMessages.Suggestions.BloodSugarNormal);
-        }
+        AddThresholdSuggestion(suggestions, records, HealthType.BloodSugar,
+            r => (double)(r.BloodSugar ?? 0m),
+            AppConstants.HealthThresholds.BloodSugarMax,
+            AppConstants.HealthThresholds.BloodSugarMin,
+            HealthReportMessages.Suggestions.BloodSugarHigh,
+            HealthReportMessages.Suggestions.BloodSugarLow,
+            HealthReportMessages.Suggestions.BloodSugarNormal);
 
-        // 心率建议
-        var hrRecords = records.Where(r => r.Type == HealthType.HeartRate).ToList();
-        if (hrRecords.Any())
-        {
-            var avgHr = hrRecords.Average(r => r.HeartRate ?? 0);
-            if (avgHr > AppConstants.HealthThresholds.HeartRateMax)
-                suggestions.Add(HealthReportMessages.Suggestions.HeartRateHigh);
-            else if (avgHr < AppConstants.HealthThresholds.HeartRateMin)
-                suggestions.Add(HealthReportMessages.Suggestions.HeartRateLow);
-            else
-                suggestions.Add(HealthReportMessages.Suggestions.HeartRateNormal);
-        }
+        AddThresholdSuggestion(suggestions, records, HealthType.HeartRate,
+            r => r.HeartRate ?? 0,
+            AppConstants.HealthThresholds.HeartRateMax,
+            AppConstants.HealthThresholds.HeartRateMin,
+            HealthReportMessages.Suggestions.HeartRateHigh,
+            HealthReportMessages.Suggestions.HeartRateLow,
+            HealthReportMessages.Suggestions.HeartRateNormal);
 
-        // 体温建议
-        var tempRecords = records.Where(r => r.Type == HealthType.Temperature).ToList();
-        if (tempRecords.Any())
-        {
-            var avgTemp = tempRecords.Average(r => r.Temperature ?? 0m);
-            if (avgTemp > AppConstants.HealthThresholds.TemperatureMax)
-                suggestions.Add(HealthReportMessages.Suggestions.TemperatureHigh);
-            else if (avgTemp < AppConstants.HealthThresholds.TemperatureMin)
-                suggestions.Add(HealthReportMessages.Suggestions.TemperatureLow);
-            else
-                suggestions.Add(HealthReportMessages.Suggestions.TemperatureNormal);
-        }
+        AddThresholdSuggestion(suggestions, records, HealthType.Temperature,
+            r => (double)(r.Temperature ?? 0m),
+            AppConstants.HealthThresholds.TemperatureMax,
+            AppConstants.HealthThresholds.TemperatureMin,
+            HealthReportMessages.Suggestions.TemperatureHigh,
+            HealthReportMessages.Suggestions.TemperatureLow,
+            HealthReportMessages.Suggestions.TemperatureNormal);
 
         if (!suggestions.Any())
             suggestions.Add(HealthReportMessages.Suggestions.NoData);
 
         return suggestions;
+    }
+
+    /// <summary>
+    /// 通用的阈值建议生成方法：过滤指定类型的记录，计算平均值，与高/低阈值比较后添加建议
+    /// </summary>
+    private static void AddThresholdSuggestion(
+        List<string> suggestions,
+        List<HealthRecord> records,
+        HealthType type,
+        Func<HealthRecord, double> valueSelector,
+        decimal highThreshold,
+        decimal lowThreshold,
+        string highMessage,
+        string lowMessage,
+        string normalMessage)
+    {
+        var typeRecords = records.Where(r => r.Type == type).ToList();
+        if (!typeRecords.Any()) return;
+
+        var avg = (decimal)typeRecords.Average(valueSelector);
+        if (avg > highThreshold)
+            suggestions.Add(highMessage);
+        else if (avg < lowThreshold)
+            suggestions.Add(lowMessage);
+        else
+            suggestions.Add(normalMessage);
     }
 }

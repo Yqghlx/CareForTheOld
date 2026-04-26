@@ -10,6 +10,7 @@ import '../../../core/constants/api_endpoints.dart';
 import '../../../shared/models/user.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/services/app_logger.dart';
 import '../../../core/extensions/api_error_extension.dart';
 import '../../../core/validators/form_validators.dart';
 
@@ -90,11 +91,11 @@ class _LoginPageState extends ConsumerState<LoginPage>
         context.go(RoutePaths.childHome);
       }
     } on DioException catch (e) {
-      debugPrint('登录异常: $e');
+      AppLogger.warning('登录异常: $e');
       final serverMessage = e.toDisplayMessage(fallback: '手机号或密码错误');
       if (mounted) setState(() => _errorMessage = serverMessage);
     } catch (e) {
-      debugPrint('登录未知异常: $e');
+      AppLogger.error('登录未知异常: $e');
       if (mounted) setState(() => _errorMessage = AppTheme.msgNetworkError);
     } finally {
       if (mounted) setState(() => isLoading = false);
