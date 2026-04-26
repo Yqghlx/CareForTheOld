@@ -164,16 +164,29 @@ public class LocationServiceTests
             g => g.CheckOutsideFenceAsync(elder.Id, 40.0, 117.0),
             Times.Once);
 
-        // 等待异步通知发送完成（SendGeoFenceAlertAsync 是异步发射的）
-        await Task.Delay(500);
+        // 等待异步通知发送完成（SendGeoFenceAlertAsync 是 fire-and-forget，需轮询等待）
+        var verified = false;
+        for (var i = 0; i < 10; i++)
+        {
+            await Task.Delay(200);
+            try
+            {
+                _mockNotificationService.Verify(
+                    n => n.SendToUsersAsync(
+                        It.IsAny<IEnumerable<Guid>>(),
+                        "GeoFenceAlert",
+                        It.IsAny<object>()),
+                    Times.AtLeastOnce);
+                verified = true;
+                break;
+            }
+            catch (Moq.MockException)
+            {
+                // 继续等待
+            }
+        }
 
-        // 验证：通知服务被调用以发送预警
-        _mockNotificationService.Verify(
-            n => n.SendToUsersAsync(
-                It.IsAny<IEnumerable<Guid>>(),
-                "GeoFenceAlert",
-                It.IsAny<object>()),
-            Times.AtLeastOnce);
+        verified.Should().BeTrue("通知服务应被调用以发送围栏预警");
     }
 
     [Fact]
