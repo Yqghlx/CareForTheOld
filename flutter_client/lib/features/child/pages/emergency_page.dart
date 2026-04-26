@@ -358,7 +358,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else if (mounted) {
-      context.showWarningSnackBar('无法拨打电话，请手动拨打');
+      context.showWarningSnackBar(AppTheme.msgCannotDial);
     }
   }
 

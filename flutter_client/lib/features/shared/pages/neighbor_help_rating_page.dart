@@ -121,10 +121,10 @@ class _NeighborHelpRatingPageState
     if (mounted) {
       setState(() => _isSubmitting = false);
       if (success) {
-        context.showSnackBar('评价成功，感谢您的反馈');
+        context.showSnackBar(AppTheme.msgRateSuccess);
         Navigator.of(context).pop();
       } else {
-        context.showErrorSnackBar(ref.read(neighborHelpProvider).error ?? '评价失败');
+        context.showErrorSnackBar(ref.read(neighborHelpProvider).error ?? AppTheme.msgOperationFailed);
       }
     }
   }

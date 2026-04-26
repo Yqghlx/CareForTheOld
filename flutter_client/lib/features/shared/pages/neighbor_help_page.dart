@@ -117,7 +117,7 @@ class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
     final success =
         await ref.read(neighborHelpProvider.notifier).acceptRequest(requestId);
     if (mounted) {
-      context.showSnackBar(success ? '已接受求助，请尽快前往帮助' : '该求助已被其他邻居接受');
+      context.showSnackBar(success ? AppTheme.msgHelpAccepted : AppTheme.msgHelpAlreadyTaken);
     }
   }
 }

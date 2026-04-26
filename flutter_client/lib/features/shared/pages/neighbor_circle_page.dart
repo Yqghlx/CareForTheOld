@@ -269,20 +269,20 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
   Future<void> _joinCircle() async {
     final code = _inviteCodeController.text.trim();
     if (code.length != 6) {
-      _showSnackBar('请输入 6 位邀请码');
+      _showSnackBar(AppTheme.msgInviteCodeHint);
       return;
     }
     final success =
         await ref.read(neighborCircleProvider.notifier).joinCircle(code);
     if (mounted) {
-      _showSnackBar(success ? '加入成功' : ref.read(neighborCircleProvider).error ?? '加入失败');
+      _showSnackBar(success ? AppTheme.msgJoinSuccess : ref.read(neighborCircleProvider).error ?? AppTheme.msgOperationFailed);
     }
   }
 
   Future<void> _createCircle() async {
     final name = _circleNameController.text.trim();
     if (name.isEmpty) {
-      _showSnackBar('请输入圈子名称');
+      _showSnackBar(AppTheme.msgCircleNameRequired);
       return;
     }
     final position = await _getCurrentPosition();
@@ -293,7 +293,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
               longitude: position?.longitude ?? 116.4074,
             );
     if (mounted) {
-      _showSnackBar(success ? '创建成功' : ref.read(neighborCircleProvider).error ?? '创建失败');
+      _showSnackBar(success ? AppTheme.msgCreateSuccess : ref.read(neighborCircleProvider).error ?? AppTheme.msgOperationFailed);
     }
   }
 
@@ -317,7 +317,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
     final success =
         await ref.read(neighborCircleProvider.notifier).leaveCircle();
     if (mounted) {
-      _showSnackBar(success ? '已退出' : ref.read(neighborCircleProvider).error ?? '退出失败');
+      _showSnackBar(success ? AppTheme.msgLeftCircle : ref.read(neighborCircleProvider).error ?? AppTheme.msgOperationFailed);
     }
   }
 
@@ -325,7 +325,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
     final success =
         await ref.read(neighborCircleProvider.notifier).refreshInviteCode();
     if (mounted) {
-      _showSnackBar(success ? '邀请码已刷新' : ref.read(neighborCircleProvider).error ?? '刷新失败');
+      _showSnackBar(success ? AppTheme.msgInviteRefreshed : ref.read(neighborCircleProvider).error ?? AppTheme.msgOperationFailed);
     }
   }
 
@@ -339,7 +339,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
     if (mounted) setState(() => _isSearching = false);
     final nearby = ref.read(neighborCircleProvider).nearbyCircles;
     if (nearby.isEmpty && mounted) {
-      _showSnackBar('附近没有找到邻里圈');
+      _showSnackBar(AppTheme.msgNoCircleNearby);
     }
   }
 
