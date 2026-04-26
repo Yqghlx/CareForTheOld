@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using static CareForTheOld.Common.Extensions.ControllerExtensions;
+using System.ComponentModel.DataAnnotations;
 
 namespace CareForTheOld.Controllers;
 
@@ -35,7 +36,7 @@ public class NotificationController : ControllerBase
     /// </summary>
     [HttpGet("me")]
     [CacheControl(MaxAgeSeconds = 30)]
-    public async Task<ApiResponse<List<NotificationResponse>>> GetMyNotifications([FromQuery] int limit = AppConstants.Pagination.DefaultPageSize)
+    public async Task<ApiResponse<List<NotificationResponse>>> GetMyNotifications([FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize)
     {
         var notifications = await _notificationService.GetUserNotificationsAsync(this.GetUserId(), limit);
         return ApiResponse<List<NotificationResponse>>.Ok(notifications);

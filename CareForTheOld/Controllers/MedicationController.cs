@@ -9,6 +9,7 @@ using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using System.ComponentModel.DataAnnotations;
 
 namespace CareForTheOld.Controllers;
 
@@ -112,8 +113,8 @@ public class MedicationController : ControllerBase
     public async Task<ApiResponse<List<MedicationLogResponse>>> GetLogs(
         Guid elderId,
         [FromQuery] DateOnly? date,
-        [FromQuery] int skip = AppConstants.Pagination.DefaultSkip,
-        [FromQuery] int limit = AppConstants.Pagination.DefaultPageSize)
+        [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip,
+        [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize)
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
@@ -129,8 +130,8 @@ public class MedicationController : ControllerBase
     [Authorize(Roles = "Elder")]
     public async Task<ApiResponse<List<MedicationLogResponse>>> GetMyLogs(
         [FromQuery] DateOnly? date,
-        [FromQuery] int skip = AppConstants.Pagination.DefaultSkip,
-        [FromQuery] int limit = AppConstants.Pagination.DefaultPageSize)
+        [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip,
+        [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize)
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();

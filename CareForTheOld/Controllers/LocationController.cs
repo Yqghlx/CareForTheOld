@@ -9,6 +9,7 @@ using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using System.ComponentModel.DataAnnotations;
 
 namespace CareForTheOld.Controllers;
 
@@ -60,7 +61,7 @@ public class LocationController : ControllerBase
     /// </summary>
     [HttpGet("me/history")]
     [CacheControl(MaxAgeSeconds = 60)]
-    public async Task<ApiResponse<List<LocationRecordResponse>>> GetMyHistory([FromQuery] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery] int limit = AppConstants.Pagination.DefaultPageSize)
+    public async Task<ApiResponse<List<LocationRecordResponse>>> GetMyHistory([FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize)
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
@@ -94,7 +95,7 @@ public class LocationController : ControllerBase
     [CacheControl(MaxAgeSeconds = 60)]
     [Authorize(Roles = "Child")]
     public async Task<ApiResponse<List<LocationRecordResponse>>> GetFamilyMemberHistory(
-        Guid familyId, Guid memberId, [FromQuery] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery] int limit = AppConstants.Pagination.DefaultPageSize)
+        Guid familyId, Guid memberId, [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize)
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();

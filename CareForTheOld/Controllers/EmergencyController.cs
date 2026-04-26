@@ -9,6 +9,7 @@ using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using System.ComponentModel.DataAnnotations;
 
 namespace CareForTheOld.Controllers;
 
@@ -64,7 +65,7 @@ public class EmergencyController : ControllerBase
     /// </summary>
     [HttpGet("history")]
     [CacheControl(MaxAgeSeconds = 60)]
-    public async Task<ApiResponse<List<EmergencyCallResponse>>> GetHistory([FromQuery] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery] int limit = AppConstants.Pagination.DefaultHistoryPageSize)
+    public async Task<ApiResponse<List<EmergencyCallResponse>>> GetHistory([FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultHistoryPageSize)
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();

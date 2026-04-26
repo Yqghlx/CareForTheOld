@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using CareForTheOld.Models.Enums;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace CareForTheOld.Controllers;
 
@@ -50,7 +51,7 @@ public class AutoRescueController : ControllerBase
     /// 获取自动救援历史记录
     /// </summary>
     [HttpGet("history")]
-    public async Task<ApiResponse<object>> GetHistory([FromQuery] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery] int limit = AppConstants.Pagination.DefaultHistoryPageSize)
+    public async Task<ApiResponse<object>> GetHistory([FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultHistoryPageSize)
     {
         var userId = this.GetUserId();
         var familyMember = await _context.FamilyMembers

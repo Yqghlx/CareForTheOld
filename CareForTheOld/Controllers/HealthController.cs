@@ -64,8 +64,8 @@ public class HealthController : ControllerBase
     [CacheControl(MaxAgeSeconds = 60)]
     public async Task<ApiResponse<List<HealthRecordResponse>>> GetMyRecords(
         [FromQuery] HealthType? type,
-        [FromQuery] int skip = AppConstants.Pagination.DefaultSkip,
-        [FromQuery] int limit = AppConstants.Pagination.DefaultPageSize)
+        [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip,
+        [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize)
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
@@ -83,8 +83,8 @@ public class HealthController : ControllerBase
         Guid familyId,
         Guid memberId,
         [FromQuery] HealthType? type,
-        [FromQuery] int skip = AppConstants.Pagination.DefaultSkip,
-        [FromQuery] int limit = AppConstants.Pagination.DefaultPageSize)
+        [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip,
+        [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize)
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
