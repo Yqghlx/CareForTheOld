@@ -132,10 +132,10 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                       height: 56,
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: AppTheme.radiusM,
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: AppTheme.radiusM,
                         child: authState.user?.avatarUrl != null && authState.user!.avatarUrl!.isNotEmpty
                             ? CachedNetworkImage(
                                 imageUrl: authState.user!.avatarUrl!,
@@ -284,7 +284,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
           elevation: 4,
           margin: const EdgeInsets.only(bottom: 12),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppTheme.radiusL,
           ),
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -293,7 +293,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                 // 老人信息行
                 InkWell(
                   onTap: () => context.push('/child/elder/${elder.userId}/health'),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: AppTheme.radiusL,
                   child: Row(
                     children: [
                       Container(
@@ -301,10 +301,10 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         height: 56,
                         decoration: BoxDecoration(
                           color: Colors.blue.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: AppTheme.radiusM,
                         ),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: AppTheme.radiusM,
                           child: elder.avatarUrl != null && elder.avatarUrl!.isNotEmpty
                               ? CachedNetworkImage(
                                   imageUrl: elder.avatarUrl!,
@@ -416,7 +416,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
           builder: (ctx, setDialogState) {
             return AlertDialog(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: AppTheme.radiusXL,
               ),
               title: Row(
                 children: [
@@ -441,7 +441,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     Container(
                       decoration: BoxDecoration(
                         color: AppTheme.grey50,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppTheme.radiusS,
                       ),
                       child: DropdownButtonFormField<String>(
                         // ignore: deprecated_member_use - StatefulBuilder 中动态更新需要 value
@@ -464,7 +464,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     Container(
                       decoration: BoxDecoration(
                         color: AppTheme.grey50,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppTheme.radiusS,
                       ),
                       child: TextField(
                         controller: nameCtl,
@@ -480,7 +480,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     Container(
                       decoration: BoxDecoration(
                         color: AppTheme.grey50,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppTheme.radiusS,
                       ),
                       child: TextField(
                         controller: dosageCtl,
@@ -496,7 +496,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     Container(
                       decoration: BoxDecoration(
                         color: AppTheme.grey50,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppTheme.radiusS,
                       ),
                       child: DropdownButtonFormField<int>(
                         // ignore: deprecated_member_use - StatefulBuilder 中动态更新需要 value
@@ -559,7 +559,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                                   decoration: BoxDecoration(
                                     color: AppTheme.grey50,
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: AppTheme.radiusS,
                                   ),
                                   child: Row(
                                     children: [
@@ -721,7 +721,7 @@ class _EmergencyPulseBannerState extends State<_EmergencyPulseBanner>
             gradient: const LinearGradient(
               colors: [Colors.red, Colors.redAccent],
             ),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppTheme.radiusL,
             boxShadow: [
               BoxShadow(
                 color: Colors.red.withValues(alpha: alpha),
@@ -735,7 +735,7 @@ class _EmergencyPulseBannerState extends State<_EmergencyPulseBanner>
       },
       child: InkWell(
         onTap: widget.onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppTheme.radiusL,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(

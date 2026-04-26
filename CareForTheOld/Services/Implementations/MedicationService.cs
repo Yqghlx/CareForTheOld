@@ -103,7 +103,7 @@ public class MedicationService : IMedicationService
 
     public async Task DeletePlanAsync(Guid planId, Guid operatorId)
     {
-        var plan = await _context.MedicationPlans.FindAsync(planId)
+        var plan = await _context.MedicationPlans.AsTracking().FirstOrDefaultAsync(p => p.Id == planId)
             ?? throw new KeyNotFoundException(ErrorMessages.Medication.PlanNotFound);
 
         await _familyService.EnsureFamilyMemberAsync(plan.ElderId, operatorId);

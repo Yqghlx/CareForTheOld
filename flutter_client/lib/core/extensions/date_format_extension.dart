@@ -20,4 +20,7 @@ extension DateTimeFormatting on DateTime {
 
   /// 格式化为友好时间范围：14:30 - 15:00
   String toTimeRange(DateTime end) => '${toTimeString()} - ${end.toTimeString()}';
+
+  /// 格式化为文件名日期：20240115（用于导出文件命名）
+  String toFileNameDate() => DateFormat('yyyyMMdd').format(this);
 }

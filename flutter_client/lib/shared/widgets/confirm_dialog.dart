@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/app_theme.dart';
 
 /// 显示确认对话框，返回用户是否确认
 ///
@@ -24,7 +25,7 @@ Future<bool> showConfirmDialog(
   return showDialog<bool>(
     context: context,
     builder: (ctx) => AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
       title: Text(title),
       content: Text(message),
       actions: [

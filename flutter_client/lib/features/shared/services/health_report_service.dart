@@ -2,12 +2,12 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../core/api/api_client.dart';
 import '../../../core/constants/api_endpoints.dart';
+import '../../../core/extensions/date_format_extension.dart';
 
 /// 健康报告服务
 class HealthReportService {
@@ -43,8 +43,7 @@ class HealthReportService {
 
       // 保存到临时目录
       final tempDir = await getTemporaryDirectory();
-      final dateFormat = DateFormat('yyyyMMdd');
-      final fileName = '健康报告_${dateFormat.format(DateTime.now())}.pdf';
+      final fileName = '健康报告_${DateTime.now().toFileNameDate()}.pdf';
       final file = File('${tempDir.path}/$fileName');
       await file.writeAsBytes(response.data as List<int>);
 

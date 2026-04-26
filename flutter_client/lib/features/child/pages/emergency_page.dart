@@ -80,7 +80,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 color: AppTheme.errorColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppTheme.radiusS,
               ),
               child: Row(
                 children: [
@@ -103,7 +103,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                 color: Colors.green.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: AppTheme.radiusL,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -133,7 +133,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                 color: AppTheme.grey100,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: AppTheme.radiusL,
               ),
               child: const Center(
                 child: Text('暂无呼叫记录', style: TextStyle(color: Colors.grey)),
@@ -152,7 +152,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: AppTheme.errorColor.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppTheme.radiusL,
         border: Border.all(color: AppTheme.errorColor.withValues(alpha: 0.3), width: 2),
       ),
       child: Padding(
@@ -167,7 +167,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                   height: 56,
                   decoration: BoxDecoration(
                     color: AppTheme.errorColor.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: AppTheme.radiusM,
                   ),
                   child: const Icon(
                     Icons.emergency,
@@ -255,7 +255,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                         foregroundColor: Colors.blue,
                         side: const BorderSide(color: Colors.blue),
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusS),
                       ),
                     ),
                   ),
@@ -285,7 +285,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 8),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: AppTheme.radiusM,
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -367,7 +367,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppTheme.radiusL,
         ),
         title: const Text('确认处理'),
         content: Text('确定要标记 ${call.elderName} 的紧急呼叫为已处理吗？'),
@@ -408,7 +408,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppTheme.radiusL,
         ),
         title: const Text('历史呼叫记录'),
         content: SizedBox(

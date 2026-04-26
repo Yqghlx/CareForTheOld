@@ -71,7 +71,7 @@ class HealthTrendChart extends StatelessWidget {
       height: 200,
       decoration: BoxDecoration(
         color: AppTheme.grey100,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppTheme.radiusL,
       ),
       child: Center(
         child: Column(

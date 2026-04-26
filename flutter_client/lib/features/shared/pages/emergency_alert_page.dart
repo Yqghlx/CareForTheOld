@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../core/theme/app_theme.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 import '../../shared/providers/emergency_provider.dart';
 import '../services/emergency_alert_service.dart';
@@ -90,7 +91,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
                       ),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: AppTheme.radiusL,
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,

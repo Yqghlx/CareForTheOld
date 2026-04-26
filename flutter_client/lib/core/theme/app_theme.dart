@@ -60,6 +60,12 @@ class AppTheme {
   /// 按钮圆角
   static const double buttonRadius = 12.0;
 
+  /// 预定义 BorderRadius 常量（统一项目中圆角使用）
+  static const BorderRadius radiusS = BorderRadius.all(Radius.circular(12));
+  static const BorderRadius radiusM = BorderRadius.all(Radius.circular(14));
+  static const BorderRadius radiusL = BorderRadius.all(Radius.circular(16));
+  static const BorderRadius radiusXL = BorderRadius.all(Radius.circular(20));
+
   /// 统一间距常量
   static const double spacingXs = 4.0;
   static const double spacingSm = 8.0;

@@ -138,10 +138,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       height: 64,
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: AppTheme.radiusL,
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: AppTheme.radiusL,
                         child: _buildAvatar(
                           userState.user?.avatarUrl ?? authState.user?.avatarUrl,
                           40,
@@ -187,7 +187,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             Card(
               elevation: 2,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: AppTheme.radiusL,
               ),
               child: Column(
                 children: [
@@ -219,7 +219,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               Card(
                 elevation: 2,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: AppTheme.radiusL,
                 ),
                 child: _buildSettingItem(
                   icon: Icons.location_on,
@@ -251,7 +251,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             Card(
               elevation: 2,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: AppTheme.radiusL,
               ),
               child: Column(
                 children: [
@@ -326,7 +326,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             Card(
               elevation: 2,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: AppTheme.radiusL,
               ),
               child: Column(
                 children: [
@@ -372,7 +372,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   }) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: AppTheme.radiusL,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
@@ -382,7 +382,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               height: 44,
               decoration: BoxDecoration(
                 color: AppTheme.primaryColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppTheme.radiusS,
               ),
               child: Icon(icon, color: AppTheme.primaryColor, size: 24),
             ),
@@ -422,7 +422,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: AppTheme.radiusXL,
         ),
         title: Row(
           children: [
@@ -444,7 +444,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           decoration: InputDecoration(
             labelText: '姓名',
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppTheme.radiusS,
             ),
             counterText: '',
           ),
@@ -526,7 +526,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             }
             return AlertDialog(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: AppTheme.radiusXL,
               ),
               title: Row(
                 children: [
@@ -551,7 +551,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     decoration: InputDecoration(
                       labelText: '旧密码',
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppTheme.radiusS,
                       ),
                     ),
                     obscureText: true,
@@ -562,7 +562,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     decoration: InputDecoration(
                       labelText: '新密码',
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppTheme.radiusS,
                       ),
                       helperText: '至少8位，需包含字母和数字',
                     ),
@@ -583,7 +583,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     decoration: InputDecoration(
                       labelText: '确认新密码',
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppTheme.radiusS,
                       ),
                     ),
                     obscureText: true,
@@ -665,7 +665,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: AppTheme.radiusXL,
         ),
         title: Row(
           children: [
@@ -709,7 +709,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: AppTheme.radiusXL,
         ),
         title: Row(
           children: [
@@ -755,7 +755,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: AppTheme.radiusXL,
         ),
         title: Row(
           children: [

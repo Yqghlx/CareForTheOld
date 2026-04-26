@@ -103,7 +103,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: AppTheme.errorColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: AppTheme.radiusL,
                   ),
                   child: const Text('加载失败，请重试', style: TextStyle(color: AppTheme.errorColor)),
                 ),
@@ -142,7 +142,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
               ? [Colors.green.withValues(alpha: 0.15), Colors.green.withValues(alpha: 0.05)]
               : [Colors.grey.withValues(alpha: 0.15), Colors.grey.withValues(alpha: 0.05)],
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppTheme.radiusL,
         border: Border.all(
           color: isEnabled ? Colors.green.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.3),
         ),
@@ -230,7 +230,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
           builder: (ctx, setDialogState) {
             return AlertDialog(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: AppTheme.radiusXL,
               ),
               title: Row(
                 children: [
@@ -263,7 +263,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: AppTheme.grey50,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppTheme.radiusS,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -394,7 +394,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
           color: AppTheme.grey100,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppTheme.radiusL,
         ),
         child: Center(
           child: Column(
@@ -431,7 +431,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
         Card(
           elevation: 4,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppTheme.radiusL,
           ),
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -445,7 +445,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                       height: 48,
                       decoration: BoxDecoration(
                         color: AppTheme.primaryColor.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppTheme.radiusS,
                       ),
                       child: const Icon(Icons.location_on, color: AppTheme.primaryColor, size: 28),
                     ),
@@ -470,7 +470,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: AppTheme.grey50,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppTheme.radiusS,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -519,7 +519,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
           color: AppTheme.grey100,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppTheme.radiusL,
         ),
         child: const Center(
           child: Text('暂无历史记录', style: TextStyle(color: Colors.grey)),
@@ -538,7 +538,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 8),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: AppTheme.radiusM,
       ),
       child: Padding(
         padding: const EdgeInsets.all(12),

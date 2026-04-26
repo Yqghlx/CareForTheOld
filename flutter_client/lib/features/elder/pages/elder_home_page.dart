@@ -169,7 +169,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                     child: Stack(
                       children: [
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: AppTheme.radiusL,
                           child: Container(
                             width: 64,
                             height: 64,
@@ -198,7 +198,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                             height: 64,
                             decoration: BoxDecoration(
                               color: Colors.black.withValues(alpha: 0.4),
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: AppTheme.radiusL,
                             ),
                             child: const Center(
                               child: SizedBox(
@@ -359,7 +359,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
           ),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: AppTheme.radiusXL,
           boxShadow: [
             BoxShadow(
               color: Colors.red.withValues(alpha: _isLongPressing ? 0.7 : 0.4),
@@ -550,7 +550,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: AppTheme.radiusXL,
         ),
         title: Row(
           children: [
@@ -559,7 +559,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
               height: 48,
               decoration: BoxDecoration(
                 color: Colors.green.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppTheme.radiusS,
               ),
               child: const Icon(Icons.check_circle, color: Colors.green, size: 32),
             ),

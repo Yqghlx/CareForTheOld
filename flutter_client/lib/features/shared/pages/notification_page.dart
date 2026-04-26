@@ -100,7 +100,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
       elevation: notification.isRead ? 1 : 3,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppTheme.radiusL,
         side: notification.isRead
             ? BorderSide.none
             : BorderSide(color: notification.color.withValues(alpha: 0.3), width: 1),
@@ -115,7 +115,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
             _expandedNotificationId = _expandedNotificationId == notification.id ? null : notification.id;
           });
         },
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppTheme.radiusL,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
@@ -127,7 +127,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
                 height: 44,
                 decoration: BoxDecoration(
                   color: notification.color.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppTheme.radiusS,
                 ),
                 child: Icon(notification.icon, color: notification.color, size: 24),
               ),

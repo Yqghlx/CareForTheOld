@@ -115,7 +115,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                   height: 48,
                   decoration: BoxDecoration(
                     color: AppTheme.grey100,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppTheme.radiusS,
                   ),
                   child: const Center(
                     child: Text('加载统计中...', style: TextStyle(color: Colors.grey)),
@@ -184,7 +184,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
               color: Colors.orange.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppTheme.radiusS,
               border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
             ),
             child: Column(
@@ -213,7 +213,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                 AppTheme.primaryLight.withValues(alpha: 0.04),
               ],
             ),
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: AppTheme.radiusM,
           ),
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
@@ -345,7 +345,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
         padding: const EdgeInsets.only(right: 20),
         decoration: BoxDecoration(
           color: Colors.red.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppTheme.radiusL,
         ),
         child: const Icon(Icons.delete, color: Colors.red, size: 28),
       ),
@@ -353,7 +353,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
       elevation: 4,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppTheme.radiusL,
         side: abnormal
             ? BorderSide(color: Colors.orange.withValues(alpha: 0.5), width: 1.5)
             : BorderSide.none,
@@ -367,7 +367,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
               height: 52,
               decoration: BoxDecoration(
                 color: (abnormal ? Colors.orange : record.type.color).withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppTheme.radiusS,
               ),
               child: Icon(
                 abnormal ? Icons.warning_amber : record.type.icon,
@@ -505,7 +505,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
           builder: (ctx, setDialogState) {
             return AlertDialog(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: AppTheme.radiusXL,
               ),
               title: Row(
                 children: [
@@ -562,7 +562,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                               )
                             : null,
                         color: isListening ? null : AppTheme.grey50,
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: AppTheme.radiusL,
                         border: isListening
                             ? Border.all(
                                 color: AppTheme.primaryColor.withValues(alpha: 0.3),
@@ -649,7 +649,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                                 AppTheme.primaryColor.withValues(alpha: 0.7),
                                               ],
                                             ),
-                                      borderRadius: BorderRadius.circular(12),
+                                      borderRadius: AppTheme.radiusS,
                                       boxShadow: isListening
                                           ? [
                                               BoxShadow(
@@ -754,7 +754,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                           type.color.withValues(alpha: 0.7),
                                         ],
                                       ),
-                                      borderRadius: BorderRadius.circular(12),
+                                      borderRadius: AppTheme.radiusS,
                                       boxShadow: [
                                         BoxShadow(
                                           color: type.color.withValues(alpha: 0.3),
@@ -810,7 +810,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       Container(
                         decoration: BoxDecoration(
                           color: AppTheme.grey50,
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: AppTheme.radiusS,
                         ),
                         child: TextField(
                           controller: valueController,
@@ -828,7 +828,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       Container(
                         decoration: BoxDecoration(
                           color: AppTheme.grey50,
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: AppTheme.radiusS,
                         ),
                         child: TextField(
                           controller: valueController2,
@@ -847,7 +847,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       Container(
                         decoration: BoxDecoration(
                           color: AppTheme.grey50,
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: AppTheme.radiusS,
                         ),
                         child: TextField(
                           controller: valueController,
@@ -865,7 +865,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       Container(
                         decoration: BoxDecoration(
                           color: AppTheme.grey50,
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: AppTheme.radiusS,
                         ),
                         child: TextField(
                           controller: valueController,
@@ -883,7 +883,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       Container(
                         decoration: BoxDecoration(
                           color: AppTheme.grey50,
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: AppTheme.radiusS,
                         ),
                         child: TextField(
                           controller: valueController,
@@ -901,7 +901,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                     Container(
                       decoration: BoxDecoration(
                         color: AppTheme.grey50,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppTheme.radiusS,
                       ),
                       child: TextField(
                         controller: noteController,
@@ -1120,7 +1120,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
               : AppTheme.successColor,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppTheme.radiusS,
           ),
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           duration: const Duration(seconds: 2),

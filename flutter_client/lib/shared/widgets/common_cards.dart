@@ -25,11 +25,11 @@ class StatCard extends StatelessWidget {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppTheme.radiusL,
       ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppTheme.radiusL,
         child: Container(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -40,7 +40,7 @@ class StatCard extends StatelessWidget {
                 height: 48,
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppTheme.radiusS,
                 ),
                 child: Icon(icon, size: 28, color: color),
               ),
@@ -147,7 +147,7 @@ class InfoCard extends StatelessWidget {
       cardContent = Container(
         decoration: BoxDecoration(
           gradient: gradient,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppTheme.radiusL,
         ),
         child: cardContent,
       );
@@ -157,11 +157,11 @@ class InfoCard extends StatelessWidget {
       elevation: 4,
       color: backgroundColor,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppTheme.radiusL,
       ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppTheme.radiusL,
         child: cardContent,
       ),
     );
@@ -217,15 +217,15 @@ class GradientCard extends StatelessWidget {
     return Card(
       elevation: 6,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppTheme.radiusL,
       ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppTheme.radiusL,
         child: Container(
           decoration: BoxDecoration(
             gradient: gradient,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppTheme.radiusL,
           ),
           child: child,
         ),
@@ -302,7 +302,7 @@ class _AnimatedQuickCardState extends State<AnimatedQuickCard>
         child: Card(
           elevation: 4,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppTheme.radiusL,
           ),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -315,7 +315,7 @@ class _AnimatedQuickCardState extends State<AnimatedQuickCard>
                   height: 48,
                   decoration: BoxDecoration(
                     color: widget.color.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: AppTheme.radiusM,
                   ),
                   child: Icon(widget.icon, size: 28, color: widget.color),
                 ),

@@ -154,7 +154,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
     return Container(
       decoration: BoxDecoration(
         color: AppTheme.grey100,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppTheme.radiusL,
       ),
       child: Row(
         children: HealthType.values.map((type) {
@@ -237,7 +237,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
             color: isSelected ? AppTheme.primaryColor : AppTheme.grey200,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppTheme.radiusS,
           ),
           child: Text(
             label,
@@ -258,7 +258,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: AppTheme.radiusXL,
         ),
         title: Row(
           children: [
@@ -291,7 +291,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.primaryColor,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppTheme.radiusS,
                       ),
                     ),
                     child: const Text('最近7天', style: TextStyle(color: Colors.white)),
@@ -307,7 +307,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.primaryColor,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppTheme.radiusS,
                       ),
                     ),
                     child: const Text('最近30天', style: TextStyle(color: Colors.white)),

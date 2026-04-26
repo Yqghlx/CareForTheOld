@@ -165,7 +165,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: AppTheme.grey100,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: AppTheme.radiusL,
                   ),
                   child: const Center(
                     child: Row(
@@ -182,7 +182,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: AppTheme.errorColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppTheme.radiusS,
                   ),
                   child: const Text('异常检测加载失败，请重试',
                       style: TextStyle(color: AppTheme.errorColor)),
@@ -394,7 +394,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
           elevation: 4,
           margin: const EdgeInsets.only(bottom: 12),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppTheme.radiusL,
             side: plan.isActive
                 ? BorderSide.none
                 : BorderSide(color: AppTheme.grey300, width: 1),
@@ -412,7 +412,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       decoration: BoxDecoration(
                         color: (plan.isActive ? Colors.blue : Colors.grey)
                             .withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppTheme.radiusS,
                       ),
                       child: Icon(
                         Icons.medication,
@@ -537,7 +537,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
           title: Row(
             children: [
               Icon(Icons.edit, color: AppTheme.primaryColor),
@@ -720,7 +720,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
           elevation: 4,
           margin: const EdgeInsets.only(bottom: 8),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: AppTheme.radiusM,
           ),
           child: Padding(
             padding: const EdgeInsets.all(12),
@@ -767,7 +767,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
           color: AppTheme.grey100,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppTheme.radiusL,
         ),
         child: const Center(
           child: Text('暂无用药记录', style: TextStyle(color: Colors.grey)),
@@ -797,7 +797,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
           elevation: 4,
           margin: const EdgeInsets.only(bottom: 10),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: AppTheme.radiusM,
           ),
           child: Padding(
             padding: const EdgeInsets.all(14),
@@ -890,7 +890,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: AppTheme.radiusXL,
         ),
         title: Row(
           children: [
@@ -925,7 +925,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.primaryColor,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppTheme.radiusS,
                       ),
                     ),
                     child: const Text('最近7天', style: TextStyle(color: Colors.white)),
@@ -941,7 +941,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.primaryColor,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppTheme.radiusS,
                       ),
                     ),
                     child: const Text('最近30天', style: TextStyle(color: Colors.white)),
@@ -974,7 +974,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         canPop: false,
         child: Center(
           child: Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusL),
             child: Padding(
               padding: const EdgeInsets.all(24),
               child: Column(
@@ -1044,7 +1044,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       child: Card(
         elevation: 4,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppTheme.radiusL,
           side: hasAnomalies && maxSeverity >= 66
               ? BorderSide(color: severityColor.withValues(alpha: 0.5), width: 2)
               : BorderSide.none,
@@ -1062,7 +1062,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   height: 44,
                   decoration: BoxDecoration(
                     color: severityColor.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppTheme.radiusS,
                   ),
                   child: Icon(severityIcon, color: severityColor, size: 26),
                 ),
@@ -1129,7 +1129,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: AppTheme.grey50,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppTheme.radiusS,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1171,7 +1171,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
                     color: Colors.green.withValues(alpha: 0.06),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppTheme.radiusS,
                     border: Border.all(color: Colors.green.withValues(alpha: 0.15)),
                   ),
                   child: Column(
@@ -1227,7 +1227,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: Colors.green.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppTheme.radiusS,
                   ),
                   child: Row(
                     children: [
@@ -1328,7 +1328,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppTheme.radiusS,
         border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Column(
@@ -1443,7 +1443,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
         title: Row(
           children: [
             Container(
@@ -1469,7 +1469,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: AppTheme.grey50,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppTheme.radiusS,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

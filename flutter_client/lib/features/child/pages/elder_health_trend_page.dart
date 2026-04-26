@@ -173,7 +173,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
     return Container(
       decoration: BoxDecoration(
         color: AppTheme.grey100,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppTheme.radiusL,
       ),
       child: Row(
         children: HealthType.values.map((type) {
@@ -259,7 +259,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
             color: isSelected ? AppTheme.primaryColor : AppTheme.grey200,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppTheme.radiusS,
           ),
           child: Text(
             label,

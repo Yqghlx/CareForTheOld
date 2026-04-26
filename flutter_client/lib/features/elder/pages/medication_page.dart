@@ -104,7 +104,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: AppTheme.radiusXL,
         border: Border.all(
           color: AppTheme.primaryColor.withValues(alpha: 0.2),
           width: 1,
@@ -132,7 +132,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
           height: 48,
           decoration: BoxDecoration(
             color: color.withValues(alpha: 0.15),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppTheme.radiusS,
           ),
           child: Center(
             child: Text(
@@ -210,7 +210,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
       elevation: 4,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppTheme.radiusL,
         side: log.status == MedicationStatus.taken
             ? BorderSide(color: Colors.green.withValues(alpha: 0.3), width: 1.5)
             : BorderSide.none,
@@ -244,7 +244,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
                       color: log.status == MedicationStatus.taken
                           ? null
                           : Colors.grey.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: AppTheme.radiusM,
                     ),
                     child: log.status == MedicationStatus.taken
                         ? const Icon(
@@ -316,7 +316,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
         title: const Text('确认跳过'),
         content: Text('确定跳过 ${log.medicineName} 本次用药吗？'),
         actions: [
@@ -469,7 +469,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
     if (!widget.enableAnimation) {
       return Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppTheme.radiusL,
           border: Border.all(
             color: Colors.orange.withValues(alpha: 0.4),
             width: 2,
@@ -485,7 +485,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
         final glowAlpha = 0.15 + _pulseAnimation.value * 0.25;
         return Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppTheme.radiusL,
             border: Border.all(
               color: Colors.orange.withValues(alpha: glowAlpha),
               width: 2,
@@ -511,7 +511,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
       elevation: 4,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppTheme.radiusL,
       ),
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -525,7 +525,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
                   height: 56,
                   decoration: BoxDecoration(
                     color: Colors.orange.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: AppTheme.radiusM,
                   ),
                   child: const Icon(Icons.medication, color: Colors.orange, size: 28),
                 ),

@@ -120,7 +120,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
     return Card(
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusL),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
@@ -131,7 +131,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               height: 48,
               decoration: BoxDecoration(
                 color: Colors.orange.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppTheme.radiusS,
               ),
               child: Icon(
                 member.role.isElder ? Icons.elderly : Icons.person,
@@ -200,7 +200,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
         title: const Text('审批确认'),
         content: Text('确定通过 ${member.realName} 的加入申请吗？'),
         actions: [
@@ -232,7 +232,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
         title: const Text('拒绝申请'),
         content: Text('确定拒绝 ${member.realName} 的加入申请吗？'),
         actions: [
@@ -282,7 +282,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
           width: double.infinity,
           decoration: BoxDecoration(
             gradient: AppTheme.warmGradient,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: AppTheme.radiusXL,
           ),
           child: Padding(
             padding: const EdgeInsets.all(24),
@@ -296,7 +296,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                       height: 48,
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppTheme.radiusS,
                       ),
                       child: const Icon(Icons.home, color: Colors.white, size: 28),
                     ),
@@ -343,7 +343,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppTheme.radiusS,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -382,7 +382,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                   final confirmed = await showDialog<bool>(
                     context: context,
                     builder: (ctx) => AlertDialog(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
                       title: const Text('刷新邀请码'),
                       content: const Text('刷新后旧邀请码将失效，确定要刷新吗？'),
                       actions: [
@@ -427,7 +427,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
   /// 创建家庭卡片（子女端）
   Widget _buildCreateFamilyCard() {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -437,7 +437,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               height: 80,
               decoration: BoxDecoration(
                 color: AppTheme.primaryColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: AppTheme.radiusXL,
               ),
               child: const Icon(Icons.home, size: 40, color: AppTheme.primaryColor),
             ),
@@ -459,7 +459,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
   /// 加入家庭卡片（老人端）
   Widget _buildJoinFamilyCard() {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -469,7 +469,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               height: 80,
               decoration: BoxDecoration(
                 color: Colors.orange.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: AppTheme.radiusXL,
               ),
               child: const Icon(Icons.group_add, size: 40, color: Colors.orange),
             ),
@@ -517,7 +517,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
     return Card(
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusL),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
@@ -528,10 +528,10 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               height: 52,
               decoration: BoxDecoration(
                 color: (member.role.isElder ? Colors.orange : Colors.blue).withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: AppTheme.radiusM,
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: AppTheme.radiusM,
                 child: member.avatarUrl != null && member.avatarUrl!.isNotEmpty
                     ? CachedNetworkImage(
                         imageUrl: member.avatarUrl!,
@@ -609,7 +609,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
         title: Row(
           children: [
             Container(
@@ -630,7 +630,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
           decoration: InputDecoration(
             labelText: '家庭组名称',
             hintText: '如：张家',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            border: OutlineInputBorder(borderRadius: AppTheme.radiusS),
           ),
         ),
         actions: [
@@ -674,7 +674,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
         return StatefulBuilder(
           builder: (ctx, setDialogState) {
             return AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
               title: Row(
                 children: [
                   Container(
@@ -698,7 +698,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     decoration: InputDecoration(
                       labelText: '邀请码（6位数字）',
                       prefixIcon: const Icon(Icons.vpn_key),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      border: OutlineInputBorder(borderRadius: AppTheme.radiusS),
                     ),
                     keyboardType: TextInputType.number,
                     maxLength: 6,
@@ -710,7 +710,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     decoration: InputDecoration(
                       labelText: '您与创建者的关系',
                       prefixIcon: const Icon(Icons.people),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      border: OutlineInputBorder(borderRadius: AppTheme.radiusS),
                     ),
                     items: const [
                       DropdownMenuItem(value: '爸爸', child: Text('爸爸')),
@@ -801,7 +801,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               selectedRelation = null;
             }
             return AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
               title: Row(
                 children: [
                   Container(
@@ -825,7 +825,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     decoration: InputDecoration(
                       labelText: '手机号',
                       prefixIcon: const Icon(Icons.phone),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      border: OutlineInputBorder(borderRadius: AppTheme.radiusS),
                     ),
                     keyboardType: TextInputType.phone,
                   ),
@@ -835,7 +835,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     value: selectedRole,
                     decoration: InputDecoration(
                       labelText: '角色',
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      border: OutlineInputBorder(borderRadius: AppTheme.radiusS),
                     ),
                     items: const [
                       DropdownMenuItem(value: 'child', child: Text('子女')),
@@ -853,7 +853,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     decoration: InputDecoration(
                       labelText: '称呼',
                       prefixIcon: const Icon(Icons.people),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      border: OutlineInputBorder(borderRadius: AppTheme.radiusS),
                     ),
                     items: relationItems,
                     onChanged: (v) => setDialogState(() => selectedRelation = v),
@@ -907,7 +907,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
         title: const Text('移除成员'),
         content: Text('确定要将 ${member.realName} 移出家庭组吗？'),
         actions: [

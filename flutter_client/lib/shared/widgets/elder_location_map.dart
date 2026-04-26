@@ -66,7 +66,7 @@ class _ElderLocationMapState extends State<ElderLocationMap> {
         height: 300,
         decoration: BoxDecoration(
           color: AppTheme.grey100,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppTheme.radiusL,
         ),
         child: Center(
           child: Column(
@@ -84,11 +84,11 @@ class _ElderLocationMapState extends State<ElderLocationMap> {
     return Container(
       height: 300,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppTheme.radiusL,
         border: Border.all(color: AppTheme.grey300),
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppTheme.radiusL,
         child: FlutterMap(
           mapController: _mapController,
           options: MapOptions(
