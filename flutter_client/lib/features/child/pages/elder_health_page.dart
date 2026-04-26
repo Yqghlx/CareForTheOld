@@ -163,7 +163,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 loading: () => Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
+                    color: AppTheme.grey100,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: const Center(
@@ -396,7 +396,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
             borderRadius: BorderRadius.circular(16),
             side: plan.isActive
                 ? BorderSide.none
-                : BorderSide(color: Colors.grey.shade300, width: 1),
+                : BorderSide(color: AppTheme.grey300, width: 1),
           ),
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -434,7 +434,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                           ),
                           Text(
                             '剂量: ${plan.dosage}',
-                            style: TextStyle(color: Colors.grey.shade600),
+                            style: TextStyle(color: AppTheme.grey600),
                           ),
                         ],
                       ),
@@ -468,7 +468,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                         '提醒时间: ${plan.reminderTimesText}',
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.grey.shade600,
+                          color: AppTheme.grey600,
                         ),
                       ),
                     ],
@@ -747,7 +747,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       ),
                       Text(
                         timeStr,
-                        style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                        style: TextStyle(fontSize: 12, color: AppTheme.grey600),
                       ),
                     ],
                   ),
@@ -766,7 +766,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       return Container(
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: Colors.grey.shade100,
+          color: AppTheme.grey100,
           borderRadius: BorderRadius.circular(16),
         ),
         child: const Center(
@@ -838,7 +838,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       Text(
                         '计划: $scheduledStr',
                         style: TextStyle(
-                            fontSize: 13, color: Colors.grey.shade600),
+                            fontSize: 13, color: AppTheme.grey600),
                       ),
                       if (takenStr != null)
                         Text(
@@ -864,7 +864,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                           '备注: ${log.note}',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey.shade500,
+                            color: AppTheme.grey500,
                             fontStyle: FontStyle.italic,
                           ),
                           maxLines: 2,
@@ -1106,7 +1106,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       const SizedBox(height: 4),
                       Text(
                         '基于 ${anomaly.baseline.baselineDays} 天数据分析',
-                        style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+                        style: TextStyle(fontSize: 13, color: AppTheme.grey600),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -1138,14 +1138,14 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.person_outline, size: 18, color: Colors.grey.shade700),
+                      Icon(Icons.person_outline, size: 18, color: AppTheme.grey700),
                       const SizedBox(width: 8),
                       Text(
                         '个人基线',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade700,
+                          color: AppTheme.grey700,
                         ),
                       ),
                     ],
@@ -1286,11 +1286,11 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
 
     return Row(
       children: [
-        Icon(icon, size: 16, color: Colors.grey.shade600),
+        Icon(icon, size: 16, color: AppTheme.grey600),
         const SizedBox(width: 8),
         Text(
           '${anomaly.typeName}: ',
-          style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+          style: TextStyle(fontSize: 14, color: AppTheme.grey600),
         ),
         Text(
           baselineText,
@@ -1299,12 +1299,12 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         const SizedBox(width: 4),
         Text(
           unit,
-          style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+          style: TextStyle(fontSize: 14, color: AppTheme.grey600),
         ),
         const Spacer(),
         Text(
           '(${anomaly.baseline.baselineRecordCount} 条记录)',
-          style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+          style: TextStyle(fontSize: 12, color: AppTheme.grey500),
         ),
       ],
     );
@@ -1342,12 +1342,12 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade200,
+                  color: AppTheme.grey200,
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
                   timeStr,
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
+                  style: TextStyle(fontSize: 12, color: AppTheme.grey700),
                 ),
               ),
               const SizedBox(width: 12),
@@ -1373,7 +1373,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     ),
                     Text(
                       event.description,
-                      style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
+                      style: TextStyle(fontSize: 13, color: AppTheme.grey700),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -1531,7 +1531,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         children: [
           Text(
             '$label: ',
-            style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+            style: TextStyle(fontSize: 14, color: AppTheme.grey600),
           ),
           Text(
             displayValue,

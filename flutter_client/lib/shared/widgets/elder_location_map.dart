@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import '../../core/theme/app_theme.dart';
 
 /// 老人位置地图组件
 /// 使用 OpenStreetMap（免费，无需 API Key）
@@ -64,14 +65,14 @@ class _ElderLocationMapState extends State<ElderLocationMap> {
       return Container(
         height: 300,
         decoration: BoxDecoration(
-          color: Colors.grey.shade100,
+          color: AppTheme.grey100,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.map_outlined, size: 48, color: Colors.grey.shade400),
+              Icon(Icons.map_outlined, size: 48, color: AppTheme.grey400),
               const SizedBox(height: 12),
               const Text('暂无位置数据', style: TextStyle(color: Colors.grey)),
             ],
@@ -84,7 +85,7 @@ class _ElderLocationMapState extends State<ElderLocationMap> {
       height: 300,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: AppTheme.grey300),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),

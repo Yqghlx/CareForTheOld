@@ -178,7 +178,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                 const SizedBox(height: 4),
                 Text(
                   '半径: ${radius >= 1000 ? '${(radius / 1000).toStringAsFixed(1)}公里' : '$radius米'}',
-                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                  style: TextStyle(fontSize: 14, color: AppTheme.grey600),
                 ),
               ],
             ),
@@ -254,7 +254,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                   children: [
                     Text(
                       '为 $elderName 设置安全区域，当老人离开该区域时将收到通知。',
-                      style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                      style: TextStyle(fontSize: 14, color: AppTheme.grey600),
                     ),
                     const SizedBox(height: 16),
 
@@ -262,7 +262,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade50,
+                        color: AppTheme.grey50,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Column(
@@ -393,13 +393,13 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
       return Container(
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: Colors.grey.shade100,
+          color: AppTheme.grey100,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Center(
           child: Column(
             children: [
-              Icon(Icons.location_off, size: 48, color: Colors.grey.shade400),
+              Icon(Icons.location_off, size: 48, color: AppTheme.grey400),
               const SizedBox(height: 12),
               const Text('暂无位置记录', style: TextStyle(color: Colors.grey)),
               const Text('老人尚未开启定位上报', style: TextStyle(fontSize: 12, color: Colors.grey)),
@@ -459,7 +459,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                         ),
                         Text(
                           '更新于 ${location.relativeTime}',
-                          style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                          style: TextStyle(fontSize: 14, color: AppTheme.grey600),
                         ),
                       ],
                     ),
@@ -469,7 +469,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade50,
+                    color: AppTheme.grey50,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
@@ -502,7 +502,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                 const SizedBox(height: 12),
                 Text(
                   '精确时间: ${location.formattedTime}',
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+                  style: TextStyle(fontSize: 12, color: AppTheme.grey500),
                 ),
               ],
             ),
@@ -518,7 +518,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
       return Container(
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: Colors.grey.shade100,
+          color: AppTheme.grey100,
           borderRadius: BorderRadius.circular(16),
         ),
         child: const Center(
@@ -564,14 +564,14 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                   ),
                   Text(
                     '${record.latitude.toStringAsFixed(4)}, ${record.longitude.toStringAsFixed(4)}',
-                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                    style: TextStyle(fontSize: 12, color: AppTheme.grey600),
                   ),
                 ],
               ),
             ),
             Text(
               record.formattedTime.split(' ').last,
-              style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+              style: TextStyle(fontSize: 12, color: AppTheme.grey500),
             ),
           ],
         ),

@@ -165,7 +165,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
                       notification.content,
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.grey.shade600,
+                        color: AppTheme.grey600,
                       ),
                       maxLines: _expandedNotificationId == notification.id ? null : 3,
                       overflow: _expandedNotificationId == notification.id ? null : TextOverflow.ellipsis,
@@ -176,7 +176,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
                       children: [
                         Text(
                           notification.formattedTime,
-                          style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                          style: TextStyle(fontSize: 12, color: AppTheme.grey600),
                         ),
                         // 展开/收起提示
                         if (notification.content.length > 60)

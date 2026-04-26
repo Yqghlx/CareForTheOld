@@ -113,7 +113,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                 loading: () => Container(
                   height: 48,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
+                    color: AppTheme.grey100,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Center(
@@ -241,7 +241,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                             stat.typeName,
                             style: TextStyle(
                               fontSize: 16,
-                              color: Colors.grey.shade600,
+                              color: AppTheme.grey600,
                             ),
                           ),
                           // 趋势指示小图标
@@ -274,7 +274,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                         '30天: ${stat.average30Days?.toStringAsFixed(1) ?? '--'} | 共${stat.totalCount}条',
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.grey.shade500,
+                          color: AppTheme.grey500,
                         ),
                       ),
                     ),
@@ -412,7 +412,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                     timeStr,
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.grey.shade600,
+                      color: AppTheme.grey600,
                     ),
                   ),
                   // 显示备注信息
@@ -422,7 +422,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       '备注: ${record.note}',
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.grey.shade500,
+                        color: AppTheme.grey500,
                         fontStyle: FontStyle.italic,
                       ),
                       maxLines: 2,

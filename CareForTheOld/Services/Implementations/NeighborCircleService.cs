@@ -1,4 +1,3 @@
-using System.Security.Cryptography;
 using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Data;
@@ -64,7 +63,7 @@ public class NeighborCircleService : INeighborCircleService
         {
             await _context.SaveChangesAsync();
         }
-        catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
+        catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex))
         {
             throw new ArgumentException(ErrorMessages.NeighborCircle.AlreadyInCircleCreate);
         }
@@ -130,7 +129,7 @@ public class NeighborCircleService : INeighborCircleService
         {
             await _context.SaveChangesAsync();
         }
-        catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
+        catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex))
         {
             throw new ArgumentException(ErrorMessages.NeighborCircle.AlreadyInCircleJoin);
         }
@@ -352,10 +351,7 @@ public class NeighborCircleService : INeighborCircleService
     /// <summary>
     /// 使用加密随机数生成器生成 6 位数字邀请码，防止可预测攻击
     /// </summary>
-    private static string GenerateInviteCode()
-    {
-        return RandomNumberGenerator.GetInt32(100000, 999999).ToString();
-    }
+    private static string GenerateInviteCode() => InviteCodeHelper.Generate();
 
     /// <summary>
     /// 构建邻里圈响应（含创建者名称和成员数）
@@ -384,18 +380,5 @@ public class NeighborCircleService : INeighborCircleService
             IsActive = circle.IsActive,
             CreatedAt = circle.CreatedAt
         };
-    }
-
-    /// <summary>
-    /// 判断是否为唯一约束冲突异常（兼容 PostgreSQL 和 SQLite）
-    /// </summary>
-    private static bool IsUniqueConstraintViolation(DbUpdateException ex)
-    {
-        var inner = ex.InnerException;
-        if (inner == null) return false;
-        var msg = inner.Message.ToUpperInvariant();
-        // PostgreSQL: "23505" unique_violation
-        // SQLite: "UNIQUE constraint failed"
-        return msg.Contains("UNIQUE") || msg.Contains("23505");
     }
 }

@@ -1,5 +1,5 @@
-using System.Security.Cryptography;
 using CareForTheOld.Common.Constants;
+using CareForTheOld.Common.Helpers;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.Families;
 using CareForTheOld.Models.DTOs.Responses;
@@ -27,10 +27,7 @@ public class FamilyService : IFamilyService
     /// <summary>
     /// 使用加密随机数生成器生成 6 位数字邀请码，防止可预测攻击
     /// </summary>
-    private static string GenerateInviteCode()
-    {
-        return RandomNumberGenerator.GetInt32(100000, 999999).ToString();
-    }
+    private static string GenerateInviteCode() => InviteCodeHelper.Generate();
 
     /// <summary>
     /// 获取用户所属的家庭信息（仅返回已通过审批的成员）
@@ -84,7 +81,7 @@ public class FamilyService : IFamilyService
         {
             await _context.SaveChangesAsync();
         }
-        catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
+        catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex))
         {
             throw new ArgumentException(ErrorMessages.Family.AlreadyInFamily);
         }
@@ -118,7 +115,7 @@ public class FamilyService : IFamilyService
         {
             await _context.SaveChangesAsync();
         }
-        catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
+        catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex))
         {
             throw new ArgumentException("该用户已加入其他家庭组");
         }
@@ -164,7 +161,7 @@ public class FamilyService : IFamilyService
         {
             await _context.SaveChangesAsync();
         }
-        catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
+        catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex))
         {
             throw new ArgumentException(ErrorMessages.Family.AlreadyAppliedOrJoined);
         }
@@ -403,18 +400,5 @@ public class FamilyService : IFamilyService
                     Status = fm.Status
                 }).ToList()
         };
-    }
-
-    /// <summary>
-    /// 判断是否为唯一约束冲突异常（兼容 PostgreSQL 和 SQLite）
-    /// </summary>
-    private static bool IsUniqueConstraintViolation(DbUpdateException ex)
-    {
-        var inner = ex.InnerException;
-        if (inner == null) return false;
-        var msg = inner.Message.ToUpperInvariant();
-        // PostgreSQL: "23505" unique_violation
-        // SQLite: "UNIQUE constraint failed"
-        return msg.Contains("UNIQUE") || msg.Contains("23505");
     }
 }

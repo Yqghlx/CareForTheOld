@@ -166,7 +166,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                       const SizedBox(width: 6),
                       Text(
                         member.relation,
-                        style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+                        style: TextStyle(fontSize: 13, color: AppTheme.grey600),
                       ),
                     ],
                   ),
@@ -583,7 +583,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                       const SizedBox(width: 8),
                       Text(
                         member.relation,
-                        style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                        style: TextStyle(fontSize: 14, color: AppTheme.grey600),
                       ),
                     ],
                   ),

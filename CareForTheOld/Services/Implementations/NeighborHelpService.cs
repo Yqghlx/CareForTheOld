@@ -398,7 +398,7 @@ public class NeighborHelpService : INeighborHelpService
         {
             await _context.SaveChangesAsync();
         }
-        catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
+        catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex))
         {
             throw new ArgumentException(ErrorMessages.NeighborHelp.AlreadyRated);
         }
@@ -612,16 +612,5 @@ public class NeighborHelpService : INeighborHelpService
             RespondedAt = request.RespondedAt,
             ExpiresAt = request.ExpiresAt,
         };
-    }
-
-    /// <summary>
-    /// 判断是否为唯一约束冲突异常（兼容 PostgreSQL 和 SQLite）
-    /// </summary>
-    private static bool IsUniqueConstraintViolation(DbUpdateException ex)
-    {
-        var inner = ex.InnerException;
-        if (inner == null) return false;
-        var msg = inner.Message.ToUpperInvariant();
-        return msg.Contains("UNIQUE") || msg.Contains("23505");
     }
 }

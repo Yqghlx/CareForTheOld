@@ -577,7 +577,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
             const SizedBox(height: 12),
             Text(
               '呼叫时间: ${call.formattedTime}',
-              style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
+              style: TextStyle(fontSize: 16, color: AppTheme.grey600),
             ),
           ],
         ),

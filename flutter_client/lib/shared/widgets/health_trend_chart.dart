@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import '../../core/theme/app_theme.dart';
 import '../../shared/models/health_record.dart';
 
 /// 健康趋势图表组件
@@ -69,7 +70,7 @@ class HealthTrendChart extends StatelessWidget {
     return Container(
       height: 200,
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: AppTheme.grey100,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Center(
@@ -79,20 +80,20 @@ class HealthTrendChart extends StatelessWidget {
             Icon(
               Icons.show_chart,
               size: 48,
-              color: Colors.grey.shade400,
+              color: AppTheme.grey400,
             ),
             const SizedBox(height: 8),
             Text(
               '暂无数据',
               style: TextStyle(
-                color: Colors.grey.shade800,
+                color: AppTheme.grey800,
                 fontSize: 16,
               ),
             ),
             Text(
               '请先录入健康数据',
               style: TextStyle(
-                color: Colors.grey.shade400,
+                color: AppTheme.grey400,
                 fontSize: 14,
               ),
             ),
@@ -205,7 +206,7 @@ class HealthTrendChart extends StatelessWidget {
             drawVerticalLine: false,
             horizontalInterval: 20,
             getDrawingHorizontalLine: (value) => FlLine(
-              color: Colors.grey.shade300,
+              color: AppTheme.grey300,
               strokeWidth: 1,
             ),
           ),
@@ -218,7 +219,7 @@ class HealthTrendChart extends StatelessWidget {
                 getTitlesWidget: (value, meta) => Text(
                   value.toInt().toString(),
                   style: TextStyle(
-                    color: Colors.grey.shade800,
+                    color: AppTheme.grey800,
                     fontSize: 14,
                   ),
                 ),
@@ -237,7 +238,7 @@ class HealthTrendChart extends StatelessWidget {
                     child: Text(
                       '${date.month}/${date.day}',
                       style: TextStyle(
-                        color: Colors.grey.shade800,
+                        color: AppTheme.grey800,
                         fontSize: 14,
                       ),
                     ),
@@ -322,7 +323,7 @@ class HealthTrendChart extends StatelessWidget {
           show: true,
           drawVerticalLine: false,
           getDrawingHorizontalLine: (value) => FlLine(
-            color: Colors.grey.shade300,
+            color: AppTheme.grey300,
             strokeWidth: 1,
           ),
         ),
@@ -334,7 +335,7 @@ class HealthTrendChart extends StatelessWidget {
               getTitlesWidget: (value, meta) => Text(
                 value.toStringAsFixed(1),
                 style: TextStyle(
-                  color: Colors.grey.shade800,
+                  color: AppTheme.grey800,
                   fontSize: 14,
                 ),
               ),
@@ -353,7 +354,7 @@ class HealthTrendChart extends StatelessWidget {
                   child: Text(
                     '${date.month}/${date.day}',
                     style: TextStyle(
-                      color: Colors.grey.shade800,
+                      color: AppTheme.grey800,
                       fontSize: 14,
                     ),
                   ),
@@ -449,7 +450,7 @@ class HealthTrendChart extends StatelessWidget {
           label,
           style: TextStyle(
             fontSize: 14,
-            color: Colors.grey.shade700,
+            color: AppTheme.grey700,
           ),
         ),
         Text(
@@ -464,7 +465,7 @@ class HealthTrendChart extends StatelessWidget {
           type.unit,
           style: TextStyle(
             fontSize: 14,
-            color: Colors.grey.shade800,
+            color: AppTheme.grey800,
           ),
         ),
       ],

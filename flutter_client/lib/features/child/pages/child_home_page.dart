@@ -257,7 +257,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
             Icon(
               Icons.people_outline,
               size: 64,
-              color: Colors.grey.shade400,
+              color: AppTheme.grey400,
             ),
             const SizedBox(height: 16),
             const Text(
@@ -334,7 +334,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                               elder.relation,
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.grey.shade600,
+                                color: AppTheme.grey600,
                               ),
                             ),
                           ],
@@ -439,7 +439,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     // 选择老人
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade50,
+                        color: AppTheme.grey50,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: DropdownButtonFormField<String>(
@@ -462,7 +462,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     const SizedBox(height: 12),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade50,
+                        color: AppTheme.grey50,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: TextField(
@@ -478,7 +478,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     const SizedBox(height: 12),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade50,
+                        color: AppTheme.grey50,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: TextField(
@@ -494,7 +494,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     const SizedBox(height: 12),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade50,
+                        color: AppTheme.grey50,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: DropdownButtonFormField<int>(
@@ -557,7 +557,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                                   decoration: BoxDecoration(
-                                    color: Colors.grey.shade50,
+                                    color: AppTheme.grey50,
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Row(

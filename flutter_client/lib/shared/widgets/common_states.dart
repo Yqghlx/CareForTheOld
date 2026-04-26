@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/app_theme.dart';
 
 /// 统一空状态组件 — 替代各页面手写的空状态展示
 ///
@@ -26,7 +27,7 @@ class EmptyStateWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 64, color: Colors.grey.shade400),
+            Icon(icon, size: 64, color: AppTheme.grey400),
             const SizedBox(height: 16),
             Text(
               title,
@@ -37,7 +38,7 @@ class EmptyStateWidget extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 subtitle!,
-                style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
+                style: TextStyle(fontSize: 14, color: AppTheme.grey500),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -163,9 +164,9 @@ class _SkeletonLoaderState extends State<SkeletonLoader>
           shaderCallback: (bounds) {
             return LinearGradient(
               colors: [
-                Colors.grey.shade300,
-                Colors.grey.shade200,
-                Colors.grey.shade300,
+                AppTheme.grey300,
+                AppTheme.grey200,
+                AppTheme.grey300,
               ],
               stops: [0.0, _animation.value, 1.0],
             ).createShader(bounds);

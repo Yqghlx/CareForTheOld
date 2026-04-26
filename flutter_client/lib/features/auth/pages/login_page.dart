@@ -158,7 +158,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                     '健康监测 · 用药提醒',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.grey.shade600,
+                      color: AppTheme.grey600,
                     ),
                   ),
                   const SizedBox(height: 48),

@@ -101,7 +101,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(_selectedType.icon, size: 64, color: Colors.grey.shade400),
+                            Icon(_selectedType.icon, size: 64, color: AppTheme.grey400),
                             const SizedBox(height: 16),
                             Text(
                               '暂无${_selectedType.label}记录',
@@ -110,7 +110,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                             const SizedBox(height: 8),
                             Text(
                               '请先在健康页面记录${_selectedType.label}数据',
-                              style: TextStyle(fontSize: 16, color: Colors.grey.shade500),
+                              style: TextStyle(fontSize: 16, color: AppTheme.grey500),
                             ),
                           ],
                         ),
@@ -153,7 +153,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
   Widget _buildTypeSelector() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: AppTheme.grey100,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -186,7 +186,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                         type.label,
                         style: TextStyle(
                           fontSize: 16,
-                          color: isSelected ? Colors.white : Colors.grey.shade700,
+                          color: isSelected ? Colors.white : AppTheme.grey700,
                           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                         ),
                         maxLines: 1,
@@ -236,14 +236,14 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-            color: isSelected ? AppTheme.primaryColor : Colors.grey.shade200,
+            color: isSelected ? AppTheme.primaryColor : AppTheme.grey200,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
             label,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: isSelected ? Colors.white : Colors.grey.shade700,
+              color: isSelected ? Colors.white : AppTheme.grey700,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
           ),

@@ -118,7 +118,14 @@ public class HealthService : IHealthService
         var sevenDaysAgo = now.AddDays(-7);
         var thirtyDaysAgo = now.AddDays(-30);
 
-        // 按类型分组聚合，避免全量加载到内存
+        // 第一步：获取每种类型的最新记录（一次查询，避免分组内重复排序）
+        var latestRecords = await _context.HealthRecords
+            .Where(r => r.UserId == userId && !r.IsDeleted)
+            .GroupBy(r => r.Type)
+            .Select(g => new { Type = g.Key, Record = g.OrderByDescending(r => r.RecordedAt).FirstOrDefault() })
+            .ToListAsync();
+
+        // 第二步：按类型分组聚合统计值（均值等）
         var typeGroups = await _context.HealthRecords
             .Where(r => r.UserId == userId && !r.IsDeleted)
             .GroupBy(r => r.Type)
@@ -127,12 +134,6 @@ public class HealthService : IHealthService
                 Type = g.Key,
                 TotalCount = g.Count(),
                 LatestRecordedAt = g.Max(r => r.RecordedAt),
-                // 最新值通过子查询获取
-                LatestSystolic = g.OrderByDescending(r => r.RecordedAt).Select(r => r.Systolic).FirstOrDefault(),
-                LatestDiastolic = g.OrderByDescending(r => r.RecordedAt).Select(r => r.Diastolic).FirstOrDefault(),
-                LatestBloodSugar = g.OrderByDescending(r => r.RecordedAt).Select(r => r.BloodSugar).FirstOrDefault(),
-                LatestHeartRate = g.OrderByDescending(r => r.RecordedAt).Select(r => r.HeartRate).FirstOrDefault(),
-                LatestTemperature = g.OrderByDescending(r => r.RecordedAt).Select(r => r.Temperature).FirstOrDefault(),
                 Avg7Systolic = g.Where(r => r.RecordedAt >= sevenDaysAgo).Select(r => (double?)r.Systolic).Average(),
                 Avg30Systolic = g.Where(r => r.RecordedAt >= thirtyDaysAgo).Select(r => (double?)r.Systolic).Average(),
                 Avg7BloodSugar = g.Where(r => r.RecordedAt >= sevenDaysAgo).Select(r => (decimal?)r.BloodSugar).Average(),
@@ -143,6 +144,9 @@ public class HealthService : IHealthService
                 Avg30Temperature = g.Where(r => r.RecordedAt >= thirtyDaysAgo).Select(r => (decimal?)r.Temperature).Average(),
             })
             .ToListAsync();
+
+        // 合并最新记录和统计数据
+        var latestByType = latestRecords.ToDictionary(l => l.Type, l => l.Record);
 
         var stats = new List<HealthStatsResponse>();
 
@@ -155,25 +159,28 @@ public class HealthService : IHealthService
                 LatestRecordedAt = g.LatestRecordedAt
             };
 
+            // 从最新记录中提取对应字段
+            var latest = latestByType.GetValueOrDefault(g.Type);
+
             switch (g.Type)
             {
                 case HealthType.BloodPressure:
-                    statsResponse.LatestValue = g.LatestSystolic;
+                    statsResponse.LatestValue = latest?.Systolic;
                     statsResponse.Average7Days = g.Avg7Systolic.HasValue ? (decimal)g.Avg7Systolic.Value : null;
                     statsResponse.Average30Days = g.Avg30Systolic.HasValue ? (decimal)g.Avg30Systolic.Value : null;
                     break;
                 case HealthType.BloodSugar:
-                    statsResponse.LatestValue = g.LatestBloodSugar;
+                    statsResponse.LatestValue = latest?.BloodSugar;
                     statsResponse.Average7Days = g.Avg7BloodSugar;
                     statsResponse.Average30Days = g.Avg30BloodSugar;
                     break;
                 case HealthType.HeartRate:
-                    statsResponse.LatestValue = g.LatestHeartRate;
+                    statsResponse.LatestValue = latest?.HeartRate;
                     statsResponse.Average7Days = g.Avg7HeartRate.HasValue ? (decimal)g.Avg7HeartRate.Value : null;
                     statsResponse.Average30Days = g.Avg30HeartRate.HasValue ? (decimal)g.Avg30HeartRate.Value : null;
                     break;
                 case HealthType.Temperature:
-                    statsResponse.LatestValue = g.LatestTemperature;
+                    statsResponse.LatestValue = latest?.Temperature;
                     statsResponse.Average7Days = g.Avg7Temperature;
                     statsResponse.Average30Days = g.Avg30Temperature;
                     break;

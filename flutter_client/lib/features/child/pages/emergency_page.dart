@@ -131,7 +131,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: Colors.grey.shade100,
+                color: AppTheme.grey100,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: const Center(
@@ -191,7 +191,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                         call.relativeTime,
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.grey.shade600,
+                          color: AppTheme.grey600,
                         ),
                       ),
                     ],
@@ -209,7 +209,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
+                  color: AppTheme.grey100,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Row(
@@ -219,7 +219,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                       const SizedBox(width: 4),
                       Text(
                         '${call.latitude!.toStringAsFixed(4)}, ${call.longitude!.toStringAsFixed(4)}',
-                        style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
+                        style: TextStyle(fontSize: 13, color: AppTheme.grey700),
                       ),
                     ],
                     if (call.hasLocation && call.batteryLevel != null)
@@ -314,7 +314,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                   ),
                   Text(
                     call.relativeTime,
-                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                    style: TextStyle(fontSize: 12, color: AppTheme.grey600),
                   ),
                 ],
               ),
@@ -329,12 +329,12 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                 if (call.respondedByRealName != null)
                   Text(
                     '处理人: ${call.respondedByRealName}',
-                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                    style: TextStyle(fontSize: 12, color: AppTheme.grey600),
                   ),
                 if (call.respondedAt != null)
                   Text(
                     _formatRespondedAt(call.respondedAt!),
-                    style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
+                    style: TextStyle(fontSize: 11, color: AppTheme.grey500),
                   ),
               ],
             ),

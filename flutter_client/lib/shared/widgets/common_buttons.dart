@@ -73,7 +73,7 @@ class _PrimaryButtonState extends State<PrimaryButton>
             borderRadius: BorderRadius.circular(14),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFFE86B4A).withValues(alpha: 0.3),
+                color: AppTheme.primaryColor.withValues(alpha: 0.3),
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),
@@ -122,8 +122,8 @@ class SecondaryButton extends StatefulWidget {
     super.key,
     required this.text,
     this.onPressed,
-    this.borderColor = const Color(0xFFE86B4A),
-    this.textColor = const Color(0xFFE86B4A),
+    this.borderColor = AppTheme.primaryColor,
+    this.textColor = AppTheme.primaryColor,
   });
 
   @override
@@ -279,7 +279,7 @@ class _PrimaryIconButtonState extends State<PrimaryIconButton>
             borderRadius: BorderRadius.circular(14),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFFE86B4A).withValues(alpha: 0.3),
+                color: AppTheme.primaryColor.withValues(alpha: 0.3),
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),

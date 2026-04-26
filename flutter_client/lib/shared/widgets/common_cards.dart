@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/app_theme.dart';
 
 /// 统计卡片组件 - 用于显示数值统计
 class StatCard extends StatelessWidget {
@@ -48,7 +49,7 @@ class StatCard extends StatelessWidget {
                 title,
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.grey.shade600,
+                  color: AppTheme.grey600,
                 ),
               ),
               const SizedBox(height: 4),
@@ -66,7 +67,7 @@ class StatCard extends StatelessWidget {
                   subtitle!,
                   style: TextStyle(
                     fontSize: 11,
-                    color: Colors.grey.shade500,
+                    color: AppTheme.grey500,
                   ),
                   textAlign: TextAlign.center,
                   maxLines: 1,
@@ -129,7 +130,7 @@ class InfoCard extends StatelessWidget {
                     subtitle!,
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey.shade600,
+                      color: AppTheme.grey600,
                     ),
                   ),
                 ],
@@ -336,7 +337,7 @@ class _AnimatedQuickCardState extends State<AnimatedQuickCard>
                     widget.subtitle,
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.grey.shade600,
+                      color: AppTheme.grey600,
                     ),
                     maxLines: 1,
                   ),

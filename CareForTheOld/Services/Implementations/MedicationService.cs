@@ -1,4 +1,5 @@
 using CareForTheOld.Common.Constants;
+using CareForTheOld.Common.Helpers;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.Medication;
 using CareForTheOld.Models.DTOs.Responses;
@@ -154,7 +155,7 @@ public class MedicationService : IMedicationService
         {
             await _context.SaveChangesAsync();
         }
-        catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
+        catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex))
         {
             // 并发场景：另一个请求已创建了相同记录，改为更新
             _context.MedicationLogs.Remove(log);
@@ -350,18 +351,5 @@ public class MedicationService : IMedicationService
             TakenAt = l.TakenAt,
             Note = l.Note
         };
-    }
-
-    /// <summary>
-    /// 判断是否为唯一约束冲突异常（兼容 PostgreSQL 和 SQLite）
-    /// </summary>
-    private static bool IsUniqueConstraintViolation(DbUpdateException ex)
-    {
-        var inner = ex.InnerException;
-        if (inner == null) return false;
-        var msg = inner.Message.ToUpperInvariant();
-        // PostgreSQL: "23505" unique_violation
-        // SQLite: "UNIQUE constraint failed"
-        return msg.Contains("UNIQUE") || msg.Contains("23505");
     }
 }

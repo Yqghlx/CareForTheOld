@@ -112,7 +112,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(_selectedType.icon,
-                              size: 64, color: Colors.grey.shade400),
+                              size: 64, color: AppTheme.grey400),
                           const SizedBox(height: 16),
                           Text(
                             '暂无${_selectedType.label}记录',
@@ -123,7 +123,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
                           Text(
                             '${widget.elderName}录入数据后即可查看趋势',
                             style: TextStyle(
-                                fontSize: 16, color: Colors.grey.shade500),
+                                fontSize: 16, color: AppTheme.grey500),
                           ),
                         ],
                       ),
@@ -172,7 +172,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
   Widget _buildTypeSelector() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: AppTheme.grey100,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -207,7 +207,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
                           fontSize: 14,
                           color: isSelected
                               ? Colors.white
-                              : Colors.grey.shade700,
+                              : AppTheme.grey700,
                           fontWeight:
                               isSelected ? FontWeight.bold : FontWeight.normal,
                         ),
@@ -258,14 +258,14 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-            color: isSelected ? AppTheme.primaryColor : Colors.grey.shade200,
+            color: isSelected ? AppTheme.primaryColor : AppTheme.grey200,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
             label,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: isSelected ? Colors.white : Colors.grey.shade700,
+              color: isSelected ? Colors.white : AppTheme.grey700,
               fontWeight:
                   isSelected ? FontWeight.bold : FontWeight.normal,
             ),

@@ -149,7 +149,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
           label,
           style: TextStyle(
             fontSize: 16,
-            color: Colors.grey.shade700,
+            color: AppTheme.grey700,
           ),
         ),
       ],
@@ -254,7 +254,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
                           )
                         : Icon(
                             Icons.skip_next,
-                            color: Colors.grey.shade600,
+                            color: AppTheme.grey600,
                             size: 28,
                           ),
                   ),
@@ -281,7 +281,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
                     '计划时间: $timeStr',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.grey.shade600,
+                      color: AppTheme.grey600,
                     ),
                   ),
                 ],
@@ -542,7 +542,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
                       const SizedBox(height: 4),
                       Text(
                         '计划时间: $timeStr',
-                        style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
+                        style: TextStyle(fontSize: 16, color: AppTheme.grey600),
                       ),
                     ],
                   ),
