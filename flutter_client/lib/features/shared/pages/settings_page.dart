@@ -580,7 +580,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       padding: const EdgeInsets.only(top: 4),
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(strengthText, style: TextStyle(fontSize: 12, color: strengthColor)),
+                        child: Text(strengthText, style: AppTheme.textCaption.copyWith(color: strengthColor)),
                       ),
                     ),
                   AppTheme.spacer12,

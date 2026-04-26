@@ -536,7 +536,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                           Flexible(
                             child: Text(
                               _getNormalRangeHint(type),
-                              style: TextStyle(fontSize: 16, color: type.color),
+                              style: AppTheme.textBody16.copyWith(color: type.color),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
                             ),
