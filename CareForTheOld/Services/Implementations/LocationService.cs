@@ -196,7 +196,7 @@ public class LocationService : ILocationService
 
         // 获取老人姓名
         var elder = await _context.Users.FindAsync(elderId);
-        var elderName = elder?.RealName ?? "老人";
+        var elderName = elder?.RealName ?? AppConstants.HealthTypeLabels.DefaultElderName;
 
         // 获取家庭中的子女成员
         var children = await _context.FamilyMembers

@@ -387,6 +387,28 @@ public static class AppConstants
         public const string Temperature = "°C";
     }
 
+    /// <summary>
+    /// 健康类型中文名称
+    /// 统一管理健康类型的中文标签，避免多处重复映射
+    /// </summary>
+    public static class HealthTypeLabels
+    {
+        /// <summary>血压</summary>
+        public const string BloodPressure = "血压";
+
+        /// <summary>血糖</summary>
+        public const string BloodSugar = "血糖";
+
+        /// <summary>心率</summary>
+        public const string HeartRate = "心率";
+
+        /// <summary>体温</summary>
+        public const string Temperature = "体温";
+
+        /// <summary>通用默认名称（老人未设置真实姓名时使用）</summary>
+        public const string DefaultElderName = "老人";
+    }
+
     /// <summary>健康统计时间范围常量</summary>
     public static class HealthStatsDays
     {

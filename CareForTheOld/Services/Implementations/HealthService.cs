@@ -293,10 +293,10 @@ public class HealthService : IHealthService
     {
         return type switch
         {
-            HealthType.BloodPressure => "血压",
-            HealthType.BloodSugar => "血糖",
-            HealthType.HeartRate => "心率",
-            HealthType.Temperature => "体温",
+            HealthType.BloodPressure => AppConstants.HealthTypeLabels.BloodPressure,
+            HealthType.BloodSugar => AppConstants.HealthTypeLabels.BloodSugar,
+            HealthType.HeartRate => AppConstants.HealthTypeLabels.HeartRate,
+            HealthType.Temperature => AppConstants.HealthTypeLabels.Temperature,
             _ => type.ToString()
         };
     }

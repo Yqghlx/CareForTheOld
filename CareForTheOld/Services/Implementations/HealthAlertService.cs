@@ -57,7 +57,7 @@ public class HealthAlertService : IHealthAlertService
 
         // 获取老人姓名
         var elder = await _context.Users.FindAsync(elderId);
-        var elderName = elder?.RealName ?? "老人";
+        var elderName = elder?.RealName ?? AppConstants.HealthTypeLabels.DefaultElderName;
 
         // 构建通知内容
         var typeLabel = GetTypeLabel(record.Type);
@@ -214,10 +214,10 @@ public class HealthAlertService : IHealthAlertService
     {
         return type switch
         {
-            HealthType.BloodPressure => "血压",
-            HealthType.BloodSugar => "血糖",
-            HealthType.HeartRate => "心率",
-            HealthType.Temperature => "体温",
+            HealthType.BloodPressure => AppConstants.HealthTypeLabels.BloodPressure,
+            HealthType.BloodSugar => AppConstants.HealthTypeLabels.BloodSugar,
+            HealthType.HeartRate => AppConstants.HealthTypeLabels.HeartRate,
+            HealthType.Temperature => AppConstants.HealthTypeLabels.Temperature,
             _ => type.ToString()
         };
     }

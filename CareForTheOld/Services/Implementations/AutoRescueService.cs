@@ -70,7 +70,7 @@ public class AutoRescueService : IAutoRescueService
         // 通知子女
         var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
         var elder = await context.Users.FindAsync(elderId);
-        var elderName = elder?.RealName ?? "老人";
+        var elderName = elder?.RealName ?? AppConstants.HealthTypeLabels.DefaultElderName;
 
         var triggerText = triggerType == RescueTriggerType.GeoFenceBreach
             ? "走出安全区域"
@@ -169,7 +169,7 @@ public class AutoRescueService : IAutoRescueService
             var emergencyService = scope.ServiceProvider.GetRequiredService<IEmergencyService>();
             var helpService = scope.ServiceProvider.GetRequiredService<INeighborHelpService>();
 
-            var elderName = record.Elder?.RealName ?? "老人";
+            var elderName = record.Elder?.RealName ?? AppConstants.HealthTypeLabels.DefaultElderName;
             _logger.LogWarning(
                 "自动救援：老人 {ElderId} 的子女 {_Delay} 分钟内未响应，触发邻里圈广播",
                 record.ElderId, _delayMinutes);
