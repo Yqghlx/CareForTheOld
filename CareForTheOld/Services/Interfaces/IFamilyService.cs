@@ -5,12 +5,25 @@ namespace CareForTheOld.Services.Interfaces;
 
 public interface IFamilyService
 {
+    /// <summary>获取用户所属的家庭信息（仅返回已通过审批的成员）</summary>
     Task<FamilyResponse?> GetMyFamilyAsync(Guid userId);
+
+    /// <summary>创建家庭组（仅子女角色可创建）</summary>
     Task<FamilyResponse> CreateFamilyAsync(Guid creatorId, CreateFamilyRequest request);
+
+    /// <summary>直接添加家庭成员（子女操作，默认通过审批）</summary>
     Task<FamilyResponse> AddMemberAsync(Guid familyId, Guid operatorId, AddFamilyMemberRequest request);
+
+    /// <summary>通过邀请码申请加入家庭（需子女审批）</summary>
     Task<JoinFamilyResponse> JoinFamilyByCodeAsync(Guid userId, JoinFamilyRequest request);
+
+    /// <summary>刷新家庭邀请码（仅创建者可操作）</summary>
     Task<FamilyResponse> RefreshInviteCodeAsync(Guid familyId, Guid operatorId);
+
+    /// <summary>获取家庭成员列表（仅返回已通过审批的成员）</summary>
     Task<List<FamilyMemberResponse>> GetMembersAsync(Guid familyId);
+
+    /// <summary>移除家庭成员（仅创建者可操作，不可移除自己）</summary>
     Task RemoveMemberAsync(Guid familyId, Guid userId, Guid operatorId);
 
     /// <summary>

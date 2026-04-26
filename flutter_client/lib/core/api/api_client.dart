@@ -109,7 +109,7 @@ class ApiClient {
         // 上报服务端错误到 Sentry（4xx/5xx）
         if (statusCode != null && statusCode >= 400) {
           Sentry.captureException(
-            Exception('API ${statusCode}: ${error.requestOptions.path}'),
+            Exception('API $statusCode: ${error.requestOptions.path}'),
             stackTrace: StackTrace.current,
           );
         }

@@ -28,6 +28,9 @@ public class UserController : ControllerBase
         _fileStorageService = fileStorageService;
     }
 
+    /// <summary>
+    /// 获取当前登录用户信息
+    /// </summary>
     [HttpGet("me")]
     [CacheControl(MaxAgeSeconds = 60)]
     public async Task<ApiResponse<UserResponse>> GetCurrentUser()
@@ -37,6 +40,9 @@ public class UserController : ControllerBase
         return ApiResponse<UserResponse>.Ok(result);
     }
 
+    /// <summary>
+    /// 更新当前用户信息（昵称、头像URL）
+    /// </summary>
     [HttpPut("me")]
     public async Task<ApiResponse<UserResponse>> UpdateUser([FromBody] UpdateUserRequest request)
     {
@@ -45,6 +51,9 @@ public class UserController : ControllerBase
         return ApiResponse<UserResponse>.Ok(result, "更新成功");
     }
 
+    /// <summary>
+    /// 修改当前用户密码
+    /// </summary>
     [HttpPost("me/password")]
     public async Task<ApiResponse<object>> ChangePassword([FromBody] ChangePasswordRequest request)
     {

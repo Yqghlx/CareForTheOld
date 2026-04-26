@@ -5,9 +5,16 @@ namespace CareForTheOld.Services.Interfaces;
 
 public interface IUserService
 {
+    /// <summary>获取当前用户信息</summary>
     Task<UserResponse> GetCurrentUserAsync(Guid userId);
+
+    /// <summary>根据 ID 获取用户信息</summary>
     Task<UserResponse> GetUserByIdAsync(Guid userId);
+
+    /// <summary>更新用户信息（昵称、头像URL）</summary>
     Task<UserResponse> UpdateUserAsync(Guid userId, UpdateUserRequest request);
+
+    /// <summary>修改用户密码（需验证旧密码）</summary>
     Task<bool> ChangePasswordAsync(Guid userId, ChangePasswordRequest request);
 
     /// <summary>
