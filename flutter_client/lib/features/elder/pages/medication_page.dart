@@ -445,7 +445,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
   void initState() {
     super.initState();
     _pulseController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
+      duration: AppTheme.duration1500ms,
       vsync: this,
     );
     _pulseAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(

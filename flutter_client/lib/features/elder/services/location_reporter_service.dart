@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/constants/pref_keys.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../core/services/connectivity_service.dart';
 import '../../../core/services/offline_queue_service.dart';
 import '../../shared/services/location_service.dart';
@@ -162,7 +163,7 @@ class LocationReporterService {
     try {
       final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.medium,
-        timeLimit: const Duration(seconds: 10),
+        timeLimit: AppTheme.duration10s,
       );
 
       debugPrint('[位置上报] 获取位置: ${position.latitude}, ${position.longitude}, 精度: ${position.accuracy}m');

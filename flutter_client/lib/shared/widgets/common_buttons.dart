@@ -29,7 +29,7 @@ class _PrimaryButtonState extends State<PrimaryButton>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 100),
+      duration: AppTheme.duration100ms,
       vsync: this,
     );
     _scaleAnimation = Tween<double>(begin: 1.0, end: 0.97).animate(
@@ -139,7 +139,7 @@ class _SecondaryButtonState extends State<SecondaryButton>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 100),
+      duration: AppTheme.duration100ms,
       vsync: this,
     );
     _scaleAnimation = Tween<double>(begin: 1.0, end: 0.97).animate(
@@ -235,7 +235,7 @@ class _PrimaryIconButtonState extends State<PrimaryIconButton>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 100),
+      duration: AppTheme.duration100ms,
       vsync: this,
     );
     _scaleAnimation = Tween<double>(begin: 1.0, end: 0.97).animate(

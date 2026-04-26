@@ -362,7 +362,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
 
       return await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.medium,
-        timeLimit: const Duration(seconds: 5),
+        timeLimit: AppTheme.duration5s,
       );
     } catch (_) {
       if (mounted) _showSnackBar(AppTheme.msgLocationFailed);

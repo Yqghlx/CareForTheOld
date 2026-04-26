@@ -338,4 +338,12 @@ class AppTheme {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     ),
   );
+
+  // 常用时长常量
+  static const Duration duration100ms = Duration(milliseconds: 100);
+  static const Duration duration300ms = Duration(milliseconds: 300);
+  static const Duration duration1500ms = Duration(milliseconds: 1500);
+  static const Duration duration5s = Duration(seconds: 5);
+  static const Duration duration10s = Duration(seconds: 10);
+  static const Duration duration30s = Duration(seconds: 30);
 }

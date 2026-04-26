@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../theme/app_theme.dart';
 
 /// 淡入过渡动画（适合同级页面切换：通知、设置等）
 ///
@@ -7,7 +8,7 @@ import 'package:go_router/go_router.dart';
 class FadePageTransition extends CustomTransitionPage {
   FadePageTransition({required super.child})
       : super(
-          transitionDuration: const Duration(milliseconds: 300),
+          transitionDuration: AppTheme.duration300ms,
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(opacity: animation, child: child);
           },
@@ -20,7 +21,7 @@ class FadePageTransition extends CustomTransitionPage {
 class SlidePageTransition extends CustomTransitionPage {
   SlidePageTransition({required super.child})
       : super(
-          transitionDuration: const Duration(milliseconds: 300),
+          transitionDuration: AppTheme.duration300ms,
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return SlideTransition(
               position: Tween<Offset>(

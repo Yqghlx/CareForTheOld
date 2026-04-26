@@ -38,7 +38,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
   void initState() {
     super.initState();
     _breathController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
+      duration: AppTheme.duration1500ms,
       vsync: this,
     );
     _breathAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(

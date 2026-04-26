@@ -50,8 +50,8 @@ class ApiClient {
         _onUnauthorized = onUnauthorized {
     _dio = Dio(BaseOptions(
       baseUrl: baseUrl,
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 30),
+      connectTimeout: AppTheme.duration10s,
+      receiveTimeout: AppTheme.duration30s,
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -61,8 +61,8 @@ class ApiClient {
     // 刷新令牌专用的 Dio 实例，不挂载拦截器
     _refreshDio = Dio(BaseOptions(
       baseUrl: baseUrl,
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
+      connectTimeout: AppTheme.duration10s,
+      receiveTimeout: AppTheme.duration10s,
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
