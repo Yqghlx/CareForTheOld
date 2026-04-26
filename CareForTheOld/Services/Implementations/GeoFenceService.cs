@@ -195,20 +195,7 @@ public class GeoFenceService : IGeoFenceService
         // 超出围栏
         if (distance > cachedFence.Radius)
         {
-            var response = new GeoFenceResponse
-            {
-                Id = cachedFence.Id,
-                ElderId = cachedFence.ElderId,
-                ElderName = cachedFence.ElderName,
-                CenterLatitude = cachedFence.CenterLatitude,
-                CenterLongitude = cachedFence.CenterLongitude,
-                Radius = (int)cachedFence.Radius,
-                IsEnabled = cachedFence.IsEnabled,
-                CreatedBy = cachedFence.CreatedBy,
-                CreatedAt = cachedFence.CreatedAt,
-                UpdatedAt = cachedFence.UpdatedAt
-            };
-            return (response, distance);
+            return (MapToResponse(cachedFence), distance);
         }
 
         return null;
@@ -216,7 +203,25 @@ public class GeoFenceService : IGeoFenceService
 
 
     /// <summary>
-    /// 映射到响应对象
+    /// 从缓存条目映射到响应对象
+    /// </summary>
+    private static GeoFenceResponse MapToResponse(GeoFenceCacheEntry cached)
+        => new()
+        {
+            Id = cached.Id,
+            ElderId = cached.ElderId,
+            ElderName = cached.ElderName,
+            CenterLatitude = cached.CenterLatitude,
+            CenterLongitude = cached.CenterLongitude,
+            Radius = (int)cached.Radius,
+            IsEnabled = cached.IsEnabled,
+            CreatedBy = cached.CreatedBy,
+            CreatedAt = cached.CreatedAt,
+            UpdatedAt = cached.UpdatedAt
+        };
+
+    /// <summary>
+    /// 从数据库实体映射到响应对象
     /// </summary>
     private static GeoFenceResponse MapToResponse(GeoFence fence)
     {
