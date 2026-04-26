@@ -70,7 +70,7 @@ public class UserService : IUserService
         user.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
-        _logger.LogWarning("用户 {UserId} 修改密码成功", userId);
+        _logger.LogInformation("用户 {UserId} 修改密码成功", userId);
         return true;
     }
 

@@ -23,16 +23,6 @@ public class OutboxDispatchService
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<OutboxDispatchService> _logger;
 
-    /// <summary>
-    /// 最大重试次数
-    /// </summary>
-    private const int _maxRetries = 5;
-
-    /// <summary>
-    /// 每次批量处理的最大消息数
-    /// </summary>
-    private const int _batchSize = 50;
-
     public OutboxDispatchService(IServiceScopeFactory scopeFactory, ILogger<OutboxDispatchService> logger)
     {
         _scopeFactory = scopeFactory;
@@ -50,9 +40,9 @@ public class OutboxDispatchService
 
         // 查询待投递的消息（按创建时间排序，先投递最早的）
         var pendingMessages = await context.NotificationOutboxes
-            .Where(o => o.Status == OutboxStatus.Pending && o.RetryCount < _maxRetries)
+            .Where(o => o.Status == OutboxStatus.Pending && o.RetryCount < AppConstants.Outbox.MaxRetries)
             .OrderBy(o => o.CreatedAt)
-            .Take(_batchSize)
+            .Take(AppConstants.Outbox.BatchSize)
             .AsTracking()
             .ToListAsync();
 
@@ -86,7 +76,7 @@ public class OutboxDispatchService
                 message.RetryCount++;
                 message.LastError = ex.Message;
 
-                if (message.RetryCount >= _maxRetries)
+                if (message.RetryCount >= AppConstants.Outbox.MaxRetries)
                 {
                     // 超过最大重试次数，标记为失败
                     message.Status = OutboxStatus.Failed;

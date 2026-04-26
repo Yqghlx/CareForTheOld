@@ -154,6 +154,18 @@ public static class AppConstants
     }
 
     /// <summary>
+    /// Outbox 投递相关常量
+    /// </summary>
+    public static class Outbox
+    {
+        /// <summary>消息投递最大重试次数，超过后标记为 Failed</summary>
+        public const int MaxRetries = 5;
+
+        /// <summary>每次批量处理的最大消息数</summary>
+        public const int BatchSize = 50;
+    }
+
+    /// <summary>
     /// 安全与认证相关常量
     /// </summary>
     public static class Security
