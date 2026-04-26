@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using CareForTheOld.Common.Constants;
+using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CareForTheOld.Common.Extensions;
@@ -35,5 +36,14 @@ public static class ControllerExtensions
     public static int ClampLimit(this ControllerBase _, int limit)
     {
         return Math.Clamp(limit, AppConstants.Pagination.MinPageSize, AppConstants.Pagination.MaxPageSize);
+    }
+
+    /// <summary>
+    /// 验证指定用户是否是指定家庭的已审批成员
+    /// </summary>
+    public static async Task<bool> IsFamilyMemberAsync(this ControllerBase _, IFamilyService familyService, Guid familyId, Guid userId)
+    {
+        var members = await familyService.GetMembersAsync(familyId);
+        return members.Any(m => m.UserId == userId);
     }
 }

@@ -2,6 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
 import '../services/emergency_service.dart';
 import '../../../shared/models/emergency_call.dart';
+import 'package:dio/dio.dart';
+import '../../../core/extensions/api_error_extension.dart';
+import '../../../core/theme/app_theme.dart';
 
 /// 紧急呼叫服务 Provider
 final emergencyServiceProvider = Provider<EmergencyService>((ref) {
@@ -60,8 +63,10 @@ class EmergencyNotifier extends StateNotifier<EmergencyState> {
     try {
       final calls = await _service.getUnreadCalls();
       state = state.copyWith(unreadCalls: calls, isLoading: false);
+    } on DioException catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toDisplayMessage());
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(isLoading: false, error: AppTheme.msgOperationFailed);
     }
   }
 
@@ -71,8 +76,10 @@ class EmergencyNotifier extends StateNotifier<EmergencyState> {
     try {
       final calls = await _service.getHistory(limit: limit);
       state = state.copyWith(historyCalls: calls, isLoading: false);
+    } on DioException catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toDisplayMessage());
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(isLoading: false, error: AppTheme.msgOperationFailed);
     }
   }
 
@@ -87,8 +94,10 @@ class EmergencyNotifier extends StateNotifier<EmergencyState> {
         historyCalls: historyCalls,
         isLoading: false,
       );
+    } on DioException catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toDisplayMessage());
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(isLoading: false, error: AppTheme.msgOperationFailed);
     }
   }
 
@@ -107,8 +116,11 @@ class EmergencyNotifier extends StateNotifier<EmergencyState> {
         batteryLevel: batteryLevel,
       );
       return call;
+    } on DioException catch (e) {
+      state = state.copyWith(error: e.toDisplayMessage());
+      return null;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: AppTheme.msgOperationFailed);
       return null;
     } finally {
       _isCreatingCall = false;
@@ -136,8 +148,11 @@ class EmergencyNotifier extends StateNotifier<EmergencyState> {
         historyCalls: newHistoryCalls,
       );
       return true;
+    } on DioException catch (e) {
+      state = state.copyWith(error: e.toDisplayMessage());
+      return false;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: AppTheme.msgOperationFailed);
       return false;
     }
   }

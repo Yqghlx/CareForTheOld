@@ -5,6 +5,9 @@ import '../../../core/services/connectivity_service.dart';
 import '../services/medication_service.dart';
 import '../../../shared/models/medication_plan.dart';
 import '../../../shared/models/medication_log.dart';
+import 'package:dio/dio.dart';
+import '../../../core/extensions/api_error_extension.dart';
+import '../../../core/theme/app_theme.dart';
 
 /// 用药服务 Provider
 final medicationServiceProvider = Provider<MedicationService>((ref) {
@@ -84,8 +87,10 @@ class MedicationNotifier extends StateNotifier<MedicationState> {
         todayPending: results[1] as List<MedicationLog>,
         isLoading: false,
       );
+    } on DioException catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toDisplayMessage());
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(isLoading: false, error: AppTheme.msgOperationFailed);
     }
   }
 

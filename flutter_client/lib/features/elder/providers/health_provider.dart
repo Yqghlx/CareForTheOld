@@ -1,6 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
+import '../../../core/extensions/api_error_extension.dart';
 import '../../../core/services/health_cache_service.dart';
+import '../../../core/theme/app_theme.dart';
 import '../services/health_service.dart';
 import '../../../shared/models/health_record.dart';
 import '../../../shared/models/health_stats.dart';
@@ -73,7 +76,7 @@ class HealthRecordsNotifier extends StateNotifier<HealthRecordsState> {
         selectedFilter: type,
         isFromCache: false,
       );
-    } catch (e) {
+    } on DioException catch (e) {
       // 网络失败：降级读取缓存
       final cached = type != null
           ? _cacheService.getCachedRecordsByType(type)
@@ -86,7 +89,21 @@ class HealthRecordsNotifier extends StateNotifier<HealthRecordsState> {
           isFromCache: true,
         );
       } else {
-        state = state.copyWith(isLoading: false, error: e.toString());
+        state = state.copyWith(isLoading: false, error: e.toDisplayMessage());
+      }
+    } catch (e) {
+      final cached = type != null
+          ? _cacheService.getCachedRecordsByType(type)
+          : _cacheService.getCachedMyRecords();
+      if (cached.isNotEmpty) {
+        state = state.copyWith(
+          records: cached,
+          isLoading: false,
+          selectedFilter: type,
+          isFromCache: true,
+        );
+      } else {
+        state = state.copyWith(isLoading: false, error: AppTheme.msgOperationFailed);
       }
     }
   }
@@ -116,8 +133,11 @@ class HealthRecordsNotifier extends StateNotifier<HealthRecordsState> {
       // 更新缓存
       await _cacheService.cacheMyRecords(state.records);
       return true;
+    } on DioException catch (e) {
+      state = state.copyWith(error: e.toDisplayMessage());
+      return false;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: AppTheme.msgOperationFailed);
       return false;
     }
   }
@@ -131,8 +151,11 @@ class HealthRecordsNotifier extends StateNotifier<HealthRecordsState> {
       );
       await _cacheService.cacheMyRecords(state.records);
       return true;
+    } on DioException catch (e) {
+      state = state.copyWith(error: e.toDisplayMessage());
+      return false;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: AppTheme.msgOperationFailed);
       return false;
     }
   }

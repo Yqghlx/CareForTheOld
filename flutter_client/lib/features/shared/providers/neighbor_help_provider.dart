@@ -2,6 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
 import '../../../shared/models/neighbor_help_request.dart';
 import '../services/neighbor_help_service.dart';
+import 'package:dio/dio.dart';
+import '../../../core/extensions/api_error_extension.dart';
+import '../../../core/theme/app_theme.dart';
 
 /// 邻里互助服务 Provider
 final neighborHelpServiceProvider = Provider<NeighborHelpService>((ref) {
@@ -54,8 +57,10 @@ class NeighborHelpNotifier extends StateNotifier<NeighborHelpState> {
     try {
       final requests = await _service.getPendingRequests();
       state = state.copyWith(pendingRequests: requests, isLoading: false);
+    } on DioException catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toDisplayMessage());
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(isLoading: false, error: AppTheme.msgOperationFailed);
     }
   }
 
@@ -64,8 +69,10 @@ class NeighborHelpNotifier extends StateNotifier<NeighborHelpState> {
     try {
       final history = await _service.getHistory(skip: skip, limit: limit);
       state = state.copyWith(history: history);
+    } on DioException catch (e) {
+      state = state.copyWith(error: e.toDisplayMessage());
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: AppTheme.msgOperationFailed);
     }
   }
 
@@ -80,8 +87,11 @@ class NeighborHelpNotifier extends StateNotifier<NeighborHelpState> {
           .toList();
       state = state.copyWith(pendingRequests: updated);
       return true;
+    } on DioException catch (e) {
+      state = state.copyWith(error: e.toDisplayMessage());
+      return false;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: AppTheme.msgOperationFailed);
       return false;
     }
   }
@@ -92,8 +102,11 @@ class NeighborHelpNotifier extends StateNotifier<NeighborHelpState> {
     try {
       await _service.cancelRequest(requestId);
       return true;
+    } on DioException catch (e) {
+      state = state.copyWith(error: e.toDisplayMessage());
+      return false;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: AppTheme.msgOperationFailed);
       return false;
     }
   }
@@ -112,8 +125,11 @@ class NeighborHelpNotifier extends StateNotifier<NeighborHelpState> {
         comment: comment,
       );
       return true;
+    } on DioException catch (e) {
+      state = state.copyWith(error: e.toDisplayMessage());
+      return false;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: AppTheme.msgOperationFailed);
       return false;
     }
   }

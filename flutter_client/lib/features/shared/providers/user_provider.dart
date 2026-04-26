@@ -2,6 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/models/user.dart';
 import '../services/user_service.dart';
+import 'package:dio/dio.dart';
+import '../../../core/extensions/api_error_extension.dart';
+import '../../../core/theme/app_theme.dart';
 
 /// 用户状态
 class UserState {
@@ -42,8 +45,10 @@ class UserNotifier extends StateNotifier<UserState> {
     try {
       final user = await _service.getCurrentUser();
       state = state.copyWith(user: user, isLoading: false);
+    } on DioException catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toDisplayMessage());
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(isLoading: false, error: AppTheme.msgOperationFailed);
     }
   }
 
@@ -57,8 +62,11 @@ class UserNotifier extends StateNotifier<UserState> {
       );
       state = state.copyWith(user: user, isLoading: false);
       return true;
+    } on DioException catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toDisplayMessage());
+      return false;
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(isLoading: false, error: AppTheme.msgOperationFailed);
       return false;
     }
   }
@@ -76,8 +84,11 @@ class UserNotifier extends StateNotifier<UserState> {
       );
       state = state.copyWith(isLoading: false);
       return success;
+    } on DioException catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toDisplayMessage());
+      return false;
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(isLoading: false, error: AppTheme.msgOperationFailed);
       return false;
     }
   }
@@ -97,8 +108,11 @@ class UserNotifier extends StateNotifier<UserState> {
       // 重新加载用户信息以获取最新的 avatarUrl
       await loadUser();
       return avatarUrl;
+    } on DioException catch (e) {
+      state = state.copyWith(error: e.toDisplayMessage());
+      return null;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: AppTheme.msgOperationFailed);
       return null;
     }
   }

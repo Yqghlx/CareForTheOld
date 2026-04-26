@@ -3,6 +3,8 @@ import '../../../core/api/api_client.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/models/neighbor_circle.dart';
 import '../services/neighbor_circle_service.dart';
+import 'package:dio/dio.dart';
+import '../../../core/extensions/api_error_extension.dart';
 
 /// 邻里圈服务 Provider
 final neighborCircleServiceProvider = Provider<NeighborCircleService>((ref) {
@@ -60,8 +62,10 @@ class NeighborCircleNotifier extends StateNotifier<NeighborCircleState> {
     try {
       final circle = await _service.getMyCircle();
       state = state.copyWith(circle: circle, isLoading: false);
+    } on DioException catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toDisplayMessage());
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(isLoading: false, error: AppTheme.msgOperationFailed);
     }
   }
 
@@ -82,8 +86,11 @@ class NeighborCircleNotifier extends StateNotifier<NeighborCircleState> {
       );
       state = state.copyWith(circle: circle);
       return true;
+    } on DioException catch (e) {
+      state = state.copyWith(error: e.toDisplayMessage());
+      return false;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: AppTheme.msgOperationFailed);
       return false;
     }
   }
@@ -95,8 +102,11 @@ class NeighborCircleNotifier extends StateNotifier<NeighborCircleState> {
       final circle = await _service.joinCircle(inviteCode);
       state = state.copyWith(circle: circle);
       return true;
+    } on DioException catch (e) {
+      state = state.copyWith(error: e.toDisplayMessage());
+      return false;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: AppTheme.msgOperationFailed);
       return false;
     }
   }
@@ -110,8 +120,11 @@ class NeighborCircleNotifier extends StateNotifier<NeighborCircleState> {
       await _service.leaveCircle(circleId);
       state = state.copyWith(clearCircle: true, members: []);
       return true;
+    } on DioException catch (e) {
+      state = state.copyWith(error: e.toDisplayMessage());
+      return false;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: AppTheme.msgOperationFailed);
       return false;
     }
   }
@@ -123,8 +136,10 @@ class NeighborCircleNotifier extends StateNotifier<NeighborCircleState> {
     try {
       final members = await _service.getMembers(circleId);
       state = state.copyWith(members: members);
+    } on DioException catch (e) {
+      state = state.copyWith(error: e.toDisplayMessage());
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: AppTheme.msgOperationFailed);
     }
   }
 
@@ -142,8 +157,10 @@ class NeighborCircleNotifier extends StateNotifier<NeighborCircleState> {
         radius: radius,
       );
       state = state.copyWith(nearbyCircles: circles, isLoading: false);
+    } on DioException catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toDisplayMessage());
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(isLoading: false, error: AppTheme.msgOperationFailed);
     }
   }
 
@@ -155,8 +172,11 @@ class NeighborCircleNotifier extends StateNotifier<NeighborCircleState> {
       final circle = await _service.refreshInviteCode(circleId);
       state = state.copyWith(circle: circle);
       return true;
+    } on DioException catch (e) {
+      state = state.copyWith(error: e.toDisplayMessage());
+      return false;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: AppTheme.msgOperationFailed);
       return false;
     }
   }

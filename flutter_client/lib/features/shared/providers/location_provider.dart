@@ -2,6 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
 import '../services/location_service.dart';
 import '../../../shared/models/location_record.dart';
+import 'package:dio/dio.dart';
+import '../../../core/extensions/api_error_extension.dart';
+import '../../../core/theme/app_theme.dart';
 
 /// 位置服务 Provider
 final locationServiceProvider = Provider<LocationService>((ref) {
@@ -52,8 +55,11 @@ class LocationNotifier extends StateNotifier<LocationState> {
       final record = await _service.reportLocation(latitude, longitude);
       state = state.copyWith(latestLocation: record);
       return record;
+    } on DioException catch (e) {
+      state = state.copyWith(error: e.toDisplayMessage());
+      return null;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: AppTheme.msgOperationFailed);
       return null;
     }
   }
@@ -64,8 +70,10 @@ class LocationNotifier extends StateNotifier<LocationState> {
     try {
       final location = await _service.getMyLatestLocation();
       state = state.copyWith(latestLocation: location, isLoading: false);
+    } on DioException catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toDisplayMessage());
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(isLoading: false, error: AppTheme.msgOperationFailed);
     }
   }
 
@@ -75,8 +83,10 @@ class LocationNotifier extends StateNotifier<LocationState> {
     try {
       final history = await _service.getMyHistory(limit: limit);
       state = state.copyWith(history: history, isLoading: false);
+    } on DioException catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toDisplayMessage());
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(isLoading: false, error: AppTheme.msgOperationFailed);
     }
   }
 
@@ -91,8 +101,10 @@ class LocationNotifier extends StateNotifier<LocationState> {
         history: history,
         isLoading: false,
       );
+    } on DioException catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toDisplayMessage());
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(isLoading: false, error: AppTheme.msgOperationFailed);
     }
   }
 

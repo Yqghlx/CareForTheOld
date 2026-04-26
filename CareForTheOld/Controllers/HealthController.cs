@@ -88,7 +88,7 @@ public class HealthController : ControllerBase
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
 
-        if (!await IsFamilyMemberAsync(familyId))
+        if (!await this.IsFamilyMemberAsync(_familyService, familyId, userId))
             return ApiResponse<List<HealthRecordResponse>>.Fail(ErrorMessages.Family.NotFamilyMember);
 
         var result = await _healthService.GetFamilyMemberRecordsAsync(familyId, memberId, type, skip, limit);
@@ -119,7 +119,7 @@ public class HealthController : ControllerBase
     {
         var userId = this.GetUserId();
 
-        if (!await IsFamilyMemberAsync(familyId))
+        if (!await this.IsFamilyMemberAsync(_familyService, familyId, userId))
             return ApiResponse<List<HealthStatsResponse>>.Fail(ErrorMessages.Family.NotFamilyMember);
 
         var result = await _healthQueryService.GetUserStatsAsync(memberId);
@@ -162,7 +162,7 @@ public class HealthController : ControllerBase
     {
         var userId = this.GetUserId();
 
-        if (!await IsFamilyMemberAsync(familyId))
+        if (!await this.IsFamilyMemberAsync(_familyService, familyId, userId))
             return Forbid();
 
         var pdfBytes = await _reportService.GeneratePdfReportAsync(memberId, days);
@@ -219,7 +219,7 @@ public class HealthController : ControllerBase
     {
         var userId = this.GetUserId();
 
-        if (!await IsFamilyMemberAsync(familyId))
+        if (!await this.IsFamilyMemberAsync(_familyService, familyId, userId))
             return ApiResponse<TrendAnomalyDetectionResponse>.Fail(ErrorMessages.Family.NotFamilyMember);
 
         var healthType = type ?? HealthType.BloodPressure;
@@ -243,16 +243,6 @@ public class HealthController : ControllerBase
 
         var result = _anomalyDetector.DetectAnomalies(healthRecords, healthType);
         return ApiResponse<TrendAnomalyDetectionResponse>.Ok(result);
-    }
-
-    /// <summary>
-    /// 验证当前用户是否是指定家庭的成员
-    /// </summary>
-    private async Task<bool> IsFamilyMemberAsync(Guid familyId)
-    {
-        var userId = this.GetUserId();
-        var members = await _familyService.GetMembersAsync(familyId);
-        return members.Any(m => m.UserId == userId);
     }
 
     /// <summary>

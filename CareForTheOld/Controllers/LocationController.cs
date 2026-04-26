@@ -78,9 +78,9 @@ public class LocationController : ControllerBase
     {
         var userId = this.GetUserId();
 
-        if (!await IsFamilyMemberAsync(familyId, userId))
+        if (!await this.IsFamilyMemberAsync(_familyService, familyId, userId))
             return ApiResponse<LocationRecordResponse?>.Fail(ErrorMessages.Family.NotFamilyMember);
-        if (!await IsFamilyMemberAsync(familyId, memberId))
+        if (!await this.IsFamilyMemberAsync(_familyService, familyId, memberId))
             return ApiResponse<LocationRecordResponse?>.Fail(ErrorMessages.Family.MemberNotInFamily);
 
         var record = await _locationService.GetFamilyMemberLatestLocationAsync(familyId, memberId);
@@ -99,21 +99,12 @@ public class LocationController : ControllerBase
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
 
-        if (!await IsFamilyMemberAsync(familyId, userId))
+        if (!await this.IsFamilyMemberAsync(_familyService, familyId, userId))
             return ApiResponse<List<LocationRecordResponse>>.Fail(ErrorMessages.Family.NotFamilyMember);
-        if (!await IsFamilyMemberAsync(familyId, memberId))
+        if (!await this.IsFamilyMemberAsync(_familyService, familyId, memberId))
             return ApiResponse<List<LocationRecordResponse>>.Fail(ErrorMessages.Family.MemberNotInFamily);
 
         var records = await _locationService.GetFamilyMemberLocationHistoryAsync(familyId, memberId, skip, limit);
         return ApiResponse<List<LocationRecordResponse>>.Ok(records);
-    }
-
-    /// <summary>
-    /// 验证指定用户是否是指定家庭的成员
-    /// </summary>
-    private async Task<bool> IsFamilyMemberAsync(Guid familyId, Guid userId)
-    {
-        var members = await _familyService.GetMembersAsync(familyId);
-        return members.Any(m => m.UserId == userId);
     }
 }

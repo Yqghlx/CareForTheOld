@@ -4,6 +4,9 @@ import '../../../core/api/api_client.dart';
 import '../../../core/constants/pref_keys.dart';
 import '../services/family_service.dart';
 import '../../../shared/models/family.dart';
+import 'package:dio/dio.dart';
+import '../../../core/extensions/api_error_extension.dart';
+import '../../../core/theme/app_theme.dart';
 
 /// 家庭服务 Provider
 final familyServiceProvider = Provider<FamilyService>((ref) {
@@ -72,8 +75,10 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
         await prefs.setString(PrefKeys.familyName, family.familyName);
       }
       state = state.copyWith(family: family, isLoading: false);
+    } on DioException catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toDisplayMessage());
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(isLoading: false, error: AppTheme.msgOperationFailed);
     }
   }
 
@@ -88,8 +93,11 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
       await prefs.setString(PrefKeys.familyName, family.familyName);
       state = state.copyWith(family: family);
       return true;
+    } on DioException catch (e) {
+      state = state.copyWith(error: e.toDisplayMessage());
+      return false;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: AppTheme.msgOperationFailed);
       return false;
     }
   }
@@ -111,8 +119,11 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
       );
       state = state.copyWith(family: updatedFamily);
       return true;
+    } on DioException catch (e) {
+      state = state.copyWith(error: e.toDisplayMessage());
+      return false;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: AppTheme.msgOperationFailed);
       return false;
     }
   }
@@ -135,8 +146,11 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
         ),
       );
       return true;
+    } on DioException catch (e) {
+      state = state.copyWith(error: e.toDisplayMessage());
+      return false;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: AppTheme.msgOperationFailed);
       return false;
     }
   }
@@ -152,8 +166,11 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
         relation: relation,
       );
       return result;
+    } on DioException catch (e) {
+      state = state.copyWith(error: e.toDisplayMessage());
+      return null;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: AppTheme.msgOperationFailed);
       return null;
     }
   }
@@ -166,8 +183,11 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
       final family = await _service.refreshInviteCode(familyId);
       state = state.copyWith(family: family);
       return true;
+    } on DioException catch (e) {
+      state = state.copyWith(error: e.toDisplayMessage());
+      return false;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: AppTheme.msgOperationFailed);
       return false;
     }
   }
@@ -194,8 +214,11 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
       await loadPendingMembers();
       await loadFamily();
       return true;
+    } on DioException catch (e) {
+      state = state.copyWith(error: e.toDisplayMessage());
+      return false;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: AppTheme.msgOperationFailed);
       return false;
     }
   }
@@ -209,8 +232,11 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
       // 刷新待审批列表
       await loadPendingMembers();
       return true;
+    } on DioException catch (e) {
+      state = state.copyWith(error: e.toDisplayMessage());
+      return false;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: AppTheme.msgOperationFailed);
       return false;
     }
   }

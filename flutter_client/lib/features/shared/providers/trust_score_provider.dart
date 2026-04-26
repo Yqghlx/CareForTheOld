@@ -1,6 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
 import '../services/trust_score_service.dart';
+import 'package:dio/dio.dart';
+import '../../../core/extensions/api_error_extension.dart';
+import '../../../core/theme/app_theme.dart';
 
 /// 信任评分服务 Provider
 final trustScoreServiceProvider = Provider<TrustScoreService>((ref) {
@@ -50,8 +53,10 @@ class TrustScoreNotifier extends StateNotifier<TrustScoreState> {
     try {
       final rankings = await _service.getRanking(circleId, top: top);
       state = state.copyWith(rankings: rankings, isLoading: false);
+    } on DioException catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toDisplayMessage());
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(isLoading: false, error: AppTheme.msgOperationFailed);
     }
   }
 
@@ -60,8 +65,10 @@ class TrustScoreNotifier extends StateNotifier<TrustScoreState> {
     try {
       final score = await _service.getMyScore(circleId);
       state = state.copyWith(myScore: score);
+    } on DioException catch (e) {
+      state = state.copyWith(error: e.toDisplayMessage());
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: AppTheme.msgOperationFailed);
     }
   }
 }
