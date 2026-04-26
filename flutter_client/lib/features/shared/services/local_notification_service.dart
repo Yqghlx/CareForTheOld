@@ -1,6 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../core/services/app_logger.dart';
 
 /// 本地通知服务
 class LocalNotificationService {
@@ -39,7 +40,7 @@ class LocalNotificationService {
     await _requestPermissions();
 
     _initialized = true;
-    debugPrint('本地通知服务已初始化');
+    AppLogger.info('本地通知服务已初始化');
   }
 
   /// 请求通知权限
@@ -80,12 +81,12 @@ class LocalNotificationService {
     );
 
     await _plugin.show(id, title, body, details, payload: payload);
-    debugPrint('显示通知: $title - $body');
+    AppLogger.debug('显示通知: $title - $body');
   }
 
   /// 通知点击回调
   static void _onNotificationTapped(NotificationResponse response) {
-    debugPrint('通知点击: ${response.payload}');
+    AppLogger.debug('通知点击: ${response.payload}');
     // 后续可扩展：根据 payload 跳转到对应页面
   }
 

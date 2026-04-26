@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -8,6 +7,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/constants/api_endpoints.dart';
 import '../../../core/extensions/date_format_extension.dart';
+import '../../../core/services/app_logger.dart';
 
 /// 健康报告服务
 class HealthReportService {
@@ -55,7 +55,7 @@ class HealthReportService {
 
       return true;
     } catch (e) {
-      debugPrint('导出报告失败: $e');
+      AppLogger.error('导出报告失败: $e');
       return false;
     }
   }
