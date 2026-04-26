@@ -63,24 +63,21 @@ public class HealthAlertService : IHealthAlertService
         var typeLabel = record.Type.GetLabel();
         var valueDisplay = GetDisplayValue(record);
 
-        if (children.Count > 0)
-        {
-            await _notificationService.SendToUsersAsync(
-                children.Select(c => c.UserId),
-                AppConstants.NotificationTypes.HealthAlert,
-                new
-                {
-                    Title = NotificationMessages.Health.AnomalyAlertTitle,
-                    Content = string.Format(NotificationMessages.Health.AnomalyAlertContentTemplate, elderName, typeLabel, valueDisplay, alertMessage),
-                    ElderId = elderId,
-                    ElderName = elderName,
-                    HealthType = record.Type,
-                    RecordId = record.Id,
-                    RecordedAt = record.RecordedAt,
-                    AlertLevel = GetAlertLevel(record.Type, alertMessage)
-                }
-            );
-        }
+        await _notificationService.SendToUsersAsync(
+            children.Select(c => c.UserId),
+            AppConstants.NotificationTypes.HealthAlert,
+            new
+            {
+                Title = NotificationMessages.Health.AnomalyAlertTitle,
+                Content = string.Format(NotificationMessages.Health.AnomalyAlertContentTemplate, elderName, typeLabel, valueDisplay, alertMessage),
+                ElderId = elderId,
+                ElderName = elderName,
+                HealthType = record.Type,
+                RecordId = record.Id,
+                RecordedAt = record.RecordedAt,
+                AlertLevel = GetAlertLevel(record.Type, alertMessage)
+            }
+        );
     }
 
     /// <summary>
