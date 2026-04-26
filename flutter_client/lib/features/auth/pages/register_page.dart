@@ -78,7 +78,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       }
     } catch (e) {
       if (mounted) {
-        context.showErrorSnackBar('注册失败: $e');
+        context.showErrorSnackBar('注册失败，请稍后重试');
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);

@@ -667,7 +667,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
       }
     } catch (e) {
       if (mounted) {
-        context.showErrorSnackBar('头像上传失败: $e');
+        context.showErrorSnackBar('头像上传失败，请稍后重试');
       }
     } finally {
       if (mounted) {

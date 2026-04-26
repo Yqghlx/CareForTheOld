@@ -96,7 +96,9 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                     child: Text('加载统计中...', style: TextStyle(color: Colors.grey)),
                   ),
                 ),
-                error: (_, __) => const SizedBox.shrink(),
+                error: (_, __) => const Center(
+                    child: Text('统计加载失败', style: TextStyle(color: Colors.grey)),
+                  ),
               ),
               const SizedBox(height: 16),
 
@@ -134,7 +136,16 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
 
   /// 统计概览条
   Widget _buildStatsBar(List<HealthStats> stats) {
-    if (stats.isEmpty) return const SizedBox.shrink();
+    if (stats.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 8),
+        child: EmptyStateWidget(
+          icon: Icons.analytics_outlined,
+          title: '暂无统计数据',
+          subtitle: '记录健康数据后，这里会显示趋势概览',
+        ),
+      );
+    }
 
     // 检查是否有趋势预警
     final warnings = stats.where((s) => s.hasWarning).toList();
@@ -160,7 +171,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                   Expanded(
                     child: Text(
                       w.trendWarning ?? '',
-                      style: TextStyle(fontSize: 14, color: Colors.orange.shade800),
+                      style: TextStyle(fontSize: 16, color: Colors.orange.shade800),
                     ),
                   ),
                 ],
@@ -205,7 +216,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                           Text(
                             stat.typeName,
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: 16,
                               color: Colors.grey.shade600,
                             ),
                           ),
@@ -238,7 +249,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       child: Text(
                         '30天: ${stat.average30Days?.toStringAsFixed(1) ?? '--'} | 共${stat.totalCount}条',
                         style: TextStyle(
-                          fontSize: 10,
+                          fontSize: 14,
                           color: Colors.grey.shade500,
                         ),
                       ),
@@ -366,7 +377,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                           ),
                           child: Text(
                             abnormalLabel,
-                            style: const TextStyle(fontSize: 12, color: Colors.orange, fontWeight: FontWeight.w600),
+                            style: const TextStyle(fontSize: 16, color: Colors.orange, fontWeight: FontWeight.w600),
                           ),
                         ),
                       ],
@@ -376,7 +387,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                   Text(
                     timeStr,
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 16,
                       color: Colors.grey.shade600,
                     ),
                   ),
@@ -386,7 +397,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                     Text(
                       '备注: ${record.note}',
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 16,
                         color: Colors.grey.shade500,
                         fontStyle: FontStyle.italic,
                       ),
@@ -415,7 +426,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
       }
     } catch (e) {
       if (mounted) {
-        context.showErrorSnackBar('删除失败: $e');
+        context.showErrorSnackBar('删除失败，请稍后重试');
       }
     }
   }
@@ -506,7 +517,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                           Flexible(
                             child: Text(
                               _getNormalRangeHint(type),
-                              style: TextStyle(fontSize: 14, color: type.color),
+                              style: TextStyle(fontSize: 16, color: type.color),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
                             ),
@@ -645,7 +656,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                           isListening ? '停止' : '语音输入',
                                           style: const TextStyle(
                                             color: Colors.white,
-                                            fontSize: 14,
+                                            fontSize: 16,
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
@@ -707,7 +718,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                       }
                                     } catch (e) {
                                       if (mounted) {
-                                        context.showErrorSnackBar('识别失败: $e');
+                                        context.showErrorSnackBar('文字识别失败，请重新拍照');
                                       }
                                     }
                                   },
@@ -742,7 +753,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                           '拍照识别',
                                           style: TextStyle(
                                             color: Colors.white,
-                                            fontSize: 14,
+                                            fontSize: 16,
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
@@ -759,7 +770,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                             Text(
                               voiceText.isEmpty ? '请说出数值...' : voiceText,
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: 16,
                                 color: AppTheme.primaryColor,
                                 fontWeight: FontWeight.bold,
                               ),

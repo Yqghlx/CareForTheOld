@@ -212,7 +212,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
       }
     } catch (e) {
       if (mounted) {
-        context.showErrorSnackBar('响应失败: $e');
+        context.showErrorSnackBar('响应失败，请稍后重试');
       }
     } finally {
       if (mounted) {

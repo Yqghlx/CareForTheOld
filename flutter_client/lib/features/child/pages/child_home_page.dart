@@ -648,7 +648,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                       }
                     } catch (e) {
                       if (mounted && context.mounted) {
-                        context.showErrorSnackBar('创建失败: $e');
+                        context.showErrorSnackBar('用药计划创建失败，请稍后重试');
                       }
                     }
                   },

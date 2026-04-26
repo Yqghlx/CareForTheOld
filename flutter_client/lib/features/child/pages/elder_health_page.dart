@@ -278,15 +278,10 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
   /// 健康统计概览 - 使用 StatCard
   Widget _buildStatsGrid(List<HealthStats> stats) {
     if (stats.isEmpty) {
-      return Container(
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: const Center(
-          child: Text('暂无健康统计数据', style: TextStyle(color: Colors.grey)),
-        ),
+      return const EmptyStateWidget(
+        icon: Icons.analytics_outlined,
+        title: '暂无健康统计数据',
+        subtitle: '老人记录健康数据后，这里会显示统计概览',
       );
     }
 
@@ -376,15 +371,10 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
   /// 用药计划列表
   Widget _buildPlansList(List<MedicationPlan> plans) {
     if (plans.isEmpty) {
-      return Container(
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: const Center(
-          child: Text('暂无用药计划', style: TextStyle(color: Colors.grey)),
-        ),
+      return const EmptyStateWidget(
+        icon: Icons.medication_outlined,
+        title: '暂无用药计划',
+        subtitle: '点击下方按钮为老人创建用药计划',
       );
     }
 
@@ -634,7 +624,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 } catch (e) {
                   setDialogState(() => isSubmitting = false);
                   if (mounted && context.mounted) {
-                    context.showErrorSnackBar('更新失败: $e');
+                    context.showErrorSnackBar('更新失败，请稍后重试');
                   }
                 }
               },
@@ -669,7 +659,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       }
     } catch (e) {
       if (mounted) {
-        context.showErrorSnackBar('操作失败: $e');
+        context.showErrorSnackBar('操作失败，请稍后重试');
       }
     }
   }
@@ -693,7 +683,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       }
     } catch (e) {
       if (mounted) {
-        context.showErrorSnackBar('删除失败: $e');
+        context.showErrorSnackBar('删除失败，请稍后重试');
       }
     }
   }
@@ -701,15 +691,10 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
   /// 健康记录列表
   Widget _buildRecordsList(List<HealthRecord> records) {
     if (records.isEmpty) {
-      return Container(
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: const Center(
-          child: Text('暂无健康记录', style: TextStyle(color: Colors.grey)),
-        ),
+      return const EmptyStateWidget(
+        icon: Icons.note_add_outlined,
+        title: '暂无健康记录',
+        subtitle: '老人录入健康数据后，这里会显示记录列表',
       );
     }
 
