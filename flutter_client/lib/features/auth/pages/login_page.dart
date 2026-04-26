@@ -145,19 +145,12 @@ class _LoginPageState extends ConsumerState<LoginPage>
                   // 标题
                   const Text(
                     '关爱老人',
-                    style: TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.primaryColor,
-                    ),
+                    style: AppTheme.textLogoTitle,
                   ),
                   const SizedBox(height: 8),
                   Text(
                     '健康监测 · 用药提醒',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppTheme.grey600,
-                    ),
+                    style: AppTheme.textSecondary16,
                   ),
                   const SizedBox(height: 48),
 
@@ -248,7 +241,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                           Expanded(
                             child: Text(
                               _errorMessage!,
-                              style: TextStyle(color: AppTheme.errorColor, fontSize: 14),
+                              style: AppTheme.textError14,
                             ),
                           ),
                           if (_errorMessage!.contains('手机号或密码错误') ||
@@ -262,7 +255,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                               ),
                               child: Text(
                                 '去注册',
-                                style: TextStyle(color: AppTheme.primaryColor, fontSize: 14),
+                                style: AppTheme.textLink14,
                               ),
                             ),
                         ],
@@ -282,10 +275,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                     onPressed: () => context.go(RoutePaths.register),
                     child: Text(
                       '没有账号？点击注册',
-                      style: TextStyle(
-                        color: AppTheme.primaryColor,
-                        fontSize: 16,
-                      ),
+                      style: AppTheme.textSecondary16.copyWith(color: AppTheme.primaryColor),
                     ),
                   ),
                 ],

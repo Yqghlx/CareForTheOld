@@ -158,12 +158,12 @@ public class DapperHealthQueryService : IHealthQueryService
         if (diff > 0)
         {
             stats.Trend = "rising";
-            stats.TrendWarning = $"近7天{typeName}均值较30天均值升高约{percentStr}%，请关注";
+            stats.TrendWarning = string.Format(AppConstants.HealthStatsDays.TrendRisingTemplate, typeName, percentStr);
         }
         else
         {
             stats.Trend = "falling";
-            stats.TrendWarning = $"近7天{typeName}均值较30天均值降低约{percentStr}%，请关注";
+            stats.TrendWarning = string.Format(AppConstants.HealthStatsDays.TrendFallingTemplate, typeName, percentStr);
         }
     }
 

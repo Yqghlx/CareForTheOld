@@ -441,6 +441,12 @@ public static class AppConstants
 
         /// <summary>长期统计天数（30天）</summary>
         public const int LongTermDays = 30;
+
+        /// <summary>趋势上升消息模板（占位符：类型名称、百分比）</summary>
+        public const string TrendRisingTemplate = "近7天{0}均值较30天均值升高约{1}%，请关注";
+
+        /// <summary>趋势下降消息模板（占位符：类型名称、百分比）</summary>
+        public const string TrendFallingTemplate = "近7天{0}均值较30天均值降低约{1}%，请关注";
     }
 
     /// <summary>
