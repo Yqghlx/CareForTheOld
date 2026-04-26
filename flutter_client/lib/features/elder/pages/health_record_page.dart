@@ -131,10 +131,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
               // 记录列表标题
               const Text(
                 '最近记录',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: AppTheme.textLargeTitle,
               ),
               const SizedBox(height: 12),
 
@@ -241,10 +238,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                         children: [
                           Text(
                             stat.typeName,
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: AppTheme.grey600,
-                            ),
+                            style: AppTheme.textSecondary16,
                           ),
                           // 趋势指示小图标
                           if (stat.trend != null && stat.trend != 'stable') ...[
@@ -385,9 +379,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                     children: [
                       Text(
                         '${record.type.label}: ${record.displayValue} ${record.type.unit}',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                        style: AppTheme.textTitle.copyWith(
                           color: abnormal ? AppTheme.warningDark : null,
                         ),
                       ),
@@ -410,10 +402,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                   const SizedBox(height: 4),
                   Text(
                     timeStr,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppTheme.grey600,
-                    ),
+                    style: AppTheme.textSecondary16,
                   ),
                   // 显示备注信息
                   if (record.note != null && record.note!.isNotEmpty) ...[

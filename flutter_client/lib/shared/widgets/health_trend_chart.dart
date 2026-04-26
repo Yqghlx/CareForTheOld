@@ -45,11 +45,11 @@ class HealthTrendChart extends StatelessWidget {
               children: [
                 const _LegendDot(color: AppTheme.errorColor),
                 const SizedBox(width: 4),
-                const Text('收缩压', style: TextStyle(fontSize: 13)),
+                const Text('收缩压', style: AppTheme.textCaptionSmall),
                 const SizedBox(width: 20),
                 const _LegendDot(color: AppTheme.infoBlue),
                 const SizedBox(width: 4),
-                const Text('舒张压', style: TextStyle(fontSize: 13)),
+                const Text('舒张压', style: AppTheme.textCaptionSmall),
               ],
             ),
           ),
@@ -218,10 +218,7 @@ class HealthTrendChart extends StatelessWidget {
                 interval: 20,
                 getTitlesWidget: (value, meta) => Text(
                   value.toInt().toString(),
-                  style: TextStyle(
-                    color: AppTheme.grey800,
-                    fontSize: 14,
-                  ),
+                  style: AppTheme.textAxisLabel,
                 ),
               ),
             ),
@@ -237,10 +234,7 @@ class HealthTrendChart extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 8),
                     child: Text(
                       '${date.month}/${date.day}',
-                      style: TextStyle(
-                        color: AppTheme.grey800,
-                        fontSize: 14,
-                      ),
+                      style: AppTheme.textAxisLabel,
                     ),
                   );
                 },
@@ -264,7 +258,7 @@ class HealthTrendChart extends StatelessWidget {
                 final r = data[idx];
                 return LineTooltipItem(
                   '${r.recordedAt.month}/${r.recordedAt.day}\n收缩压: ${r.systolic ?? "-"}  舒张压: ${r.diastolic ?? "-"}',
-                  const TextStyle(color: Colors.white, fontSize: 14),
+                  AppTheme.textWhite14,
                 );
               }).toList(),
             ),
@@ -334,10 +328,7 @@ class HealthTrendChart extends StatelessWidget {
               reservedSize: 40,
               getTitlesWidget: (value, meta) => Text(
                 value.toStringAsFixed(1),
-                style: TextStyle(
-                  color: AppTheme.grey800,
-                  fontSize: 14,
-                ),
+                style: AppTheme.textAxisLabel,
               ),
             ),
           ),
@@ -353,10 +344,7 @@ class HealthTrendChart extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 8),
                   child: Text(
                     '${date.month}/${date.day}',
-                    style: TextStyle(
-                      color: AppTheme.grey800,
-                      fontSize: 14,
-                    ),
+                    style: AppTheme.textAxisLabel,
                   ),
                 );
               },
@@ -380,7 +368,7 @@ class HealthTrendChart extends StatelessWidget {
               final r = data[idx];
               return LineTooltipItem(
                 '${r.recordedAt.month}/${r.recordedAt.day}  ${_getValue(r)}${type.unit}',
-                const TextStyle(color: Colors.white, fontSize: 14),
+                AppTheme.textWhite14,
               );
             }).toList(),
           ),
@@ -463,10 +451,7 @@ class HealthTrendChart extends StatelessWidget {
         ),
         Text(
           type.unit,
-          style: TextStyle(
-            fontSize: 14,
-            color: AppTheme.grey800,
-          ),
+          style: AppTheme.textAxisLabel,
         ),
       ],
     );

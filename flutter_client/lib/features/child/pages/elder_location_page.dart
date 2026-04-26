@@ -105,7 +105,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                     color: AppTheme.errorColor.withValues(alpha: 0.1),
                     borderRadius: AppTheme.radiusL,
                   ),
-                  child: const Text('加载失败，请重试', style: TextStyle(color: AppTheme.errorColor)),
+                  child: const Text('加载失败，请重试', style: AppTheme.textError),
                 ),
               ),
               const SizedBox(height: 24),
@@ -119,7 +119,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
               historyAsync.when(
                 data: (history) => _buildHistoryList(history),
                 loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) => Text('加载失败: $e', style: const TextStyle(color: AppTheme.errorColor)),
+                error: (e, _) => Text('加载失败: $e', style: AppTheme.textError),
               ),
             ],
           ),
@@ -268,7 +268,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('围栏中心', style: TextStyle(fontWeight: FontWeight.bold)),
+                          const Text('围栏中心', style: AppTheme.textBold),
                           const SizedBox(height: 8),
                           if (centerLat != 0)
                             Text(
@@ -309,7 +309,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                     const SizedBox(height: 12),
 
                     // 半径设置
-                    const Text('安全半径', style: TextStyle(fontWeight: FontWeight.bold)),
+                    const Text('安全半径', style: AppTheme.textBold),
                     const SizedBox(height: 8),
                     Row(
                       children: [
@@ -332,7 +332,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                           radius >= 1000
                               ? '${(radius / 1000).toStringAsFixed(1)}公里'
                               : '$radius米',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          style: AppTheme.textBold,
                         ),
                       ],
                     ),
@@ -350,7 +350,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                         context.showSuccessSnackBar(AppTheme.msgFenceDeleted);
                       }
                     },
-                    child: const Text('删除', style: TextStyle(color: AppTheme.errorColor)),
+                    child: const Text('删除', style: AppTheme.textError),
                   ),
                 TextButton(
                   onPressed: () => Navigator.pop(ctx),
@@ -402,7 +402,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
               const Icon(Icons.location_off, size: 48, color: AppTheme.grey400),
               const SizedBox(height: 12),
               const Text('暂无位置记录', style: TextStyle(color: AppTheme.grey600)),
-              const Text('老人尚未开启定位上报', style: TextStyle(fontSize: 12, color: AppTheme.grey600)),
+              const Text('老人尚未开启定位上报', style: AppTheme.textCaptionDark),
             ],
           ),
         ),
@@ -560,11 +560,11 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                 children: [
                   Text(
                     record.relativeTime,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    style: AppTheme.textBold,
                   ),
                   Text(
                     '${record.latitude.toStringAsFixed(4)}, ${record.longitude.toStringAsFixed(4)}',
-                    style: TextStyle(fontSize: 12, color: AppTheme.grey600),
+                    style: AppTheme.textCaptionDark,
                   ),
                 ],
               ),

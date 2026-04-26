@@ -186,7 +186,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     borderRadius: AppTheme.radiusS,
                   ),
                   child: const Text('异常检测加载失败，请重试',
-                      style: TextStyle(color: AppTheme.errorColor)),
+                      style: AppTheme.textError),
                 ),
               ),
               const SizedBox(height: 24),
@@ -194,10 +194,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               // 最近健康记录
               const Text(
                 '最近健康记录',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: AppTheme.textTitle,
               ),
               const SizedBox(height: 12),
               recordsAsync.when(
@@ -213,10 +210,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               // 用药计划
               const Text(
                 '用药计划',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: AppTheme.textTitle,
               ),
               const SizedBox(height: 12),
               plansAsync.when(
@@ -494,7 +488,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                         TextButton.icon(
                           onPressed: () => _deletePlan(plan),
                           icon: const Icon(Icons.delete_outline, size: 18, color: AppTheme.errorColor),
-                          label: const Text('删除', style: TextStyle(color: AppTheme.errorColor)),
+                          label: const Text('删除', style: AppTheme.textError),
                           style: TextButton.styleFrom(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                           ),
@@ -511,7 +505,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       child: TextButton.icon(
                         onPressed: () => _deletePlan(plan),
                         icon: const Icon(Icons.delete_outline, size: 18, color: AppTheme.errorColor),
-                        label: const Text('删除计划', style: TextStyle(color: AppTheme.errorColor)),
+                        label: const Text('删除计划', style: AppTheme.textError),
                         style: TextButton.styleFrom(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                         ),
@@ -640,7 +634,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 }
               },
               style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryColor),
-              child: const Text('保存', style: TextStyle(color: Colors.white)),
+              child: const Text('保存', style: AppTheme.textWhite),
             ),
           ],
         ),
@@ -743,12 +737,11 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     children: [
                       Text(
                         '${record.type.label}: ${record.displayValue} ${record.type.unit}',
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                        style: AppTheme.textHeading
                       ),
                       Text(
                         timeStr,
-                        style: TextStyle(fontSize: 12, color: AppTheme.grey600),
+                        style: AppTheme.textCaptionDark,
                       ),
                     ],
                   ),
@@ -830,8 +823,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     children: [
                       Text(
                         log.medicineName,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                        style: AppTheme.textHeading
                       ),
                       const SizedBox(height: 4),
                       Text(
@@ -929,7 +921,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                         borderRadius: AppTheme.radiusS,
                       ),
                     ),
-                    child: const Text('最近7天', style: TextStyle(color: Colors.white)),
+                    child: const Text('最近7天', style: AppTheme.textWhite),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -945,7 +937,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                         borderRadius: AppTheme.radiusS,
                       ),
                     ),
-                    child: const Text('最近30天', style: TextStyle(color: Colors.white)),
+                    child: const Text('最近30天', style: AppTheme.textWhite),
                   ),
                 ),
               ],
@@ -1077,10 +1069,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                           const Flexible(
                             child: Text(
                               'AI 健康趋势分析',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: AppTheme.textTitle,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),

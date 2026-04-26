@@ -67,6 +67,15 @@ class AppTheme {
   static const TextStyle textBody18 = TextStyle(fontSize: 18);
   static const TextStyle textBody16 = TextStyle(fontSize: 16);
   static const TextStyle textBold = TextStyle(fontWeight: FontWeight.bold);
+  static const TextStyle textWhite = TextStyle(color: Color(0xFFFFFFFF));
+  static const TextStyle textWhite16 = TextStyle(fontSize: 16, color: Color(0xFFFFFFFF));
+  static const TextStyle textWhite14 = TextStyle(fontSize: 14, color: Color(0xFFFFFFFF));
+  static const TextStyle textSecondary16 = TextStyle(fontSize: 16, color: grey600);
+  static const TextStyle textSecondary14 = TextStyle(fontSize: 14, color: grey600);
+  static const TextStyle textCaptionDark = TextStyle(fontSize: 12, color: grey600);
+  static const TextStyle textAxisLabel = TextStyle(fontSize: 14, color: grey800);
+  static const TextStyle textError = TextStyle(color: errorColor);
+  static const TextStyle textCaptionSmall = TextStyle(fontSize: 13);
 
   /// 渐变配置
   static const LinearGradient primaryGradient = LinearGradient(

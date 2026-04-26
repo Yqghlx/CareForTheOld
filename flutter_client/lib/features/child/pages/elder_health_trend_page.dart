@@ -93,10 +93,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
                 const SizedBox(width: 12),
                 Text(
                   '${_selectedType.label}趋势',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: AppTheme.textLargeTitle,
                 ),
               ],
             ),
@@ -147,7 +144,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
                           size: 48, color: AppTheme.errorColor),
                       const SizedBox(height: 12),
                       const Text('加载失败，请重试',
-                          style: TextStyle(color: AppTheme.errorColor)),
+                          style: AppTheme.textError),
                       const SizedBox(height: 12),
                       ElevatedButton(
                         onPressed: () => ref.invalidate(
@@ -230,7 +227,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
       children: [
         const Text(
           '时间范围：',
-          style: TextStyle(fontSize: 16),
+          style: AppTheme.textBody16,
         ),
         const SizedBox(width: 12),
         Expanded(

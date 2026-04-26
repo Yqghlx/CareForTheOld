@@ -47,10 +47,7 @@ class StatCard extends StatelessWidget {
               const SizedBox(height: 12),
               Text(
                 title,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: AppTheme.grey600,
-                ),
+                style: AppTheme.textSecondary16,
               ),
               const SizedBox(height: 4),
               Text(
@@ -119,19 +116,13 @@ class InfoCard extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: AppTheme.textTitle,
                 ),
                 if (subtitle != null) ...[
                   const SizedBox(height: 4),
                   Text(
                     subtitle!,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppTheme.grey600,
-                    ),
+                    style: AppTheme.textSecondary14,
                   ),
                 ],
               ],
@@ -324,10 +315,7 @@ class _AnimatedQuickCardState extends State<AnimatedQuickCard>
                   fit: BoxFit.scaleDown,
                   child: Text(
                     widget.title,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: AppTheme.textHeading,
                     maxLines: 1,
                   ),
                 ),
