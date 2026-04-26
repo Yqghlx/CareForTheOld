@@ -12,6 +12,7 @@ import '../../shared/providers/emergency_provider.dart';
 import '../../shared/providers/neighbor_help_provider.dart';
 import 'emergency_alert_service.dart';
 import 'local_notification_service.dart';
+import '../../../core/services/app_logger.dart';
 
 /// SignalR 连接服务
 class SignalRService {
@@ -39,11 +40,11 @@ class SignalRService {
 
     final token = _ref.read(authProvider).accessToken;
     if (token == null || token.isEmpty) {
-      debugPrint('未登录，跳过 SignalR 连接');
+      AppLogger.debug('未登录，跳过 SignalR 连接');
       return;
     }
 
-    debugPrint('正在连接 SignalR Hub...');
+    AppLogger.debug('正在连接 SignalR Hub...');
 
     _hubConnection = HubConnectionBuilder()
         .withUrl(
@@ -62,25 +63,25 @@ class SignalRService {
 
     // 连接关闭回调
     _hubConnection!.onclose(({error}) {
-      debugPrint('SignalR 连接关闭: $error');
+      AppLogger.error('SignalR 连接关闭: $error');
     });
 
     // 重连成功回调
     _hubConnection!.onreconnected(({connectionId}) {
-      debugPrint('SignalR 重连成功: $connectionId');
+      AppLogger.debug('SignalR 重连成功: $connectionId');
     });
 
     // 重连中回调
     _hubConnection!.onreconnecting(({error}) {
-      debugPrint('SignalR 正在重连: $error');
+      AppLogger.error('SignalR 正在重连: $error');
     });
 
     try {
       await _hubConnection!.start();
-      debugPrint('SignalR 连接成功');
+      AppLogger.debug('SignalR 连接成功');
       _startHeartbeat();
     } catch (e) {
-      debugPrint('SignalR 连接失败: $e');
+      AppLogger.error('SignalR 连接失败: $e');
     }
   }
 
@@ -91,7 +92,7 @@ class SignalRService {
     if (_hubConnection != null) {
       await _hubConnection!.stop();
       _hubConnection = null;
-      debugPrint('SignalR 已断开连接');
+      AppLogger.warning('SignalR 已断开连接');
     }
   }
 
@@ -117,7 +118,7 @@ class SignalRService {
       final title = notificationData['Title']?.toString() ?? '通知';
       final content = notificationData['Content']?.toString() ?? '';
 
-      debugPrint('收到通知: [$type] $title - $content');
+      AppLogger.debug('收到通知: [$type] $title - $content');
 
       // 根据通知类型处理
       switch (type) {
@@ -221,7 +222,7 @@ class SignalRService {
           _showGeneralNotification(title, content);
       }
     } catch (e) {
-      debugPrint('处理通知失败: $e');
+      AppLogger.error('处理通知失败: $e');
     }
   }
 
@@ -263,9 +264,9 @@ class SignalRService {
           _heartbeatFailCount = 0;
         } catch (e) {
           _heartbeatFailCount++;
-          debugPrint('[心跳] 发送失败($_heartbeatFailCount): $e');
+          AppLogger.error('[心跳] 发送失败($_heartbeatFailCount): $e');
           if (_heartbeatFailCount >= 3) {
-            debugPrint('[心跳] 连续失败 3 次，尝试重连');
+            AppLogger.error('[心跳] 连续失败 3 次，尝试重连');
             _heartbeatFailCount = 0;
             await connect();
           }

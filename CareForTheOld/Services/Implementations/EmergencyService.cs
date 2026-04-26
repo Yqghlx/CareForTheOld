@@ -205,12 +205,26 @@ public class EmergencyService : IEmergencyService
             var fcmTitle = title;
             var fcmContent = content;
             var fcmType = isReminder ? AppConstants.NotificationTypes.EmergencyReminderFcm : AppConstants.NotificationTypes.EmergencyCallFcm;
-            BackgroundJob.Enqueue(() => SendFcmPushJobAsync(
-                fcmChildIds, fcmTitle, fcmContent, fcmType,
-                callId.ToString(), elderId.ToString(), elderName));
+            try
+            {
+                BackgroundJob.Enqueue(() => SendFcmPushJobAsync(
+                    fcmChildIds, fcmTitle, fcmContent, fcmType,
+                    callId.ToString(), elderId.ToString(), elderName));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "FCM 推送入队失败，呼叫 {CallId}", callId);
+            }
 
             // SMS 多通道告警（最终兜底），通过 Hangfire 异步发送
-            BackgroundJob.Enqueue(() => SendSmsAlertJobAsync(callId, isReminder));
+            try
+            {
+                BackgroundJob.Enqueue(() => SendSmsAlertJobAsync(callId, isReminder));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "SMS 告警入队失败，呼叫 {CallId}", callId);
+            }
         }
     }
 

@@ -10,6 +10,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/services/connectivity_service.dart';
 import '../../../core/services/offline_queue_service.dart';
 import '../../shared/services/location_service.dart';
+import '../../../core/services/app_logger.dart';
 
 /// 位置上报服务（老人端后台定时上报）
 ///
@@ -49,14 +50,14 @@ class LocationReporterService {
     final prefs = await SharedPreferences.getInstance();
     final locationEnabled = prefs.getBool(PrefKeys.locationEnabled) ?? true;
     if (!locationEnabled) {
-      debugPrint('[位置上报] 定位上报已关闭');
+      AppLogger.debug('[位置上报] 定位上报已关闭');
       return false;
     }
 
     // 检查并请求定位权限
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      debugPrint('[位置上报] 定位服务未开启');
+      AppLogger.debug('[位置上报] 定位服务未开启');
       return false;
     }
 
@@ -64,13 +65,13 @@ class LocationReporterService {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        debugPrint('[位置上报] 定位权限被拒绝');
+        AppLogger.debug('[位置上报] 定位权限被拒绝');
         return false;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      debugPrint('[位置上报] 定位权限永久被拒绝');
+      AppLogger.debug('[位置上报] 定位权限永久被拒绝');
       return false;
     }
 
@@ -85,12 +86,12 @@ class LocationReporterService {
     // 监听网络恢复，恢复后立即补报一次位置
     _networkSubscription = _connectivityService.onConnectivityChanged.listen((isOnline) {
       if (isOnline && _isRunning) {
-        debugPrint('[位置上报] 网络已恢复，立即补报位置');
+        AppLogger.debug('[位置上报] 网络已恢复，立即补报位置');
         _reportLocationWithRetry();
       }
     });
 
-    debugPrint('[位置上报] 服务已启动，间隔 ${_reportInterval.inMinutes} 分钟');
+    AppLogger.debug('[位置上报] 服务已启动，间隔 ${_reportInterval.inMinutes} 分钟');
     return true;
   }
 
@@ -102,7 +103,7 @@ class LocationReporterService {
     _networkSubscription = null;
     _isRunning = false;
     _consecutiveFailures = 0;
-    debugPrint('[位置上报] 服务已停止');
+    AppLogger.debug('[位置上报] 服务已停止');
   }
 
   /// 检查并上报位置（根据设置决定是否上报）
@@ -110,7 +111,7 @@ class LocationReporterService {
     final prefs = await SharedPreferences.getInstance();
     final locationEnabled = prefs.getBool(PrefKeys.locationEnabled) ?? true;
     if (!locationEnabled) {
-      debugPrint('[位置上报] 定位上报已关闭，跳过本次上报');
+      AppLogger.debug('[位置上报] 定位上报已关闭，跳过本次上报');
       return;
     }
     await _reportLocationWithRetry();
@@ -125,7 +126,7 @@ class LocationReporterService {
       // 上报前先检查网络连接
       final isOnline = await _connectivityService.checkOnline();
       if (!isOnline) {
-        debugPrint('[位置上报] 网络不可用，位置上报暂停（等待网络恢复）');
+        AppLogger.debug('[位置上报] 网络不可用，位置上报暂停（等待网络恢复）');
         // 网络断开时不消耗重试次数，直接返回等待下次定时器触发
         return;
       }
@@ -147,12 +148,12 @@ class LocationReporterService {
           seconds: backoffSeconds.toInt(),
           milliseconds: jitter,
         );
-        debugPrint('[位置上报] 第 ${attempt + 1} 次上报失败，${delay.inSeconds} 秒后重试...');
+        AppLogger.error('[位置上报] 第 ${attempt + 1} 次上报失败，${delay.inSeconds} 秒后重试...');
         await Future.delayed(delay);
       }
     }
 
-    debugPrint('[位置上报] 已达最大重试次数 ($_maxRetries)，本次上报放弃，等待下次定时触发');
+    AppLogger.warning('[位置上报] 已达最大重试次数 ($_maxRetries)，本次上报放弃，等待下次定时触发');
   }
 
   /// 单次位置上报（获取 GPS + 发送到服务端）
@@ -166,7 +167,7 @@ class LocationReporterService {
         timeLimit: AppTheme.duration10s,
       );
 
-      debugPrint('[位置上报] 获取位置: ${position.latitude}, ${position.longitude}, 精度: ${position.accuracy}m');
+      AppLogger.debug('[位置上报] 获取位置: ${position.latitude}, ${position.longitude}, 精度: ${position.accuracy}m');
 
       final isOnline = await _connectivityService.checkOnline();
       if (!isOnline) {
@@ -176,7 +177,7 @@ class LocationReporterService {
           'longitude': position.longitude,
           'accuracy': position.accuracy,
         });
-        debugPrint('[位置上报] 网络不可用，位置已存入离线队列');
+        AppLogger.debug('[位置上报] 网络不可用，位置已存入离线队列');
         return true; // 入队成功视为成功，不触发重试
       }
 
@@ -185,10 +186,10 @@ class LocationReporterService {
         position.longitude,
         accuracy: position.accuracy,
       );
-      debugPrint('[位置上报] 上报成功');
+      AppLogger.debug('[位置上报] 上报成功');
       return true;
     } catch (e) {
-      debugPrint('[位置上报] 上报失败: $e');
+      AppLogger.error('[位置上报] 上报失败: $e');
       return false;
     }
   }
@@ -198,7 +199,7 @@ class LocationReporterService {
     // 手动上报前也检查网络
     final isOnline = await _connectivityService.checkOnline();
     if (!isOnline) {
-      debugPrint('[位置上报] 网络不可用，无法手动上报');
+      AppLogger.debug('[位置上报] 网络不可用，无法手动上报');
       return false;
     }
 
@@ -209,10 +210,10 @@ class LocationReporterService {
       );
 
       await _service.reportLocation(position.latitude, position.longitude);
-      debugPrint('[位置上报] 手动上报成功');
+      AppLogger.debug('[位置上报] 手动上报成功');
       return true;
     } catch (e) {
-      debugPrint('[位置上报] 手动上报失败: $e');
+      AppLogger.error('[位置上报] 手动上报失败: $e');
       return false;
     }
   }

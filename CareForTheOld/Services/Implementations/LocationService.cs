@@ -1,10 +1,10 @@
 using CareForTheOld.Common.Constants;
+using CareForTheOld.Common.Helpers;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Interfaces;
-using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -74,15 +74,9 @@ public class LocationService : ILocationService
             if (outsideResult != null)
             {
                 var (fence, distance) = outsideResult.Value;
-                try
-                {
-                    BackgroundJob.Enqueue(() => SendGeoFenceAlertJobAsync(
-                        userId, fence!.Id, fence.Radius, distance));
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "围栏预警任务入队失败，用户 {UserId}", userId);
-                }
+                HangfireJobHelper.EnqueueSafely(
+                    () => SendGeoFenceAlertJobAsync(userId, fence!.Id, fence.Radius, distance),
+                    "围栏预警", _logger, userId);
             }
         }
 

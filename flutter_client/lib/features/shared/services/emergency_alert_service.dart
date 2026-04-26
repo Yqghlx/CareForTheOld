@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:vibration/vibration.dart';
 
 import '../../../core/config/app_config.dart';
+import '../../../core/services/app_logger.dart';
 
 /// 紧急警报服务（全局单例）
 ///
@@ -58,7 +59,7 @@ class EmergencyAlertService {
     // 通知 UI 刷新
     onAlertChanged?.call();
 
-    debugPrint('紧急警报已触发: $elderName (呼叫ID: $callId)');
+    AppLogger.debug('紧急警报已触发: $elderName (呼叫ID: $callId)');
   }
 
   /// 停止警报（用户点击响应按钮后调用）
@@ -74,7 +75,7 @@ class EmergencyAlertService {
     // 通知 UI 刷新
     onAlertChanged?.call();
 
-    debugPrint('紧急警报已停止');
+    AppLogger.debug('紧急警报已停止');
   }
 
   /// 启动循环震动
@@ -86,7 +87,7 @@ class EmergencyAlertService {
       // 循环震动：震动 500ms，暂停 500ms，重复
       await Vibration.vibrate(pattern: [500, 500, 500, 500], repeat: 0);
     } catch (e) {
-      debugPrint('震动启动失败: $e');
+      AppLogger.error('震动启动失败: $e');
     }
   }
 
@@ -95,7 +96,7 @@ class EmergencyAlertService {
     try {
       Vibration.cancel();
     } catch (e) {
-      debugPrint('震动停止失败: $e');
+      AppLogger.error('震动停止失败: $e');
     }
   }
 
@@ -108,11 +109,11 @@ class EmergencyAlertService {
       ));
     } catch (e) {
       // 网络不可用时使用系统默认通知音
-      debugPrint('在线铃声加载失败，使用系统默认音: $e');
+      AppLogger.error('在线铃声加载失败，使用系统默认音: $e');
       try {
         await _audioPlayer.play(DeviceFileSource(''));
       } catch (e) {
-        debugPrint('系统默认音播放失败: $e');
+        AppLogger.error('系统默认音播放失败: $e');
       }
     }
   }
@@ -122,7 +123,7 @@ class EmergencyAlertService {
     try {
       await _audioPlayer.stop();
     } catch (e) {
-      debugPrint('铃声停止失败: $e');
+      AppLogger.error('铃声停止失败: $e');
     }
   }
 }

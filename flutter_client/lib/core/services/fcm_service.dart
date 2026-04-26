@@ -9,6 +9,7 @@ import 'package:logging/logging.dart';
 import '../../features/shared/services/emergency_alert_service.dart';
 import '../api/api_client.dart';
 import '../constants/api_endpoints.dart';
+import 'app_logger.dart';
 
 /// FCM 后台消息处理入口（必须是顶层函数）
 ///
@@ -18,7 +19,7 @@ import '../constants/api_endpoints.dart';
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // 初始化 Firebase（后台 Isolate 需要独立初始化）
   await Firebase.initializeApp();
-  debugPrint('[FCM 后台] 收到消息: ${message.messageId}');
+  AppLogger.debug('[FCM 后台] 收到消息: ${message.messageId}');
   // 后台消息由系统通知栏自动显示（FCM notification payload）
 }
 

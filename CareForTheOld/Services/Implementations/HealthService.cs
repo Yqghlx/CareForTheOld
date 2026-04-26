@@ -1,11 +1,11 @@
 using CareForTheOld.Common.Constants;
+using CareForTheOld.Common.Helpers;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.Health;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Interfaces;
-using Hangfire;
 using Microsoft.EntityFrameworkCore;
 
 namespace CareForTheOld.Services.Implementations;
@@ -57,14 +57,9 @@ public class HealthService : IHealthService
         if (alertMessage != null)
         {
             // 通过 Hangfire 异步发送预警通知，支持持久化和自动重试
-            try
-            {
-                BackgroundJob.Enqueue(() => SendHealthAlertJobAsync(userId, record.Id, alertMessage));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "健康预警任务入队失败，用户 {UserId}", userId);
-            }
+            HangfireJobHelper.EnqueueSafely(
+                () => SendHealthAlertJobAsync(userId, record.Id, alertMessage),
+                "健康预警", _logger, userId);
         }
 
         return await MapToResponse(record.Id) ?? throw new KeyNotFoundException(ErrorMessages.Health.RecordNotFound);

@@ -8,6 +8,7 @@ import '../api/api_client.dart';
 import '../constants/api_endpoints.dart';
 import '../constants/pref_keys.dart';
 import 'connectivity_service.dart';
+import 'app_logger.dart';
 
 /// 离线队列中的待上传项
 class OfflineQueueItem {
@@ -62,7 +63,7 @@ class OfflineQueueService {
     _networkSubscription =
         _connectivityService.onConnectivityChanged.listen((isOnline) {
       if (isOnline) {
-        debugPrint('[离线队列] 网络恢复，开始上传队列');
+        AppLogger.debug('[离线队列] 网络恢复，开始上传队列');
         flush();
       }
     });
@@ -72,7 +73,7 @@ class OfflineQueueService {
       flush();
     }
 
-    debugPrint('[离线队列] 初始化完成，队列中 ${_box!.length} 条待上传');
+    AppLogger.debug('[离线队列] 初始化完成，队列中 ${_box!.length} 条待上传');
   }
 
   /// 入队：离线时保存数据
@@ -93,7 +94,7 @@ class OfflineQueueService {
     }
 
     await _box!.put(item.id, jsonEncode(item.toJson()));
-    debugPrint('[离线队列] 入队: type=$type, 队列长度=${_box!.length}');
+    AppLogger.debug('[离线队列] 入队: type=$type, 队列长度=${_box!.length}');
   }
 
   /// 批量上传队列中的所有数据
@@ -144,11 +145,11 @@ class OfflineQueueService {
           await _dio.post(ApiEndpoints.medicationLogs, data: item.data);
           return true;
         default:
-          debugPrint('[离线队列] 未知类型: ${item.type}，跳过');
+          AppLogger.debug('[离线队列] 未知类型: ${item.type}，跳过');
           return true; // 未知类型直接移除
       }
     } catch (e) {
-      debugPrint('[离线队列] 上传失败: type=${item.type}, error=$e');
+      AppLogger.error('[离线队列] 上传失败: type=${item.type}, error=$e');
       return false;
     }
   }
