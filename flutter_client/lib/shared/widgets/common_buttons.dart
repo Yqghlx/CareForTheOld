@@ -96,11 +96,7 @@ class _PrimaryButtonState extends State<PrimaryButton>
                       )
                     : Text(
                         widget.text,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
+                        style: AppTheme.textWhite18W600,
                       ),
               ),
             ),
@@ -306,11 +302,7 @@ class _PrimaryIconButtonState extends State<PrimaryIconButton>
                         )
                       : Text(
                           widget.text,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
+                          style: AppTheme.textWhite18W600,
                         ),
                 ],
               ),

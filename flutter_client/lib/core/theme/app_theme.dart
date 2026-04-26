@@ -70,6 +70,7 @@ class AppTheme {
   static const TextStyle textWhite = TextStyle(color: Color(0xFFFFFFFF));
   static const TextStyle textWhite16 = TextStyle(fontSize: 16, color: Color(0xFFFFFFFF));
   static const TextStyle textWhite14 = TextStyle(fontSize: 14, color: Color(0xFFFFFFFF));
+  static const TextStyle textWhite18W600 = TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Color(0xFFFFFFFF));
   static const TextStyle textSecondary16 = TextStyle(fontSize: 16, color: grey600);
   static const TextStyle textSecondary14 = TextStyle(fontSize: 14, color: grey600);
   static const TextStyle textCaptionDark = TextStyle(fontSize: 12, color: grey600);
