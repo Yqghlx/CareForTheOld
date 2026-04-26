@@ -108,7 +108,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                   child: const Text('加载失败，请重试', style: AppTheme.textError),
                 ),
               ),
-              const SizedBox(height: 24),
+              AppTheme.spacer24,
 
               // 历史轨迹
               const Text(

@@ -150,7 +150,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            AppTheme.spacer24,
 
             const Text(
               '关注的老人',

@@ -81,7 +81,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    AppTheme.spacer24,
 
                     // 老人姓名
                     Container(

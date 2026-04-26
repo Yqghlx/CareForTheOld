@@ -177,7 +177,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                AppTheme.spacer24,
 
                 // 角色选择
                 const Text('请选择您的身份:', style: AppTheme.textBody16),
@@ -212,7 +212,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 32),
+                AppTheme.spacer32,
 
                 // 注册按钮
                 SizedBox(

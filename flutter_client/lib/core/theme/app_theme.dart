@@ -166,6 +166,10 @@ class AppTheme {
   static const EdgeInsets paddingAll14 = EdgeInsets.all(14);
   static const EdgeInsets marginBottom16 = EdgeInsets.only(bottom: 16);
 
+  /// 常用垂直间距组件
+  static const SizedBox spacer24 = SizedBox(height: 24);
+  static const SizedBox spacer32 = SizedBox(height: 32);
+
   /// 统一用户消息常量
   static const String msgLoadFailed = '加载失败，请重试';
   static const String msgOperationFailed = '操作失败，请稍后重试';

@@ -73,7 +73,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
             children: [
               // 今日用药概览 - 渐变卡片
               _buildOverviewCard(medState),
-              const SizedBox(height: 24),
+              AppTheme.spacer24,
 
               // 今日待服药
               const Text(

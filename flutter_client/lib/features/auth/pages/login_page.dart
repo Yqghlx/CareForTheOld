@@ -141,7 +141,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                       ),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  AppTheme.spacer24,
                   // 标题
                   const Text(
                     '关爱老人',
@@ -221,7 +221,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                       },
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  AppTheme.spacer32,
 
                   // 错误信息提示
                   if (_errorMessage != null)

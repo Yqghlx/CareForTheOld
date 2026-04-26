@@ -46,7 +46,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
             children: [
               // 家庭信息/邀请码卡片
               _buildFamilyCard(familyState, isElder),
-              const SizedBox(height: 24),
+              AppTheme.spacer24,
 
               // 待审批区域（子女端）
               if (!isElder && familyState.family != null) ...[

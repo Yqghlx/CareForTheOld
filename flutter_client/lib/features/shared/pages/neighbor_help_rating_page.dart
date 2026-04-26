@@ -63,7 +63,7 @@ class _NeighborHelpRatingPageState
                 style: AppTheme.textGrey,
               ),
             ),
-            const SizedBox(height: 24),
+            AppTheme.spacer24,
 
             // 评语
             TextField(

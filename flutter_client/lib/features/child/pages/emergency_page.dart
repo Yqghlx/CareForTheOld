@@ -119,7 +119,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
             ),
           ],
 
-          const SizedBox(height: 24),
+          AppTheme.spacer24,
 
           // 最近历史
           const Text(

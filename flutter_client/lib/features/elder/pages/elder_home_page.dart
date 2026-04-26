@@ -135,7 +135,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
         children: [
           // 紧急呼叫按钮 - 醒目的红色大按钮
           _buildEmergencyCallButton(),
-          const SizedBox(height: 24),
+          AppTheme.spacer24,
 
           // 用户信息卡片 - 渐变背景
           GradientCard(

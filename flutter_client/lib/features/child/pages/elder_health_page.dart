@@ -158,7 +158,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   onRetry: () => ref.invalidate(elderHealthStatsProvider(widget.elderId)),
                 ),
               ),
-              const SizedBox(height: 24),
+              AppTheme.spacer24,
 
               // AI 健康异常检测卡片
               anomalyAsync.when(
@@ -190,7 +190,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       style: AppTheme.textError),
                 ),
               ),
-              const SizedBox(height: 24),
+              AppTheme.spacer24,
 
               // 最近健康记录
               const Text(
@@ -206,7 +206,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   onRetry: () => ref.invalidate(elderHealthRecordsProvider(widget.elderId)),
                 ),
               ),
-              const SizedBox(height: 24),
+              AppTheme.spacer24,
 
               // 用药计划
               const Text(
@@ -222,7 +222,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   onRetry: () => ref.invalidate(elderMedicationPlansProvider(widget.elderId)),
                 ),
               ),
-              const SizedBox(height: 24),
+              AppTheme.spacer24,
 
               // 最近用药记录（带日期筛选）
               Row(

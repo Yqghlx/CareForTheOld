@@ -182,7 +182,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            AppTheme.spacer24,
 
             // 个人信息
             const Text(
@@ -213,7 +213,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ],
               ),
             ),
-            const SizedBox(height: 24),
+            AppTheme.spacer24,
 
             // 功能设置（老人端显示定位开关）
             if (isElder) ...[
@@ -245,7 +245,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         ),
                 ),
               ),
-              const SizedBox(height: 24),
+              AppTheme.spacer24,
             ],
 
             // 通知设置
@@ -321,7 +321,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ],
               ),
             ),
-            const SizedBox(height: 24),
+            AppTheme.spacer24,
 
             // 其他设置
             const Text(
@@ -352,7 +352,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ],
               ),
             ),
-            const SizedBox(height: 32),
+            AppTheme.spacer32,
 
             // 退出登录按钮
             PrimaryButton(
