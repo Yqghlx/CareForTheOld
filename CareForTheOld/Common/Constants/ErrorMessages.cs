@@ -346,6 +346,24 @@ public static class ErrorMessages
     }
 
     /// <summary>
+    /// 中间件相关错误消息
+    /// </summary>
+    public static class Middleware
+    {
+        /// <summary>资源未找到</summary>
+        public const string NotFound = "资源未找到";
+
+        /// <summary>未授权</summary>
+        public const string Unauthorized = "未授权";
+
+        /// <summary>请求参数错误</summary>
+        public const string BadRequest = "请求参数错误";
+
+        /// <summary>服务器内部错误</summary>
+        public const string InternalError = "服务器内部错误";
+    }
+
+    /// <summary>
     /// OSS 存储相关错误消息
     /// </summary>
     public static class Oss

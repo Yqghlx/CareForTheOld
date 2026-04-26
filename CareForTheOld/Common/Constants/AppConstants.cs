@@ -501,4 +501,66 @@ public static class AppConstants
         /// <summary>体温输入上限（°C）</summary>
         public const decimal TemperatureMax = 43.0m;
     }
+
+    /// <summary>
+    /// PDF 报告颜色常量
+    /// 集中管理健康报告 PDF 生成中的颜色值，确保视觉一致性
+    /// </summary>
+    public static class PdfColors
+    {
+        /// <summary>文本颜色</summary>
+        public static class Text
+        {
+            public const string TitleBlue = "#1976D2";
+            public const string SummaryBlue = "#1565C0";
+            public const string SuggestionGreen = "#2E7D32";
+            public const string Secondary = "#666666";
+            public const string Normal = "#000000";
+        }
+
+        /// <summary>背景颜色</summary>
+        public static class Background
+        {
+            public const string TableHeader = "#E0E0E0";
+            public const string AbnormalRow = "#FFEBEE";
+            public const string NormalRow = "#FFFFFF";
+        }
+
+        /// <summary>边框颜色</summary>
+        public static class Border
+        {
+            public const string Divider = "#CCCCCC";
+            public const string TableCell = "#BDBDBD";
+        }
+
+        /// <summary>健康类型专用颜色</summary>
+        public static class HealthType
+        {
+            public const string BloodPressure = "#C62828";
+            public const string BloodSugar = "#1565C0";
+            public const string HeartRate = "#6A1B9A";
+            public const string Temperature = "#E65100";
+        }
+    }
+
+    /// <summary>
+    /// MIME 类型常量
+    /// </summary>
+    public static class MimeTypes
+    {
+        /// <summary>PDF 文件</summary>
+        public const string Pdf = "application/pdf";
+
+        /// <summary>JSON</summary>
+        public const string Json = "application/json";
+    }
+
+    /// <summary>
+    /// 文件存储目录常量
+    /// </summary>
+    public static class FileDirectories
+    {
+        /// <summary>头像文件目录</summary>
+        public const string Avatars = "avatars";
+    }
 }

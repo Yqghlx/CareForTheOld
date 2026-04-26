@@ -106,7 +106,7 @@ public class UserController : ControllerBase
 
         // 通过文件存储抽象层上传，解耦文件 IO 与 Web 进程
         using var stream = file.OpenReadStream();
-        var avatarUrl = await _fileStorageService.UploadAsync("avatars", fileName, stream, file.ContentType);
+        var avatarUrl = await _fileStorageService.UploadAsync(AppConstants.FileDirectories.Avatars, fileName, stream, file.ContentType);
 
         // 更新用户头像 URL
         await _userService.UpdateAvatarUrlAsync(userId, avatarUrl);

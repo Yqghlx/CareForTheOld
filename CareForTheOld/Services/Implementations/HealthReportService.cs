@@ -75,18 +75,18 @@ public class HealthReportService : IHealthReportService
             column.Spacing(10);
 
             column.Item().AlignCenter().Text(HealthReportMessages.CoverTitle)
-                .FontSize(24).Bold().FontColor("#1976D2");
+                .FontSize(24).Bold().FontColor(AppConstants.PdfColors.Text.TitleBlue);
 
             column.Item().AlignCenter().Text($"{HealthReportMessages.CoverUserPrefix}{user.RealName}")
                 .FontSize(16);
 
             column.Item().AlignCenter().Text($"{HealthReportMessages.CoverRangePrefix}{daysRange}{HealthReportMessages.CoverRangeSuffix}")
-                .FontSize(14).FontColor("#666666");
+                .FontSize(14).FontColor(AppConstants.PdfColors.Text.Secondary);
 
             column.Item().AlignCenter().Text($"{HealthReportMessages.CoverTimePrefix}{DateTime.UtcNow:yyyy-MM-dd HH:mm}")
-                .FontSize(12).FontColor("#666666");
+                .FontSize(12).FontColor(AppConstants.PdfColors.Text.Secondary);
 
-            column.Item().PaddingTop(10).LineHorizontal(1).LineColor("#CCCCCC");
+            column.Item().PaddingTop(10).LineHorizontal(1).LineColor(AppConstants.PdfColors.Border.Divider);
         });
     }
 
@@ -127,9 +127,9 @@ public class HealthReportService : IHealthReportService
             column.Spacing(5);
 
             column.Item().Text(HealthReportMessages.SummaryTitle)
-                .FontSize(18).Bold().FontColor("#1565C0");
+                .FontSize(18).Bold().FontColor(AppConstants.PdfColors.Text.SummaryBlue);
 
-            column.Item().PaddingTop(5).LineHorizontal(0.5f).LineColor("#CCCCCC");
+            column.Item().PaddingTop(5).LineHorizontal(0.5f).LineColor(AppConstants.PdfColors.Border.Divider);
 
             // 汇总表格
             column.Item().Table(table =>
@@ -146,11 +146,11 @@ public class HealthReportService : IHealthReportService
                 // 表头
                 table.Header(header =>
                 {
-                    header.Cell().Background("#E0E0E0").Padding(5).Text(HealthReportMessages.ColumnType).Bold();
-                    header.Cell().Background("#E0E0E0").Padding(5).Text(HealthReportMessages.ColumnRecordCount).Bold();
-                    header.Cell().Background("#E0E0E0").Padding(5).Text(HealthReportMessages.ColumnAverage).Bold();
-                    header.Cell().Background("#E0E0E0").Padding(5).Text(HealthReportMessages.ColumnMaximum).Bold();
-                    header.Cell().Background("#E0E0E0").Padding(5).Text(HealthReportMessages.ColumnMinimum).Bold();
+                    header.Cell().Background(AppConstants.PdfColors.Background.TableHeader).Padding(5).Text(HealthReportMessages.ColumnType).Bold();
+                    header.Cell().Background(AppConstants.PdfColors.Background.TableHeader).Padding(5).Text(HealthReportMessages.ColumnRecordCount).Bold();
+                    header.Cell().Background(AppConstants.PdfColors.Background.TableHeader).Padding(5).Text(HealthReportMessages.ColumnAverage).Bold();
+                    header.Cell().Background(AppConstants.PdfColors.Background.TableHeader).Padding(5).Text(HealthReportMessages.ColumnMaximum).Bold();
+                    header.Cell().Background(AppConstants.PdfColors.Background.TableHeader).Padding(5).Text(HealthReportMessages.ColumnMinimum).Bold();
                 });
 
                 // 各类型数据行
@@ -159,13 +159,13 @@ public class HealthReportService : IHealthReportService
                     var typeRecords = records.Where(r => r.Type == type).ToList();
                     if (typeRecords.Count == 0) continue;
 
-                    table.Cell().BorderBottom(0.5f).BorderColor("#BDBDBD").Padding(5).Text(GetTypeLabel(type));
-                    table.Cell().BorderBottom(0.5f).BorderColor("#BDBDBD").Padding(5).Text(typeRecords.Count.ToString());
+                    table.Cell().BorderBottom(0.5f).BorderColor(AppConstants.PdfColors.Border.TableCell).Padding(5).Text(GetTypeLabel(type));
+                    table.Cell().BorderBottom(0.5f).BorderColor(AppConstants.PdfColors.Border.TableCell).Padding(5).Text(typeRecords.Count.ToString());
 
                     var (avg, max, min) = CalculateStats(type, typeRecords);
-                    table.Cell().BorderBottom(0.5f).BorderColor("#BDBDBD").Padding(5).Text(avg);
-                    table.Cell().BorderBottom(0.5f).BorderColor("#BDBDBD").Padding(5).Text(max);
-                    table.Cell().BorderBottom(0.5f).BorderColor("#BDBDBD").Padding(5).Text(min);
+                    table.Cell().BorderBottom(0.5f).BorderColor(AppConstants.PdfColors.Border.TableCell).Padding(5).Text(avg);
+                    table.Cell().BorderBottom(0.5f).BorderColor(AppConstants.PdfColors.Border.TableCell).Padding(5).Text(max);
+                    table.Cell().BorderBottom(0.5f).BorderColor(AppConstants.PdfColors.Border.TableCell).Padding(5).Text(min);
                 }
             });
         });
@@ -176,9 +176,9 @@ public class HealthReportService : IHealthReportService
     /// </summary>
     private static void CreateTypeSection(IContainer container, HealthType type, List<HealthRecord> records)
     {
-        var typeColor = type == HealthType.BloodPressure ? "#C62828" :
-            type == HealthType.BloodSugar ? "#1565C0" :
-            type == HealthType.HeartRate ? "#6A1B9A" : "#E65100";
+        var typeColor = type == HealthType.BloodPressure ? AppConstants.PdfColors.HealthType.BloodPressure :
+            type == HealthType.BloodSugar ? AppConstants.PdfColors.HealthType.BloodSugar :
+            type == HealthType.HeartRate ? AppConstants.PdfColors.HealthType.HeartRate : AppConstants.PdfColors.HealthType.Temperature;
 
         container.Column(column =>
         {
@@ -187,7 +187,7 @@ public class HealthReportService : IHealthReportService
             column.Item().PaddingTop(10).Text($"{GetTypeLabel(type)}{HealthReportMessages.DetailRecordsSuffix}")
                 .FontSize(16).Bold().FontColor(typeColor);
 
-            column.Item().LineHorizontal(0.5f).LineColor("#CCCCCC");
+            column.Item().LineHorizontal(0.5f).LineColor(AppConstants.PdfColors.Border.Divider);
 
             // 详细记录表格
             column.Item().Table(table =>
@@ -202,23 +202,23 @@ public class HealthReportService : IHealthReportService
                 // 表头
                 table.Header(header =>
                 {
-                    header.Cell().Background("#E0E0E0").Padding(5).Text(HealthReportMessages.ColumnTime).Bold();
-                    header.Cell().Background("#E0E0E0").Padding(5).Text(HealthReportMessages.ColumnValue).Bold();
-                    header.Cell().Background("#E0E0E0").Padding(5).Text(HealthReportMessages.ColumnNote).Bold();
+                    header.Cell().Background(AppConstants.PdfColors.Background.TableHeader).Padding(5).Text(HealthReportMessages.ColumnTime).Bold();
+                    header.Cell().Background(AppConstants.PdfColors.Background.TableHeader).Padding(5).Text(HealthReportMessages.ColumnValue).Bold();
+                    header.Cell().Background(AppConstants.PdfColors.Background.TableHeader).Padding(5).Text(HealthReportMessages.ColumnNote).Bold();
                 });
 
                 // 记录行（最多显示最近20条）
                 foreach (var record in records.Take(AppConstants.HealthReport.MaxPdfRecords))
                 {
                     var isAbnormal = IsAbnormal(type, record);
-                    var backgroundColor = isAbnormal ? "#FFEBEE" : "#FFFFFF";
-                    var valueColor = isAbnormal ? "#C62828" : "#000000";
+                    var backgroundColor = isAbnormal ? AppConstants.PdfColors.Background.AbnormalRow : AppConstants.PdfColors.Background.NormalRow;
+                    var valueColor = isAbnormal ? AppConstants.PdfColors.HealthType.BloodPressure : AppConstants.PdfColors.Text.Normal;
 
-                    table.Cell().Background(backgroundColor).BorderBottom(0.5f).BorderColor("#BDBDBD").Padding(5)
+                    table.Cell().Background(backgroundColor).BorderBottom(0.5f).BorderColor(AppConstants.PdfColors.Border.TableCell).Padding(5)
                         .Text(record.RecordedAt.ToLocalTime().ToString("MM-dd HH:mm"));
-                    table.Cell().Background(backgroundColor).BorderBottom(0.5f).BorderColor("#BDBDBD").Padding(5)
+                    table.Cell().Background(backgroundColor).BorderBottom(0.5f).BorderColor(AppConstants.PdfColors.Border.TableCell).Padding(5)
                         .Text(GetRecordValue(type, record)).FontColor(valueColor);
-                    table.Cell().Background(backgroundColor).BorderBottom(0.5f).BorderColor("#BDBDBD").Padding(5)
+                    table.Cell().Background(backgroundColor).BorderBottom(0.5f).BorderColor(AppConstants.PdfColors.Border.TableCell).Padding(5)
                         .Text(record.Note ?? "-");
                 }
             });
@@ -226,7 +226,7 @@ public class HealthReportService : IHealthReportService
             if (records.Count > AppConstants.HealthReport.MaxPdfRecords)
             {
                 column.Item().PaddingTop(5).AlignCenter().Text(string.Format(HealthReportMessages.RecordsTruncatedTemplate, records.Count, AppConstants.HealthReport.MaxPdfRecords))
-                    .FontSize(10).FontColor("#666666");
+                    .FontSize(10).FontColor(AppConstants.PdfColors.Text.Secondary);
             }
         });
     }
@@ -243,9 +243,9 @@ public class HealthReportService : IHealthReportService
             column.Spacing(5);
 
             column.Item().PaddingTop(15).Text(HealthReportMessages.SuggestionsTitle)
-                .FontSize(18).Bold().FontColor("#2E7D32");
+                .FontSize(18).Bold().FontColor(AppConstants.PdfColors.Text.SuggestionGreen);
 
-            column.Item().LineHorizontal(0.5f).LineColor("#CCCCCC");
+            column.Item().LineHorizontal(0.5f).LineColor(AppConstants.PdfColors.Border.Divider);
 
             foreach (var suggestion in suggestions)
             {
@@ -258,7 +258,7 @@ public class HealthReportService : IHealthReportService
             }
 
             column.Item().PaddingTop(10).AlignCenter().Text(HealthReportMessages.Disclaimer)
-                .FontSize(10).FontColor("#666666");
+                .FontSize(10).FontColor(AppConstants.PdfColors.Text.Secondary);
         });
     }
 

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Helpers;
 
 namespace CareForTheOld.Common.Middleware;
@@ -39,19 +40,19 @@ public class ExceptionHandlingMiddleware
 
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        context.Response.ContentType = "application/json";
+        context.Response.ContentType = AppConstants.MimeTypes.Json;
 
         var isDev = _environment.IsDevelopment();
 
         // 开发环境返回详细错误信息，生产环境隐藏内部细节
         var (statusCode, message) = exception switch
         {
-            KeyNotFoundException => (StatusCodes.Status404NotFound, "资源未找到"),
-            UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, "未授权"),
+            KeyNotFoundException => (StatusCodes.Status404NotFound, ErrorMessages.Middleware.NotFound),
+            UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, ErrorMessages.Middleware.Unauthorized),
             ArgumentException => (StatusCodes.Status400BadRequest,
-                isDev ? exception.Message : "请求参数错误"),
+                isDev ? exception.Message : ErrorMessages.Middleware.BadRequest),
             _ => (StatusCodes.Status500InternalServerError,
-                isDev ? exception.Message : "服务器内部错误")
+                isDev ? exception.Message : ErrorMessages.Middleware.InternalError)
         };
 
         context.Response.StatusCode = statusCode;
