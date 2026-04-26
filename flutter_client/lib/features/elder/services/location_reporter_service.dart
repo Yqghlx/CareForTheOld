@@ -217,6 +217,11 @@ class LocationReporterService {
 
   /// 获取连续失败次数（可用于外部监控）
   int get consecutiveFailures => _consecutiveFailures;
+
+  /// 释放资源（安全网：确保 Timer 和 StreamSubscription 被取消）
+  void dispose() {
+    stop();
+  }
 }
 
 /// 位置上报服务 Provider

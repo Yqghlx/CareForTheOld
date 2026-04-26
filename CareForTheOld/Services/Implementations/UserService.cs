@@ -10,8 +10,13 @@ namespace CareForTheOld.Services.Implementations;
 public class UserService : IUserService
 {
     private readonly AppDbContext _context;
+    private readonly ILogger<UserService> _logger;
 
-    public UserService(AppDbContext context) => _context = context;
+    public UserService(AppDbContext context, ILogger<UserService> logger)
+    {
+        _context = context;
+        _logger = logger;
+    }
 
     public async Task<UserResponse> GetCurrentUserAsync(Guid userId)
         => await MapToResponse(userId) ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
@@ -29,6 +34,7 @@ public class UserService : IUserService
         user.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
+        _logger.LogInformation("用户 {UserId} 更新个人信息成功", userId);
         return await MapToResponse(userId) ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
     }
 
@@ -48,6 +54,7 @@ public class UserService : IUserService
         user.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
+        _logger.LogWarning("用户 {UserId} 修改密码成功", userId);
         return true;
     }
 
@@ -63,6 +70,7 @@ public class UserService : IUserService
         user.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
+        _logger.LogInformation("用户 {UserId} 更新头像成功", userId);
     }
 
     /// <summary>

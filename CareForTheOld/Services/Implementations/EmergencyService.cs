@@ -72,31 +72,13 @@ public class EmergencyService : IEmergencyService
         _context.EmergencyCalls.Add(call);
         await _context.SaveChangesAsync();
 
-        // 异步发送紧急呼叫通知给子女（不阻塞主流程）
-        _ = Task.Run(async () =>
-        {
-            try
-            {
-                await SendEmergencyNotificationAsync(elderId, familyMember.User.RealName, call.Id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "紧急呼叫通知发送失败，老人 {ElderId}", elderId);
-            }
-        });
+        // 异步发送紧急呼叫通知给子女（通过 Hangfire 持久化）
+        BackgroundJob.Enqueue(() => SendEmergencyNotificationJobAsync(
+            elderId, familyMember.User.RealName, call.Id));
 
-        // 异步广播给邻里圈附近邻居（不阻塞主流程）
-        _ = Task.Run(async () =>
-        {
-            try
-            {
-                await _neighborHelpService.BroadcastHelpRequestAsync(call.Id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "邻里互助广播失败，呼叫 {CallId}", call.Id);
-            }
-        });
+        // 异步广播给邻里圈附近邻居（通过 Hangfire 持久化）
+        BackgroundJob.Enqueue<INeighborHelpService>(
+            svc => svc.BroadcastHelpRequestAsync(call.Id));
 
         // 安排二次提醒检查（如果无人响应则再次通知）
         BackgroundJob.Schedule<EmergencyService>(
@@ -117,6 +99,21 @@ public class EmergencyService : IEmergencyService
             Longitude = call.Longitude,
             BatteryLevel = call.BatteryLevel,
         };
+    }
+
+    /// <summary>
+    /// Hangfire 后台任务：发送紧急呼叫通知给子女（SignalR + FCM + SMS）
+    /// </summary>
+    public async Task SendEmergencyNotificationJobAsync(Guid elderId, string elderName, Guid callId)
+    {
+        try
+        {
+            await SendEmergencyNotificationAsync(elderId, elderName, callId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "紧急呼叫通知发送失败，老人 {ElderId}", elderId);
+        }
     }
 
     /// <summary>

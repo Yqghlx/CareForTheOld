@@ -5,6 +5,7 @@ using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Implementations;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace CareForTheOld.Tests.Services;
@@ -23,7 +24,7 @@ public class UserServiceTests
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
         _context = new AppDbContext(options);
-        _service = new UserService(_context);
+        _service = new UserService(_context, NullLogger<UserService>.Instance);
     }
 
     private async Task<Guid> CreateTestUserAsync()
