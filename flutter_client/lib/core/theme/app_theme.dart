@@ -42,6 +42,21 @@ class AppTheme {
   /// 按钮圆角
   static const double buttonRadius = 12.0;
 
+  /// 统一间距常量
+  static const double spacingXs = 4.0;
+  static const double spacingSm = 8.0;
+  static const double spacingMd = 12.0;
+  static const double spacingLg = 16.0;
+  static const double spacingXl = 24.0;
+  static const double spacingXxl = 32.0;
+
+  /// 统一用户消息常量
+  static const String msgLoadFailed = '加载失败，请重试';
+  static const String msgOperationFailed = '操作失败，请稍后重试';
+  static const String msgNetworkError = '网络连接失败，请检查网络设置';
+  static const String msgSaveSuccess = '保存成功';
+  static const String msgDeleteSuccess = '删除成功';
+
   /// 老人端特殊配置 - 大字体、大按钮、更大圆角
   static ThemeData get elderTheme => ThemeData(
     useMaterial3: true,

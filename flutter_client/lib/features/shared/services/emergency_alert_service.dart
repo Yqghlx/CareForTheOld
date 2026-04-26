@@ -109,7 +109,9 @@ class EmergencyAlertService {
       debugPrint('在线铃声加载失败，使用系统默认音: $e');
       try {
         await _audioPlayer.play(DeviceFileSource(''));
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('系统默认音播放失败: $e');
+      }
     }
   }
 

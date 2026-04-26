@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/app_theme.dart';
 
 /// 主按钮组件 - 渐变背景、圆角、点击动画
 class PrimaryButton extends StatefulWidget {
@@ -58,12 +59,6 @@ class _PrimaryButtonState extends State<PrimaryButton>
 
   @override
   Widget build(BuildContext context) {
-    const defaultGradient = LinearGradient(
-      colors: [Color(0xFFE86B4A), Color(0xFFF5A68A)],
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
-    );
-
     return GestureDetector(
       onTapDown: _onTapDown,
       onTapUp: _onTapUp,
@@ -74,7 +69,7 @@ class _PrimaryButtonState extends State<PrimaryButton>
         child: Container(
           height: 56,
           decoration: BoxDecoration(
-            gradient: widget.gradient ?? defaultGradient,
+            gradient: widget.gradient ?? AppTheme.primaryGradient,
             borderRadius: BorderRadius.circular(14),
             boxShadow: [
               BoxShadow(
@@ -270,12 +265,6 @@ class _PrimaryIconButtonState extends State<PrimaryIconButton>
 
   @override
   Widget build(BuildContext context) {
-    const defaultGradient = LinearGradient(
-      colors: [Color(0xFFE86B4A), Color(0xFFF5A68A)],
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
-    );
-
     return GestureDetector(
       onTapDown: _onTapDown,
       onTapUp: _onTapUp,
@@ -286,7 +275,7 @@ class _PrimaryIconButtonState extends State<PrimaryIconButton>
         child: Container(
           height: 56,
           decoration: BoxDecoration(
-            gradient: widget.gradient ?? defaultGradient,
+            gradient: widget.gradient ?? AppTheme.primaryGradient,
             borderRadius: BorderRadius.circular(14),
             boxShadow: [
               BoxShadow(
