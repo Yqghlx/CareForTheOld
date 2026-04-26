@@ -33,7 +33,7 @@ class _NeighborHelpRatingPageState
     return Scaffold(
       appBar: AppBar(title: const Text('评价互助')),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppTheme.paddingAll16,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

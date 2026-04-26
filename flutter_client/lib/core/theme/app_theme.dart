@@ -77,8 +77,24 @@ class AppTheme {
   static const double spacingSm = 8.0;
   static const double spacingMd = 12.0;
   static const double spacingLg = 16.0;
+  static const double spacing20Lg = 20.0;
   static const double spacingXl = 24.0;
   static const double spacingXxl = 32.0;
+
+  /// 预定义 EdgeInsets 常量（高频组合，统一管理）
+  static const EdgeInsets paddingAll4 = EdgeInsets.all(4);
+  static const EdgeInsets paddingAll8 = EdgeInsets.all(8);
+  static const EdgeInsets paddingAll12 = EdgeInsets.all(12);
+  static const EdgeInsets paddingAll16 = EdgeInsets.all(16);
+  static const EdgeInsets paddingAll20 = EdgeInsets.all(20);
+  static const EdgeInsets paddingAll24 = EdgeInsets.all(24);
+  static const EdgeInsets paddingH16V8 = EdgeInsets.symmetric(horizontal: 16, vertical: 8);
+  static const EdgeInsets paddingH16V12 = EdgeInsets.symmetric(horizontal: 16, vertical: 12);
+  static const EdgeInsets paddingH8V4 = EdgeInsets.symmetric(horizontal: 8, vertical: 4);
+  static const EdgeInsets marginBottom8 = EdgeInsets.only(bottom: 8);
+  static const EdgeInsets marginBottom12 = EdgeInsets.only(bottom: 12);
+  static const EdgeInsets marginTop8 = EdgeInsets.only(top: 8);
+  static const EdgeInsets marginTop12 = EdgeInsets.only(top: 12);
 
   /// 统一用户消息常量
   static const String msgLoadFailed = '加载失败，请重试';

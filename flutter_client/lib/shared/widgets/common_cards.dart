@@ -31,7 +31,7 @@ class StatCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: AppTheme.radiusL,
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: AppTheme.paddingAll16,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -106,7 +106,7 @@ class InfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget cardContent = Padding(
-      padding: const EdgeInsets.all(20),
+      padding: AppTheme.paddingAll20,
       child: Row(
         children: [
           if (leading != null) ...[

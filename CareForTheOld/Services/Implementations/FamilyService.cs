@@ -182,7 +182,7 @@ public class FamilyService : IFamilyService
         {
             await _notificationService.SendToUsersAsync(childMembers, "FamilyJoinRequest", new
             {
-                Title = "家庭加入申请",
+                Title = NotificationMessages.Family.JoinRequestTitle,
                 Content = $"{user.RealName}（{request.Relation}）申请加入{family.FamilyName}，请审批",
                 FamilyId = family.Id,
                 FamilyName = family.FamilyName,
@@ -251,7 +251,7 @@ public class FamilyService : IFamilyService
 
         await _notificationService.SendToUserAsync(memberId, "FamilyJoinApproved", new
         {
-            Title = "加入申请已通过",
+            Title = NotificationMessages.Family.JoinApprovedTitle,
             Content = $"{operatorUser?.RealName ?? "管理员"}已同意您加入{family?.FamilyName ?? "家庭组"}",
             FamilyId = familyId,
             FamilyName = family?.FamilyName ?? ""
@@ -287,8 +287,8 @@ public class FamilyService : IFamilyService
 
         await _notificationService.SendToUserAsync(memberId, "FamilyJoinRejected", new
         {
-            Title = "加入申请被拒绝",
-            Content = $"{family?.FamilyName ?? "家庭组"}的管理员拒绝了您的加入申请",
+            Title = NotificationMessages.Family.JoinRejectedTitle,
+            Content = string.Format(NotificationMessages.Family.JoinRejectedContentTemplate, family?.FamilyName ?? "家庭组"),
             FamilyId = familyId,
             FamilyName = family?.FamilyName ?? ""
         });

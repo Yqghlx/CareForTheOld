@@ -135,7 +135,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(20),
+          padding: AppTheme.paddingAll20,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -162,7 +162,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               anomalyAsync.when(
                 data: (anomaly) => _buildAnomalyDetectionCard(anomaly, elderName),
                 loading: () => Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: AppTheme.paddingAll16,
                   decoration: BoxDecoration(
                     color: AppTheme.grey100,
                     borderRadius: AppTheme.radiusL,
@@ -179,7 +179,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   ),
                 ),
                 error: (e, _) => Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: AppTheme.paddingAll16,
                   decoration: BoxDecoration(
                     color: AppTheme.errorColor.withValues(alpha: 0.1),
                     borderRadius: AppTheme.radiusS,
@@ -392,7 +392,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       children: plans.map((plan) {
         return Card(
           elevation: 4,
-          margin: const EdgeInsets.only(bottom: 12),
+          margin: AppTheme.marginBottom12,
           shape: RoundedRectangleBorder(
             borderRadius: AppTheme.radiusL,
             side: plan.isActive
@@ -400,7 +400,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 : BorderSide(color: AppTheme.grey300, width: 1),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: AppTheme.paddingAll16,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -718,12 +718,12 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         final timeStr = time.toShortDateTimeString();
         return Card(
           elevation: 4,
-          margin: const EdgeInsets.only(bottom: 8),
+          margin: AppTheme.marginBottom8,
           shape: RoundedRectangleBorder(
             borderRadius: AppTheme.radiusM,
           ),
           child: Padding(
-            padding: const EdgeInsets.all(12),
+            padding: AppTheme.paddingAll12,
             child: Row(
               children: [
                 Container(
@@ -764,7 +764,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
   Widget _buildMedicationList(List<MedicationLog> logs) {
     if (logs.isEmpty) {
       return Container(
-        padding: const EdgeInsets.all(24),
+        padding: AppTheme.paddingAll24,
         decoration: BoxDecoration(
           color: AppTheme.grey100,
           borderRadius: AppTheme.radiusL,
@@ -976,7 +976,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
           child: Card(
             shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusL),
             child: Padding(
-              padding: const EdgeInsets.all(24),
+              padding: AppTheme.paddingAll24,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -1050,7 +1050,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               : BorderSide.none,
         ),
         child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppTheme.paddingAll16,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -1126,7 +1126,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
 
             // 个人基线对比
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: AppTheme.paddingAll12,
               decoration: BoxDecoration(
                 color: AppTheme.grey50,
                 borderRadius: AppTheme.radiusS,
@@ -1224,7 +1224,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 ),
               ] else ...[
                 Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: AppTheme.paddingAll12,
                   decoration: BoxDecoration(
                     color: Colors.green.withValues(alpha: 0.08),
                     borderRadius: AppTheme.radiusS,
@@ -1324,8 +1324,8 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     final timeStr = '${time.month}/${time.day}';
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(12),
+      margin: AppTheme.marginBottom8,
+      padding: AppTheme.paddingAll12,
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.08),
         borderRadius: AppTheme.radiusS,
@@ -1466,7 +1466,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
             children: [
               // 最近7天统计
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: AppTheme.paddingAll12,
                 decoration: BoxDecoration(
                   color: AppTheme.grey50,
                   borderRadius: AppTheme.radiusS,

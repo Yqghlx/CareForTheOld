@@ -64,7 +64,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: AppTheme.paddingAll20,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -111,7 +111,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: AppTheme.paddingAll24,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -208,7 +208,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
 
     return Card(
       elevation: 4,
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: AppTheme.marginBottom12,
       shape: RoundedRectangleBorder(
         borderRadius: AppTheme.radiusL,
         side: log.status == MedicationStatus.taken
@@ -216,7 +216,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
             : BorderSide.none,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: AppTheme.paddingAll20,
         child: Row(
           children: [
             // 已服用时添加打勾弹出动画
@@ -514,7 +514,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
         borderRadius: AppTheme.radiusL,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: AppTheme.paddingAll20,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

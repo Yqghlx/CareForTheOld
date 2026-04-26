@@ -34,7 +34,7 @@ class _TrustRankingPageState extends ConsumerState<TrustRankingPage> {
       appBar: AppBar(title: const Text('信任排行榜')),
       body: state.isLoading
           ? SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+              padding: AppTheme.paddingAll16,
               child: Column(children: List.generate(5, (_) => const SkeletonCard())),
             )
           : state.error != null
@@ -51,7 +51,7 @@ class _TrustRankingPageState extends ConsumerState<TrustRankingPage> {
                         await ref.read(trustScoreProvider.notifier).loadMyScore(widget.circleId);
                       },
                       child: ListView.builder(
-                        padding: const EdgeInsets.all(16),
+                        padding: AppTheme.paddingAll16,
                         itemCount: state.rankings.length,
                         itemBuilder: (context, index) {
                           final item = state.rankings[index];
@@ -69,7 +69,7 @@ class _TrustRankingPageState extends ConsumerState<TrustRankingPage> {
     final medalIcons = [null, Icons.emoji_events, Icons.emoji_events, Icons.emoji_events];
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: AppTheme.marginBottom8,
       child: ListTile(
         leading: Row(
           mainAxisSize: MainAxisSize.min,

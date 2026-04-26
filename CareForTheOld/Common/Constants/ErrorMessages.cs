@@ -449,3 +449,75 @@ public static class SuccessMessages
         public const string AllMarkedRead = "全部标记为已读";
     }
 }
+
+/// <summary>
+/// 统一通知消息常量
+/// 集中管理 Service 层发送的通知 Title/Content 模板，确保表述一致
+/// </summary>
+public static class NotificationMessages
+{
+    /// <summary>家庭相关通知</summary>
+    public static class Family
+    {
+        /// <summary>家庭加入申请标题</summary>
+        public const string JoinRequestTitle = "家庭加入申请";
+
+        /// <summary>加入申请已通过标题</summary>
+        public const string JoinApprovedTitle = "加入申请已通过";
+
+        /// <summary>加入申请被拒绝标题</summary>
+        public const string JoinRejectedTitle = "加入申请被拒绝";
+
+        /// <summary>加入申请被拒绝内容（占位符：家庭名称）</summary>
+        public const string JoinRejectedContentTemplate = "{0}的管理员拒绝了您的加入申请";
+    }
+
+    /// <summary>邻里互助相关通知</summary>
+    public static class NeighborHelp
+    {
+        /// <summary>邻居紧急求助标题</summary>
+        public const string EmergencyRequestTitle = "邻居紧急求助";
+
+        /// <summary>邻居正在赶来标题</summary>
+        public const string HelperComingTitle = "邻居正在赶来";
+
+        /// <summary>邻居已响应紧急呼叫标题</summary>
+        public const string HelperRespondedTitle = "邻居已响应紧急呼叫";
+
+        /// <summary>求助已被响应标题</summary>
+        public const string RequestRespondedTitle = "求助已被响应";
+
+        /// <summary>求助已取消标题</summary>
+        public const string RequestCancelledTitle = "求助已取消";
+
+        /// <summary>紧急求助内容（占位符：老人姓名）</summary>
+        public const string EmergencyRequestContentTemplate = "{0}发起紧急求助，请帮忙！";
+
+        /// <summary>紧急求助内容（邻居广播版，占位符：老人姓名）</summary>
+        public const string EmergencyRequestNeighborContentTemplate = "{0}发起紧急求助，您是附近邻居，请帮忙！";
+    }
+
+    /// <summary>位置相关通知</summary>
+    public static class Location
+    {
+        /// <summary>安全区域预警标题</summary>
+        public const string GeoFenceAlertTitle = "安全区域预警";
+    }
+
+    /// <summary>健康相关通知</summary>
+    public static class Health
+    {
+        /// <summary>健康异常预警标题</summary>
+        public const string AnomalyAlertTitle = "健康异常预警";
+    }
+
+    /// <summary>自动救援相关通知</summary>
+    public static class AutoRescue
+    {
+        /// <summary>紧急确认请求标题</summary>
+        public const string UrgentConfirmTitle = "紧急：请尽快确认老人安全";
+
+        /// <summary>已自动通知邻里圈标题</summary>
+        public const string AutoNotifiedTitle = "已自动通知邻里圈";
+    }
+}

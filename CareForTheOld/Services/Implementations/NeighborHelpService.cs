@@ -164,8 +164,8 @@ public class NeighborHelpService : INeighborHelpService
             AppConstants.NotificationTypes.NeighborHelpRequest,
             new
             {
-                Title = "邻居紧急求助",
-                Content = $"{call.Elder.RealName}发起紧急求助，您是附近邻居，请帮忙！",
+                Title = NotificationMessages.NeighborHelp.EmergencyRequestTitle,
+                Content = string.Format(NotificationMessages.NeighborHelp.EmergencyRequestNeighborContentTemplate, call.Elder.RealName),
                 HelpRequestId = helpRequest.Id,
                 EmergencyCallId = emergencyCallId,
                 RequesterId = call.ElderId,
@@ -224,7 +224,7 @@ public class NeighborHelpService : INeighborHelpService
             AppConstants.NotificationTypes.NeighborHelpAccepted,
             new
             {
-                Title = "邻居正在赶来",
+                Title = NotificationMessages.NeighborHelp.HelperComingTitle,
                 Content = $"邻居{responder.RealName}已接受您的求助，正在赶来！",
                 HelpRequestId = requestId,
                 ResponderName = responder.RealName,
@@ -247,7 +247,7 @@ public class NeighborHelpService : INeighborHelpService
                     AppConstants.NotificationTypes.NeighborHelpAccepted,
                     new
                     {
-                        Title = "邻居已响应紧急呼叫",
+                        Title = NotificationMessages.NeighborHelp.HelperRespondedTitle,
                         Content = $"邻居{responder.RealName}已响应{request.Requester.RealName}的紧急呼叫",
                         HelpRequestId = requestId,
                         EmergencyCallId = request.EmergencyCallId,
@@ -271,7 +271,7 @@ public class NeighborHelpService : INeighborHelpService
                 AppConstants.NotificationTypes.NeighborHelpResolved,
                 new
                 {
-                    Title = "求助已被响应",
+                    Title = NotificationMessages.NeighborHelp.RequestRespondedTitle,
                     Content = $"{request.Requester.RealName}的紧急求助已被{responder.RealName}接受",
                     HelpRequestId = requestId,
                 });
@@ -335,7 +335,7 @@ public class NeighborHelpService : INeighborHelpService
                 AppConstants.NotificationTypes.NeighborHelpCancelled,
                 new
                 {
-                    Title = "求助已取消",
+                    Title = NotificationMessages.NeighborHelp.RequestCancelledTitle,
                     Content = $"{request.Requester.RealName}的紧急求助已被取消",
                     HelpRequestId = requestId,
                 });
@@ -573,8 +573,8 @@ public class NeighborHelpService : INeighborHelpService
             AppConstants.NotificationTypes.NeighborHelpRequest,
             new
             {
-                Title = "邻居紧急求助",
-                Content = $"{call.Elder.RealName}发起紧急求助，请帮忙！",
+                Title = NotificationMessages.NeighborHelp.EmergencyRequestTitle,
+                Content = string.Format(NotificationMessages.NeighborHelp.EmergencyRequestContentTemplate, call.Elder.RealName),
                 HelpRequestId = helpRequest.Id,
                 EmergencyCallId = call.Id,
                 RequesterId = call.ElderId,

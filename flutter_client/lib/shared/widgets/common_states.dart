@@ -231,12 +231,12 @@ class SkeletonCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return const SkeletonLoader(
       child: Card(
-        margin: EdgeInsets.only(bottom: 12),
+        margin: AppTheme.marginBottom12,
         shape: RoundedRectangleBorder(
           borderRadius: AppTheme.radiusL,
         ),
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: AppTheme.paddingAll16,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

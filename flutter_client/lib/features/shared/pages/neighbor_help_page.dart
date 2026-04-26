@@ -62,7 +62,7 @@ class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
     return RefreshIndicator(
       onRefresh: () => ref.read(neighborHelpProvider.notifier).loadPendingRequests(),
       child: ListView.builder(
-        padding: const EdgeInsets.all(12),
+        padding: AppTheme.paddingAll12,
         itemCount: requests.length,
         itemBuilder: (context, index) {
           final request = requests[index];
@@ -84,7 +84,7 @@ class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
     return RefreshIndicator(
       onRefresh: () => ref.read(neighborHelpProvider.notifier).loadHistory(),
       child: ListView.builder(
-        padding: const EdgeInsets.all(12),
+        padding: AppTheme.paddingAll12,
         itemCount: requests.length,
         itemBuilder: (context, index) {
           final request = requests[index];
@@ -142,9 +142,9 @@ class _HelpRequestCard extends StatelessWidget {
     final expiresIn = request.expiresAt.difference(DateTime.now());
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: AppTheme.marginBottom8,
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: AppTheme.paddingAll12,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -51,7 +51,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
         onRefresh: _refresh,
         child: emergencyState.isLoading && emergencyState.unreadCalls.isEmpty
             ? ListView.builder(
-                padding: const EdgeInsets.all(16),
+                padding: AppTheme.paddingAll16,
                 itemCount: 3,
                 itemBuilder: (_, __) => const SkeletonListTile(),
               )
@@ -70,7 +70,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
 
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.all(20),
+      padding: AppTheme.paddingAll20,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -100,7 +100,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
             ...state.unreadCalls.map((call) => _buildUnreadCallCard(call)),
           ] else ...[
             Container(
-              padding: const EdgeInsets.all(24),
+              padding: AppTheme.paddingAll24,
               decoration: BoxDecoration(
                 color: Colors.green.withValues(alpha: 0.1),
                 borderRadius: AppTheme.radiusL,
@@ -130,7 +130,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
 
           if (state.historyCalls.isEmpty)
             Container(
-              padding: const EdgeInsets.all(24),
+              padding: AppTheme.paddingAll24,
               decoration: BoxDecoration(
                 color: AppTheme.grey100,
                 borderRadius: AppTheme.radiusL,
@@ -149,14 +149,14 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
   /// 未处理呼叫卡片（高亮显示）
   Widget _buildUnreadCallCard(EmergencyCall call) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: AppTheme.marginBottom12,
       decoration: BoxDecoration(
         color: AppTheme.errorColor.withValues(alpha: 0.05),
         borderRadius: AppTheme.radiusL,
         border: Border.all(color: AppTheme.errorColor.withValues(alpha: 0.3), width: 2),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: AppTheme.paddingAll20,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -283,12 +283,12 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
   Widget _buildHistoryCard(EmergencyCall call) {
     return Card(
       elevation: 2,
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: AppTheme.marginBottom8,
       shape: RoundedRectangleBorder(
         borderRadius: AppTheme.radiusM,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppTheme.paddingAll16,
         child: Row(
           children: [
             Container(

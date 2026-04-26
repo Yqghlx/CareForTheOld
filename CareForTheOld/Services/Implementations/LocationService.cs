@@ -216,7 +216,7 @@ public class LocationService : ILocationService
             AppConstants.NotificationTypes.GeoFenceAlert,
             new
             {
-                Title = "安全区域预警",
+                Title = NotificationMessages.Location.GeoFenceAlertTitle,
                 Content = $"{elderName}已离开安全区域，当前位置距离安全中心{distanceText}，请及时关注。",
                 ElderId = elderId,
                 ElderName = elderName,

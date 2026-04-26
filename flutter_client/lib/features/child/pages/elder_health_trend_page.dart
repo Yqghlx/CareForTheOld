@@ -66,7 +66,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: AppTheme.paddingAll20,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -40,7 +40,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
         onRefresh: () => ref.read(familyProvider.notifier).loadFamily(),
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(20),
+          padding: AppTheme.paddingAll20,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -119,10 +119,10 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
   Widget _buildPendingCard(FamilyMember member) {
     return Card(
       elevation: 2,
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: AppTheme.marginBottom12,
       shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusL),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppTheme.paddingAll16,
         child: Row(
           children: [
             // 头像
@@ -285,7 +285,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
             borderRadius: AppTheme.radiusXL,
           ),
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: AppTheme.paddingAll24,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -340,7 +340,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
   /// 邀请码区域（子女端显示）
   Widget _buildInviteCodeSection(FamilyGroup family) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: AppTheme.paddingAll16,
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.15),
         borderRadius: AppTheme.radiusS,
@@ -429,7 +429,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: AppTheme.paddingAll24,
         child: Column(
           children: [
             Container(
@@ -461,7 +461,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: AppTheme.paddingAll24,
         child: Column(
           children: [
             Container(
@@ -516,10 +516,10 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
   Widget _buildMemberCard(FamilyMember member, bool isElder) {
     return Card(
       elevation: 2,
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: AppTheme.marginBottom12,
       shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusL),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppTheme.paddingAll16,
         child: Row(
           children: [
             // 头像

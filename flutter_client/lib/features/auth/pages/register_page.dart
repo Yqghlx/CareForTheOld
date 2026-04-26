@@ -93,7 +93,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       appBar: AppBar(title: const Text('注册账号')),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: AppTheme.paddingAll24,
           child: Form(
             key: _formKey,
             child: Column(

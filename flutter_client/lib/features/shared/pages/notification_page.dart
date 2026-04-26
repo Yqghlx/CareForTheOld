@@ -49,7 +49,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
   Widget _buildContent(NotificationListState state) {
     if (state.isLoading && state.notifications.isEmpty) {
       return ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: AppTheme.paddingAll16,
         itemCount: 5,
         itemBuilder: (_, __) => const SkeletonListTile(),
       );
@@ -76,7 +76,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
 
     return ListView.builder(
       cacheExtent: 800,
-      padding: const EdgeInsets.all(16),
+      padding: AppTheme.paddingAll16,
       itemCount: state.notifications.length + (state.hasMore ? 1 : 0),
       itemBuilder: (context, index) {
         if (index == state.notifications.length) {
@@ -85,7 +85,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
             ref.read(notificationListProvider.notifier).loadMore();
           });
           return const Padding(
-            padding: EdgeInsets.all(16),
+            padding: AppTheme.paddingAll16,
             child: Center(child: CircularProgressIndicator()),
           );
         }
@@ -98,7 +98,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
   Widget _buildNotificationCard(NotificationRecord notification) {
     return Card(
       elevation: notification.isRead ? 1 : 3,
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: AppTheme.marginBottom12,
       shape: RoundedRectangleBorder(
         borderRadius: AppTheme.radiusL,
         side: notification.isRead
@@ -117,7 +117,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
         },
         borderRadius: AppTheme.radiusL,
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: AppTheme.paddingAll16,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

@@ -44,7 +44,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
       appBar: AppBar(title: const Text('邻里圈')),
       body: state.isLoading
           ? SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+              padding: AppTheme.paddingAll16,
               child: Column(children: List.generate(3, (_) => const SkeletonCard())),
             )
           : state.error != null
@@ -65,14 +65,14 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
       onRefresh: () => ref.read(neighborCircleProvider.notifier).loadMyCircle(),
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(16),
+        padding: AppTheme.paddingAll16,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // 圈子信息卡片
           Card(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: AppTheme.paddingAll16,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -128,7 +128,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
 
           if (state.members.isEmpty)
             const Padding(
-              padding: EdgeInsets.all(16),
+              padding: AppTheme.paddingAll16,
               child: Text('暂无成员信息'),
             ),
 
@@ -183,14 +183,14 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
   /// 未加入任何邻里圈的展示
   Widget _buildNoCircle(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: AppTheme.paddingAll16,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // 加入邻里圈
           Card(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: AppTheme.paddingAll16,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -220,7 +220,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
           // 创建邻里圈
           Card(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: AppTheme.paddingAll16,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -258,7 +258,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
           ),
           if (_isSearching)
             const Padding(
-              padding: EdgeInsets.all(16),
+              padding: AppTheme.paddingAll16,
               child: Center(child: CircularProgressIndicator()),
             ),
         ],

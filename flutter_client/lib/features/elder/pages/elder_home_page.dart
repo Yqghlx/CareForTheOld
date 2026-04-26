@@ -154,7 +154,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(20),
+        padding: AppTheme.paddingAll20,
         child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -166,7 +166,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
           GradientCard(
             gradient: AppTheme.warmGradient,
             child: Padding(
-              padding: const EdgeInsets.all(24),
+              padding: AppTheme.paddingAll24,
               child: Row(
                 children: [
                   // 头像区域：点击可上传新头像
@@ -621,7 +621,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Padding(
-              padding: EdgeInsets.all(16),
+              padding: AppTheme.paddingAll16,
               child: Text(
                 '更换头像',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),

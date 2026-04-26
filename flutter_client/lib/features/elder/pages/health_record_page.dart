@@ -66,7 +66,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: AppTheme.paddingAll20,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -87,7 +87,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
               // 离线缓存提示
               if (healthState.isFromCache)
                 Container(
-                  margin: const EdgeInsets.only(bottom: 12),
+                  margin: AppTheme.marginBottom12,
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
                     color: Colors.orange.withValues(alpha: 0.1),
@@ -180,7 +180,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
         // 趋势预警横幅（有预警时显示）
         if (warnings.isNotEmpty)
           Container(
-            margin: const EdgeInsets.only(bottom: 8),
+            margin: AppTheme.marginBottom8,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
               color: Colors.orange.withValues(alpha: 0.1),
@@ -351,7 +351,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
       ),
       child: Card(
       elevation: 4,
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: AppTheme.marginBottom12,
       shape: RoundedRectangleBorder(
         borderRadius: AppTheme.radiusL,
         side: abnormal
@@ -359,7 +359,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
             : BorderSide.none,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppTheme.paddingAll16,
         child: Row(
           children: [
             Container(
@@ -551,7 +551,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                     const SizedBox(height: 12),
                     // 快捷输入区域：语音 + 拍照并列
                     Container(
-                      padding: const EdgeInsets.all(16),
+                      padding: AppTheme.paddingAll16,
                       decoration: BoxDecoration(
                         gradient: isListening
                             ? LinearGradient(

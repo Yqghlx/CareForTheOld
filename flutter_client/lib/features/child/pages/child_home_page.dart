@@ -109,7 +109,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: AppTheme.paddingAll20,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -124,7 +124,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
             GradientCard(
               gradient: AppTheme.warmGradient,
               child: Padding(
-                padding: const EdgeInsets.all(20),
+                padding: AppTheme.paddingAll20,
                 child: Row(
                   children: [
                     Container(
@@ -282,12 +282,12 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
         final elder = elders[index];
         return Card(
           elevation: 4,
-          margin: const EdgeInsets.only(bottom: 12),
+          margin: AppTheme.marginBottom12,
           shape: RoundedRectangleBorder(
             borderRadius: AppTheme.radiusL,
           ),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: AppTheme.paddingAll16,
             child: Column(
               children: [
                 // 老人信息行
@@ -519,7 +519,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     // 提醒时间
                     ...timeControllers.asMap().entries.map((entry) {
                       return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
+                        padding: AppTheme.marginBottom12,
                         child: Row(
                           children: [
                             Expanded(
@@ -737,7 +737,7 @@ class _EmergencyPulseBannerState extends State<_EmergencyPulseBanner>
         onTap: widget.onTap,
         borderRadius: AppTheme.radiusL,
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: AppTheme.paddingAll16,
           child: Row(
             children: [
               const Icon(Icons.emergency, color: Colors.white, size: 36),

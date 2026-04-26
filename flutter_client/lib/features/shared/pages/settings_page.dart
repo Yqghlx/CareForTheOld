@@ -123,7 +123,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         title: const Text('设置'),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: AppTheme.paddingAll20,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -131,7 +131,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             GradientCard(
               gradient: AppTheme.warmGradient,
               child: Padding(
-                padding: const EdgeInsets.all(20),
+                padding: AppTheme.paddingAll20,
                 child: Row(
                   children: [
                     Container(
@@ -375,7 +375,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       onTap: onTap,
       borderRadius: AppTheme.radiusL,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppTheme.paddingAll16,
         child: Row(
           children: [
             Container(

@@ -88,7 +88,7 @@ public class AutoRescueService : IAutoRescueService
                 AppConstants.NotificationTypes.AutoRescueAlert,
                 new
                 {
-                    Title = "紧急：请尽快确认老人安全",
+                    Title = NotificationMessages.AutoRescue.UrgentConfirmTitle,
                     Content = $"{elderName}{triggerText}，请在 {_delayMinutes} 分钟内确认安全，否则将自动通知邻里圈求助。",
                     AutoRescueId = record.Id,
                     ElderId = elderId,
@@ -182,7 +182,7 @@ public class AutoRescueService : IAutoRescueService
                     AppConstants.NotificationTypes.AutoRescueBroadcast,
                     new
                     {
-                        Title = "已自动通知邻里圈",
+                        Title = NotificationMessages.AutoRescue.AutoNotifiedTitle,
                         Content = $"{elderName}的告警您未及时确认，已自动通知邻里圈求助。",
                         AutoRescueId = record.Id,
                         ElderId = record.ElderId,

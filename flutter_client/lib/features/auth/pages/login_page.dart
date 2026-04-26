@@ -113,7 +113,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
         ),
         child: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
+            padding: AppTheme.paddingAll24,
             child: Form(
               key: formKey,
               child: Column(

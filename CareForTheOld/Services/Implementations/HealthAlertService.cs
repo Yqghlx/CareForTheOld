@@ -70,7 +70,7 @@ public class HealthAlertService : IHealthAlertService
                 AppConstants.NotificationTypes.HealthAlert,
                 new
                 {
-                    Title = $"健康异常预警",
+                    Title = NotificationMessages.Health.AnomalyAlertTitle,
                     Content = $"{elderName}的{typeLabel}数据异常：{valueDisplay}。{alertMessage}请及时关注。",
                     ElderId = elderId,
                     ElderName = elderName,

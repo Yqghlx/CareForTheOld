@@ -82,7 +82,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
         onRefresh: _refresh,
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(20),
+          padding: AppTheme.paddingAll20,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -100,7 +100,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                 data: (location) => _buildLatestLocationCard(location, elderName),
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (e, _) => Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: AppTheme.paddingAll20,
                   decoration: BoxDecoration(
                     color: AppTheme.errorColor.withValues(alpha: 0.1),
                     borderRadius: AppTheme.radiusL,
@@ -135,7 +135,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
+      padding: AppTheme.paddingAll16,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: isEnabled
@@ -260,7 +260,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
 
                     // 围栏中心位置
                     Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: AppTheme.paddingAll12,
                       decoration: BoxDecoration(
                         color: AppTheme.grey50,
                         borderRadius: AppTheme.radiusS,
@@ -391,7 +391,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
   Widget _buildLatestLocationCard(LocationRecord? location, String elderName) {
     if (location == null) {
       return Container(
-        padding: const EdgeInsets.all(24),
+        padding: AppTheme.paddingAll24,
         decoration: BoxDecoration(
           color: AppTheme.grey100,
           borderRadius: AppTheme.radiusL,
@@ -434,7 +434,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
             borderRadius: AppTheme.radiusL,
           ),
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: AppTheme.paddingAll20,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -467,7 +467,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                 ),
                 const SizedBox(height: 16),
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: AppTheme.paddingAll16,
                   decoration: BoxDecoration(
                     color: AppTheme.grey50,
                     borderRadius: AppTheme.radiusS,
@@ -516,7 +516,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
   Widget _buildHistoryList(List<LocationRecord> history) {
     if (history.isEmpty) {
       return Container(
-        padding: const EdgeInsets.all(24),
+        padding: AppTheme.paddingAll24,
         decoration: BoxDecoration(
           color: AppTheme.grey100,
           borderRadius: AppTheme.radiusL,
@@ -536,12 +536,12 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
   Widget _buildHistoryItem(LocationRecord record) {
     return Card(
       elevation: 2,
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: AppTheme.marginBottom8,
       shape: RoundedRectangleBorder(
         borderRadius: AppTheme.radiusM,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: AppTheme.paddingAll12,
         child: Row(
           children: [
             Container(
