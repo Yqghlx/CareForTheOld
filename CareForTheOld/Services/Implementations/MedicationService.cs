@@ -190,7 +190,7 @@ public class MedicationService : IMedicationService
     /// <summary>
     /// 获取用药日志列表
     /// </summary>
-    public async Task<List<MedicationLogResponse>> GetLogsAsync(Guid elderId, DateOnly? date, int skip = 0, int limit = 50, Guid? operatorId = null)
+    public async Task<List<MedicationLogResponse>> GetLogsAsync(Guid elderId, DateOnly? date, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize, Guid? operatorId = null)
     {
         // 如果提供了 operatorId，验证是否为家庭成员
         if (operatorId.HasValue)

@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
 
@@ -23,5 +24,5 @@ public interface IAutoRescueService
     /// <summary>
     /// 获取自动救援历史
     /// </summary>
-    Task<List<AutoRescueRecord>> GetHistoryAsync(Guid familyId, int skip = 0, int limit = 20);
+    Task<List<AutoRescueRecord>> GetHistoryAsync(Guid familyId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultHistoryPageSize);
 }

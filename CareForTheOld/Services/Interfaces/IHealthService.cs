@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Models.DTOs.Requests.Health;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Models.Enums;
@@ -17,12 +18,12 @@ public interface IHealthService
     /// <summary>
     /// 获取用户的健康记录列表
     /// </summary>
-    Task<List<HealthRecordResponse>> GetUserRecordsAsync(Guid userId, HealthType? type, int skip = 0, int limit = 50);
+    Task<List<HealthRecordResponse>> GetUserRecordsAsync(Guid userId, HealthType? type, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize);
 
     /// <summary>
     /// 获取家庭成员的健康记录（子女查看老人数据）
     /// </summary>
-    Task<List<HealthRecordResponse>> GetFamilyMemberRecordsAsync(Guid familyId, Guid memberId, HealthType? type, int skip = 0, int limit = 50);
+    Task<List<HealthRecordResponse>> GetFamilyMemberRecordsAsync(Guid familyId, Guid memberId, HealthType? type, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize);
 
     /// <summary>
     /// 获取健康数据统计

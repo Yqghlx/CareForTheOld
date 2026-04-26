@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Models.DTOs.Responses;
 
 namespace CareForTheOld.Services.Interfaces;
@@ -24,7 +25,7 @@ public interface IEmergencyService
     /// <summary>
     /// 获取历史呼叫记录
     /// </summary>
-    Task<List<EmergencyCallResponse>> GetHistoryAsync(Guid userId, int skip = 0, int limit = 20);
+    Task<List<EmergencyCallResponse>> GetHistoryAsync(Guid userId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultHistoryPageSize);
 
     /// <summary>
     /// 子女标记已处理

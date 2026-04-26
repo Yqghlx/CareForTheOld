@@ -89,7 +89,7 @@ public class HealthService : IHealthService
     /// <summary>
     /// 获取用户健康记录列表：支持按类型筛选和分页
     /// </summary>
-    public async Task<List<HealthRecordResponse>> GetUserRecordsAsync(Guid userId, HealthType? type, int skip = 0, int limit = 50)
+    public async Task<List<HealthRecordResponse>> GetUserRecordsAsync(Guid userId, HealthType? type, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize)
     {
         var query = _context.HealthRecords
             .Include(r => r.User)
@@ -109,7 +109,7 @@ public class HealthService : IHealthService
     /// <summary>
     /// 获取家庭成员的健康记录：需验证目标用户是否属于该家庭
     /// </summary>
-    public async Task<List<HealthRecordResponse>> GetFamilyMemberRecordsAsync(Guid familyId, Guid memberId, HealthType? type, int skip = 0, int limit = 50)
+    public async Task<List<HealthRecordResponse>> GetFamilyMemberRecordsAsync(Guid familyId, Guid memberId, HealthType? type, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize)
     {
         // 验证 memberId 是否属于该家庭
         var isMember = await _context.FamilyMembers

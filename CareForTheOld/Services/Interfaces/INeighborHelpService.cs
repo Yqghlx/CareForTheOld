@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Models.DTOs.Requests.Neighbor;
 using CareForTheOld.Models.DTOs.Responses;
 
@@ -24,7 +25,7 @@ public interface INeighborHelpService
     Task<List<NeighborHelpRequestResponse>> GetPendingRequestsAsync(Guid userId);
 
     /// <summary>获取互助历史记录</summary>
-    Task<List<NeighborHelpRequestResponse>> GetHistoryAsync(Guid userId, int skip = 0, int limit = 20);
+    Task<List<NeighborHelpRequestResponse>> GetHistoryAsync(Guid userId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultHistoryPageSize);
 
     /// <summary>获取求助请求详情</summary>
     Task<NeighborHelpRequestResponse> GetRequestAsync(Guid requestId);

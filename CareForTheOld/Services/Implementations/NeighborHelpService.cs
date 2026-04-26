@@ -454,7 +454,7 @@ public class NeighborHelpService : INeighborHelpService
     }
 
     /// <inheritdoc />
-    public async Task<List<NeighborHelpRequestResponse>> GetHistoryAsync(Guid userId, int skip = 0, int limit = 20)
+    public async Task<List<NeighborHelpRequestResponse>> GetHistoryAsync(Guid userId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultHistoryPageSize)
     {
         // 查找用户加入的邻里圈
         var membership = await _context.NeighborCircleMembers
