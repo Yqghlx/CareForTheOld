@@ -347,7 +347,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                       final success = await ref.read(elderGeoFenceProvider.notifier).deleteFence();
                       if (success && ctx.mounted) {
                         Navigator.pop(ctx);
-                        context.showSuccessSnackBar('安全区域已删除');
+                        context.showSuccessSnackBar(AppTheme.msgFenceDeleted);
                       }
                     },
                     child: const Text('删除', style: TextStyle(color: AppTheme.errorColor)),
@@ -370,9 +370,9 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                           );
                           if (success && ctx.mounted) {
                             Navigator.pop(ctx);
-                            context.showSuccessSnackBar('安全区域已保存');
+                            context.showSuccessSnackBar(AppTheme.msgFenceSaved);
                           } else if (ctx.mounted) {
-                            context.showErrorSnackBar('保存失败: ${fenceState.error}');
+                            context.showErrorSnackBar('${AppTheme.msgFenceSaveFailed}: ${fenceState.error}');
                           }
                         },
                   gradient: const LinearGradient(

@@ -178,6 +178,44 @@ class AppTheme {
   static const String msgNoPhoneNumber = '无法获取老人电话号码';
   static const String msgCannotDial = '无法拨打电话，请手动拨打';
 
+  // 家庭成员消息
+  static const String msgFamilyApproved = '已通过';
+  static const String msgFamilyRejected = '已拒绝申请';
+  static const String msgInviteCodeCopied = '邀请码已复制';
+  static const String msgFamilyCreated = '创建成功！邀请码已生成';
+  static const String msgFamilyCreateFailed = '创建失败';
+  static const String msgInviteCodeRequired = '请输入6位邀请码并选择关系';
+  static const String msgApplyFailed = '申请失败，请检查邀请码';
+  static const String msgInvalidPhoneFormat = '请输入正确的手机号格式';
+  static const String msgMemberAdded = '添加成功';
+  static const String msgMemberAddFailed = '添加失败';
+  static const String msgMemberRemoved = '已移除';
+  static const String msgMemberRemoveFailed = '移除失败';
+  static const String msgAddElderFirst = '请先添加老人到家庭成员';
+
+  // 围栏消息
+  static const String msgFenceDeleted = '安全区域已删除';
+  static const String msgFenceSaved = '安全区域已保存';
+  static const String msgFenceSaveFailed = '保存失败';
+
+  // 用药计划消息
+  static const String msgMedicineNameRequired = '请填写药品名称和剂量';
+  static const String msgPlanCreated = '用药计划创建成功';
+  static const String msgPlanCreateFailed = '用药计划创建失败，请稍后重试';
+  static const String msgPlanUpdated = '用药计划已更新';
+  static const String msgReminderEnabled = '已启用用药提醒';
+  static const String msgReminderDisabled = '已停用用药提醒';
+  static const String msgPlanDeleted = '已删除用药计划';
+  static const String msgMedicineNameInvalid = '请输入有效的药品名称（1-50字符）';
+  static const String msgDosageInvalid = '请输入有效的剂量（1-30字符）';
+  static const String msgReminderTimeRequired = '请至少添加一个提醒时间';
+
+  // 定位消息
+  static const String msgLocationServiceDisabled = '定位服务未开启，将使用默认位置';
+  static const String msgLocationPermissionDenied = '定位权限被拒绝，将使用默认位置';
+  static const String msgLocationPermissionPermanentlyDenied = '定位权限被永久拒绝，将使用默认位置';
+  static const String msgLocationFailed = '获取位置失败，将使用默认位置';
+
   /// 业务常量
   /// 邻里圈搜索默认半径（米）
   static const double defaultNeighborSearchRadius = 2000.0;

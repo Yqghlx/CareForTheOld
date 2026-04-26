@@ -613,7 +613,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
             ElevatedButton(
               onPressed: isSubmitting ? null : () async {
                 if (nameController.text.trim().isEmpty || dosageController.text.trim().isEmpty) {
-                  context.showWarningSnackBar('请填写药品名称和剂量');
+                  context.showWarningSnackBar(AppTheme.msgMedicineNameRequired);
                   return;
                 }
                 setDialogState(() => isSubmitting = true);
@@ -629,7 +629,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   ref.invalidate(elderMedicationPlansProvider(widget.elderId));
                   if (mounted && context.mounted) {
                     Navigator.pop(ctx);
-                    context.showSuccessSnackBar('用药计划已更新');
+                    context.showSuccessSnackBar(AppTheme.msgPlanUpdated);
                   }
                 } catch (e) {
                   setDialogState(() => isSubmitting = false);
@@ -1338,7 +1338,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
             children: [
               // 时间标签
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: AppTheme.paddingH8V4,
                 decoration: BoxDecoration(
                   color: AppTheme.grey200,
                   borderRadius: AppTheme.radius6,
@@ -1380,7 +1380,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               ),
               // 严重度评分
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: AppTheme.paddingH8V4,
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.15),
                   borderRadius: AppTheme.radius6,

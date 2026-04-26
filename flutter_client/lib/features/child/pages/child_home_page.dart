@@ -398,7 +398,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
   void _showAddPlanDialog(BuildContext context) {
     final elders = ref.read(familyProvider).elders;
     if (elders.isEmpty) {
-      context.showWarningSnackBar('请先添加老人到家庭成员');
+      context.showWarningSnackBar(AppTheme.msgAddElderFirst);
       return;
     }
 
@@ -613,16 +613,16 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     final name = nameCtl.text.trim();
                     final dosage = dosageCtl.text.trim();
                     if (name.isEmpty || name.length > 50) {
-                      ctx.showSnackBar('请输入有效的药品名称（1-50字符）');
+                      ctx.showSnackBar(AppTheme.msgMedicineNameInvalid);
                       return;
                     }
                     if (dosage.isEmpty || dosage.length > 30) {
-                      ctx.showSnackBar('请输入有效的剂量（1-30字符）');
+                      ctx.showSnackBar(AppTheme.msgDosageInvalid);
                       return;
                     }
                     final validTimes = timeControllers.map((c) => c.text.trim()).where((t) => t.isNotEmpty).toList();
                     if (validTimes.isEmpty) {
-                      ctx.showSnackBar('请至少添加一个提醒时间');
+                      ctx.showSnackBar(AppTheme.msgReminderTimeRequired);
                       return;
                     }
                     Navigator.pop(ctx);
@@ -645,11 +645,11 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         // 刷新子女端老人健康页面的用药计划/记录
                         ref.invalidate(elderMedicationPlansProvider);
                         ref.invalidate(elderMedicationLogsProvider);
-                        context.showSuccessSnackBar('用药计划创建成功');
+                        context.showSuccessSnackBar(AppTheme.msgPlanCreated);
                       }
                     } catch (e) {
                       if (mounted && context.mounted) {
-                        context.showErrorSnackBar('用药计划创建失败，请稍后重试');
+                        context.showErrorSnackBar(AppTheme.msgPlanCreateFailed);
                       }
                     }
                   },

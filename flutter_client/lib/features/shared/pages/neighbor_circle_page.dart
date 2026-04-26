@@ -350,7 +350,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
       // 检查定位服务是否开启
       final serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        if (mounted) _showSnackBar('定位服务未开启，将使用默认位置');
+        if (mounted) _showSnackBar(AppTheme.msgLocationServiceDisabled);
         return null;
       }
 
@@ -359,12 +359,12 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          if (mounted) _showSnackBar('定位权限被拒绝，将使用默认位置');
+          if (mounted) _showSnackBar(AppTheme.msgLocationPermissionDenied);
           return null;
         }
       }
       if (permission == LocationPermission.deniedForever) {
-        if (mounted) _showSnackBar('定位权限被永久拒绝，将使用默认位置');
+        if (mounted) _showSnackBar(AppTheme.msgLocationPermissionPermanentlyDenied);
         return null;
       }
 
@@ -373,7 +373,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
         timeLimit: const Duration(seconds: 5),
       );
     } catch (_) {
-      if (mounted) _showSnackBar('获取位置失败，将使用默认位置');
+      if (mounted) _showSnackBar(AppTheme.msgLocationFailed);
       return null;
     } finally {
       if (mounted) setState(() => _isGettingLocation = false);

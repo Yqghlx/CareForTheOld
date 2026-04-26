@@ -227,7 +227,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                             right: -2,
                             bottom: -2,
                             child: Container(
-                              padding: const EdgeInsets.all(4),
+                              padding: AppTheme.paddingAll4,
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: AppTheme.radiusXS,

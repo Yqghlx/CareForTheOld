@@ -220,7 +220,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
     final success = await ref.read(familyProvider.notifier).approveMember(member.userId);
     if (mounted) {
       if (success) {
-        context.showSuccessSnackBar('已通过 ${member.realName} 的加入申请');
+        context.showSuccessSnackBar('${AppTheme.msgFamilyApproved} ${member.realName} 的加入申请');
       } else {
         context.showErrorSnackBar(AppTheme.msgOperationFailed);
       }
@@ -253,7 +253,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
     final success = await ref.read(familyProvider.notifier).rejectMember(member.userId);
     if (mounted) {
       if (success) {
-        context.showSuccessSnackBar('已拒绝申请');
+        context.showSuccessSnackBar(AppTheme.msgFamilyRejected);
       } else {
         context.showErrorSnackBar(AppTheme.msgOperationFailed);
       }
@@ -371,7 +371,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                 icon: const Icon(Icons.copy, color: Colors.white),
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: family.inviteCode));
-                  context.showSuccessSnackBar('邀请码已复制');
+                  context.showSuccessSnackBar(AppTheme.msgInviteCodeCopied);
                 },
                 tooltip: '复制邀请码',
               ),
@@ -401,9 +401,9 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                   final success = await ref.read(familyProvider.notifier).refreshInviteCode();
                   if (mounted) {
                     if (success) {
-                      context.showSuccessSnackBar('邀请码已刷新');
+                      context.showSuccessSnackBar(AppTheme.msgInviteRefreshed);
                     } else {
-                      context.showErrorSnackBar('刷新失败');
+                      context.showErrorSnackBar(AppTheme.msgOperationFailed);
                     }
                   }
                 },
@@ -647,9 +647,9 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               final success = await ref.read(familyProvider.notifier).createFamily(name);
               if (mounted) {
                 if (success) {
-                  context.showSuccessSnackBar('创建成功！邀请码已生成');
+                  context.showSuccessSnackBar(AppTheme.msgFamilyCreated);
                 } else {
-                  context.showErrorSnackBar('创建失败');
+                  context.showErrorSnackBar(AppTheme.msgFamilyCreateFailed);
                 }
               }
             },
@@ -738,7 +738,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                   onPressed: () async {
                     final code = codeController.text.trim();
                     if (code.length != 6 || selectedRelation == null) {
-                      context.showWarningSnackBar('请输入6位邀请码并选择关系');
+                      context.showWarningSnackBar(AppTheme.msgInviteCodeRequired);
                       return;
                     }
                     Navigator.pop(ctx);
@@ -751,7 +751,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                         // 申请已提交
                         context.showSuccessSnackBar(result.message);
                       } else {
-                        context.showErrorSnackBar('申请失败，请检查邀请码');
+                        context.showErrorSnackBar(AppTheme.msgApplyFailed);
                       }
                     }
                   },
@@ -872,7 +872,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     if (phone.isEmpty || selectedRelation == null) return;
                     // 前端手机号格式校验（11 位中国手机号）
                     if (!RegExp(r'^1[3-9]\d{9}$').hasMatch(phone)) {
-                      ctx.showErrorSnackBar('请输入正确的手机号格式');
+                      ctx.showErrorSnackBar(AppTheme.msgInvalidPhoneFormat);
                       return;
                     }
                     Navigator.pop(ctx);
@@ -883,9 +883,9 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     );
                     if (mounted) {
                       if (success) {
-                        context.showSuccessSnackBar('添加成功');
+                        context.showSuccessSnackBar(AppTheme.msgMemberAdded);
                       } else {
-                        context.showErrorSnackBar('添加失败');
+                        context.showErrorSnackBar(AppTheme.msgMemberAddFailed);
                       }
                     }
                   },
@@ -923,9 +923,9 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               final success = await ref.read(familyProvider.notifier).removeMember(member.userId);
               if (mounted) {
                 if (success) {
-                  context.showSuccessSnackBar('已移除');
+                  context.showSuccessSnackBar(AppTheme.msgMemberRemoved);
                 } else {
-                  context.showErrorSnackBar('移除失败');
+                  context.showErrorSnackBar(AppTheme.msgMemberRemoveFailed);
                 }
               }
             },
