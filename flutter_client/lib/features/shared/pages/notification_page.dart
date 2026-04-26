@@ -131,7 +131,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
                 ),
                 child: Icon(notification.icon, color: notification.color, size: 24),
               ),
-              const SizedBox(width: 16),
+              AppTheme.hSpacer16,
               // 内容
               Expanded(
                 child: Column(

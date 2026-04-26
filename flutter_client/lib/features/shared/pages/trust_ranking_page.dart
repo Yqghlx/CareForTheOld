@@ -84,7 +84,7 @@ class _TrustRankingPageState extends ConsumerState<TrustRankingPage> {
                             color: AppTheme.grey600,
                           )),
             ),
-            const SizedBox(width: 8),
+            AppTheme.hSpacer8,
             CircleAvatar(child: Text(item.userName[0])),
           ],
         ),

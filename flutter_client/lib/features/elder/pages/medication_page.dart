@@ -261,7 +261,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
                 );
               },
             ),
-            const SizedBox(width: 16),
+            AppTheme.hSpacer16,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -276,7 +276,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
                           : null,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  AppTheme.spacer4,
                   Text(
                     '计划时间: $timeStr',
                     style: AppTheme.textSecondary16,
@@ -525,7 +525,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
                   ),
                   child: const Icon(Icons.medication, color: AppTheme.warningColor, size: 28),
                 ),
-                const SizedBox(width: 16),
+                AppTheme.hSpacer16,
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -534,7 +534,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
                         log.medicineName,
                         style: AppTheme.textLargeTitle,
                       ),
-                      const SizedBox(height: 4),
+                      AppTheme.spacer4,
                       Text(
                         '计划时间: $timeStr',
                         style: AppTheme.textSecondary16,
@@ -558,7 +558,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
                       gradient: const LinearGradient(colors: [AppTheme.successColor, AppTheme.successLight]),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  AppTheme.hSpacer12,
                   SizedBox(
                     width: 100,
                     child: SecondaryButton(

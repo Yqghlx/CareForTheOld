@@ -101,7 +101,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                           Text('邀请码：${circle.inviteCode}',
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 18)),
-                          const SizedBox(width: 8),
+                          AppTheme.hSpacer8,
                           IconButton(
                             icon: const Icon(Icons.refresh, size: 20),
                             tooltip: '刷新邀请码',
@@ -150,7 +150,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                       ref.read(neighborCircleProvider.notifier).loadMembers(),
                 ),
               ),
-              const SizedBox(width: 12),
+              AppTheme.hSpacer12,
               Expanded(
                 child: OutlinedButton.icon(
                   icon: const Icon(Icons.exit_to_app),

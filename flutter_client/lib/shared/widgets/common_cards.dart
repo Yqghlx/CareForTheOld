@@ -49,7 +49,7 @@ class StatCard extends StatelessWidget {
                 title,
                 style: AppTheme.textSecondary16,
               ),
-              const SizedBox(height: 4),
+              AppTheme.spacer4,
               Text(
                 value,
                 style: TextStyle(
@@ -59,7 +59,7 @@ class StatCard extends StatelessWidget {
                 ),
               ),
               if (subtitle != null && subtitle!.isNotEmpty) ...[
-                const SizedBox(height: 4),
+                AppTheme.spacer4,
                 Text(
                   subtitle!,
                   style: TextStyle(
@@ -108,7 +108,7 @@ class InfoCard extends StatelessWidget {
         children: [
           if (leading != null) ...[
             leading!,
-            const SizedBox(width: 16),
+            AppTheme.hSpacer16,
           ],
           Expanded(
             child: Column(
@@ -119,7 +119,7 @@ class InfoCard extends StatelessWidget {
                   style: AppTheme.textTitle,
                 ),
                 if (subtitle != null) ...[
-                  const SizedBox(height: 4),
+                  AppTheme.spacer4,
                   Text(
                     subtitle!,
                     style: AppTheme.textSecondary14,

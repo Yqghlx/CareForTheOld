@@ -91,7 +91,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
           children: [
             const Text('待审批',
                 style: AppTheme.textTitle),
-            const SizedBox(width: 8),
+            AppTheme.hSpacer8,
             Container(
               padding: AppTheme.paddingH8V2,
               decoration: BoxDecoration(
@@ -139,7 +139,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                 size: 26,
               ),
             ),
-            const SizedBox(width: 12),
+            AppTheme.hSpacer12,
             // 信息
             Expanded(
               child: Column(
@@ -300,7 +300,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                       ),
                       child: const Icon(Icons.home, color: Colors.white, size: 28),
                     ),
-                    const SizedBox(width: 16),
+                    AppTheme.hSpacer16,
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -326,7 +326,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                 ),
                 // 子女端显示邀请码
                 if (!isElder) ...[
-                  const SizedBox(height: 20),
+                  AppTheme.spacer20,
                   _buildInviteCodeSection(family),
                 ],
               ],
@@ -411,7 +411,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          AppTheme.spacer4,
           Text(
             '将邀请码分享给家人，提交后需审批通过',
             style: TextStyle(
@@ -445,7 +445,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
             const Text('您还没有创建家庭组', style: AppTheme.textTitle),
             AppTheme.spacer8,
             const Text('创建家庭组后，可以邀请家人加入', style: AppTheme.textGrey),
-            const SizedBox(height: 20),
+            AppTheme.spacer20,
             PrimaryButton(
               text: '创建家庭组',
               onPressed: () => _showCreateFamilyDialog(),
@@ -477,7 +477,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
             const Text('您还未加入家庭组', style: AppTheme.textTitle),
             AppTheme.spacer8,
             const Text('请让子女分享邀请码给您', style: AppTheme.textGrey),
-            const SizedBox(height: 20),
+            AppTheme.spacer20,
             PrimaryButton(
               text: '输入邀请码加入',
               onPressed: () => _showJoinFamilyDialog(),
@@ -553,7 +553,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                       ),
               ),
             ),
-            const SizedBox(width: 16),
+            AppTheme.hSpacer16,
             // 信息
             Expanded(
               child: Column(
@@ -563,7 +563,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     member.realName.isEmpty ? '未设置姓名' : member.realName,
                     style: AppTheme.textTitle,
                   ),
-                  const SizedBox(height: 4),
+                  AppTheme.spacer4,
                   Row(
                     children: [
                       Container(
@@ -580,7 +580,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      AppTheme.hSpacer8,
                       Text(
                         member.relation,
                         style: AppTheme.textSubtitle,
@@ -621,7 +621,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               ),
               child: const Icon(Icons.home, color: AppTheme.primaryColor),
             ),
-            const SizedBox(width: 12),
+            AppTheme.hSpacer12,
             const Text('创建家庭组'),
           ],
         ),
@@ -686,7 +686,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     ),
                     child: const Icon(Icons.vpn_key, color: AppTheme.warningColor),
                   ),
-                  const SizedBox(width: 12),
+                  AppTheme.hSpacer12,
                   const Text('加入家庭'),
                 ],
               ),
@@ -813,7 +813,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     ),
                     child: const Icon(Icons.person_add, color: AppTheme.primaryColor),
                   ),
-                  const SizedBox(width: 12),
+                  AppTheme.hSpacer12,
                   const Text('添加成员'),
                 ],
               ),

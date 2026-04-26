@@ -85,7 +85,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
               child: Row(
                 children: [
                   const Icon(Icons.warning_amber_rounded, color: AppTheme.errorColor),
-                  const SizedBox(width: 8),
+                  AppTheme.hSpacer8,
                   Text(
                     '有 ${state.unreadCount} 条待处理的紧急呼叫',
                     style: TextStyle(
@@ -109,7 +109,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(Icons.check_circle_outline, color: AppTheme.successColor),
-                  const SizedBox(width: 8),
+                  AppTheme.hSpacer8,
                   const Text(
                     '暂无待处理的紧急呼叫',
                     style: TextStyle(color: AppTheme.successColor),
@@ -175,7 +175,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                     size: 32,
                   ),
                 ),
-                const SizedBox(width: 16),
+                AppTheme.hSpacer16,
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,7 +184,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                         '${call.elderName} 发起紧急呼叫',
                         style: AppTheme.textTitle,
                       ),
-                      const SizedBox(height: 4),
+                      AppTheme.spacer4,
                       Text(
                         call.relativeTime,
                         style: AppTheme.textSecondary14,
@@ -218,7 +218,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                       ),
                     ],
                     if (call.hasLocation && call.batteryLevel != null)
-                      const SizedBox(width: 16),
+                      AppTheme.hSpacer16,
                     if (call.batteryLevel != null) ...[
                       Icon(Icons.battery_std, size: 18, color: call.batteryColor),
                       const SizedBox(width: 4),
@@ -254,7 +254,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                     ),
                   ),
                 if (call.elderPhoneNumber != null && call.elderPhoneNumber!.isNotEmpty)
-                  const SizedBox(width: 12),
+                  AppTheme.hSpacer12,
                 Expanded(
                   child: PrimaryIconButton(
                     text: '已处理',
@@ -298,7 +298,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                 size: 22,
               ),
             ),
-            const SizedBox(width: 12),
+            AppTheme.hSpacer12,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

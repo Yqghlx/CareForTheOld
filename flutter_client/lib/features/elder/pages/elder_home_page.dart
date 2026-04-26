@@ -253,7 +253,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 20),
+          AppTheme.spacer20,
 
           GridView.count(
             crossAxisCount: 2,
@@ -381,7 +381,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                       color: Colors.white,
                       size: 40,
                     ),
-                    const SizedBox(width: 12),
+                    AppTheme.hSpacer12,
                     Text(
                       _isLongPressing ? '正在呼叫...' : '长按紧急呼叫',
                       style: const TextStyle(
@@ -550,7 +550,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
               ),
               child: const Icon(Icons.check_circle, color: AppTheme.successColor, size: 32),
             ),
-            const SizedBox(width: 16),
+            AppTheme.hSpacer16,
             const Text('呼叫已发送'),
           ],
         ),

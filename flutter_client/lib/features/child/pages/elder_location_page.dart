@@ -162,7 +162,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
               size: 24,
             ),
           ),
-          const SizedBox(width: 12),
+          AppTheme.hSpacer12,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,7 +175,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                     color: isEnabled ? AppTheme.successColor : AppTheme.grey500,
                   ),
                 ),
-                const SizedBox(height: 4),
+                AppTheme.spacer4,
                 Text(
                   '半径: ${radius >= 1000 ? '${(radius / 1000).toStringAsFixed(1)}公里' : '$radius米'}',
                   style: AppTheme.textSubtitle,
@@ -243,7 +243,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                     ),
                     child: const Icon(Icons.security, color: AppTheme.successColor),
                   ),
-                  const SizedBox(width: 12),
+                  AppTheme.hSpacer12,
                   const Text('设置安全区域'),
                 ],
               ),
@@ -327,7 +327,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                             },
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        AppTheme.hSpacer8,
                         Text(
                           radius >= 1000
                               ? '${(radius / 1000).toStringAsFixed(1)}公里'
@@ -449,7 +449,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                       ),
                       child: const Icon(Icons.location_on, color: AppTheme.primaryColor, size: 28),
                     ),
-                    const SizedBox(width: 16),
+                    AppTheme.hSpacer16,
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -478,7 +478,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                       Row(
                         children: [
                           const Icon(Icons.explore, size: 20, color: AppTheme.grey500),
-                          const SizedBox(width: 8),
+                          AppTheme.hSpacer8,
                           Text(
                             '纬度: ${location.latitude.toStringAsFixed(4)}',
                             style: AppTheme.textBody16,
@@ -489,7 +489,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                       Row(
                         children: [
                           const Icon(Icons.explore, size: 20, color: AppTheme.grey500),
-                          const SizedBox(width: 8),
+                          AppTheme.hSpacer8,
                           Text(
                             '经度: ${location.longitude.toStringAsFixed(4)}',
                             style: AppTheme.textBody16,
@@ -553,7 +553,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
               ),
               child: const Icon(Icons.location_history, color: AppTheme.infoBlue, size: 20),
             ),
-            const SizedBox(width: 12),
+            AppTheme.hSpacer12,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

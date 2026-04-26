@@ -174,7 +174,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
-                        SizedBox(width: 12),
+                        AppTheme.hSpacer12,
                         Text('正在分析健康趋势...', style: AppTheme.textGreyLight),
                       ],
                     ),
@@ -413,7 +413,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                         size: 28,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    AppTheme.hSpacer12,
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -534,7 +534,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
           title: Row(
             children: [
               const Icon(Icons.edit, color: AppTheme.primaryColor),
-              const SizedBox(width: 12),
+              AppTheme.hSpacer12,
               const Text('编辑用药计划'),
             ],
           ),
@@ -736,7 +736,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   ),
                   child: Icon(record.type.icon, color: record.type.color, size: 22),
                 ),
-                const SizedBox(width: 12),
+                AppTheme.hSpacer12,
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -821,7 +821,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     size: 22,
                   ),
                 ),
-                const SizedBox(width: 12),
+                AppTheme.hSpacer12,
                 // 药品信息 + 时间
                 Expanded(
                   child: Column(
@@ -831,7 +831,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                         log.medicineName,
                         style: AppTheme.textHeading
                       ),
-                      const SizedBox(height: 4),
+                      AppTheme.spacer4,
                       Text(
                         '计划: $scheduledStr',
                         style: TextStyle(
@@ -902,7 +902,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               ),
               child: const Icon(Icons.picture_as_pdf, color: AppTheme.infoBlue),
             ),
-            const SizedBox(width: 12),
+            AppTheme.hSpacer12,
             const Text('导出健康报告'),
           ],
         ),
@@ -925,7 +925,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     child: const Text('最近7天', style: AppTheme.textWhite),
                   ),
                 ),
-                const SizedBox(width: 16),
+                AppTheme.hSpacer16,
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () async {
@@ -1055,7 +1055,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   ),
                   child: Icon(severityIcon, color: severityColor, size: 26),
                 ),
-                const SizedBox(width: 12),
+                AppTheme.hSpacer12,
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1069,7 +1069,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          const SizedBox(width: 8),
+                          AppTheme.hSpacer8,
                           Container(
                             padding: AppTheme.paddingH8V2,
                             decoration: BoxDecoration(
@@ -1087,7 +1087,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 4),
+                      AppTheme.spacer4,
                       Text(
                         '基于 ${anomaly.baseline.baselineDays} 天数据分析',
                         style: AppTheme.textCaption13Grey600,
@@ -1123,7 +1123,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   Row(
                     children: [
                       const Icon(Icons.person_outline, size: 18, color: AppTheme.grey700),
-                      const SizedBox(width: 8),
+                      AppTheme.hSpacer8,
                       Text(
                         '个人基线',
                         style: TextStyle(
@@ -1166,7 +1166,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       Row(
                         children: [
                           const Icon(Icons.emoji_events_outlined, color: AppTheme.successColor, size: 22),
-                          const SizedBox(width: 8),
+                          AppTheme.hSpacer8,
                           Text(
                             anomaly.positiveFeedback!.quality,
                             style: TextStyle(
@@ -1218,7 +1218,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   child: Row(
                     children: [
                       const Icon(Icons.check_circle_outline, color: AppTheme.successColor, size: 20),
-                      const SizedBox(width: 8),
+                      AppTheme.hSpacer8,
                       Expanded(
                         child: Text(
                           '$elderName 的健康数据趋势稳定，未发现异常',
@@ -1271,7 +1271,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     return Row(
       children: [
         Icon(icon, size: 16, color: AppTheme.grey600),
-        const SizedBox(width: 8),
+        AppTheme.hSpacer8,
         Text(
           '${anomaly.typeName}: ',
           style: AppTheme.textSubtitle,
@@ -1334,14 +1334,14 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   style: TextStyle(fontSize: 12, color: AppTheme.grey700),
                 ),
               ),
-              const SizedBox(width: 12),
+              AppTheme.hSpacer12,
               // 异常类型图标
               Icon(
                 _getAnomalyTypeIcon(event.type),
                 color: color,
                 size: 20,
               ),
-              const SizedBox(width: 8),
+              AppTheme.hSpacer8,
               // 异常描述
               Expanded(
                 child: Column(
@@ -1397,7 +1397,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Icon(Icons.lightbulb_outline, size: 16, color: AppTheme.infoBlue),
-                  const SizedBox(width: 8),
+                  AppTheme.hSpacer8,
                   Expanded(
                     child: Text(
                       event.recommendedAction!,
@@ -1441,7 +1441,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               ),
               child: const Icon(Icons.analytics, color: AppTheme.primaryColor),
             ),
-            const SizedBox(width: 12),
+            AppTheme.hSpacer12,
             const Text('健康趋势详情'),
           ],
         ),

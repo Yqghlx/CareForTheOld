@@ -83,7 +83,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                     .map((type) => _buildHealthTypeCard(type))
                     .toList(),
               ),
-              const SizedBox(height: 20),
+              AppTheme.spacer20,
 
               // 离线缓存提示
               if (healthState.isFromCache)
@@ -98,7 +98,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                   child: Row(
                     children: [
                       const Icon(Icons.cloud_off, size: 18, color: AppTheme.warningDark),
-                      const SizedBox(width: 8),
+                      AppTheme.hSpacer8,
                       Expanded(
                         child: Text(
                           '网络未连接，当前显示缓存数据',
@@ -190,7 +190,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
               children: warnings.map((w) => Row(
                 children: [
                   Icon(w.trendIcon, size: 18, color: w.trendColor),
-                  const SizedBox(width: 8),
+                  AppTheme.hSpacer8,
                   Expanded(
                     child: Text(
                       w.trendWarning ?? '',
@@ -217,7 +217,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
             scrollDirection: Axis.horizontal,
             padding: AppTheme.paddingH16V8,
             itemCount: stats.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 12),
+            separatorBuilder: (_, __) => AppTheme.hSpacer12,
             itemBuilder: (context, index) {
               final stat = stats[index];
               final avg7 = stat.average7Days?.toStringAsFixed(1) ?? '--';
@@ -370,7 +370,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                 size: 28,
               ),
             ),
-            const SizedBox(width: 16),
+            AppTheme.hSpacer16,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -384,7 +384,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                         ),
                       ),
                       if (abnormal) ...[
-                        const SizedBox(width: 8),
+                        AppTheme.hSpacer8,
                         Container(
                           padding: AppTheme.paddingH8V2,
                           decoration: BoxDecoration(
@@ -399,14 +399,14 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       ],
                     ],
                   ),
-                  const SizedBox(height: 4),
+                  AppTheme.spacer4,
                   Text(
                     timeStr,
                     style: AppTheme.textSecondary16,
                   ),
                   // 显示备注信息
                   if (record.note != null && record.note!.isNotEmpty) ...[
-                    const SizedBox(height: 4),
+                    AppTheme.spacer4,
                     Text(
                       '备注: ${record.note}',
                       style: TextStyle(
@@ -508,7 +508,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                     ),
                     child: Icon(type.icon, color: type.color),
                   ),
-                  const SizedBox(width: 12),
+                  AppTheme.hSpacer12,
                   Text('记录${type.label}'),
                 ],
               ),
@@ -526,7 +526,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       child: Row(
                         children: [
                           Icon(Icons.info_outline, size: 18, color: type.color),
-                          const SizedBox(width: 8),
+                          AppTheme.hSpacer8,
                           Flexible(
                             child: Text(
                               _getNormalRangeHint(type),
@@ -678,7 +678,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 12),
+                              AppTheme.hSpacer12,
                               // 拍照识别卡片
                               Expanded(
                                 child: GestureDetector(
@@ -1101,7 +1101,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                   size: 28,
                 ),
               ),
-              const SizedBox(width: 12),
+              AppTheme.hSpacer12,
               Expanded(
                 child: Text(
                   abnormalHint ?? '${type.label}记录已保存',

@@ -62,11 +62,11 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
             children: [
               // 健康类型切换
               _buildTypeSelector(),
-              const SizedBox(height: 20),
+              AppTheme.spacer20,
 
               // 时间范围切换
               _buildRangeSelector(),
-              const SizedBox(height: 20),
+              AppTheme.spacer20,
 
               // 图表标题
               Row(
@@ -80,7 +80,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                     ),
                     child: Icon(_selectedType.icon, color: _selectedType.color),
                   ),
-                  const SizedBox(width: 12),
+                  AppTheme.hSpacer12,
                   Text(
                     '${_selectedType.label}趋势',
                     style: const TextStyle(
@@ -210,12 +210,12 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
           '时间范围：',
           style: AppTheme.textBody16,
         ),
-        const SizedBox(width: 12),
+        AppTheme.hSpacer12,
         Expanded(
           child: Row(
             children: [
               _buildRangeButton('最近7天', 7),
-              const SizedBox(width: 12),
+              AppTheme.hSpacer12,
               _buildRangeButton('最近30天', 30),
             ],
           ),
@@ -271,7 +271,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
               ),
               child: const Icon(Icons.picture_as_pdf, color: AppTheme.infoBlue),
             ),
-            const SizedBox(width: 12),
+            AppTheme.hSpacer12,
             const Text('导出健康报告'),
           ],
         ),
@@ -292,7 +292,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                     child: const Text('最近7天', style: AppTheme.textWhite),
                   ),
                 ),
-                const SizedBox(width: 16),
+                AppTheme.hSpacer16,
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () async {

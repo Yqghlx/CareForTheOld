@@ -43,7 +43,7 @@ class EmptyStateWidget extends StatelessWidget {
               ),
             ],
             if (action != null) ...[
-              const SizedBox(height: 20),
+              AppTheme.spacer20,
               action!,
             ],
           ],
@@ -264,7 +264,7 @@ class SkeletonCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 12),
+                  AppTheme.hSpacer12,
                   Expanded(
                     child: SizedBox(
                       height: 48,

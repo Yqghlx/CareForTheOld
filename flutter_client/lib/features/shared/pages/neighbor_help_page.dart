@@ -153,7 +153,7 @@ class _HelpRequestCard extends StatelessWidget {
             Row(
               children: [
                 CircleAvatar(child: Text(request.requesterName[0])),
-                const SizedBox(width: 8),
+                AppTheme.hSpacer8,
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

@@ -125,7 +125,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                             : const Icon(Icons.person, size: 32, color: Colors.white),
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    AppTheme.hSpacer16,
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -137,7 +137,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                             color: Colors.white,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        AppTheme.spacer4,
                         Text(
                           '关注家人的健康状况',
                           style: TextStyle(
@@ -173,7 +173,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     onPressed: () => context.push(RoutePaths.childFamily),
                   ),
                 ),
-                const SizedBox(width: 16),
+                AppTheme.hSpacer16,
                 Expanded(
                   child: PrimaryIconButton(
                     text: '邻里互助',
@@ -199,7 +199,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                AppTheme.hSpacer16,
                 Expanded(
                   child: PrimaryIconButton(
                     text: '添加用药计划',
@@ -294,7 +294,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                               : const Icon(Icons.elderly, size: 32, color: AppTheme.warningColor),
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      AppTheme.hSpacer16,
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -303,7 +303,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                               elder.realName,
                               style: AppTheme.textTitle,
                             ),
-                            const SizedBox(height: 4),
+                            AppTheme.spacer4,
                             Text(
                               elder.relation,
                               style: AppTheme.textSecondary14,
@@ -341,7 +341,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    AppTheme.hSpacer12,
                     Expanded(
                       child: OutlinedButton.icon(
                         onPressed: () => context.push(RoutePaths.childElderHealth(elder.userId)),
@@ -399,7 +399,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     ),
                     child: const Icon(Icons.medication, color: AppTheme.infoBlue),
                   ),
-                  const SizedBox(width: 12),
+                  AppTheme.hSpacer12,
                   const Text('添加用药计划'),
                 ],
               ),
@@ -542,7 +542,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                                   child: Row(
                                     children: [
                                       const Icon(Icons.access_time, color: AppTheme.primaryColor),
-                                      const SizedBox(width: 8),
+                                      AppTheme.hSpacer8,
                                       Text(
                                         entry.value.text.isEmpty
                                             ? '点击选择时间'
@@ -719,7 +719,7 @@ class _EmergencyPulseBannerState extends State<_EmergencyPulseBanner>
           child: Row(
             children: [
               const Icon(Icons.emergency, color: Colors.white, size: 36),
-              const SizedBox(width: 12),
+              AppTheme.hSpacer12,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
