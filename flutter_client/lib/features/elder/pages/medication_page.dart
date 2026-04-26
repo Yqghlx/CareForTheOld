@@ -21,6 +21,9 @@ class MedicationPage extends ConsumerStatefulWidget {
 }
 
 class _MedicationPageState extends ConsumerState<MedicationPage> {
+  static const _takenKeywords = ['已服药', '吃了', '服用了', '已服用', '吃过', '吃完了', '吃完', '服药了'];
+  static const _skipKeywords = ['跳过', '不吃', '不需要'];
+
   final VoiceInputService _voiceService = VoiceInputService();
   bool _isListening = false;
 
@@ -389,16 +392,11 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
     // 匹配语音指令关键词
     final lowerText = text.toLowerCase();
 
-    // 已服药相关关键词
-    final takenKeywords = ['已服药', '吃了', '服用了', '已服用', '吃过', '吃完了', '吃完', '服药了'];
-    // 跳过相关关键词
-    final skipKeywords = ['跳过', '不吃', '不需要'];
-
-    if (takenKeywords.any((kw) => lowerText.contains(kw))) {
+    if (_takenKeywords.any((kw) => lowerText.contains(kw))) {
       // 标记第一个待服用的药物为已服用
       final log = pendingLogs.first;
       _markTaken(log);
-    } else if (skipKeywords.any((kw) => lowerText.contains(kw))) {
+    } else if (_skipKeywords.any((kw) => lowerText.contains(kw))) {
       // 跳过第一个待服用的药物
       final log = pendingLogs.first;
       _markSkipped(log);
