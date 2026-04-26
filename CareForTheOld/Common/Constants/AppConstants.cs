@@ -356,4 +356,14 @@ public static class AppConstants
         /// <summary>体温单位（摄氏度）</summary>
         public const string Temperature = "°C";
     }
+
+    /// <summary>健康统计时间范围常量</summary>
+    public static class HealthStatsDays
+    {
+        /// <summary>近期统计天数（7天）</summary>
+        public const int RecentDays = 7;
+
+        /// <summary>长期统计天数（30天）</summary>
+        public const int LongTermDays = 30;
+    }
 }

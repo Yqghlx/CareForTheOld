@@ -1,4 +1,5 @@
 using System.Data.Common;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Interfaces;
@@ -34,8 +35,8 @@ public class DapperHealthQueryService : IHealthQueryService
         await connection.OpenAsync();
 
         var now = DateTime.UtcNow;
-        var sevenDaysAgo = now.AddDays(-7);
-        var thirtyDaysAgo = now.AddDays(-30);
+        var sevenDaysAgo = now.AddDays(-AppConstants.HealthStatsDays.RecentDays);
+        var thirtyDaysAgo = now.AddDays(-AppConstants.HealthStatsDays.LongTermDays);
 
         // 按类型聚合统计（一次 SQL 查询完成所有计算）
         // 使用 LIMIT 1 代替 TOP 1，兼容 SQLite 和 PostgreSQL

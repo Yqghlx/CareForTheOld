@@ -396,6 +396,7 @@ public static class SuccessMessages
     {
         public const string RecordSuccess = "记录成功";
         public const string DeleteSuccess = "删除成功";
+        public const string InsufficientRecordsForAnomaly = "健康记录数不足，无法进行异常检测";
     }
 
     /// <summary>邻里圈相关成功消息</summary>

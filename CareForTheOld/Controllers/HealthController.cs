@@ -201,7 +201,7 @@ public class HealthController : ControllerBase
                     Type = healthType,
                     TypeName = healthType.ToString(),
                 },
-                "健康记录数不足，无法进行异常检测");
+                SuccessMessages.Health.InsufficientRecordsForAnomaly);
         }
 
         // 转换为检测器需要的格式
@@ -243,7 +243,7 @@ public class HealthController : ControllerBase
                     Type = healthType,
                     TypeName = healthType.ToString(),
                 },
-                "健康记录数不足，无法进行异常检测");
+                SuccessMessages.Health.InsufficientRecordsForAnomaly);
         }
 
         var healthRecords = records
