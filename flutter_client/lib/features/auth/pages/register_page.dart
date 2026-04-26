@@ -155,7 +155,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                       lastDate: now,
                       locale: const Locale('zh', 'CN'),
                     );
-                    if (picked != null) {
+                    if (picked != null && mounted) {
                       setState(() => _selectedBirthDate = picked);
                     }
                   },

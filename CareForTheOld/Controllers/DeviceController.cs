@@ -110,5 +110,5 @@ public class RegisterTokenRequest
     /// 平台标识（"android" / "ios"）
     /// </summary>
     [MaxLength(20)]
-    public string Platform { get; set; } = "android";
+    public string Platform { get; set; } = AppConstants.DevicePlatforms.Android;
 }

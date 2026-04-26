@@ -96,7 +96,11 @@ public class TrustScoreService : ITrustScoreService
         var helpRequest = await _context.NeighborHelpRequests
             .FirstOrDefaultAsync(r => r.Id == helpRequestId);
 
-        if (helpRequest == null) return;
+        if (helpRequest == null)
+        {
+            _logger.LogWarning("更新信任评分：求助请求 {HelpRequestId} 不存在", helpRequestId);
+            return;
+        }
 
         // Upsert TrustScore
         var score = await _context.TrustScores

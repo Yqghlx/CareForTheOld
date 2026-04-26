@@ -647,4 +647,16 @@ public static class AppConstants
         /// <summary>头像文件目录</summary>
         public const string Avatars = "avatars";
     }
+
+    /// <summary>
+    /// 设备平台常量
+    /// </summary>
+    public static class DevicePlatforms
+    {
+        /// <summary>Android 平台标识</summary>
+        public const string Android = "android";
+
+        /// <summary>iOS 平台标识</summary>
+        public const string IOS = "ios";
+    }
 }
