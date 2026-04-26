@@ -1533,7 +1533,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
           ),
           Text(
             displayValue,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+            style: AppTheme.textCardTitle,
           ),
         ],
       ),

@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../shared/widgets/notification_badge.dart';
 
 import '../../../shared/providers/auth_provider.dart';
 import '../../../shared/models/medication_plan.dart';
@@ -74,34 +75,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
             ],
           ),
           // 通知按钮（带未读红点）
-          Stack(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.notifications),
-                tooltip: '通知',
-                onPressed: () => context.push(RoutePaths.notifications),
-              ),
-              // 未读通知红点
-              Positioned(
-                right: 8,
-                top: 8,
-                child: Consumer(
-                  builder: (context, ref, _) {
-                    final unreadCount = ref.watch(notificationListProvider.select((s) => s.unreadCount));
-                    if (unreadCount == 0) return const SizedBox.shrink();
-                    return Container(
-                      width: 10,
-                      height: 10,
-                      decoration: const BoxDecoration(
-                        color: AppTheme.errorColor,
-                        shape: BoxShape.circle,
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
+          const NotificationBadgeButton(),
           IconButton(
             icon: const Icon(Icons.settings),
             tooltip: '设置',
