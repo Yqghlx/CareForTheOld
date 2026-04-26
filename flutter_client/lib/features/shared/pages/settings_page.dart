@@ -261,7 +261,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     icon: Icons.emergency,
                     title: '紧急呼叫通知',
                     subtitle: '始终开启，保障安全',
-                    trailing: Icon(Icons.lock, color: AppTheme.grey400, size: 20),
+                    trailing: const Icon(Icons.lock, color: AppTheme.grey400, size: 20),
                   ),
                   const Divider(height: 1),
                   _buildSettingItem(
@@ -407,7 +407,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             ),
             if (trailing != null) trailing,
             if (trailing == null && onTap != null)
-              Icon(Icons.chevron_right, color: AppTheme.grey400),
+              const Icon(Icons.chevron_right, color: AppTheme.grey400),
           ],
         ),
       ),

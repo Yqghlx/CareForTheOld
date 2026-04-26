@@ -97,7 +97,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.cloud_off, size: 18, color: AppTheme.warningDark),
+                      const Icon(Icons.cloud_off, size: 18, color: AppTheme.warningDark),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(

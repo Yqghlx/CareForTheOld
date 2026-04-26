@@ -84,7 +84,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.warning_amber_rounded, color: AppTheme.errorColor),
+                  const Icon(Icons.warning_amber_rounded, color: AppTheme.errorColor),
                   const SizedBox(width: 8),
                   Text(
                     '有 ${state.unreadCount} 条待处理的紧急呼叫',
@@ -108,7 +108,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.check_circle_outline, color: AppTheme.successColor),
+                  const Icon(Icons.check_circle_outline, color: AppTheme.successColor),
                   const SizedBox(width: 8),
                   const Text(
                     '暂无待处理的紧急呼叫',
@@ -216,7 +216,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                 child: Row(
                   children: [
                     if (call.hasLocation) ...[
-                      Icon(Icons.location_on, size: 18, color: AppTheme.infoBlueDark),
+                      const Icon(Icons.location_on, size: 18, color: AppTheme.infoBlueDark),
                       const SizedBox(width: 4),
                       Text(
                         '${call.latitude!.toStringAsFixed(4)}, ${call.longitude!.toStringAsFixed(4)}',
