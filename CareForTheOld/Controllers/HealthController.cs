@@ -191,9 +191,9 @@ public class HealthController : ControllerBase
         var healthType = type ?? HealthType.BloodPressure;
 
         // 获取最近60天的健康记录用于异常检测
-        var records = await _healthService.GetUserRecordsAsync(userId, healthType, 0, 100);
+        var records = await _healthService.GetUserRecordsAsync(userId, healthType, 0, AppConstants.AnomalyEvaluation.MaxQueryRecords);
 
-        if (records.Count < 5)
+        if (records.Count < AppConstants.AnomalyEvaluation.MinimumRecords)
         {
             return ApiResponse<TrendAnomalyDetectionResponse>.Ok(
                 new TrendAnomalyDetectionResponse
@@ -233,9 +233,9 @@ public class HealthController : ControllerBase
             return ApiResponse<TrendAnomalyDetectionResponse>.Fail(ErrorMessages.Family.NotFamilyMember);
 
         var healthType = type ?? HealthType.BloodPressure;
-        var records = await _healthService.GetFamilyMemberRecordsAsync(familyId, memberId, healthType, 0, 100);
+        var records = await _healthService.GetFamilyMemberRecordsAsync(familyId, memberId, healthType, 0, AppConstants.AnomalyEvaluation.MaxQueryRecords);
 
-        if (records.Count < 5)
+        if (records.Count < AppConstants.AnomalyEvaluation.MinimumRecords)
         {
             return ApiResponse<TrendAnomalyDetectionResponse>.Ok(
                 new TrendAnomalyDetectionResponse

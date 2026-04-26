@@ -526,6 +526,12 @@ public static class AppConstants
 
         /// <summary>严重度评分最大值</summary>
         public const double MaxSeverityScore = 100.0;
+
+        /// <summary>异常检测查询的最大记录数</summary>
+        public const int MaxQueryRecords = 100;
+
+        /// <summary>异常检测所需的最少记录数，低于此数量无法进行有效分析</summary>
+        public const int MinimumRecords = 5;
     }
 
     /// <summary>
