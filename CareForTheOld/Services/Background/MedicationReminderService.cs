@@ -196,33 +196,31 @@ public class MedicationReminderService : BackgroundService
         }
         else
         {
-            // 子女介入：通知子女老人未服药
-            var familyMembers = await context.FamilyMembers
+            // 子女介入：批量查询老人所在家庭的所有子女，一次查出
+            var familyIds = await context.FamilyMembers
                 .Where(fm => fm.UserId == elderId)
+                .Select(fm => fm.FamilyId)
                 .ToListAsync();
 
-            foreach (var member in familyMembers)
-            {
-                var children = await context.FamilyMembers
-                    .Where(fm => fm.FamilyId == member.FamilyId && fm.UserId != elderId)
-                    .ToListAsync();
+            var children = await context.FamilyMembers
+                .Where(fm => familyIds.Contains(fm.FamilyId) && fm.UserId != elderId)
+                .ToListAsync();
 
-                foreach (var child in children)
-                {
-                    await SendWithRetryAsync(
-                        () => notificationService.SendToUserAsync(child.UserId, AppConstants.NotificationTypes.MedicationMissed, new
-                        {
-                            Title = NotificationMessages.Medication.MissedTitle,
-                            Content = string.Format(NotificationMessages.Medication.MissedContentTemplate, elderName, scheduledAt.ToString("HH:mm"), plan.MedicineName, plan.Dosage, AppConstants.Medication.EscalationDelayMinutes),
-                            ElderId = elderId,
-                            ElderName = elderName,
-                            PlanId = planId,
-                            MedicineName = plan.MedicineName,
-                            ScheduledAt = scheduledAt,
-                            AlertLevel = AppConstants.AlertLevels.Warning
-                        }),
-                        $"子女未服药通知-{child.UserId}");
-                }
+            foreach (var child in children)
+            {
+                await SendWithRetryAsync(
+                    () => notificationService.SendToUserAsync(child.UserId, AppConstants.NotificationTypes.MedicationMissed, new
+                    {
+                        Title = NotificationMessages.Medication.MissedTitle,
+                        Content = string.Format(NotificationMessages.Medication.MissedContentTemplate, elderName, scheduledAt.ToString("HH:mm"), plan.MedicineName, plan.Dosage, AppConstants.Medication.EscalationDelayMinutes),
+                        ElderId = elderId,
+                        ElderName = elderName,
+                        PlanId = planId,
+                        MedicineName = plan.MedicineName,
+                        ScheduledAt = scheduledAt,
+                        AlertLevel = AppConstants.AlertLevels.Warning
+                    }),
+                    $"子女未服药通知-{child.UserId}");
             }
 
             _logger.LogWarning("[用药跟进] 已通知子女: 老人 {ElderId} 超过 {Delay} 分钟未服 {Medicine}",
