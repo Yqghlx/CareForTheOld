@@ -1,6 +1,7 @@
 import '../../../core/router/route_paths.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/widgets/notification_badge.dart';
@@ -443,6 +444,10 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                           contentPadding: AppTheme.paddingH16V12,
                         ),
                         style: AppTheme.textBody16,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9\s一-龥·]')),
+                          LengthLimitingTextInputFormatter(50),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -459,6 +464,10 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                           contentPadding: AppTheme.paddingH16V12,
                         ),
                         style: AppTheme.textBody16,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9\s一-龥.]')),
+                          LengthLimitingTextInputFormatter(30),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 12),

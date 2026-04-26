@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -547,6 +548,10 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     labelText: '药品名称',
                     border: OutlineInputBorder(),
                   ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9\s一-龥·]')),
+                    LengthLimitingTextInputFormatter(50),
+                  ],
                 ),
                 const SizedBox(height: 12),
                 TextField(
@@ -555,6 +560,10 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     labelText: '剂量（如：1片、10ml）',
                     border: OutlineInputBorder(),
                   ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9\s一-龥.]')),
+                    LengthLimitingTextInputFormatter(30),
+                  ],
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<Frequency>(
