@@ -80,7 +80,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
                 '今日用药计划',
                 style: AppTheme.textLargeTitle,
               ),
-              const SizedBox(height: 16),
+              AppTheme.spacer16,
 
               Expanded(
                 child: _buildContent(medState),
@@ -145,7 +145,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
             ),
           ),
         ),
-        const SizedBox(height: 8),
+        AppTheme.spacer8,
         Text(
           label,
           style: TextStyle(

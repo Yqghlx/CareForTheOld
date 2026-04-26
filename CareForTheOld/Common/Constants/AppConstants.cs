@@ -94,6 +94,9 @@ public static class AppConstants
 
         /// <summary>通知发送重试间隔（秒）</summary>
         public const int NotifyRetryDelaySeconds = 1;
+
+        /// <summary>后台检查轮询间隔（分钟）</summary>
+        public const int CheckIntervalMinutes = 1;
     }
 
     /// <summary>
@@ -170,6 +173,9 @@ public static class AppConstants
     /// </summary>
     public static class Security
     {
+        /// <summary>HSTS 最大缓存天数（浏览器在此期间强制 HTTPS）</summary>
+        public const int HstsMaxAgeDays = 365;
+
         /// <summary>JWT 时钟偏移容忍时间（分钟），应对服务器间时钟差异</summary>
         public const int JwtClockSkewMinutes = 5;
 

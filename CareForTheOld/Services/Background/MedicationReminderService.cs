@@ -52,7 +52,7 @@ public class MedicationReminderService : BackgroundService
             }
 
             // 每分钟检查一次
-            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+            await Task.Delay(TimeSpan.FromMinutes(AppConstants.Medication.CheckIntervalMinutes), stoppingToken);
         }
 
         _logger.LogInformation("用药提醒后台服务停止");

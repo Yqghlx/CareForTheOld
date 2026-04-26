@@ -44,7 +44,7 @@ class StatCard extends StatelessWidget {
                 ),
                 child: Icon(icon, size: 28, color: color),
               ),
-              const SizedBox(height: 12),
+              AppTheme.spacer12,
               Text(
                 title,
                 style: AppTheme.textSecondary16,
@@ -310,7 +310,7 @@ class _AnimatedQuickCardState extends State<AnimatedQuickCard>
                   ),
                   child: Icon(widget.icon, size: 28, color: widget.color),
                 ),
-                const SizedBox(height: 8),
+                AppTheme.spacer8,
                 FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(

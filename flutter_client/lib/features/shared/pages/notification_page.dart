@@ -167,7 +167,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
                       maxLines: _expandedNotificationId == notification.id ? null : 3,
                       overflow: _expandedNotificationId == notification.id ? null : TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 8),
+                    AppTheme.spacer8,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

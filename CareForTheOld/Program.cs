@@ -211,7 +211,7 @@ builder.Services.AddSingleton<HeartbeatMonitorService>();
 // HSTS 配置：生产环境强制 HTTPS，1 年有效期
 builder.Services.AddHsts(options =>
 {
-    options.MaxAge = TimeSpan.FromDays(365);
+    options.MaxAge = TimeSpan.FromDays(AppConstants.Security.HstsMaxAgeDays);
     options.IncludeSubDomains = true;
     options.Preload = true;
 });

@@ -51,7 +51,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               // 待审批区域（子女端）
               if (!isElder && familyState.family != null) ...[
                 _buildPendingSection(familyState),
-                const SizedBox(height: 16),
+                AppTheme.spacer16,
               ],
 
               // 成员列表
@@ -69,7 +69,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                       ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                AppTheme.spacer12,
                 _buildMemberList(familyState, isElder),
               ],
             ],
@@ -109,7 +109,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        AppTheme.spacer12,
         ...pending.map((member) => _buildPendingCard(member)),
       ],
     );
@@ -352,7 +352,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
             '邀请码',
             style: AppTheme.textWhite14,
           ),
-          const SizedBox(height: 8),
+          AppTheme.spacer8,
           Row(
             children: [
               Expanded(
@@ -441,9 +441,9 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               ),
               child: const Icon(Icons.home, size: 40, color: AppTheme.primaryColor),
             ),
-            const SizedBox(height: 16),
+            AppTheme.spacer16,
             const Text('您还没有创建家庭组', style: AppTheme.textTitle),
-            const SizedBox(height: 8),
+            AppTheme.spacer8,
             const Text('创建家庭组后，可以邀请家人加入', style: AppTheme.textGrey),
             const SizedBox(height: 20),
             PrimaryButton(
@@ -473,9 +473,9 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               ),
               child: const Icon(Icons.group_add, size: 40, color: AppTheme.warningColor),
             ),
-            const SizedBox(height: 16),
+            AppTheme.spacer16,
             const Text('您还未加入家庭组', style: AppTheme.textTitle),
-            const SizedBox(height: 8),
+            AppTheme.spacer8,
             const Text('请让子女分享邀请码给您', style: AppTheme.textGrey),
             const SizedBox(height: 20),
             PrimaryButton(
@@ -703,7 +703,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     keyboardType: TextInputType.number,
                     maxLength: 6,
                   ),
-                  const SizedBox(height: 12),
+                  AppTheme.spacer12,
                   DropdownButtonFormField<String>(
                     // ignore: deprecated_member_use - StatefulBuilder 中动态更新需要 value
                     value: selectedRelation,
@@ -829,7 +829,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     ),
                     keyboardType: TextInputType.phone,
                   ),
-                  const SizedBox(height: 16),
+                  AppTheme.spacer16,
                   DropdownButtonFormField<String>(
                     // ignore: deprecated_member_use - StatefulBuilder 中动态更新需要 value
                     value: selectedRole,
@@ -846,7 +846,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                       selectedRelation = null;
                     }),
                   ),
-                  const SizedBox(height: 16),
+                  AppTheme.spacer16,
                   DropdownButtonFormField<String>(
                     // ignore: deprecated_member_use - StatefulBuilder 中动态更新需要 value
                     value: selectedRelation,

@@ -189,7 +189,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               '个人信息',
               style: AppTheme.textTitle,
             ),
-            const SizedBox(height: 12),
+            AppTheme.spacer12,
             Card(
               elevation: AppTheme.cardElevationLow,
               shape: RoundedRectangleBorder(
@@ -221,7 +221,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 '功能设置',
                 style: AppTheme.textTitle,
               ),
-              const SizedBox(height: 12),
+              AppTheme.spacer12,
               Card(
                 elevation: AppTheme.cardElevationLow,
                 shape: RoundedRectangleBorder(
@@ -253,7 +253,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               '通知设置',
               style: AppTheme.textTitle,
             ),
-            const SizedBox(height: 12),
+            AppTheme.spacer12,
             Card(
               elevation: AppTheme.cardElevationLow,
               shape: RoundedRectangleBorder(
@@ -328,7 +328,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               '其他',
               style: AppTheme.textTitle,
             ),
-            const SizedBox(height: 12),
+            AppTheme.spacer12,
             Card(
               elevation: AppTheme.cardElevationLow,
               shape: RoundedRectangleBorder(
@@ -562,7 +562,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     ),
                     obscureText: true,
                   ),
-                  const SizedBox(height: 12),
+                  AppTheme.spacer12,
                   TextField(
                     controller: newPasswordController,
                     decoration: InputDecoration(
@@ -583,7 +583,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         child: Text(strengthText, style: TextStyle(fontSize: 12, color: strengthColor)),
                       ),
                     ),
-                  const SizedBox(height: 12),
+                  AppTheme.spacer12,
                   TextField(
                     controller: confirmPasswordController,
                     decoration: InputDecoration(
@@ -697,9 +697,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('关爱老人 App', style: AppTheme.textTitle),
-            SizedBox(height: 8),
+            AppTheme.spacer8,
             Text('版本: 1.0.0'),
-            SizedBox(height: 12),
+            AppTheme.spacer12,
             Text('一款专为老年人及其子女设计的健康管理应用，帮助子女实时关注老人的健康状况。'),
           ],
         ),
@@ -741,11 +741,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('使用帮助', style: AppTheme.textHeading),
-            SizedBox(height: 8),
+            AppTheme.spacer8,
             Text('• 老人端：可记录健康数据、查看用药提醒、发起紧急呼叫'),
             SizedBox(height: 4),
             Text('• 子女端：可查看老人健康数据、位置信息、处理紧急呼叫'),
-            SizedBox(height: 12),
+            AppTheme.spacer12,
             Text('如有问题或建议，请联系客服。'),
           ],
         ),

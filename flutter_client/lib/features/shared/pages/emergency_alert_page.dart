@@ -70,7 +70,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
                       color: Colors.white,
                       size: 80,
                     ),
-                    const SizedBox(height: 16),
+                    AppTheme.spacer16,
 
                     // 标题
                     Text(
@@ -109,7 +109,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
                         ],
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    AppTheme.spacer8,
 
                     Text(
                       alert.isReminder ? '已超过3分钟未得到响应' : '发起了紧急呼叫，请立即响应！',
@@ -124,7 +124,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
                     // 操作按钮
                     _buildRespondButton(context),
 
-                    const SizedBox(height: 16),
+                    AppTheme.spacer16,
 
                     _buildCallButton(context),
                   ],

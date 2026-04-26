@@ -28,14 +28,14 @@ class EmptyStateWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, size: 64, color: AppTheme.grey400),
-            const SizedBox(height: 16),
+            AppTheme.spacer16,
             Text(
               title,
               style: const TextStyle(fontSize: 18, color: AppTheme.grey500),
               textAlign: TextAlign.center,
             ),
             if (subtitle != null) ...[
-              const SizedBox(height: 8),
+              AppTheme.spacer8,
               Text(
                 subtitle!,
                 style: TextStyle(fontSize: 14, color: AppTheme.grey500),
@@ -95,7 +95,7 @@ class ErrorStateWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, size: 48, color: Theme.of(context).colorScheme.error),
-            const SizedBox(height: 12),
+            AppTheme.spacer12,
             Text(
               message,
               style: TextStyle(
@@ -104,7 +104,7 @@ class ErrorStateWidget extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 16),
+            AppTheme.spacer16,
             ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh, size: 18),
@@ -250,7 +250,7 @@ class SkeletonCard extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 12),
+              AppTheme.spacer12,
               Row(
                 children: [
                   Expanded(

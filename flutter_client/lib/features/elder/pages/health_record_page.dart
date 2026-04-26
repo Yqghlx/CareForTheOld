@@ -126,14 +126,14 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                     child: Text('统计加载失败', style: AppTheme.textGrey),
                   ),
               ),
-              const SizedBox(height: 16),
+              AppTheme.spacer16,
 
               // 记录列表标题
               const Text(
                 '最近记录',
                 style: AppTheme.textLargeTitle,
               ),
-              const SizedBox(height: 12),
+              AppTheme.spacer12,
 
               // 记录列表
               Expanded(
@@ -538,7 +538,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    AppTheme.spacer12,
                     // 快捷输入区域：语音 + 拍照并列
                     Container(
                       padding: AppTheme.paddingAll16,
@@ -664,7 +664,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                           color: Colors.white,
                                           size: 32,
                                         ),
-                                        const SizedBox(height: 8),
+                                        AppTheme.spacer8,
                                         Text(
                                           isListening ? '停止' : '语音输入',
                                           style: const TextStyle(
@@ -761,7 +761,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                           color: Colors.white,
                                           size: 32,
                                         ),
-                                        SizedBox(height: 8),
+                                        AppTheme.spacer8,
                                         Text(
                                           '拍照识别',
                                           style: TextStyle(
@@ -779,7 +779,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                           ),
                           // 语音识别中的状态反馈
                           if (isListening) ...[
-                            const SizedBox(height: 12),
+                            AppTheme.spacer12,
                             Text(
                               voiceText.isEmpty ? '请说出数值...' : voiceText,
                               style: TextStyle(
@@ -793,7 +793,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    AppTheme.spacer16,
 
                     // 根据类型显示不同输入字段
                     if (type == HealthType.bloodPressure) ...[
@@ -815,7 +815,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                           style: AppTheme.textBody18,
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      AppTheme.spacer12,
                       Container(
                         decoration: BoxDecoration(
                           color: AppTheme.grey50,
@@ -892,7 +892,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                           style: AppTheme.textBody18,
                         ),
                       ),
-                    const SizedBox(height: 12),
+                    AppTheme.spacer12,
                     Container(
                       decoration: BoxDecoration(
                         color: AppTheme.grey50,

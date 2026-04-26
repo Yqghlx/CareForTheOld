@@ -167,7 +167,7 @@ class _HelpRequestCard extends StatelessWidget {
                 _buildStatusChip(context),
               ],
             ),
-            const SizedBox(height: 8),
+            AppTheme.spacer8,
             if (request.responderName != null)
               Text('响应者：${request.responderName}',
                   style: TextStyle(color: AppTheme.successDark)),
@@ -175,7 +175,7 @@ class _HelpRequestCard extends StatelessWidget {
               Text('${expiresIn.inMinutes} 分钟后过期',
                   style: TextStyle(color: AppTheme.warningDark, fontSize: 12)),
             if (isHistory && onRate != null) ...[
-              const SizedBox(height: 8),
+              AppTheme.spacer8,
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton.icon(
@@ -186,7 +186,7 @@ class _HelpRequestCard extends StatelessWidget {
               ),
             ],
             if (!isHistory && onAccept != null) ...[
-              const SizedBox(height: 8),
+              AppTheme.spacer8,
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(

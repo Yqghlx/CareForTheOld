@@ -95,7 +95,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                 '当前位置',
                 style: AppTheme.textTitle,
               ),
-              const SizedBox(height: 12),
+              AppTheme.spacer12,
               latestLocationAsync.when(
                 data: (location) => _buildLatestLocationCard(location, elderName),
                 loading: () => const Center(child: CircularProgressIndicator()),
@@ -115,7 +115,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                 '历史轨迹',
                 style: AppTheme.textTitle,
               ),
-              const SizedBox(height: 12),
+              AppTheme.spacer12,
               historyAsync.when(
                 data: (history) => _buildHistoryList(history),
                 loading: () => const Center(child: CircularProgressIndicator()),
@@ -256,7 +256,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                       '为 $elderName 设置安全区域，当老人离开该区域时将收到通知。',
                       style: AppTheme.textSubtitle,
                     ),
-                    const SizedBox(height: 16),
+                    AppTheme.spacer16,
 
                     // 围栏中心位置
                     Container(
@@ -269,7 +269,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text('围栏中心', style: AppTheme.textBold),
-                          const SizedBox(height: 8),
+                          AppTheme.spacer8,
                           if (centerLat != 0)
                             Text(
                               '纬度: ${centerLat.toStringAsFixed(4)}',
@@ -285,7 +285,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    AppTheme.spacer12,
 
                     // 使用当前位置按钮
                     latestLocationAsync.whenOrNull(
@@ -306,11 +306,11 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                       },
                     ) ?? const SizedBox.shrink(),
 
-                    const SizedBox(height: 12),
+                    AppTheme.spacer12,
 
                     // 半径设置
                     const Text('安全半径', style: AppTheme.textBold),
-                    const SizedBox(height: 8),
+                    AppTheme.spacer8,
                     Row(
                       children: [
                         Expanded(
@@ -400,7 +400,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
           child: Column(
             children: [
               const Icon(Icons.location_off, size: 48, color: AppTheme.grey400),
-              const SizedBox(height: 12),
+              AppTheme.spacer12,
               const Text('暂无位置记录', style: AppTheme.textGrey),
               const Text('老人尚未开启定位上报', style: AppTheme.textCaptionDark),
             ],
@@ -425,7 +425,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
           fenceRadius: fence?.radius,
           fenceEnabled: fence?.isEnabled ?? false,
         ),
-        const SizedBox(height: 16),
+        AppTheme.spacer16,
 
         // 位置详情卡片
         Card(
@@ -465,7 +465,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                AppTheme.spacer16,
                 Container(
                   padding: AppTheme.paddingAll16,
                   decoration: BoxDecoration(
@@ -485,7 +485,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 8),
+                      AppTheme.spacer8,
                       Row(
                         children: [
                           const Icon(Icons.explore, size: 20, color: AppTheme.grey500),
@@ -499,7 +499,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 12),
+                AppTheme.spacer12,
                 Text(
                   '精确时间: ${location.formattedTime}',
                   style: AppTheme.textCaption,

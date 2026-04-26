@@ -147,7 +147,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                     '关爱老人',
                     style: AppTheme.textLogoTitle,
                   ),
-                  const SizedBox(height: 8),
+                  AppTheme.spacer8,
                   Text(
                     '健康监测 · 用药提醒',
                     style: AppTheme.textSecondary16,
@@ -180,7 +180,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                       validator: FormValidators.phone,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  AppTheme.spacer16,
 
                   // 密码输入
                   Container(
@@ -268,7 +268,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                     onPressed: login,
                     isLoading: isLoading,
                   ),
-                  const SizedBox(height: 16),
+                  AppTheme.spacer16,
 
                   // 注册链接
                   TextButton(

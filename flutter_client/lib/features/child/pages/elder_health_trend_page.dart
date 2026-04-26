@@ -97,7 +97,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            AppTheme.spacer16,
 
             // 图表区域
             Expanded(
@@ -110,13 +110,13 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
                         children: [
                           Icon(_selectedType.icon,
                               size: 64, color: AppTheme.grey400),
-                          const SizedBox(height: 16),
+                          AppTheme.spacer16,
                           Text(
                             '暂无${_selectedType.label}记录',
                             style: const TextStyle(
                                 fontSize: 18, color: AppTheme.grey500),
                           ),
-                          const SizedBox(height: 8),
+                          AppTheme.spacer8,
                           Text(
                             '${widget.elderName}录入数据后即可查看趋势',
                             style: TextStyle(
@@ -142,10 +142,10 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
                     children: [
                       const Icon(Icons.error_outline,
                           size: 48, color: AppTheme.errorColor),
-                      const SizedBox(height: 12),
+                      AppTheme.spacer12,
                       const Text('加载失败，请重试',
                           style: AppTheme.textError),
-                      const SizedBox(height: 12),
+                      AppTheme.spacer12,
                       ElevatedButton(
                         onPressed: () => ref.invalidate(
                           elderFilteredRecordsProvider(

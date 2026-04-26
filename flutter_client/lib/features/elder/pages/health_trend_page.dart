@@ -90,7 +90,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              AppTheme.spacer16,
 
               // 图表区域
               Expanded(
@@ -102,12 +102,12 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(_selectedType.icon, size: 64, color: AppTheme.grey400),
-                            const SizedBox(height: 16),
+                            AppTheme.spacer16,
                             Text(
                               '暂无${_selectedType.label}记录',
                               style: AppTheme.textSecondary16,
                             ),
-                            const SizedBox(height: 8),
+                            AppTheme.spacer8,
                             Text(
                               '请先在健康页面记录${_selectedType.label}数据',
                               style: AppTheme.textGreyLight,
@@ -130,9 +130,9 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Icon(Icons.error_outline, size: 48, color: AppTheme.errorColor),
-                        const SizedBox(height: 12),
+                        AppTheme.spacer12,
                         const Text('加载失败，请重试', style: AppTheme.textError),
-                        const SizedBox(height: 12),
+                        AppTheme.spacer12,
                         ElevatedButton(
                           onPressed: () => ref.invalidate(filteredHealthRecordsProvider(_selectedType)),
                           child: const Text('重试'),
@@ -279,7 +279,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text('选择报告时间范围：'),
-            const SizedBox(height: 16),
+            AppTheme.spacer16,
             Row(
               children: [
                 Expanded(

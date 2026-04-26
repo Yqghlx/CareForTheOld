@@ -197,7 +197,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 '最近健康记录',
                 style: AppTheme.textTitle,
               ),
-              const SizedBox(height: 12),
+              AppTheme.spacer12,
               recordsAsync.when(
                 data: (records) => _buildRecordsList(records),
                 loading: () => Column(children: List.generate(3, (_) => const SkeletonCard())),
@@ -213,7 +213,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 '用药计划',
                 style: AppTheme.textTitle,
               ),
-              const SizedBox(height: 12),
+              AppTheme.spacer12,
               plansAsync.when(
                 data: (plans) => _buildPlansList(plans),
                 loading: () => Column(children: List.generate(2, (_) => const SkeletonCard())),
@@ -262,7 +262,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     ),
                 ],
               ),
-              const SizedBox(height: 12),
+              AppTheme.spacer12,
               logsAsync.when(
                 data: (logs) => _buildMedicationList(logs),
                 loading: () => Column(children: List.generate(3, (_) => const SkeletonCard())),
@@ -441,7 +441,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                AppTheme.spacer12,
                 Container(
                   padding: AppTheme.paddingH12V8,
                   decoration: BoxDecoration(
@@ -553,7 +553,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     LengthLimitingTextInputFormatter(50),
                   ],
                 ),
-                const SizedBox(height: 12),
+                AppTheme.spacer12,
                 TextField(
                   controller: dosageController,
                   decoration: const InputDecoration(
@@ -565,7 +565,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     LengthLimitingTextInputFormatter(30),
                   ],
                 ),
-                const SizedBox(height: 12),
+                AppTheme.spacer12,
                 DropdownButtonFormField<Frequency>(
                   // ignore: deprecated_member_use - StatefulBuilder 中动态更新需要 value，initialValue 仅用于初始设置
                   value: selectedFrequency,
@@ -579,7 +579,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   )).toList(),
                   onChanged: (v) => setDialogState(() => selectedFrequency = v!),
                 ),
-                const SizedBox(height: 12),
+                AppTheme.spacer12,
                 // 提醒时间
                 Wrap(
                   spacing: 8,
@@ -910,9 +910,9 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text('为 $elderName 导出健康报告'),
-            const SizedBox(height: 16),
+            AppTheme.spacer16,
             const Text('选择报告时间范围：'),
-            const SizedBox(height: 16),
+            AppTheme.spacer16,
             Row(
               children: [
                 Expanded(
@@ -970,7 +970,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const CircularProgressIndicator(),
-                  const SizedBox(height: 16),
+                  AppTheme.spacer16,
                   const Text('正在生成报告...', style: AppTheme.textBody16),
                 ],
               ),
@@ -1108,7 +1108,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            AppTheme.spacer16,
 
             // 个人基线对比
             Container(
@@ -1134,7 +1134,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  AppTheme.spacer8,
                   _buildBaselineRow(anomaly),
                 ],
               ),
@@ -1142,15 +1142,15 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
 
             // 异常事件列表（如果有）
             if (hasAnomalies) ...[
-              const SizedBox(height: 16),
+              AppTheme.spacer16,
               const Text(
                 '检测到的异常',
                 style: AppTheme.textCardTitle,
               ),
-              const SizedBox(height: 8),
+              AppTheme.spacer8,
               ...anomaly.anomalies.take(3).map((event) => _buildAnomalyEventItem(event)),
             ] else ...[
-              const SizedBox(height: 16),
+              AppTheme.spacer16,
               // 正向激励反馈（数据平稳时展示）
               if (anomaly.positiveFeedback != null) ...[
                 Container(
@@ -1194,7 +1194,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                         anomaly.positiveFeedback!.message,
                         style: TextStyle(fontSize: 14, color: AppTheme.successDark, height: 1.4),
                       ),
-                      const SizedBox(height: 8),
+                      AppTheme.spacer8,
                       Row(
                         children: [
                           const Icon(Icons.show_chart, size: 14, color: AppTheme.successMedium),
@@ -1384,7 +1384,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
           ),
           // 行动建议
           if (event.recommendedAction != null && event.recommendedAction!.isNotEmpty) ...[
-            const SizedBox(height: 8),
+            AppTheme.spacer8,
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(10),
@@ -1464,7 +1464,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       '最近7天统计',
                       style: AppTheme.textCardTitle,
                     ),
-                    const SizedBox(height: 8),
+                    AppTheme.spacer8,
                     _buildRecentStatsRow('平均值', anomaly.recentStats.avg7Days),
                     _buildRecentStatsRow('最高值', anomaly.recentStats.max7Days),
                     _buildRecentStatsRow('最低值', anomaly.recentStats.min7Days),
@@ -1481,12 +1481,12 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
 
               // 异常事件列表
               if (anomaly.hasAnomalies()) ...[
-                const SizedBox(height: 16),
+                AppTheme.spacer16,
                 Text(
                   '异常事件时间线',
                   style: AppTheme.textCardTitle,
                 ),
-                const SizedBox(height: 8),
+                AppTheme.spacer8,
                 ...anomaly.anomalies.map((event) => _buildAnomalyEventItem(event)),
               ],
             ],

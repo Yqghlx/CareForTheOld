@@ -110,7 +110,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                   keyboardType: TextInputType.phone,
                   validator: FormValidators.phone,
                 ),
-                const SizedBox(height: 16),
+                AppTheme.spacer16,
 
                 // 密码
                 TextFormField(
@@ -131,7 +131,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                   obscureText: _obscurePassword,
                   validator: FormValidators.password,
                 ),
-                const SizedBox(height: 16),
+                AppTheme.spacer16,
 
                 // 姓名
                 TextFormField(
@@ -142,7 +142,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                   ),
                   validator: FormValidators.name,
                 ),
-                const SizedBox(height: 16),
+                AppTheme.spacer16,
 
                 // 出生日期
                 GestureDetector(
@@ -181,7 +181,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
 
                 // 角色选择
                 const Text('请选择您的身份:', style: AppTheme.textBody16),
-                const SizedBox(height: 12),
+                AppTheme.spacer12,
                 Row(
                   children: [
                     Expanded(
@@ -225,7 +225,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                         : const Text('注册', style: AppTheme.textBody18),
                   ),
                 ),
-                const SizedBox(height: 16),
+                AppTheme.spacer16,
 
                 // 返回登录
                 TextButton(

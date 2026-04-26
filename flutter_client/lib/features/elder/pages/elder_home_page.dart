@@ -561,7 +561,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
               '您的紧急呼叫已成功发送，已通知家人和附近邻居。',
               style: AppTheme.textBody16,
             ),
-            const SizedBox(height: 12),
+            AppTheme.spacer12,
             Text(
               '呼叫时间: ${call.formattedTime}',
               style: AppTheme.textSecondary16,
@@ -612,7 +612,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
               title: const Text('拍照', style: AppTheme.textBody18),
               onTap: () => Navigator.pop(ctx, ImageSource.camera),
             ),
-            const SizedBox(height: 8),
+            AppTheme.spacer8,
           ],
         ),
       ),

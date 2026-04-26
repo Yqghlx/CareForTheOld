@@ -156,12 +156,12 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
               '关注的老人',
               style: AppTheme.textLargeTitle,
             ),
-            const SizedBox(height: 16),
+            AppTheme.spacer16,
 
             // 老人列表
             Expanded(child: _buildElderList(familyState)),
 
-            const SizedBox(height: 16),
+            AppTheme.spacer16,
 
             // 快捷操作 - 使用渐变按钮
             Row(
@@ -186,7 +186,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            AppTheme.spacer16,
             Row(
               children: [
                 Expanded(
@@ -236,12 +236,12 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
               size: 64,
               color: AppTheme.grey400,
             ),
-            const SizedBox(height: 16),
+            AppTheme.spacer16,
             const Text(
               '暂无关注的老人',
               style: AppTheme.textSecondary16,
             ),
-            const SizedBox(height: 12),
+            AppTheme.spacer12,
             PrimaryButton(
               text: '添加家庭成员',
               onPressed: () => context.push(RoutePaths.childFamily),
@@ -326,7 +326,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 12),
+                AppTheme.spacer12,
                 // 操作按钮行
                 Row(
                   children: [
@@ -430,7 +430,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         onChanged: (v) => setDialogState(() => selectedElderId = v!),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    AppTheme.spacer12,
                     Container(
                       decoration: BoxDecoration(
                         color: AppTheme.grey50,
@@ -450,7 +450,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    AppTheme.spacer12,
                     Container(
                       decoration: BoxDecoration(
                         color: AppTheme.grey50,
@@ -470,7 +470,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    AppTheme.spacer12,
                     Container(
                       decoration: BoxDecoration(
                         color: AppTheme.grey50,
@@ -493,7 +493,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         onChanged: (v) => setDialogState(() => selectedFrequency = v!),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    AppTheme.spacer12,
                     // 提醒时间
                     ...timeControllers.asMap().entries.map((entry) {
                       return Padding(

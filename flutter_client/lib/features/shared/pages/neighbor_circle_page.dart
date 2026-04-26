@@ -83,12 +83,12 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                 children: [
                   Text(circle.circleName,
                       style: Theme.of(context).textTheme.titleLarge),
-                  const SizedBox(height: 8),
+                  AppTheme.spacer8,
                   Text('圈主：${circle.creatorName}'),
                   Text('成员数：${circle.memberCount} 人'),
                   Text('覆盖半径：${circle.radiusMeters.toInt()} 米'),
                   if (circle.inviteCode.isNotEmpty) ...[
-                    const SizedBox(height: 8),
+                    AppTheme.spacer8,
                     Container(
                       padding: AppTheme.paddingAll8,
                       decoration: BoxDecoration(
@@ -115,11 +115,11 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          AppTheme.spacer16,
 
           // 成员列表
           Text('圈内成员', style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 8),
+          AppTheme.spacer8,
           ...state.members.map((m) => ListTile(
                 leading: CircleAvatar(
                   child: Text(m.realName[0]),
@@ -137,7 +137,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
               child: Text('暂无成员信息'),
             ),
 
-          const SizedBox(height: 16),
+          AppTheme.spacer16,
 
           // 操作按钮
           Row(
@@ -161,7 +161,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          AppTheme.spacer12,
 
           // 信任排行榜入口
           SizedBox(
@@ -195,7 +195,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('加入邻里圈', style: Theme.of(context).textTheme.titleMedium),
-                  const SizedBox(height: 8),
+                  AppTheme.spacer8,
                   TextField(
                     controller: _inviteCodeController,
                     decoration: const InputDecoration(
@@ -207,7 +207,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                     maxLength: 6,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   ),
-                  const SizedBox(height: 8),
+                  AppTheme.spacer8,
                   ElevatedButton(
                     onPressed: () => _joinCircle(),
                     child: const Text('加入'),
@@ -216,7 +216,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          AppTheme.spacer16,
 
           // 创建邻里圈
           Card(
@@ -226,7 +226,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('创建邻里圈', style: Theme.of(context).textTheme.titleMedium),
-                  const SizedBox(height: 8),
+                  AppTheme.spacer8,
                   TextField(
                     controller: _circleNameController,
                     decoration: const InputDecoration(
@@ -235,7 +235,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  AppTheme.spacer8,
                   ElevatedButton(
                     onPressed: _isGettingLocation ? null : () => _createCircle(),
                     child: _isGettingLocation
@@ -249,7 +249,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          AppTheme.spacer16,
 
           // 搜索附近
           OutlinedButton.icon(

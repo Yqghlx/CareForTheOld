@@ -169,6 +169,9 @@ class AppTheme {
   /// 常用垂直间距组件
   static const SizedBox spacer24 = SizedBox(height: 24);
   static const SizedBox spacer32 = SizedBox(height: 32);
+  static const SizedBox spacer12 = SizedBox(height: 12);
+  static const SizedBox spacer16 = SizedBox(height: 16);
+  static const SizedBox spacer8 = SizedBox(height: 8);
 
   /// 统一用户消息常量
   static const String msgLoadFailed = '加载失败，请重试';

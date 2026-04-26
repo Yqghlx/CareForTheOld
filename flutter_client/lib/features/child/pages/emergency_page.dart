@@ -96,7 +96,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            AppTheme.spacer16,
             ...state.unreadCalls.map((call) => _buildUnreadCallCard(call)),
           ] else ...[
             Container(
@@ -126,7 +126,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
             '最近呼叫记录',
             style: AppTheme.textTitle,
           ),
-          const SizedBox(height: 12),
+          AppTheme.spacer12,
 
           if (state.historyCalls.isEmpty)
             Container(
@@ -198,7 +198,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            AppTheme.spacer16,
             // 位置和电量信息
             if (call.hasLocation || call.batteryLevel != null)
               Container(
@@ -235,7 +235,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                 ),
               ),
             if (call.hasLocation || call.batteryLevel != null)
-              const SizedBox(height: 12),
+              AppTheme.spacer12,
             Row(
               children: [
                 // 拨打电话按钮

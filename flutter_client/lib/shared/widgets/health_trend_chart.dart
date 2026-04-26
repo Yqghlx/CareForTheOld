@@ -58,7 +58,7 @@ class HealthTrendChart extends StatelessWidget {
           height: 200,
           child: _buildLineChart(filteredRecords),
         ),
-        const SizedBox(height: 16),
+        AppTheme.spacer16,
         // 统计摘要
         _buildStatsSummary(filteredRecords),
       ],
@@ -82,7 +82,7 @@ class HealthTrendChart extends StatelessWidget {
               size: 48,
               color: AppTheme.grey400,
             ),
-            const SizedBox(height: 8),
+            AppTheme.spacer8,
             Text(
               '暂无数据',
               style: TextStyle(
