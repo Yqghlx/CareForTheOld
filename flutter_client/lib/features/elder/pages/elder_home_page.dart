@@ -322,7 +322,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                 title: '邻里互助',
                 subtitle: '求助与帮助邻居',
                 color: AppTheme.warningColor,
-                onTap: () => context.push('/neighbor-help'),
+                onTap: () => context.push(RoutePaths.neighborHelp),
               ),
               AnimatedQuickCard(
                 icon: Icons.settings,

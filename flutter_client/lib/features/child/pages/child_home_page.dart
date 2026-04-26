@@ -203,7 +203,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                   child: PrimaryIconButton(
                     text: '邻里互助',
                     icon: Icons.volunteer_activism,
-                    onPressed: () => context.push('/neighbor-help'),
+                    onPressed: () => context.push(RoutePaths.neighborHelp),
                     gradient: const LinearGradient(
                       colors: [AppTheme.warningColor, Colors.deepOrange],
                     ),
@@ -293,7 +293,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
               children: [
                 // 老人信息行
                 InkWell(
-                  onTap: () => context.push('/child/elder/${elder.userId}/health'),
+                  onTap: () => context.push(RoutePaths.childElderHealth(elder.userId)),
                   borderRadius: AppTheme.radiusL,
                   child: Row(
                     children: [
@@ -363,7 +363,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                   children: [
                     Expanded(
                       child: OutlinedButton.icon(
-                        onPressed: () => context.push('/child/elder/${elder.userId}/location'),
+                        onPressed: () => context.push(RoutePaths.childElderLocation(elder.userId)),
                         icon: const Icon(Icons.location_on, size: 18),
                         label: const Text('查看位置'),
                         style: OutlinedButton.styleFrom(
@@ -375,7 +375,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: OutlinedButton.icon(
-                        onPressed: () => context.push('/child/elder/${elder.userId}/health'),
+                        onPressed: () => context.push(RoutePaths.childElderHealth(elder.userId)),
                         icon: const Icon(Icons.favorite, size: 18),
                         label: const Text('查看健康'),
                         style: OutlinedButton.styleFrom(

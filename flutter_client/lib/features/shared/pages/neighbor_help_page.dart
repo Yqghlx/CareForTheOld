@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../shared/models/neighbor_help_request.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/router/route_paths.dart';
 import '../providers/neighbor_help_provider.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 
@@ -92,7 +93,7 @@ class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
             request: request,
             isHistory: true,
             onRate: request.status == HelpRequestStatus.accepted
-                ? () => context.push('/neighbor-help/${request.id}/rate')
+                ? () => context.push(RoutePaths.neighborHelpRate(request.id))
                 : null,
           );
         },

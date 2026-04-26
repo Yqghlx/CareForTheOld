@@ -258,7 +258,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                           if (_errorMessage!.contains('手机号或密码错误') ||
                               _errorMessage!.contains('错误'))
                             TextButton(
-                              onPressed: () => context.go('/register'),
+                              onPressed: () => context.go(RoutePaths.register),
                               style: TextButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(horizontal: 8),
                                 minimumSize: Size.zero,
@@ -283,7 +283,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
 
                   // 注册链接
                   TextButton(
-                    onPressed: () => context.go('/register'),
+                    onPressed: () => context.go(RoutePaths.register),
                     child: Text(
                       '没有账号？点击注册',
                       style: TextStyle(
