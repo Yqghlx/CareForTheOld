@@ -228,10 +228,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 children: [
                   const Text(
                     '最近用药记录',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: AppTheme.textTitle,
                   ),
                   const Spacer(),
                   TextButton.icon(

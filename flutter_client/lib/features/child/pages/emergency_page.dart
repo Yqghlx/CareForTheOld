@@ -182,18 +182,12 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                     children: [
                       Text(
                         '${call.elderName} 发起紧急呼叫',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: AppTheme.textTitle,
                       ),
                       const SizedBox(height: 4),
                       Text(
                         call.relativeTime,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: AppTheme.grey600,
-                        ),
+                        style: AppTheme.textSecondary14,
                       ),
                     ],
                   ),
@@ -311,7 +305,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                 children: [
                   Text(
                     call.elderName,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    style: AppTheme.textBold,
                   ),
                   Text(
                     call.relativeTime,

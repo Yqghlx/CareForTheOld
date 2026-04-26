@@ -39,7 +39,7 @@ public class TrustScoreService : ITrustScoreService
     }
 
     /// <inheritdoc />
-    public async Task<IReadOnlyList<TrustScore>> GetCircleRankingAsync(Guid circleId, int top = 20)
+    public async Task<IReadOnlyList<TrustScore>> GetCircleRankingAsync(Guid circleId, int top = AppConstants.Pagination.DefaultHistoryPageSize)
     {
         return await _context.TrustScores
             .Include(t => t.User)

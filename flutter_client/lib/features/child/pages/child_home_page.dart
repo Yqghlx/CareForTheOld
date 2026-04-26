@@ -238,7 +238,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
             const SizedBox(height: 16),
             const Text(
               '暂无关注的老人',
-              style: TextStyle(color: AppTheme.grey600, fontSize: 16),
+              style: AppTheme.textSecondary16,
             ),
             const SizedBox(height: 12),
             PrimaryButton(
@@ -300,18 +300,12 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                           children: [
                             Text(
                               elder.realName,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: AppTheme.textTitle,
                             ),
                             const SizedBox(height: 4),
                             Text(
                               elder.relation,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: AppTheme.grey600,
-                              ),
+                              style: AppTheme.textSecondary14,
                             ),
                           ],
                         ),

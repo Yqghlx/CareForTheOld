@@ -224,7 +224,7 @@ public class AutoRescueService : IAutoRescueService
     }
 
     /// <inheritdoc />
-    public async Task<List<AutoRescueRecord>> GetHistoryAsync(Guid familyId, int skip = 0, int limit = 20)
+    public async Task<List<AutoRescueRecord>> GetHistoryAsync(Guid familyId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultHistoryPageSize)
     {
         using var scope = _scopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();

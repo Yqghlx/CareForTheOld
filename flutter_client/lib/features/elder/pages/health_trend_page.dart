@@ -289,7 +289,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                       _exportReport(context, 7);
                     },
                     style: AppTheme.elevatedPrimaryStyle,
-                    child: const Text('最近7天', style: TextStyle(color: Colors.white)),
+                    child: const Text('最近7天', style: AppTheme.textWhite),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -300,7 +300,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                       _exportReport(context, 30);
                     },
                     style: AppTheme.elevatedPrimaryStyle,
-                    child: const Text('最近30天', style: TextStyle(color: Colors.white)),
+                    child: const Text('最近30天', style: AppTheme.textWhite),
                   ),
                 ),
               ],

@@ -350,7 +350,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
         children: [
           const Text(
             '邀请码',
-            style: TextStyle(color: Colors.white, fontSize: 14),
+            style: AppTheme.textWhite14,
           ),
           const SizedBox(height: 8),
           Row(
@@ -502,7 +502,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
       return const Center(
         child: Padding(
           padding: EdgeInsets.all(32),
-          child: Text('暂无家庭成员', style: TextStyle(color: AppTheme.grey600, fontSize: 16)),
+          child: Text('暂无家庭成员', style: AppTheme.textSecondary16),
         ),
       );
     }

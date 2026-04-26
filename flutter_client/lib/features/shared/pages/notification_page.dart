@@ -163,10 +163,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
                     const SizedBox(height: 6),
                     Text(
                       notification.content,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: AppTheme.grey600,
-                      ),
+                      style: AppTheme.textSecondary14,
                       maxLines: _expandedNotificationId == notification.id ? null : 3,
                       overflow: _expandedNotificationId == notification.id ? null : TextOverflow.ellipsis,
                     ),
