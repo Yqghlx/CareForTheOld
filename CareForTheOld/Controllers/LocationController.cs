@@ -78,12 +78,9 @@ public class LocationController : ControllerBase
     {
         var userId = this.GetUserId();
 
-        // 验证当前用户和被查询成员都是该家庭成员
-        var memberIds = (await _familyService.GetMembersAsync(familyId))
-            .Select(m => m.UserId).ToHashSet();
-        if (!memberIds.Contains(userId))
+        if (!await IsFamilyMemberAsync(familyId, userId))
             return ApiResponse<LocationRecordResponse?>.Fail(ErrorMessages.Family.NotFamilyMember);
-        if (!memberIds.Contains(memberId))
+        if (!await IsFamilyMemberAsync(familyId, memberId))
             return ApiResponse<LocationRecordResponse?>.Fail(ErrorMessages.Family.MemberNotInFamily);
 
         var record = await _locationService.GetFamilyMemberLatestLocationAsync(familyId, memberId);
@@ -102,15 +99,21 @@ public class LocationController : ControllerBase
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
 
-        // 验证当前用户和被查询成员都是该家庭成员
-        var memberIds = (await _familyService.GetMembersAsync(familyId))
-            .Select(m => m.UserId).ToHashSet();
-        if (!memberIds.Contains(userId))
+        if (!await IsFamilyMemberAsync(familyId, userId))
             return ApiResponse<List<LocationRecordResponse>>.Fail(ErrorMessages.Family.NotFamilyMember);
-        if (!memberIds.Contains(memberId))
+        if (!await IsFamilyMemberAsync(familyId, memberId))
             return ApiResponse<List<LocationRecordResponse>>.Fail(ErrorMessages.Family.MemberNotInFamily);
 
         var records = await _locationService.GetFamilyMemberLocationHistoryAsync(familyId, memberId, skip, limit);
         return ApiResponse<List<LocationRecordResponse>>.Ok(records);
+    }
+
+    /// <summary>
+    /// 验证指定用户是否是指定家庭的成员
+    /// </summary>
+    private async Task<bool> IsFamilyMemberAsync(Guid familyId, Guid userId)
+    {
+        var members = await _familyService.GetMembersAsync(familyId);
+        return members.Any(m => m.UserId == userId);
     }
 }
