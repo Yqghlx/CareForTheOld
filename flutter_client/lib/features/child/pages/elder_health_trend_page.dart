@@ -140,7 +140,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.error_outline,
+                      const Icon(Icons.error_outline,
                           size: 48, color: AppTheme.errorColor),
                       const SizedBox(height: 12),
                       const Text('加载失败，请重试',

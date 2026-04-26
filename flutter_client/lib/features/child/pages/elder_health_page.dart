@@ -1116,7 +1116,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.person_outline, size: 18, color: AppTheme.grey700),
+                      const Icon(Icons.person_outline, size: 18, color: AppTheme.grey700),
                       const SizedBox(width: 8),
                       Text(
                         '个人基线',
@@ -1159,7 +1159,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.emoji_events_outlined, color: AppTheme.successColor, size: 22),
+                          const Icon(Icons.emoji_events_outlined, color: AppTheme.successColor, size: 22),
                           const SizedBox(width: 8),
                           Text(
                             anomaly.positiveFeedback!.quality,
@@ -1191,7 +1191,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          Icon(Icons.show_chart, size: 14, color: AppTheme.successMedium),
+                          const Icon(Icons.show_chart, size: 14, color: AppTheme.successMedium),
                           const SizedBox(width: 4),
                           Text(
                             '变异系数: ${anomaly.positiveFeedback!.coefficientOfVariation.toStringAsFixed(1)}%',
@@ -1211,7 +1211,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.check_circle_outline, color: AppTheme.successColor, size: 20),
+                      const Icon(Icons.check_circle_outline, color: AppTheme.successColor, size: 20),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -1390,7 +1390,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.lightbulb_outline, size: 16, color: AppTheme.infoBlue),
+                  const Icon(Icons.lightbulb_outline, size: 16, color: AppTheme.infoBlue),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(

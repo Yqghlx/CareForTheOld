@@ -538,7 +538,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                                   ),
                                   child: Row(
                                     children: [
-                                      Icon(Icons.access_time, color: AppTheme.primaryColor),
+                                      const Icon(Icons.access_time, color: AppTheme.primaryColor),
                                       const SizedBox(width: 8),
                                       Text(
                                         entry.value.text.isEmpty
