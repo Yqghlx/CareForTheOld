@@ -39,6 +39,23 @@ public class TrustScoreService : ITrustScoreService
     }
 
     /// <inheritdoc />
+    public async Task<Dictionary<Guid, decimal>> GetUserScoresAsync(IEnumerable<Guid> userIds, Guid circleId)
+    {
+        var userIdSet = userIds.ToHashSet();
+        var scores = await _context.TrustScores
+            .Where(t => t.CircleId == circleId && userIdSet.Contains(t.UserId))
+            .Select(t => new { t.UserId, t.Score })
+            .ToListAsync();
+
+        var result = userIdSet.ToDictionary(uid => uid, _ => 0m);
+        foreach (var s in scores)
+        {
+            result[s.UserId] = s.Score;
+        }
+        return result;
+    }
+
+    /// <inheritdoc />
     public async Task<IReadOnlyList<TrustScore>> GetCircleRankingAsync(Guid circleId, int top = AppConstants.Pagination.DefaultHistoryPageSize)
     {
         return await _context.TrustScores

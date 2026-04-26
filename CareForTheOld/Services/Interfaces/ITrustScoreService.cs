@@ -8,6 +8,9 @@ public interface ITrustScoreService
     /// <summary>获取用户在指定圈的信任评分</summary>
     Task<decimal> GetUserScoreAsync(Guid userId, Guid circleId);
 
+    /// <summary>批量获取多个用户在指定圈的信任评分</summary>
+    Task<Dictionary<Guid, decimal>> GetUserScoresAsync(IEnumerable<Guid> userIds, Guid circleId);
+
     /// <summary>获取圈内信任排行榜</summary>
     Task<IReadOnlyList<TrustScore>> GetCircleRankingAsync(Guid circleId, int top = AppConstants.Pagination.DefaultHistoryPageSize);
 

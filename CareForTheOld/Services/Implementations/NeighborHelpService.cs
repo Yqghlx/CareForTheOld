@@ -117,12 +117,7 @@ public class NeighborHelpService : INeighborHelpService
         }
 
         // 按信任评分降序排序，高信用邻居优先推送
-        var nearbyWithScores = new Dictionary<Guid, decimal>();
-        foreach (var uid in nearbyUserIds)
-        {
-            var s = await _trustScoreService.GetUserScoreAsync(uid, circleId);
-            nearbyWithScores[uid] = s;
-        }
+        var nearbyWithScores = await _trustScoreService.GetUserScoresAsync(nearbyUserIds, circleId);
         nearbyUserIds = nearbyWithScores
             .OrderByDescending(kv => kv.Value)
             .Select(kv => kv.Key)
