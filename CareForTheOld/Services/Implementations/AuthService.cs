@@ -79,6 +79,7 @@ public class AuthService : IAuthService
     public async Task<AuthResponse> RefreshTokenAsync(string token)
     {
         var refreshToken = await _context.RefreshTokens
+            .AsTracking()
             .Include(rt => rt.User)
             .FirstOrDefaultAsync(rt => rt.Token == token);
 
@@ -94,6 +95,7 @@ public class AuthService : IAuthService
             Log.Warning("检测到 Token 重放攻击，撤销用户 {UserId} 的所有令牌", refreshToken.UserId);
             // 撤销该用户所有刷新令牌（强制重新登录）
             var allTokens = await _context.RefreshTokens
+                .AsTracking()
                 .Where(rt => rt.UserId == refreshToken.UserId && !rt.IsRevoked)
                 .ToListAsync();
             foreach (var t in allTokens)
