@@ -143,6 +143,7 @@ class AppTheme {
   static const String msgNoPendingMedication = '当前没有待服用的药物';
   static const String msgVoiceNotAvailable = '语音识别不可用，请检查设备设置';
   static const String msgVoiceStartFailed = '语音识别启动失败，请手动操作';
+  static const String msgVoiceCommandNotRecognized = '未能识别指令，请说"已服药"或"跳过"';
   static const String msgVoiceInputFailed = '语音识别启动失败，请手动输入';
 
   // 紧急呼叫消息
@@ -164,6 +165,8 @@ class AppTheme {
   static const String msgPasswordEmpty = '密码不能为空';
   static const String msgPasswordMismatch = '两次输入的新密码不一致';
   static const String msgPasswordChanged = '密码修改成功，请重新登录';
+  static const String msgPasswordChangeFailed = '修改失败，请重试';
+  static const String msgOldPasswordIncorrect = '旧密码不正确';
   static const String msgAvatarUpdated = '头像更新成功';
   static const String msgAvatarFailed = '头像上传失败，请重试';
   static const String msgPasswordStrengthStrong = '密码强度：强';

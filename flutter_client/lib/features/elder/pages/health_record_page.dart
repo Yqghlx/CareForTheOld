@@ -729,7 +729,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                         }
 
                                         if (mounted) {
-                                          context.showSuccessSnackBar('识别成功，已自动填充${type.label}数值');
+                                          context.showSuccessSnackBar(AppTheme.msgOcrSuccess);
                                         }
                                       } else {
                                         if (mounted) {

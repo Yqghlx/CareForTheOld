@@ -646,7 +646,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   ref.read(authProvider.notifier).logout();
                   context.go(RoutePaths.login);
                 } else {
-                  context.showErrorSnackBar('修改失败: ${ref.read(userProvider).error ?? "旧密码不正确"}');
+                  context.showErrorSnackBar(
+                    ref.read(userProvider).error?.isNotEmpty == true
+                      ? '${AppTheme.msgPasswordChangeFailed}：${ref.read(userProvider).error}'
+                      : AppTheme.msgOldPasswordIncorrect,
+                  );
                 }
               }
             },

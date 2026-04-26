@@ -368,6 +368,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
     );
 
     if (!started) {
+      if (!mounted) return;
       setState(() => _isListening = false);
       if (mounted) {
         context.showWarningSnackBar(AppTheme.msgVoiceStartFailed);
@@ -378,6 +379,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
   /// 处理语音命令
   void _handleVoiceCommand(String text) {
     _voiceService.stopListening();
+    if (!mounted) return;
     setState(() => _isListening = false);
 
     final medState = ref.read(medicationProvider);
@@ -408,7 +410,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
       _markSkipped(log);
     } else {
       if (mounted) {
-        context.showWarningSnackBar('未能识别指令"$text"，请说"已服药"或"跳过"');
+        context.showWarningSnackBar(AppTheme.msgVoiceCommandNotRecognized);
       }
     }
   }
