@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using CareForTheOld.Common.Constants;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CareForTheOld.Common.Extensions;
@@ -26,5 +27,13 @@ public static class ControllerExtensions
     {
         return controller.TryGetUserId()
             ?? throw new UnauthorizedAccessException("无法获取用户身份，请重新登录");
+    }
+
+    /// <summary>
+    /// 校验并限制分页参数到合法范围
+    /// </summary>
+    public static int ClampLimit(this ControllerBase _, int limit)
+    {
+        return Math.Clamp(limit, AppConstants.Pagination.MinPageSize, AppConstants.Pagination.MaxPageSize);
     }
 }
