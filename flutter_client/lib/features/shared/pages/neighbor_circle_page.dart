@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
@@ -204,6 +205,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                     ),
                     keyboardType: TextInputType.number,
                     maxLength: 6,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   ),
                   const SizedBox(height: 8),
                   ElevatedButton(
