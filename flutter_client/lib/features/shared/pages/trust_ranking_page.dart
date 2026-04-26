@@ -65,7 +65,7 @@ class _TrustRankingPageState extends ConsumerState<TrustRankingPage> {
   Widget _buildRankingCard(BuildContext context, TrustRankingItem item, double myScore) {
     // 前三名特殊样式
     final isTop3 = item.rank <= 3;
-    final medalColors = [null, Colors.amber, Colors.grey, Colors.brown];
+    final medalColors = [null, Colors.amber, AppTheme.grey400, Colors.brown];
     final medalIcons = [null, Icons.emoji_events, Icons.emoji_events, Icons.emoji_events];
 
     return Card(

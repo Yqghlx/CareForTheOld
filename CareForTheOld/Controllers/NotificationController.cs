@@ -10,6 +10,11 @@ using static CareForTheOld.Common.Extensions.ControllerExtensions;
 
 namespace CareForTheOld.Controllers;
 
+/// <summary>
+/// 通知控制器
+/// 提供通知列表查询、标记已读、批量操作等功能
+/// 支持 SignalR 实时推送和离线通知同步
+/// </summary>
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]

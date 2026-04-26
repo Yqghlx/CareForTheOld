@@ -118,11 +118,11 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                     borderRadius: AppTheme.radiusS,
                   ),
                   child: const Center(
-                    child: Text('加载统计中...', style: TextStyle(color: Colors.grey)),
+                    child: Text('加载统计中...', style: TextStyle(color: AppTheme.grey600)),
                   ),
                 ),
                 error: (_, __) => const Center(
-                    child: Text('统计加载失败', style: TextStyle(color: Colors.grey)),
+                    child: Text('统计加载失败', style: TextStyle(color: AppTheme.grey600)),
                   ),
               ),
               const SizedBox(height: 16),

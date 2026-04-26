@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/app_theme.dart';
 
 /// 健康统计数据模型（对应后端 HealthStatsResponse）
 class HealthStats {
@@ -72,7 +73,7 @@ class HealthStats {
       case 'rising': return Colors.orange;
       case 'falling': return Colors.blue;
       case 'stable': return Colors.green;
-      default: return Colors.grey;
+      default: return AppTheme.grey500;
     }
   }
 }

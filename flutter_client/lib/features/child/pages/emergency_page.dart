@@ -136,7 +136,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                 borderRadius: AppTheme.radiusL,
               ),
               child: const Center(
-                child: Text('暂无呼叫记录', style: TextStyle(color: Colors.grey)),
+                child: Text('暂无呼叫记录', style: TextStyle(color: AppTheme.grey600)),
               ),
             )
           else

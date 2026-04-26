@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/app_theme.dart';
 
 /// 用药频率枚举（与后端 Frequency 对应，整数序列化）
 enum Frequency {
@@ -39,7 +40,7 @@ enum Frequency {
 /// 服药状态枚举（与后端 MedicationStatus 对应，整数序列化）
 enum MedicationStatus {
   taken(0, '已服', Colors.green),
-  skipped(1, '跳过', Colors.grey),
+  skipped(1, '跳过', AppTheme.grey500),
   missed(2, '漏服', Colors.red);
 
   final int value;

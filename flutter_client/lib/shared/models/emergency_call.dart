@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/extensions/date_format_extension.dart';
+import '../../core/theme/app_theme.dart';
 
 /// 紧急呼叫状态枚举（与后端对应，整数序列化）
 enum EmergencyStatus {
@@ -105,7 +106,7 @@ class EmergencyCall {
 
   /// 电池状态颜色
   Color get batteryColor {
-    if (batteryLevel == null) return Colors.grey;
+    if (batteryLevel == null) return AppTheme.grey500;
     if (batteryLevel! > 50) return Colors.green;
     if (batteryLevel! > 20) return Colors.orange;
     return Colors.red;

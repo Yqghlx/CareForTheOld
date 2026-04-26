@@ -509,7 +509,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             // 密码强度检测
             final newPwd = newPasswordController.text;
             String strengthText = '';
-            Color strengthColor = Colors.grey;
+            Color strengthColor = AppTheme.grey500;
             if (newPwd.length >= 8 && newPwd.isNotEmpty) {
               final hasLetter = RegExp(r'[a-zA-Z]').hasMatch(newPwd);
               final hasDigit = RegExp(r'\d').hasMatch(newPwd);

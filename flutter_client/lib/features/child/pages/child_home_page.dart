@@ -263,7 +263,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
             const SizedBox(height: 16),
             const Text(
               '暂无关注的老人',
-              style: TextStyle(color: Colors.grey, fontSize: 16),
+              style: TextStyle(color: AppTheme.grey600, fontSize: 16),
             ),
             const SizedBox(height: 12),
             PrimaryButton(
@@ -572,7 +572,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                                         style: TextStyle(
                                           fontSize: 16,
                                           color: entry.value.text.isEmpty
-                                              ? Colors.grey
+                                              ? AppTheme.grey500
                                               : Colors.black,
                                         ),
                                       ),

@@ -230,5 +230,7 @@ final locationReporterServiceProvider = Provider<LocationReporterService>((ref) 
   final dio = ref.read(apiClientProvider).dio;
   final connectivityService = ref.read(connectivityServiceProvider);
   final offlineQueue = ref.read(offlineQueueServiceProvider);
-  return LocationReporterService(LocationService(dio), connectivityService, offlineQueue);
+  final service = LocationReporterService(LocationService(dio), connectivityService, offlineQueue);
+  ref.onDispose(() => service.dispose());
+  return service;
 });

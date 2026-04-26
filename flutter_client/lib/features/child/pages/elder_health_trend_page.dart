@@ -117,7 +117,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
                           Text(
                             '暂无${_selectedType.label}记录',
                             style: const TextStyle(
-                                fontSize: 18, color: Colors.grey),
+                                fontSize: 18, color: AppTheme.grey500),
                           ),
                           const SizedBox(height: 8),
                           Text(
@@ -195,7 +195,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
                   children: [
                     Icon(
                       type.icon,
-                      color: isSelected ? Colors.white : Colors.grey,
+                      color: isSelected ? Colors.white : AppTheme.grey500,
                       size: 20,
                     ),
                     const SizedBox(height: 2),

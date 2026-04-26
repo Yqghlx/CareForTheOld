@@ -11,6 +11,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CareForTheOld.Controllers;
 
+/// <summary>
+/// 自动救援控制器
+/// 提供救援记录查询、子女响应确认等功能
+/// 围栏越界或心跳超时后自动触发救援流程
+/// </summary>
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/auto-rescue")]

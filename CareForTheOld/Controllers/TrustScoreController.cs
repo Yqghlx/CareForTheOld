@@ -8,6 +8,11 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace CareForTheOld.Controllers;
 
+/// <summary>
+/// 信任评分控制器
+/// 提供邻里圈信任排行榜和个人信任评分查询功能
+/// 信任评分基于互助历史、响应率和评价综合计算
+/// </summary>
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/neighbor-circles/{circleId:guid}/trust")]

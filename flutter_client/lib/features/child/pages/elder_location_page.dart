@@ -71,7 +71,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                   : Icons.security_outlined,
               color: geoFenceState.fence?.isEnabled ?? false
                   ? Colors.green
-                  : Colors.grey,
+                  : AppTheme.grey500,
             ),
             onPressed: () => _showGeoFenceDialog(context, elderName, latestLocationAsync),
             tooltip: '设置安全区域',
@@ -140,11 +140,11 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
         gradient: LinearGradient(
           colors: isEnabled
               ? [Colors.green.withValues(alpha: 0.15), Colors.green.withValues(alpha: 0.05)]
-              : [Colors.grey.withValues(alpha: 0.15), Colors.grey.withValues(alpha: 0.05)],
+              : [AppTheme.grey300.withValues(alpha: 0.15), AppTheme.grey300.withValues(alpha: 0.05)],
         ),
         borderRadius: AppTheme.radiusL,
         border: Border.all(
-          color: isEnabled ? Colors.green.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.3),
+          color: isEnabled ? Colors.green.withValues(alpha: 0.3) : AppTheme.grey500.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
@@ -153,12 +153,12 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: isEnabled ? Colors.green.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.2),
+              color: isEnabled ? Colors.green.withValues(alpha: 0.2) : AppTheme.grey500.withValues(alpha: 0.2),
               borderRadius: AppTheme.radius10,
             ),
             child: Icon(
               isEnabled ? Icons.security : Icons.security_outlined,
-              color: isEnabled ? Colors.green : Colors.grey,
+              color: isEnabled ? Colors.green : AppTheme.grey500,
               size: 24,
             ),
           ),
@@ -172,7 +172,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: isEnabled ? Colors.green : Colors.grey,
+                    color: isEnabled ? Colors.green : AppTheme.grey500,
                   ),
                 ),
                 const SizedBox(height: 4),

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/extensions/snackbar_extension.dart';
 import '../../../core/extensions/date_format_extension.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../shared/models/health_record.dart';
 import '../../../shared/models/health_stats.dart';
 import '../../../shared/models/medication_plan.dart';
@@ -16,7 +17,6 @@ import '../providers/family_provider.dart';
 import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_states.dart';
 import '../../../shared/widgets/confirm_dialog.dart';
-import '../../../core/theme/app_theme.dart';
 import '../../shared/services/health_report_service.dart';
 
 /// 老人健康数据 Provider（按 elderId 区分）
@@ -173,7 +173,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       children: [
                         SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
                         SizedBox(width: 12),
-                        Text('正在分析健康趋势...', style: TextStyle(color: Colors.grey)),
+                        Text('正在分析健康趋势...', style: TextStyle(color: AppTheme.grey500)),
                       ],
                     ),
                   ),
@@ -410,13 +410,13 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: (plan.isActive ? Colors.blue : Colors.grey)
+                        color: (plan.isActive ? Colors.blue : AppTheme.grey500)
                             .withValues(alpha: 0.15),
                         borderRadius: AppTheme.radiusS,
                       ),
                       child: Icon(
                         Icons.medication,
-                        color: plan.isActive ? Colors.blue : Colors.grey,
+                        color: plan.isActive ? Colors.blue : AppTheme.grey500,
                         size: 28,
                       ),
                     ),
@@ -430,7 +430,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: plan.isActive ? null : Colors.grey,
+                              color: plan.isActive ? null : AppTheme.grey500,
                             ),
                           ),
                           Text(
@@ -462,7 +462,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                         '频率: ${plan.frequency.label}',
                         style: TextStyle(
                           fontSize: 14,
-                          color: plan.isActive ? null : Colors.grey,
+                          color: plan.isActive ? null : AppTheme.grey500,
                         ),
                       ),
                       Text(
@@ -770,7 +770,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
           borderRadius: AppTheme.radiusL,
         ),
         child: const Center(
-          child: Text('暂无用药记录', style: TextStyle(color: Colors.grey)),
+          child: Text('暂无用药记录', style: TextStyle(color: AppTheme.grey500)),
         ),
       );
     }

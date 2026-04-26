@@ -444,7 +444,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
             const SizedBox(height: 16),
             const Text('您还没有创建家庭组', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
-            const Text('创建家庭组后，可以邀请家人加入', style: TextStyle(color: Colors.grey)),
+            const Text('创建家庭组后，可以邀请家人加入', style: TextStyle(color: AppTheme.grey600)),
             const SizedBox(height: 20),
             PrimaryButton(
               text: '创建家庭组',
@@ -476,7 +476,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
             const SizedBox(height: 16),
             const Text('您还未加入家庭组', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
-            const Text('请让子女分享邀请码给您', style: TextStyle(color: Colors.grey)),
+            const Text('请让子女分享邀请码给您', style: TextStyle(color: AppTheme.grey600)),
             const SizedBox(height: 20),
             PrimaryButton(
               text: '输入邀请码加入',
@@ -502,7 +502,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
       return const Center(
         child: Padding(
           padding: EdgeInsets.all(32),
-          child: Text('暂无家庭成员', style: TextStyle(color: Colors.grey, fontSize: 16)),
+          child: Text('暂无家庭成员', style: TextStyle(color: AppTheme.grey600, fontSize: 16)),
         ),
       );
     }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/extensions/date_format_extension.dart';
+import '../../core/theme/app_theme.dart';
 
 /// 通知记录模型
 class NotificationRecord {
@@ -70,7 +71,7 @@ class NotificationRecord {
       case 'HealthAlert':
         return Colors.orange;
       case 'HeartbeatAlert':
-        return Colors.grey;
+        return AppTheme.grey500;
       default:
         return Colors.green;
     }
