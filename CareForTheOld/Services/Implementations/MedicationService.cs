@@ -335,23 +335,7 @@ public class MedicationService : IMedicationService
     }
 
     private static MedicationPlanResponse MapToPlanResponseProjection(MedicationPlan p)
-    {
-        return new MedicationPlanResponse
-        {
-            Id = p.Id,
-            ElderId = p.ElderId,
-            ElderName = p.Elder.RealName,
-            MedicineName = p.MedicineName,
-            Dosage = p.Dosage,
-            Frequency = p.Frequency,
-            ReminderTimes = DeserializeReminderTimes(p.ReminderTimes),
-            StartDate = p.StartDate,
-            EndDate = p.EndDate,
-            IsActive = p.IsActive,
-            CreatedAt = p.CreatedAt,
-            UpdatedAt = p.UpdatedAt
-        };
-    }
+        => MapToPlanResponse(p, p.Elder?.RealName);
 
     private static MedicationLogResponse MapToLogResponse(MedicationLog log, string medicineName, string? elderName)
     {
@@ -370,18 +354,5 @@ public class MedicationService : IMedicationService
     }
 
     private static MedicationLogResponse MapToLogResponseProjection(MedicationLog l)
-    {
-        return new MedicationLogResponse
-        {
-            Id = l.Id,
-            PlanId = l.PlanId,
-            MedicineName = l.Plan.MedicineName,
-            ElderId = l.ElderId,
-            ElderName = l.Elder.RealName,
-            Status = l.Status,
-            ScheduledAt = l.ScheduledAt,
-            TakenAt = l.TakenAt,
-            Note = l.Note
-        };
-    }
+        => MapToLogResponse(l, l.Plan?.MedicineName ?? string.Empty, l.Elder?.RealName);
 }
