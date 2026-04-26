@@ -523,7 +523,6 @@ public class NeighborHelpService : INeighborHelpService
         };
 
         _context.NeighborHelpRequests.Add(helpRequest);
-        await _context.SaveChangesAsync();
 
         // 记录通知日志
         foreach (var memberId in memberIds)
@@ -533,9 +532,11 @@ public class NeighborHelpService : INeighborHelpService
                 Id = Guid.NewGuid(),
                 HelpRequestId = helpRequest.Id,
                 UserId = memberId,
-                NotifiedAt = DateTime.UtcNow,
+                NotifiedAt = requestNow,
             });
         }
+
+        // 一次性保存请求和通知日志
         await _context.SaveChangesAsync();
 
         await _notificationService.SendToUsersAsync(
