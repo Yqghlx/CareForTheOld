@@ -133,6 +133,7 @@ class AppTheme {
   static const BorderRadius radiusL = BorderRadius.all(Radius.circular(16));
   static const BorderRadius radius10 = BorderRadius.all(Radius.circular(10));
   static const BorderRadius radiusXL = BorderRadius.all(Radius.circular(20));
+  static const BorderRadius radiusTopXL = BorderRadius.vertical(top: Radius.circular(20));
   static const BorderRadius radius2XL = BorderRadius.all(Radius.circular(24));
   static const BorderRadius radius3XL = BorderRadius.all(Radius.circular(32));
 

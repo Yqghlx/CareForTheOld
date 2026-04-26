@@ -589,7 +589,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
     final source = await showModalBottomSheet<ImageSource>(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: AppTheme.radiusTopXL,
       ),
       builder: (ctx) => SafeArea(
         child: Column(
