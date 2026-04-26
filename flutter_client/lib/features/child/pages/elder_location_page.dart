@@ -281,7 +281,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                               style: const TextStyle(fontSize: 14),
                             ),
                           if (centerLat == 0)
-                            const Text('暂无位置数据，请等待老人上报位置', style: TextStyle(fontSize: 14, color: Colors.grey)),
+                            const Text('暂无位置数据，请等待老人上报位置', style: TextStyle(fontSize: 14, color: AppTheme.grey600)),
                         ],
                       ),
                     ),
@@ -401,8 +401,8 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
             children: [
               Icon(Icons.location_off, size: 48, color: AppTheme.grey400),
               const SizedBox(height: 12),
-              const Text('暂无位置记录', style: TextStyle(color: Colors.grey)),
-              const Text('老人尚未开启定位上报', style: TextStyle(fontSize: 12, color: Colors.grey)),
+              const Text('暂无位置记录', style: TextStyle(color: AppTheme.grey600)),
+              const Text('老人尚未开启定位上报', style: TextStyle(fontSize: 12, color: AppTheme.grey600)),
             ],
           ),
         ),
@@ -477,7 +477,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.explore, size: 20, color: Colors.grey),
+                          const Icon(Icons.explore, size: 20, color: AppTheme.grey500),
                           const SizedBox(width: 8),
                           Text(
                             '纬度: ${location.latitude.toStringAsFixed(4)}',
@@ -488,7 +488,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          const Icon(Icons.explore, size: 20, color: Colors.grey),
+                          const Icon(Icons.explore, size: 20, color: AppTheme.grey500),
                           const SizedBox(width: 8),
                           Text(
                             '经度: ${location.longitude.toStringAsFixed(4)}',
@@ -522,7 +522,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
           borderRadius: AppTheme.radiusL,
         ),
         child: const Center(
-          child: Text('暂无历史记录', style: TextStyle(color: Colors.grey)),
+          child: Text('暂无历史记录', style: TextStyle(color: AppTheme.grey600)),
         ),
       );
     }

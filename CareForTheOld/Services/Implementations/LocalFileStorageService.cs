@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 
@@ -35,7 +36,7 @@ public class LocalFileStorageService : IFileStorageService
         // 防止路径遍历攻击：确保最终路径在预期目录内
         var basePath = Path.GetFullPath(targetDir);
         if (!filePath.StartsWith(basePath, StringComparison.OrdinalIgnoreCase))
-            throw new UnauthorizedAccessException("非法的文件路径");
+            throw new UnauthorizedAccessException(ErrorMessages.FileStorage.IllegalFilePath);
 
         // 覆盖写入（头像场景下同一用户只保留一个文件）
         using var fileStream = new FileStream(filePath, FileMode.Create);

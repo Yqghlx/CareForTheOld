@@ -284,6 +284,60 @@ public static class ErrorMessages
         /// <summary>无权查看该用户信息</summary>
         public const string NoPermissionToView = "您不是该用户的家庭成员，无权查看";
     }
+
+    /// <summary>
+    /// 自动救援相关错误消息
+    /// </summary>
+    public static class AutoRescue
+    {
+        /// <summary>救援记录不存在</summary>
+        public const string RecordNotFound = "救援记录不存在";
+
+        /// <summary>救援记录状态不允许响应</summary>
+        public const string InvalidStatusToRespond = "救援记录当前状态不允许响应";
+
+        /// <summary>只有子女可以响应救援</summary>
+        public const string OnlyChildCanRespond = "只有该家庭的子女可以响应";
+    }
+
+    /// <summary>
+    /// 文件存储相关错误消息
+    /// </summary>
+    public static class FileStorage
+    {
+        /// <summary>非法的文件路径</summary>
+        public const string IllegalFilePath = "非法的文件路径";
+    }
+
+    /// <summary>
+    /// 配置相关错误消息
+    /// </summary>
+    public static class Configuration
+    {
+        /// <summary>JWT 密钥环境变量未配置</summary>
+        public const string JwtSecretKeyNotConfiguredInEnv = "生产环境必须通过环境变量配置 JWT 密钥";
+
+        /// <summary>JWT 密钥配置文件未配置</summary>
+        public const string JwtSecretKeyNotConfiguredInConfig = "JWT 密钥未配置或长度不足 32 字符";
+    }
+
+    /// <summary>
+    /// OSS 存储相关错误消息
+    /// </summary>
+    public static class Oss
+    {
+        /// <summary>OSS Endpoint 环境变量未配置</summary>
+        public const string EndpointNotConfigured = "OSS_ENDPOINT 环境变量未配置";
+
+        /// <summary>OSS Access Key ID 环境变量未配置</summary>
+        public const string AccessKeyIdNotConfigured = "OSS_ACCESS_KEY_ID 环境变量未配置";
+
+        /// <summary>OSS Access Key Secret 环境变量未配置</summary>
+        public const string AccessKeySecretNotConfigured = "OSS_ACCESS_KEY_SECRET 环境变量未配置";
+
+        /// <summary>OSS Bucket Name 环境变量未配置</summary>
+        public const string BucketNameNotConfigured = "OSS_BUCKET_NAME 环境变量未配置";
+    }
 }
 
 /// <summary>

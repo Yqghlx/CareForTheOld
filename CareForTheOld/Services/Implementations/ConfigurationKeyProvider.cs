@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System.Text;
@@ -26,9 +27,7 @@ public class ConfigurationKeyProvider : IKeyProvider
 
         if (string.IsNullOrWhiteSpace(key) || key.Length < 32)
         {
-            throw new InvalidOperationException(
-                "JWT 密钥未配置或长度不足 32 字符。" +
-                "请通过配置文件 Jwt:Key 节点设置，或切换至 EnvironmentKeyProvider。");
+            throw new InvalidOperationException(ErrorMessages.Configuration.JwtSecretKeyNotConfiguredInConfig);
         }
 
         return Task.FromResult(Encoding.UTF8.GetBytes(key));

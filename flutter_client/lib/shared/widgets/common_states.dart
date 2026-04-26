@@ -198,7 +198,7 @@ class SkeletonListTile extends StatelessWidget {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: AppTheme.grey300,
-                borderRadius: BorderRadius.all(Radius.circular(4)),
+                borderRadius: AppTheme.radius4,
               ),
             ),
           ),
@@ -211,7 +211,7 @@ class SkeletonListTile extends StatelessWidget {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: AppTheme.grey300,
-                borderRadius: BorderRadius.all(Radius.circular(4)),
+                borderRadius: AppTheme.radius4,
               ),
             ),
           ),
@@ -246,7 +246,7 @@ class SkeletonCard extends StatelessWidget {
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     color: AppTheme.grey300,
-                    borderRadius: BorderRadius.all(Radius.circular(4)),
+                    borderRadius: AppTheme.radius4,
                   ),
                 ),
               ),

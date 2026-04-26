@@ -268,15 +268,15 @@ public class FamilyService : IFamilyService
         // 验证操作者是子女角色
         var operatorMember = await _context.FamilyMembers
             .FirstOrDefaultAsync(fm => fm.FamilyId == familyId && fm.UserId == operatorId)
-            ?? throw new UnauthorizedAccessException("您不是该家庭成员");
+            ?? throw new UnauthorizedAccessException(ErrorMessages.Family.NotFamilyMember);
 
         if (operatorMember.Role != UserRole.Child)
-            throw new UnauthorizedAccessException("仅子女可以审批成员");
+            throw new UnauthorizedAccessException(ErrorMessages.Family.OnlyChildCanApprove);
 
         var member = await _context.FamilyMembers
             .Include(fm => fm.User)
             .FirstOrDefaultAsync(fm => fm.FamilyId == familyId && fm.UserId == memberId && fm.Status == FamilyMemberStatus.Pending)
-            ?? throw new KeyNotFoundException("未找到该待审批成员");
+            ?? throw new KeyNotFoundException(ErrorMessages.Family.PendingMemberNotFound);
 
         // 删除申请记录（而非保留 Rejected 状态，避免唯一约束冲突导致无法再次申请）
         _context.FamilyMembers.Remove(member);

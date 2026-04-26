@@ -203,10 +203,10 @@ public class AutoRescueService : IAutoRescueService
         var record = await context.AutoRescueRecords
             .AsTracking()
             .FirstOrDefaultAsync(a => a.Id == recordId)
-            ?? throw new KeyNotFoundException("救援记录不存在");
+            ?? throw new KeyNotFoundException(ErrorMessages.AutoRescue.RecordNotFound);
 
         if (record.Status != AutoRescueStatus.WaitingChildResponse)
-            throw new InvalidOperationException($"救援记录当前状态为 {record.Status}，无法响应");
+            throw new InvalidOperationException(ErrorMessages.AutoRescue.InvalidStatusToRespond);
 
         // 验证操作者是该家庭的子女
         var isChild = await context.FamilyMembers
@@ -214,7 +214,7 @@ public class AutoRescueService : IAutoRescueService
                             fm.UserId == childId &&
                             fm.Role == UserRole.Child);
         if (!isChild)
-            throw new UnauthorizedAccessException("只有该家庭的子女可以响应");
+            throw new UnauthorizedAccessException(ErrorMessages.AutoRescue.OnlyChildCanRespond);
 
         record.Status = AutoRescueStatus.ChildResponded;
         record.ChildRespondedAt = DateTime.UtcNow;

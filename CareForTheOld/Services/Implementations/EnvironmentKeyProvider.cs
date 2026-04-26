@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Services.Interfaces;
 using System.Text;
 
@@ -24,9 +25,7 @@ public class EnvironmentKeyProvider : IKeyProvider
 
         if (string.IsNullOrWhiteSpace(key) || key.Length < 32)
         {
-            throw new InvalidOperationException(
-                $"生产环境必须通过环境变量 {_envVarName} 配置 JWT 密钥。" +
-                "密钥长度至少 32 个字符。");
+            throw new InvalidOperationException(ErrorMessages.Configuration.JwtSecretKeyNotConfiguredInEnv);
         }
 
         return Task.FromResult(Encoding.UTF8.GetBytes(key));

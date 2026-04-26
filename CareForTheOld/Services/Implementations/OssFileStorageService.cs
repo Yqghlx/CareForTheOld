@@ -1,4 +1,5 @@
 using Aliyun.OSS;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 
@@ -25,13 +26,13 @@ public class OssFileStorageService : IFileStorageService
         _logger = logger;
 
         var endpoint = Environment.GetEnvironmentVariable("OSS_ENDPOINT")
-            ?? throw new InvalidOperationException("OSS_ENDPOINT 环境变量未配置");
+            ?? throw new InvalidOperationException(ErrorMessages.Oss.EndpointNotConfigured);
         var accessKeyId = Environment.GetEnvironmentVariable("OSS_ACCESS_KEY_ID")
-            ?? throw new InvalidOperationException("OSS_ACCESS_KEY_ID 环境变量未配置");
+            ?? throw new InvalidOperationException(ErrorMessages.Oss.AccessKeyIdNotConfigured);
         var accessKeySecret = Environment.GetEnvironmentVariable("OSS_ACCESS_KEY_SECRET")
-            ?? throw new InvalidOperationException("OSS_ACCESS_KEY_SECRET 环境变量未配置");
+            ?? throw new InvalidOperationException(ErrorMessages.Oss.AccessKeySecretNotConfigured);
         _bucketName = Environment.GetEnvironmentVariable("OSS_BUCKET_NAME")
-            ?? throw new InvalidOperationException("OSS_BUCKET_NAME 环境变量未配置");
+            ?? throw new InvalidOperationException(ErrorMessages.Oss.BucketNameNotConfigured);
 
         // 构建公开访问的 baseUrl（假设 bucket 已设置为公开读）
         // 格式：https://{bucketName}.{endpoint-domain}/
