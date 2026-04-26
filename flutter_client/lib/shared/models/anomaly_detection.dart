@@ -75,7 +75,7 @@ class PersonalBaseline {
 }
 
 /// 异常事件
-@JsonSerializable()
+@JsonSerializable(createFactory: false)
 class AnomalyEvent {
   final DateTime detectedAt;
   final AnomalyType type;
@@ -174,7 +174,7 @@ class PositiveFeedback {
 }
 
 /// 异常检测响应
-@JsonSerializable()
+@JsonSerializable(createFactory: false)
 class TrendAnomalyDetectionResponse {
   final String type;
   final String typeName;

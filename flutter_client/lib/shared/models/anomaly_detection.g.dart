@@ -28,17 +28,6 @@ Map<String, dynamic> _$PersonalBaselineToJson(PersonalBaseline instance) =>
       'baselineRecordCount': instance.baselineRecordCount,
     };
 
-AnomalyEvent _$AnomalyEventFromJson(Map<String, dynamic> json) => AnomalyEvent(
-      detectedAt: DateTime.parse(json['detectedAt'] as String),
-      type: $enumDecode(_$AnomalyTypeEnumMap, json['type']),
-      description: json['description'] as String,
-      severityScore: (json['severityScore'] as num).toDouble(),
-      anomalyValue: (json['anomalyValue'] as num?)?.toDouble(),
-      baselineValue: (json['baselineValue'] as num?)?.toDouble(),
-      deviationPercent: (json['deviationPercent'] as num?)?.toDouble(),
-      recommendedAction: json['recommendedAction'] as String?,
-    );
-
 Map<String, dynamic> _$AnomalyEventToJson(AnomalyEvent instance) =>
     <String, dynamic>{
       'detectedAt': instance.detectedAt.toIso8601String(),
@@ -49,6 +38,7 @@ Map<String, dynamic> _$AnomalyEventToJson(AnomalyEvent instance) =>
       'baselineValue': instance.baselineValue,
       'deviationPercent': instance.deviationPercent,
       'recommendedAction': instance.recommendedAction,
+      'severityLevel': instance.severityLevel,
     };
 
 const _$AnomalyTypeEnumMap = {
@@ -98,25 +88,6 @@ Map<String, dynamic> _$PositiveFeedbackToJson(PositiveFeedback instance) =>
       'daysStable': instance.daysStable,
       'coefficientOfVariation': instance.coefficientOfVariation,
     };
-
-TrendAnomalyDetectionResponse _$TrendAnomalyDetectionResponseFromJson(
-        Map<String, dynamic> json) =>
-    TrendAnomalyDetectionResponse(
-      type: json['type'] as String,
-      typeName: json['typeName'] as String,
-      baseline:
-          PersonalBaseline.fromJson(json['baseline'] as Map<String, dynamic>),
-      anomalies: (json['anomalies'] as List<dynamic>?)
-              ?.map((e) => AnomalyEvent.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
-      recentStats: RecentStatsSummary.fromJson(
-          json['recentStats'] as Map<String, dynamic>),
-      positiveFeedback: json['positiveFeedback'] == null
-          ? null
-          : PositiveFeedback.fromJson(
-              json['positiveFeedback'] as Map<String, dynamic>),
-    );
 
 Map<String, dynamic> _$TrendAnomalyDetectionResponseToJson(
         TrendAnomalyDetectionResponse instance) =>
