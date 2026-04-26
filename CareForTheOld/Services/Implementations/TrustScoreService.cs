@@ -1,4 +1,5 @@
 using CareForTheOld.Common.Constants;
+using CareForTheOld.Common.Helpers;
 using CareForTheOld.Data;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
@@ -119,12 +120,28 @@ public class TrustScoreService : ITrustScoreService
             _context.TrustScores.Add(score);
         }
 
-        await RecalculateSingleScoreAsync(score);
-        await _context.SaveChangesAsync();
+        try
+        {
+            await RecalculateSingleScoreAsync(score);
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex))
+        {
+            // 并发场景：另一个请求已创建了该用户的评分记录，重新查询后更新
+            _logger.LogInformation("信任评分记录并发冲突，重新查询: 用户={UserId}, 圈子={CircleId}",
+                responderId, helpRequest.CircleId);
+
+            score = await _context.TrustScores
+                .AsTracking()
+                .FirstAsync(t => t.UserId == responderId && t.CircleId == helpRequest.CircleId);
+
+            await RecalculateSingleScoreAsync(score);
+            await _context.SaveChangesAsync();
+        }
 
         _logger.LogInformation(
             "邻居 {ResponderId} 完成互助，评分已更新：Score={Score}",
-            responderId, score.Score);
+            responderId, score!.Score);
     }
 
     /// <summary>
