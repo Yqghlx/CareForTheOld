@@ -3,6 +3,9 @@ using CareForTheOld.Models.DTOs.Responses;
 
 namespace CareForTheOld.Services.Interfaces;
 
+/// <summary>
+/// 邻里圈服务接口：圈子创建、搜索、成员管理、邀请码
+/// </summary>
 public interface INeighborCircleService
 {
     /// <summary>创建邻里圈，创建者自动加入</summary>

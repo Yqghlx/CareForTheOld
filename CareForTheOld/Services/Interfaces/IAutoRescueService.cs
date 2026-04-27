@@ -4,6 +4,9 @@ using CareForTheOld.Models.Enums;
 
 namespace CareForTheOld.Services.Interfaces;
 
+/// <summary>
+/// 自动救援服务接口：子女未响应时自动触发邻里圈广播
+/// </summary>
 public interface IAutoRescueService
 {
     /// <summary>

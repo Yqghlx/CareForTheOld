@@ -4,6 +4,9 @@ using CareForTheOld.Models.DTOs.Responses;
 
 namespace CareForTheOld.Services.Interfaces;
 
+/// <summary>
+/// 邻里互助服务接口：求助广播、响应、完成确认、评价
+/// </summary>
 public interface INeighborHelpService
 {
     /// <summary>

@@ -3,6 +3,9 @@ using CareForTheOld.Models.Entities;
 
 namespace CareForTheOld.Services.Interfaces;
 
+/// <summary>
+/// 信任评分服务接口：邻居信任评分计算、排行、历史记录
+/// </summary>
 public interface ITrustScoreService
 {
     /// <summary>获取用户在指定圈的信任评分</summary>
