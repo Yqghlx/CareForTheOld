@@ -106,7 +106,7 @@ public class NeighborCircleControllerTests
         // Assert
         result.Success.Should().BeTrue();
         result.Data!.CircleName.Should().Be("新圈子");
-        result.Message.Should().Be("创建成功");
+        result.Message.Should().Be(SuccessMessages.NeighborCircle.CreateSuccess);
     }
 
     [Fact]
@@ -143,7 +143,7 @@ public class NeighborCircleControllerTests
 
         // Assert
         result.Success.Should().BeTrue();
-        result.Message.Should().Be("加入成功");
+        result.Message.Should().Be(SuccessMessages.NeighborCircle.JoinSuccess);
         _mockService.Verify(s => s.JoinCircleByCodeAsync(_userId, request), Times.Once);
     }
 
@@ -159,7 +159,7 @@ public class NeighborCircleControllerTests
 
         // Assert
         result.Success.Should().BeTrue();
-        result.Message.Should().Be("已退出邻里圈");
+        result.Message.Should().Be(SuccessMessages.NeighborCircle.LeaveSuccess);
         _mockService.Verify(s => s.LeaveCircleAsync(circleId, _userId), Times.Once);
     }
 
@@ -183,7 +183,7 @@ public class NeighborCircleControllerTests
         // Assert
         result.Success.Should().BeTrue();
         result.Data!.InviteCode.Should().Be("999999");
-        result.Message.Should().Be("邀请码已刷新");
+        result.Message.Should().Be(SuccessMessages.NeighborCircle.InviteCodeRefreshed);
     }
 
     [Fact]

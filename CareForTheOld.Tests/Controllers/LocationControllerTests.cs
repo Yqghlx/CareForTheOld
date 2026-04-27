@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Controllers;
 using CareForTheOld.Models.DTOs.Requests.Location;
 using CareForTheOld.Models.DTOs.Responses;
@@ -86,7 +87,7 @@ public class LocationControllerTests
         // Assert
         result.Success.Should().BeTrue();
         result.Data!.Latitude.Should().Be(39.9042);
-        result.Message.Should().Be("位置上报成功");
+        result.Message.Should().Be(SuccessMessages.Location.ReportSuccess);
     }
 
     [Fact]
@@ -147,7 +148,7 @@ public class LocationControllerTests
 
         // Assert
         result.Success.Should().BeFalse();
-        result.Message.Should().Be("您不是该家庭成员");
+        result.Message.Should().Be(ErrorMessages.Family.NotFamilyMember);
     }
 
     [Fact]

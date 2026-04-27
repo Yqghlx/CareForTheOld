@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Controllers;
 using CareForTheOld.Models.DTOs.Requests.Health;
 using CareForTheOld.Models.DTOs.Responses;
@@ -112,7 +113,7 @@ public class HealthControllerTests
         result.Success.Should().BeTrue();
         result.Data!.Systolic.Should().Be(120);
         result.Data.Diastolic.Should().Be(80);
-        result.Message.Should().Be("记录成功");
+        result.Message.Should().Be(SuccessMessages.Health.RecordSuccess);
         _mockHealthService.Verify(s => s.CreateRecordAsync(_elderId, request), Times.Once);
     }
 
@@ -173,7 +174,7 @@ public class HealthControllerTests
 
         // Assert
         result.Success.Should().BeFalse();
-        result.Message.Should().Be("您不是该家庭成员");
+        result.Message.Should().Be(ErrorMessages.Family.NotFamilyMember);
     }
 
     [Fact]
@@ -245,7 +246,7 @@ public class HealthControllerTests
 
         // Assert
         result.Success.Should().BeTrue();
-        result.Message.Should().Be("删除成功");
+        result.Message.Should().Be(SuccessMessages.Health.DeleteSuccess);
         _mockHealthService.Verify(s => s.DeleteRecordAsync(_elderId, recordId), Times.Once);
     }
 

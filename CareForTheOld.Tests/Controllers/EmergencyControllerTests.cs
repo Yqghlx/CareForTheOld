@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Controllers;
 using CareForTheOld.Models.DTOs.Requests.Emergency;
 using CareForTheOld.Models.DTOs.Responses;
@@ -88,7 +89,7 @@ public class EmergencyControllerTests
         result.Success.Should().BeTrue();
         result.Data!.Status.Should().Be(EmergencyStatus.Pending);
         result.Data.BatteryLevel.Should().Be(85);
-        result.Message.Should().Be("紧急呼叫已发送，已通知家人和附近邻居");
+        result.Message.Should().Be(SuccessMessages.Emergency.CallSent);
     }
 
     [Fact]
@@ -161,7 +162,7 @@ public class EmergencyControllerTests
         // Assert
         result.Success.Should().BeTrue();
         result.Data!.Status.Should().Be(EmergencyStatus.Responded);
-        result.Message.Should().Be("已标记处理");
+        result.Message.Should().Be(SuccessMessages.Emergency.MarkHandled);
     }
 
     [Fact]

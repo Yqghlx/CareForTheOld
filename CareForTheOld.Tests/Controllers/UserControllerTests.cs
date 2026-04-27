@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Controllers;
 using CareForTheOld.Models.DTOs.Requests.Users;
 using CareForTheOld.Models.DTOs.Responses;
@@ -84,7 +85,7 @@ public class UserControllerTests
         // Assert
         result.Success.Should().BeTrue();
         result.Data!.RealName.Should().Be("张大爷改名");
-        result.Message.Should().Be("更新成功");
+        result.Message.Should().Be(SuccessMessages.User.UpdateSuccess);
     }
 
     [Fact]
@@ -106,7 +107,7 @@ public class UserControllerTests
 
         // Assert
         result.Success.Should().BeTrue();
-        result.Message.Should().Be("密码修改成功");
+        result.Message.Should().Be(SuccessMessages.User.PasswordChanged);
         _mockUserService.Verify(s => s.ChangePasswordAsync(_userId, request), Times.Once);
     }
 

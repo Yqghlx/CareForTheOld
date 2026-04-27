@@ -56,7 +56,7 @@ public class AuthControllerTests
         result.Should().NotBeNull();
         result.Success.Should().BeTrue();
         result.Data.Should().BeEquivalentTo(expectedResponse);
-        result.Message.Should().Be("注册成功");
+        result.Message.Should().Be(SuccessMessages.Auth.RegisterSuccess);
     }
 
     [Fact]
@@ -81,7 +81,7 @@ public class AuthControllerTests
         // Assert
         result.Success.Should().BeTrue();
         result.Data!.AccessToken.Should().Be("login-token");
-        result.Message.Should().Be("登录成功");
+        result.Message.Should().Be(SuccessMessages.Auth.LoginSuccess);
     }
 
     [Fact]
@@ -106,7 +106,7 @@ public class AuthControllerTests
         // Assert
         result.Success.Should().BeTrue();
         result.Data!.AccessToken.Should().Be("new-access-token");
-        result.Message.Should().Be("刷新成功");
+        result.Message.Should().Be(SuccessMessages.Auth.RefreshSuccess);
     }
 
     [Fact]

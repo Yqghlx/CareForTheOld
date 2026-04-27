@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Controllers;
 using CareForTheOld.Models.DTOs.Requests.Medication;
 using CareForTheOld.Models.DTOs.Responses;
@@ -86,7 +87,7 @@ public class MedicationControllerTests
         // Assert
         result.Success.Should().BeTrue();
         result.Data!.MedicineName.Should().Be("降压药");
-        result.Message.Should().Be("创建成功");
+        result.Message.Should().Be(SuccessMessages.Medication.CreateSuccess);
     }
 
     [Fact]
@@ -159,7 +160,7 @@ public class MedicationControllerTests
         // Assert
         result.Success.Should().BeTrue();
         result.Data!.Status.Should().Be(MedicationStatus.Taken);
-        result.Message.Should().Be("记录成功");
+        result.Message.Should().Be(SuccessMessages.Medication.LogSuccess);
     }
 
     [Fact]
@@ -200,7 +201,7 @@ public class MedicationControllerTests
 
         // Assert
         result.Success.Should().BeTrue();
-        result.Message.Should().Be("删除成功");
+        result.Message.Should().Be(SuccessMessages.Medication.DeleteSuccess);
         _mockService.Verify(s => s.DeletePlanAsync(planId, _childId), Times.Once);
     }
 }

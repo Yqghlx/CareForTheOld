@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Controllers;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Services.Interfaces;
@@ -94,7 +95,7 @@ public class NotificationControllerTests
 
         // Assert
         result.Success.Should().BeTrue();
-        result.Message.Should().Be("已标记为已读");
+        result.Message.Should().Be(SuccessMessages.Notification.MarkedRead);
     }
 
     [Fact]
@@ -112,7 +113,7 @@ public class NotificationControllerTests
         var result = await _controller.MarkAsRead(notificationId);
 
         // Assert
-        result.Message.Should().Be("通知不存在");
+        result.Message.Should().Be(SuccessMessages.Notification.NotFound);
     }
 
     [Fact]
@@ -129,7 +130,7 @@ public class NotificationControllerTests
 
         // Assert
         result.Success.Should().BeTrue();
-        result.Message.Should().Be("全部标记为已读");
+        result.Message.Should().Be(SuccessMessages.Notification.AllMarkedRead);
         _mockService.Verify(s => s.MarkAllAsReadAsync(_userId), Times.Once);
     }
 }

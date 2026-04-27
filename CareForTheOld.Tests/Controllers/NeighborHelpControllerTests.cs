@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Controllers;
 using CareForTheOld.Models.DTOs.Requests.Neighbor;
 using CareForTheOld.Models.DTOs.Responses;
@@ -119,7 +120,7 @@ public class NeighborHelpControllerTests
 
         // Assert
         result.Success.Should().BeTrue();
-        result.Message.Should().Be("已接受求助");
+        result.Message.Should().Be(SuccessMessages.NeighborHelp.AcceptSuccess);
         result.Data!.Status.Should().Be(HelpRequestStatus.Accepted);
     }
 
@@ -135,7 +136,7 @@ public class NeighborHelpControllerTests
 
         // Assert
         result.Success.Should().BeTrue();
-        result.Message.Should().Be("已取消求助");
+        result.Message.Should().Be(SuccessMessages.NeighborHelp.CancelSuccess);
         _mockService.Verify(s => s.CancelHelpRequestAsync(requestId, _userId), Times.Once);
     }
 
@@ -161,7 +162,7 @@ public class NeighborHelpControllerTests
 
         // Assert
         result.Success.Should().BeTrue();
-        result.Message.Should().Be("评价成功");
+        result.Message.Should().Be(SuccessMessages.NeighborHelp.RateSuccess);
         result.Data!.Rating.Should().Be(5);
     }
 

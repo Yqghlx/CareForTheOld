@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Controllers;
 using CareForTheOld.Models.DTOs.Requests.GeoFences;
 using CareForTheOld.Models.DTOs.Responses;
@@ -78,7 +79,7 @@ public class GeoFenceControllerTests
         // Assert
         result.Success.Should().BeTrue();
         result.Data!.Radius.Should().Be(500);
-        result.Message.Should().Be("围栏创建成功");
+        result.Message.Should().Be(SuccessMessages.GeoFence.CreateSuccess);
     }
 
     [Fact]
@@ -102,7 +103,7 @@ public class GeoFenceControllerTests
 
         // Assert
         result.Success.Should().BeFalse();
-        result.Message.Should().Be("无权查看该老人的围栏信息");
+        result.Message.Should().Be(ErrorMessages.GeoFence.NoPermissionToView);
     }
 
     [Fact]
@@ -171,7 +172,7 @@ public class GeoFenceControllerTests
         // Assert
         result.Success.Should().BeTrue();
         result.Data!.Radius.Should().Be(800);
-        result.Message.Should().Be("围栏更新成功");
+        result.Message.Should().Be(SuccessMessages.GeoFence.UpdateSuccess);
     }
 
     [Fact]
@@ -190,7 +191,7 @@ public class GeoFenceControllerTests
 
         // Assert
         result.Success.Should().BeTrue();
-        result.Message.Should().Be("围栏删除成功");
+        result.Message.Should().Be(SuccessMessages.GeoFence.DeleteSuccess);
         _mockFenceService.Verify(s => s.DeleteFenceAsync(fenceId, _childId), Times.Once);
     }
 }

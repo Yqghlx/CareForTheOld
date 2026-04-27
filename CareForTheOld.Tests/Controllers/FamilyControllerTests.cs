@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Controllers;
 using CareForTheOld.Models.DTOs.Requests.Families;
 using CareForTheOld.Models.DTOs.Responses;
@@ -78,7 +79,7 @@ public class FamilyControllerTests
         // Assert
         result.Success.Should().BeTrue();
         result.Data!.FamilyName.Should().Be("李家");
-        result.Message.Should().Be("创建成功");
+        result.Message.Should().Be(SuccessMessages.Family.CreateSuccess);
     }
 
     [Fact]
@@ -89,7 +90,7 @@ public class FamilyControllerTests
         var request = new JoinFamilyRequest { InviteCode = "123456", Relation = "爸爸" };
         var expected = new JoinFamilyResponse
         {
-            Message = "申请已提交，等待子女审批",
+            Message = SuccessMessages.Family.ApplySubmitted + "，等待子女审批",
             FamilyName = "王家",
             Status = FamilyMemberStatus.Pending
         };
@@ -103,7 +104,7 @@ public class FamilyControllerTests
 
         // Assert
         result.Success.Should().BeTrue();
-        result.Message.Should().Be("申请已提交");
+        result.Message.Should().Be(SuccessMessages.Family.ApplySubmitted);
         result.Data!.Status.Should().Be(FamilyMemberStatus.Pending);
         _mockService.Verify(s => s.JoinFamilyByCodeAsync(_userId, request), Times.Once);
     }
@@ -125,7 +126,7 @@ public class FamilyControllerTests
 
         // Assert
         result.Success.Should().BeFalse();
-        result.Message.Should().Be("您不是该家庭成员");
+        result.Message.Should().Be(ErrorMessages.Family.NotFamilyMember);
     }
 
     [Fact]
@@ -164,7 +165,7 @@ public class FamilyControllerTests
 
         // Assert
         result.Success.Should().BeTrue();
-        result.Message.Should().Be("移除成功");
+        result.Message.Should().Be(SuccessMessages.Family.RemoveSuccess);
         _mockService.Verify(
             s => s.RemoveMemberAsync(familyId, targetUserId, _userId), Times.Once);
     }
@@ -187,7 +188,7 @@ public class FamilyControllerTests
         // Assert
         result.Success.Should().BeTrue();
         result.Data!.InviteCode.Should().Be("654321");
-        result.Message.Should().Be("邀请码已刷新");
+        result.Message.Should().Be(SuccessMessages.Family.InviteCodeRefreshed);
     }
 
     [Fact]
@@ -230,7 +231,7 @@ public class FamilyControllerTests
 
         // Assert
         result.Success.Should().BeTrue();
-        result.Message.Should().Be("审批通过");
+        result.Message.Should().Be(SuccessMessages.Family.ApproveSuccess);
         _mockService.Verify(
             s => s.ApproveMemberAsync(familyId, memberId, _userId), Times.Once);
     }
@@ -252,7 +253,7 @@ public class FamilyControllerTests
 
         // Assert
         result.Success.Should().BeTrue();
-        result.Message.Should().Be("已拒绝");
+        result.Message.Should().Be(SuccessMessages.Family.RejectSuccess);
         _mockService.Verify(
             s => s.RejectMemberAsync(familyId, memberId, _userId), Times.Once);
     }
