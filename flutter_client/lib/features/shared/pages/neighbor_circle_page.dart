@@ -133,7 +133,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
           if (state.members.isEmpty)
             const Padding(
               padding: AppTheme.paddingAll16,
-              child: Text('暂无成员信息'),
+              child: Text(AppTheme.msgNoMemberInfo),
             ),
 
           AppTheme.spacer16,

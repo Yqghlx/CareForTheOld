@@ -59,7 +59,7 @@ class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
   /// 待响应求助列表
   Widget _buildPendingList(BuildContext context, List<NeighborHelpRequest> requests) {
     if (requests.isEmpty) {
-      return const Center(child: Text('暂无待响应的求助'));
+      return const Center(child: Text(AppTheme.msgNoPendingHelp));
     }
 
     return RefreshIndicator(
@@ -81,7 +81,7 @@ class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
   /// 历史记录列表
   Widget _buildHistoryList(BuildContext context, List<NeighborHelpRequest> requests) {
     if (requests.isEmpty) {
-      return const Center(child: Text('暂无互助记录'));
+      return const Center(child: Text(AppTheme.msgNoHelpRecord));
     }
 
     return RefreshIndicator(

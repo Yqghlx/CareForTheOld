@@ -111,7 +111,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                   const Icon(Icons.check_circle_outline, color: AppTheme.successColor),
                   AppTheme.hSpacer8,
                   const Text(
-                    '暂无待处理的紧急呼叫',
+                    AppTheme.msgNoPendingEmergency,
                     style: TextStyle(color: AppTheme.successColor),
                   ),
                 ],
@@ -133,7 +133,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
               padding: AppTheme.paddingAll24,
               decoration: AppTheme.decorationCardLight,
               child: const Center(
-                child: Text('暂无呼叫记录', style: AppTheme.textGrey),
+                child: Text(AppTheme.msgNoCallRecord, style: AppTheme.textGrey),
               ),
             )
           else
@@ -412,7 +412,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
           width: double.maxFinite,
           height: 400,
           child: historyCalls.isEmpty
-              ? const Center(child: Text('暂无历史记录'))
+              ? const Center(child: Text(AppTheme.msgNoHistoryRecord))
               : ListView.builder(
                   itemCount: historyCalls.length,
                   itemBuilder: (context, index) {

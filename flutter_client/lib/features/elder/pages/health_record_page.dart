@@ -165,7 +165,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
         padding: EdgeInsets.symmetric(vertical: 8),
         child: EmptyStateWidget(
           icon: Icons.analytics_outlined,
-          title: '暂无统计数据',
+          title: AppTheme.msgNoStats,
           subtitle: '记录健康数据后，这里会显示趋势概览',
         ),
       );
@@ -298,7 +298,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
     if (state.records.isEmpty) {
       return const EmptyStateWidget(
         icon: Icons.note_add_outlined,
-        title: '暂无健康记录',
+        title: AppTheme.msgNoHealthRecord,
         subtitle: '点击上方卡片开始记录',
       );
     }

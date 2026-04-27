@@ -44,7 +44,7 @@ class _TrustRankingPageState extends ConsumerState<TrustRankingPage> {
                       ref.read(trustScoreProvider.notifier).loadRanking(widget.circleId),
                 )
               : state.rankings.isEmpty
-                  ? const Center(child: Text('暂无信任评分数据'))
+                  ? const Center(child: Text(AppTheme.msgNoTrustData))
                   : RefreshIndicator(
                       onRefresh: () async {
                         await ref.read(trustScoreProvider.notifier).loadRanking(widget.circleId);

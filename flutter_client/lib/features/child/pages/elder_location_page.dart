@@ -278,7 +278,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                               style: AppTheme.textBody,
                             ),
                           if (centerLat == 0)
-                            const Text('暂无位置数据，请等待老人上报位置', style: AppTheme.textSubtitle),
+                            const Text(AppTheme.msgNoLocationData, style: AppTheme.textSubtitle),
                         ],
                       ),
                     ),
@@ -395,7 +395,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
             children: [
               const Icon(Icons.location_off, size: AppTheme.iconSizeXxl, color: AppTheme.grey400),
               AppTheme.spacer12,
-              const Text('暂无位置记录', style: AppTheme.textGrey),
+              const Text(AppTheme.msgNoLocationRecord, style: AppTheme.textGrey),
               const Text('老人尚未开启定位上报', style: AppTheme.textCaptionDark),
             ],
           ),

@@ -376,6 +376,20 @@ class AppTheme {
   static const String labelRecent7Days = '最近7天';
   static const String labelRecent30Days = '最近30天';
 
+  // 空状态提示文案
+  static const String msgNoHealthRecord = '暂无健康记录';
+  static const String msgNoHistoryRecord = '暂无历史记录';
+  static const String msgNoStats = '暂无统计数据';
+  static const String msgNoNotification = '暂无通知';
+  static const String msgNoPendingHelp = '暂无待响应的求助';
+  static const String msgNoHelpRecord = '暂无互助记录';
+  static const String msgNoTrustData = '暂无信任评分数据';
+  static const String msgNoMemberInfo = '暂无成员信息';
+  static const String msgNoLocationData = '暂无位置数据，请等待老人上报位置';
+  static const String msgNoLocationRecord = '暂无位置记录';
+  static const String msgNoPendingEmergency = '暂无待处理的紧急呼叫';
+  static const String msgNoCallRecord = '暂无呼叫记录';
+
   // 健康状态标签
   static const String labelHigh = '偏高';
   static const String labelLow = '偏低';

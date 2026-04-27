@@ -68,7 +68,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
           SizedBox(height: MediaQuery.of(context).size.height * 0.3),
           const EmptyStateWidget(
             icon: Icons.notifications_none,
-            title: '暂无通知',
+            title: AppTheme.msgNoNotification,
           ),
         ],
       );
