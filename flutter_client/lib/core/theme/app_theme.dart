@@ -111,6 +111,8 @@ class AppTheme {
   static const TextStyle textGrey800_16 = TextStyle(fontSize: 16, color: grey800);
   static const TextStyle textGrey700_12 = TextStyle(fontSize: 12, color: grey700);
   static const TextStyle textSmall11Grey = TextStyle(fontSize: 11, color: grey500);
+  static const TextStyle textEmptyTitle = TextStyle(fontSize: 18, color: grey500);
+  static const TextStyle textEmptySubtitle = TextStyle(fontSize: 14, color: grey500);
 
   /// 渐变配置
   static const LinearGradient primaryGradient = LinearGradient(

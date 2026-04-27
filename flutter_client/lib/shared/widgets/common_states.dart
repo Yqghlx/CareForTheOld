@@ -31,14 +31,14 @@ class EmptyStateWidget extends StatelessWidget {
             AppTheme.spacer16,
             Text(
               title,
-              style: const TextStyle(fontSize: 18, color: AppTheme.grey500),
+              style: AppTheme.textEmptyTitle,
               textAlign: TextAlign.center,
             ),
             if (subtitle != null) ...[
               AppTheme.spacer8,
               Text(
                 subtitle!,
-                style: TextStyle(fontSize: 14, color: AppTheme.grey500),
+                style: AppTheme.textEmptySubtitle,
                 textAlign: TextAlign.center,
               ),
             ],
