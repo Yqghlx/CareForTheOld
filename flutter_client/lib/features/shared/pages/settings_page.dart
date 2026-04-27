@@ -196,14 +196,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 children: [
                   _buildSettingItem(
                     icon: Icons.person_outline,
-                    title: '修改姓名',
+                    title: AppTheme.titleChangeName,
                     subtitle: userState.user?.realName ?? authState.user?.realName ?? '未设置',
                     onTap: () => _showEditNameDialog(),
                   ),
                   const Divider(height: 1),
                   _buildSettingItem(
                     icon: Icons.lock_outline,
-                    title: '修改密码',
+                    title: AppTheme.titleChangePassword,
                     subtitle: '更改登录密码',
                     onTap: () => _showChangePasswordDialog(),
                   ),
@@ -439,13 +439,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               child: const Icon(Icons.person, color: AppTheme.primaryColor),
             ),
             AppTheme.hSpacer12,
-            const Text('修改姓名'),
+            const Text(AppTheme.titleChangeName),
           ],
         ),
         content: TextField(
           controller: nameController,
           decoration: InputDecoration(
-            labelText: '姓名',
+            labelText: AppTheme.labelRealName,
             border: OutlineInputBorder(
               borderRadius: AppTheme.radiusS,
             ),
@@ -543,7 +543,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     child: const Icon(Icons.lock, color: AppTheme.primaryColor),
                   ),
                   AppTheme.hSpacer12,
-                  const Text('修改密码'),
+                  const Text(AppTheme.titleChangePassword),
                 ],
               ),
               content: Column(

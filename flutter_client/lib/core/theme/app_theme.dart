@@ -395,6 +395,18 @@ class AppTheme {
   static const String msgNoPendingEmergency = '暂无待处理的紧急呼叫';
   static const String msgNoCallRecord = '暂无呼叫记录';
 
+  // 设置页面标题
+  static const String titleChangeName = '修改姓名';
+  static const String titleChangePassword = '修改密码';
+
+  // 表单标签
+  static const String labelPhone = '手机号';
+  static const String labelPassword = '密码';
+  static const String labelRealName = '姓名';
+  static const String labelInviteCode = '邀请码';
+  static const String tooltipShowPassword = '显示密码';
+  static const String tooltipHidePassword = '隐藏密码';
+
   // 健康状态标签
   static const String labelHigh = '偏高';
   static const String labelLow = '偏低';

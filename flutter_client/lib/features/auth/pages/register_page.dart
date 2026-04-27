@@ -106,7 +106,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 TextFormField(
                   controller: _phoneController,
                   decoration: const InputDecoration(
-                    labelText: '手机号',
+                    labelText: AppTheme.labelPhone,
                     prefixIcon: Icon(Icons.phone),
                   ),
                   keyboardType: TextInputType.phone,
@@ -118,7 +118,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(
-                    labelText: '密码',
+                    labelText: AppTheme.labelPassword,
                     prefixIcon: const Icon(Icons.lock),
                     helperText: '至少8位，需包含字母和数字',
                     suffixIcon: IconButton(
@@ -127,7 +127,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                         color: AppTheme.grey600,
                       ),
                       onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
-                      tooltip: _obscurePassword ? '显示密码' : '隐藏密码',
+                      tooltip: _obscurePassword ? AppTheme.tooltipShowPassword : AppTheme.tooltipHidePassword,
                     ),
                   ),
                   obscureText: _obscurePassword,
@@ -139,7 +139,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 TextFormField(
                   controller: _nameController,
                   decoration: const InputDecoration(
-                    labelText: '姓名',
+                    labelText: AppTheme.labelRealName,
                     prefixIcon: Icon(Icons.person),
                   ),
                   validator: FormValidators.name,

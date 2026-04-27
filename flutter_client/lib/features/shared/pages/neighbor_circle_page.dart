@@ -198,7 +198,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                   TextField(
                     controller: _inviteCodeController,
                     decoration: const InputDecoration(
-                      labelText: '邀请码',
+                      labelText: AppTheme.labelInviteCode,
                       hintText: '输入 6 位数字邀请码',
                       border: OutlineInputBorder(),
                     ),

@@ -171,7 +171,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                     child: TextFormField(
                       controller: phoneController,
                       decoration: const InputDecoration(
-                        labelText: '手机号',
+                        labelText: AppTheme.labelPhone,
                         prefixIcon: Icon(Icons.phone, color: AppTheme.primaryColor),
                         border: InputBorder.none,
                         contentPadding: AppTheme.paddingAll16,
@@ -199,7 +199,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                     child: TextFormField(
                       controller: passwordController,
                       decoration: InputDecoration(
-                        labelText: '密码',
+                        labelText: AppTheme.labelPassword,
                         prefixIcon: const Icon(Icons.lock, color: AppTheme.primaryColor),
                         border: InputBorder.none,
                         contentPadding: AppTheme.paddingAll16,
@@ -209,7 +209,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                             color: AppTheme.grey600,
                           ),
                           onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
-                          tooltip: _obscurePassword ? '显示密码' : '隐藏密码',
+                          tooltip: _obscurePassword ? AppTheme.tooltipShowPassword : AppTheme.tooltipHidePassword,
                         ),
                       ),
                       obscureText: _obscurePassword,

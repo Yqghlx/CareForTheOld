@@ -348,7 +348,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            '邀请码',
+            AppTheme.labelInviteCode,
             style: AppTheme.textWhite14,
           ),
           AppTheme.spacer8,
@@ -821,7 +821,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                   TextField(
                     controller: phoneController,
                     decoration: InputDecoration(
-                      labelText: '手机号',
+                      labelText: AppTheme.labelPhone,
                       prefixIcon: const Icon(Icons.phone),
                       border: OutlineInputBorder(borderRadius: AppTheme.radiusS),
                     ),
