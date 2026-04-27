@@ -254,6 +254,11 @@ class AppTheme {
   static const String msgVoiceCommandNotRecognized = '未能识别指令，请说"已服药"或"跳过"';
   static const String msgVoiceInputFailed = '语音识别启动失败，请手动输入';
 
+  // 用药状态标签
+  static const String labelMedPending = '待服用';
+  static const String labelMedTaken = '已服用';
+  static const String labelMedSkipped = '已跳过';
+
   // 紧急呼叫消息
   static const String msgEmergencyLongPress = '请长按按钮 2 秒发起紧急呼叫';
   static const String msgEmergencyCancelled = '已取消，请长按 2 秒发起呼叫';

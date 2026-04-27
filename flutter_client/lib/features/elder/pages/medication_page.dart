@@ -115,9 +115,9 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _buildStatItem('待服用', '${state.pendingCount}', AppTheme.warningColor),
-            _buildStatItem('已服用', '${state.takenCount}', AppTheme.successColor),
-            _buildStatItem('已跳过', '${state.skippedCount}', AppTheme.grey500),
+            _buildStatItem(AppTheme.labelMedPending, '${state.pendingCount}', AppTheme.warningColor),
+            _buildStatItem(AppTheme.labelMedTaken, '${state.takenCount}', AppTheme.successColor),
+            _buildStatItem(AppTheme.labelMedSkipped, '${state.skippedCount}', AppTheme.grey500),
           ],
         ),
       ),
@@ -548,7 +548,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
                 children: [
                   Expanded(
                     child: PrimaryIconButton(
-                      text: '已服用',
+                      text: AppTheme.labelMedTaken,
                       icon: Icons.check,
                       onPressed: widget.isSubmitting ? null : widget.onTaken,
                       isLoading: widget.isSubmitting,
