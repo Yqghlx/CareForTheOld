@@ -130,6 +130,10 @@ public class MedicationService : IMedicationService
 
         _logger.LogInformation("用药计划已删除：计划 {PlanId}，操作者 {OperatorId}", planId, operatorId);
     }
+
+    /// <summary>
+    /// 记录用药日志（含并发冲突处理：计划 ID + 时间唯一约束）
+    /// </summary>
     public async Task<MedicationLogResponse> RecordLogAsync(Guid operatorId, RecordMedicationLogRequest request)
     {
         var plan = await _context.MedicationPlans

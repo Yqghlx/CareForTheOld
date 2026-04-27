@@ -21,6 +21,7 @@ public class HealthReportService : IHealthReportService
     public HealthReportService(AppDbContext context) => _context = context;
 
     /// <summary>
+    /// <summary>
     /// 生成健康报告 PDF
     /// </summary>
     public async Task<byte[]> GeneratePdfReportAsync(Guid userId, int daysRange)
