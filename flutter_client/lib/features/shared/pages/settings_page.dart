@@ -401,7 +401,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     title,
                     style: AppTheme.textHeading,
                   ),
-                  const SizedBox(height: 2),
+                  AppTheme.spacer2,
                   Text(
                     subtitle,
                     style: AppTheme.textSubtitle,

@@ -160,7 +160,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
                           ),
                       ],
                     ),
-                    const SizedBox(height: 6),
+                    AppTheme.spacer6,
                     Text(
                       notification.content,
                       style: AppTheme.textSecondary14,

@@ -232,7 +232,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                           color: AppTheme.cardColor,
                         ),
                       ),
-                      const SizedBox(height: 6),
+                      AppTheme.spacer6,
                       Text(
                         '今天感觉怎么样？',
                         style: TextStyle(

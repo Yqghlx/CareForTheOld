@@ -179,7 +179,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                       color: isSelected ? AppTheme.cardColor : AppTheme.grey500,
                       size: 20,
                     ),
-                    const SizedBox(height: 2),
+                    AppTheme.spacer2,
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(

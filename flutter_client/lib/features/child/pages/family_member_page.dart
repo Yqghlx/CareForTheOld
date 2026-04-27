@@ -149,7 +149,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     member.realName.isEmpty ? '未设置姓名' : member.realName,
                     style: AppTheme.textHeading,
                   ),
-                  const SizedBox(height: 2),
+                  AppTheme.spacer2,
                   Row(
                     children: [
                       Container(

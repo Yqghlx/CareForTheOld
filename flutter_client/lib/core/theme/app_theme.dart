@@ -193,7 +193,9 @@ class AppTheme {
   static const SizedBox spacer12 = SizedBox(height: 12);
   static const SizedBox spacer10 = SizedBox(height: 10);
   static const SizedBox spacer8 = SizedBox(height: 8);
+  static const SizedBox spacer6 = SizedBox(height: 6);
   static const SizedBox spacer4 = SizedBox(height: 4);
+  static const SizedBox spacer2 = SizedBox(height: 2);
 
   /// 常用水平间距组件
   static const SizedBox hSpacer20 = SizedBox(width: 20);

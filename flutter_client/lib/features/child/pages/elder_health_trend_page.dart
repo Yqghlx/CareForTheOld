@@ -195,7 +195,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
                       color: isSelected ? AppTheme.cardColor : AppTheme.grey500,
                       size: 20,
                     ),
-                    const SizedBox(height: 2),
+                    AppTheme.spacer2,
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
