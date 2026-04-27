@@ -1171,7 +1171,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                             ),
                             child: Text(
                               '连续${anomaly.positiveFeedback!.daysStable}天平稳',
-                              style: TextStyle(fontSize: 12, color: AppTheme.successColor),
+                              style: AppTheme.textSuccess12,
                             ),
                           ),
                         ],
@@ -1179,7 +1179,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       AppTheme.spacer10,
                       Text(
                         anomaly.positiveFeedback!.message,
-                        style: TextStyle(fontSize: 14, color: AppTheme.successDark, height: 1.4),
+                        style: AppTheme.textSuccessDark14.copyWith(height: 1.4),
                       ),
                       AppTheme.spacer8,
                       Row(
@@ -1188,7 +1188,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                           AppTheme.hSpacer4,
                           Text(
                             '变异系数: ${anomaly.positiveFeedback!.coefficientOfVariation.toStringAsFixed(1)}%',
-                            style: TextStyle(fontSize: 12, color: AppTheme.successMedium),
+                            style: AppTheme.textSuccessMedium12,
                           ),
                         ],
                       ),
@@ -1209,7 +1209,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       Expanded(
                         child: Text(
                           '$elderName 的健康数据趋势稳定，未发现异常',
-                          style: TextStyle(fontSize: 14, color: AppTheme.successDark),
+                          style: AppTheme.textSuccessDark14,
                         ),
                       ),
                     ],
@@ -1318,7 +1318,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 ),
                 child: Text(
                   timeStr,
-                  style: TextStyle(fontSize: 12, color: AppTheme.grey700),
+                  style: AppTheme.textGrey700_12,
                 ),
               ),
               AppTheme.hSpacer12,
@@ -1388,7 +1388,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   Expanded(
                     child: Text(
                       event.recommendedAction!,
-                      style: TextStyle(fontSize: 13, color: AppTheme.infoBlueDark),
+                      style: AppTheme.textInfoDark13,
                     ),
                   ),
                 ],

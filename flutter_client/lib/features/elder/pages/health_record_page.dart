@@ -103,7 +103,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       Expanded(
                         child: Text(
                           '网络未连接，当前显示缓存数据',
-                          style: TextStyle(fontSize: 16, color: AppTheme.warningDark),
+                          style: AppTheme.textWarningDark16,
                         ),
                       ),
                     ],
@@ -195,7 +195,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                   Expanded(
                     child: Text(
                       w.trendWarning ?? '',
-                      style: TextStyle(fontSize: 16, color: AppTheme.grey800),
+                      style: AppTheme.textGrey800_16,
                     ),
                   ),
                 ],
@@ -391,7 +391,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                           ),
                           child: Text(
                             abnormalLabel,
-                            style: const TextStyle(fontSize: 16, color: AppTheme.warningColor, fontWeight: FontWeight.w600),
+                            style: AppTheme.textWarning16W600,
                           ),
                         ),
                       ],

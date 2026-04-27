@@ -94,6 +94,24 @@ class AppTheme {
   static const TextStyle textErrorAlpha12 = TextStyle(fontSize: 12, color: Color(0x99FF4D4F));
   static const TextStyle textSectionTitle = TextStyle(fontSize: 22, fontWeight: FontWeight.bold);
 
+  // 成功色系
+  static const TextStyle textSuccess12 = TextStyle(fontSize: 12, color: successColor);
+  static const TextStyle textSuccessDark14 = TextStyle(fontSize: 14, color: successDark);
+  static const TextStyle textSuccessMedium12 = TextStyle(fontSize: 12, color: successMedium);
+
+  // 警告色系
+  static const TextStyle textWarningDark16 = TextStyle(fontSize: 16, color: warningDark);
+  static const TextStyle textWarning16W600 = TextStyle(fontSize: 16, color: warningColor, fontWeight: FontWeight.w600);
+  static const TextStyle textWarningDark11 = TextStyle(fontSize: 11, color: warningDark);
+
+  // 信息色系
+  static const TextStyle textInfoDark13 = TextStyle(fontSize: 13, color: infoBlueDark);
+
+  // 灰度小字号
+  static const TextStyle textGrey800_16 = TextStyle(fontSize: 16, color: grey800);
+  static const TextStyle textGrey700_12 = TextStyle(fontSize: 12, color: grey700);
+  static const TextStyle textSmall11Grey = TextStyle(fontSize: 11, color: grey500);
+
   /// 渐变配置
   static const LinearGradient primaryGradient = LinearGradient(
     colors: [primaryColor, primaryLight],

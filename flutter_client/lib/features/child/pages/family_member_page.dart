@@ -159,7 +159,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                         ),
                         child: Text(
                           '待审批',
-                          style: TextStyle(fontSize: 11, color: AppTheme.warningDark),
+                          style: AppTheme.textWarningDark11,
                         ),
                       ),
                       const SizedBox(width: 6),

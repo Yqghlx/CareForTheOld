@@ -332,7 +332,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                 if (call.respondedAt != null)
                   Text(
                     _formatRespondedAt(call.respondedAt!),
-                    style: TextStyle(fontSize: 11, color: AppTheme.grey500),
+                    style: AppTheme.textSmall11Grey,
                   ),
               ],
             ),
