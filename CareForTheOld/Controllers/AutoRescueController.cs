@@ -64,7 +64,7 @@ public class AutoRescueController : ControllerBase
         {
             r.Id,
             r.ElderId,
-            ElderName = r.Elder.RealName,
+            ElderName = r.Elder?.RealName ?? string.Empty,
             TriggerType = r.TriggerType.GetLabel(),
             Status = r.Status.GetLabel(),
             r.TriggeredAt,

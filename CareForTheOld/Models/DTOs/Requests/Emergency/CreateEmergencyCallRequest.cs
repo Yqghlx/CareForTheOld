@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace CareForTheOld.Models.DTOs.Requests.Emergency;
 
 /// <summary>
@@ -18,5 +20,6 @@ public class CreateEmergencyCallRequest
     /// <summary>
     /// 电池电量百分比（可选，0~100）
     /// </summary>
+    [Range(0, 100, ErrorMessage = "电池电量必须在 0-100 之间")]
     public int? BatteryLevel { get; set; }
 }

@@ -52,6 +52,8 @@ public class HealthService : IHealthService
         _context.HealthRecords.Add(record);
         await _context.SaveChangesAsync();
 
+        _logger.LogInformation("健康记录已创建：用户 {UserId}，类型 {Type}，记录 {RecordId}", userId, request.Type, record.Id);
+
         // 检查健康异常并通知子女
         var alertMessage = _alertService.CheckAbnormal(record);
         if (alertMessage != null)
@@ -220,6 +222,8 @@ public class HealthService : IHealthService
         record.IsDeleted = true;
         record.DeletedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync();
+
+        _logger.LogInformation("健康记录已删除：用户 {UserId}，记录 {RecordId}", userId, recordId);
     }
 
     /// <summary>

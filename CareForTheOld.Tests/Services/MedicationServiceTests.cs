@@ -28,7 +28,7 @@ public class MedicationServiceTests
             .Options;
         _context = new AppDbContext(options);
         var mockNotification = new Mock<INotificationService>();
-        _service = new MedicationService(_context, new FamilyService(_context, mockNotification.Object, NullLogger<FamilyService>.Instance));
+        _service = new MedicationService(_context, new FamilyService(_context, mockNotification.Object, NullLogger<FamilyService>.Instance), NullLogger<MedicationService>.Instance);
     }
 
     /// <summary>

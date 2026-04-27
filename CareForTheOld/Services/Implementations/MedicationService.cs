@@ -18,11 +18,13 @@ public class MedicationService : IMedicationService
 {
     private readonly AppDbContext _context;
     private readonly IFamilyService _familyService;
+    private readonly ILogger<MedicationService> _logger;
 
-    public MedicationService(AppDbContext context, IFamilyService familyService)
+    public MedicationService(AppDbContext context, IFamilyService familyService, ILogger<MedicationService> logger)
     {
         _context = context;
         _familyService = familyService;
+        _logger = logger;
     }
 
     /// <summary>
@@ -56,6 +58,8 @@ public class MedicationService : IMedicationService
 
         _context.MedicationPlans.Add(plan);
         await _context.SaveChangesAsync();
+
+        _logger.LogInformation("用药计划已创建：老人 {ElderId}，药品 {MedicineName}，计划 {PlanId}", request.ElderId, request.MedicineName, plan.Id);
 
         return MapToPlanResponse(plan, elder.RealName);
     }
@@ -123,11 +127,9 @@ public class MedicationService : IMedicationService
         plan.IsDeleted = true;
         plan.DeletedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync();
-    }
 
-    /// <summary>
-    /// 记录用药日志（含补录和二次提醒检查）
-    /// </summary>
+        _logger.LogInformation("用药计划已删除：计划 {PlanId}，操作者 {OperatorId}", planId, operatorId);
+    }
     public async Task<MedicationLogResponse> RecordLogAsync(Guid operatorId, RecordMedicationLogRequest request)
     {
         var plan = await _context.MedicationPlans

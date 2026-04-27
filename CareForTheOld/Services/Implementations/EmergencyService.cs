@@ -73,6 +73,8 @@ public class EmergencyService : IEmergencyService
         _context.EmergencyCalls.Add(call);
         await _context.SaveChangesAsync();
 
+        _logger.LogWarning("紧急呼叫已创建：老人 {ElderId}，呼叫 {CallId}，电量 {BatteryLevel}", elderId, call.Id, batteryLevel);
+
         // 异步发送紧急呼叫通知给子女（通过 Hangfire 持久化）
         try
         {
@@ -417,8 +419,8 @@ public class EmergencyService : IEmergencyService
     {
         Id = c.Id,
         ElderId = c.ElderId,
-        ElderName = c.Elder.RealName,
-        ElderPhoneNumber = c.Elder.PhoneNumber.MaskPhoneNumber(),
+        ElderName = c.Elder?.RealName ?? string.Empty,
+        ElderPhoneNumber = c.Elder?.PhoneNumber.MaskPhoneNumber() ?? string.Empty,
         FamilyId = c.FamilyId,
         CalledAt = c.CalledAt,
         Status = c.Status,

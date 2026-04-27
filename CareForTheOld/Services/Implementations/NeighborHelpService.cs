@@ -548,7 +548,7 @@ public class NeighborHelpService : INeighborHelpService
         EmergencyCallId = r.EmergencyCallId,
         CircleId = r.CircleId,
         RequesterId = r.RequesterId,
-        RequesterName = r.Requester.RealName,
+        RequesterName = r.Requester?.RealName ?? string.Empty,
         ResponderId = r.ResponderId,
         ResponderName = r.Responder != null ? r.Responder.RealName : null,
         Status = r.Status,
