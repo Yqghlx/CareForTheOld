@@ -153,7 +153,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                     '健康监测 · 用药提醒',
                     style: AppTheme.textSecondary16,
                   ),
-                  const SizedBox(height: 48),
+                  AppTheme.spacer48,
 
                   // 手机号输入
                   Container(

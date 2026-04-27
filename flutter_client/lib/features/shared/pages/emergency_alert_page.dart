@@ -120,7 +120,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
                       ),
                     ),
 
-                    const SizedBox(height: 48),
+                    AppTheme.spacer48,
 
                     // 操作按钮
                     _buildRespondButton(context),
