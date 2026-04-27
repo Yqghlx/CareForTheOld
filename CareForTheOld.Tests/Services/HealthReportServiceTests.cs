@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
@@ -114,7 +115,7 @@ public class HealthReportServiceTests
         var act = async () => await _service.GeneratePdfReportAsync(Guid.NewGuid(), 7);
 
         await act.Should().ThrowAsync<KeyNotFoundException>()
-            .WithMessage("用户不存在");
+            .WithMessage(ErrorMessages.Common.UserNotFound);
     }
 
     [Fact]

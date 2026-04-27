@@ -445,7 +445,7 @@ public class NeighborCircleServiceTests
         // 执行并验证
         var act = async () => await _service.RefreshInviteCodeAsync(circle.Id, member.Id);
         await act.Should().ThrowAsync<UnauthorizedAccessException>()
-            .WithMessage("仅圈主可以刷新邀请码");
+            .WithMessage(ErrorMessages.NeighborCircle.OnlyCreatorCanRefreshCode);
     }
 
     [Fact]
@@ -467,7 +467,7 @@ public class NeighborCircleServiceTests
         // 执行并验证
         var act = async () => await _service.EnsureCircleMemberAsync(circle.Id, user.Id);
         await act.Should().ThrowAsync<UnauthorizedAccessException>()
-            .WithMessage("您不是该邻里圈成员");
+            .WithMessage(ErrorMessages.NeighborCircle.NotCircleMember);
     }
 
     [Fact]

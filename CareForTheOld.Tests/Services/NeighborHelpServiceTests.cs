@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.Neighbor;
 using CareForTheOld.Models.Entities;
@@ -265,7 +266,7 @@ public class NeighborHelpServiceTests
         // 执行并验证
         var act = async () => await _service.AcceptHelpRequestAsync(request.Id, elder.Id);
         await act.Should().ThrowAsync<ArgumentException>()
-            .WithMessage("不能接受自己发起的求助");
+            .WithMessage(ErrorMessages.NeighborHelp.CannotAcceptOwn);
     }
 
     [Fact]
@@ -383,7 +384,7 @@ public class NeighborHelpServiceTests
         // 执行并验证
         var act = async () => await _service.RateHelpRequestAsync(request.Id, elder.Id, rateRequest);
         await act.Should().ThrowAsync<ArgumentException>()
-            .WithMessage("您已评价过该求助请求");
+            .WithMessage(ErrorMessages.NeighborHelp.AlreadyRated);
     }
 
     [Fact]

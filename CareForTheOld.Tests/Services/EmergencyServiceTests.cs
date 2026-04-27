@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
@@ -175,7 +176,7 @@ public class EmergencyServiceTests
         // 执行并验证：不在家庭组中的老人发起呼叫应抛出异常
         var act = async () => await _service.CreateCallAsync(loneElder.Id);
         await act.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage("您不在任何家庭组中，无法发起紧急呼叫");
+            .WithMessage(ErrorMessages.Family.NotInAnyFamily);
     }
 
     [Fact]
@@ -227,7 +228,7 @@ public class EmergencyServiceTests
         // 执行并验证：重复响应应抛出异常
         var act = async () => await _service.RespondCallAsync(call.Id, child.Id);
         await act.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage("该呼叫已被处理");
+            .WithMessage(ErrorMessages.Emergency.CallAlreadyResponded);
     }
 
     [Fact]
@@ -260,7 +261,7 @@ public class EmergencyServiceTests
         // 执行并验证：非家庭成员响应应抛出权限异常
         var act = async () => await _service.RespondCallAsync(call.Id, stranger.Id);
         await act.Should().ThrowAsync<UnauthorizedAccessException>()
-            .WithMessage("您不是该家庭成员，无法处理此呼叫");
+            .WithMessage(ErrorMessages.Emergency.NotFamilyMemberForCall);
     }
 
     [Fact]
@@ -273,7 +274,7 @@ public class EmergencyServiceTests
         // 执行并验证：呼叫不存在应抛出异常
         var act = async () => await _service.RespondCallAsync(nonExistentCallId, child.Id);
         await act.Should().ThrowAsync<KeyNotFoundException>()
-            .WithMessage("紧急呼叫记录不存在");
+            .WithMessage(ErrorMessages.Emergency.CallNotFound);
     }
 
     [Fact]

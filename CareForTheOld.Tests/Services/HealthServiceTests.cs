@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
@@ -78,7 +79,7 @@ public class HealthServiceTests
 
         var act = async () => await _service.CreateRecordAsync(userId, request);
         await act.Should().ThrowAsync<ArgumentException>()
-            .WithMessage("血压记录需要填写收缩压和舒张压");
+            .WithMessage(ErrorMessages.Health.BloodPressureRequired);
     }
 
     [Fact]
