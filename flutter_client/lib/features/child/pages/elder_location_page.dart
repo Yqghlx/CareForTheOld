@@ -350,11 +350,11 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                         context.showSuccessSnackBar(AppTheme.msgFenceDeleted);
                       }
                     },
-                    child: const Text('删除', style: AppTheme.textError),
+                    child: Text(AppTheme.msgDelete, style: AppTheme.textError),
                   ),
                 TextButton(
                   onPressed: () => Navigator.pop(ctx),
-                  child: const Text('取消'),
+                  child: const Text(AppTheme.msgCancel),
                 ),
                 PrimaryButton(
                   text: '保存',

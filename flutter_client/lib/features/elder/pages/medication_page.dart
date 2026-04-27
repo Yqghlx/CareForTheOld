@@ -317,7 +317,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
         title: const Text(AppTheme.msgConfirmSkip),
         content: Text(AppTheme.msgConfirmSkipWithName(log.medicineName)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('取消')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppTheme.msgCancel)),
           PrimaryButton(
             text: '确认跳过',
             onPressed: () => Navigator.pop(ctx, true),

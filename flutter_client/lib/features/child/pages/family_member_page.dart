@@ -206,7 +206,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('取消'),
+            child: const Text(AppTheme.msgCancel),
           ),
           PrimaryButton(
             text: '通过',
@@ -238,7 +238,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('取消'),
+            child: const Text(AppTheme.msgCancel),
           ),
           PrimaryButton(
             text: '拒绝',
@@ -388,7 +388,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(ctx, false),
-                          child: const Text('取消'),
+                          child: const Text(AppTheme.msgCancel),
                         ),
                         PrimaryButton(
                           text: '确定',
@@ -636,7 +636,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('取消'),
+            child: const Text(AppTheme.msgCancel),
           ),
           PrimaryButton(
             text: '创建',
@@ -728,7 +728,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(ctx),
-                  child: const Text('取消'),
+                  child: const Text(AppTheme.msgCancel),
                 ),
                 PrimaryButton(
                   text: '提交申请',
@@ -863,7 +863,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(ctx),
-                  child: const Text('取消'),
+                  child: const Text(AppTheme.msgCancel),
                 ),
                 PrimaryButton(
                   text: '添加',
@@ -913,7 +913,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('取消'),
+            child: const Text(AppTheme.msgCancel),
           ),
           PrimaryButton(
             text: '移除',

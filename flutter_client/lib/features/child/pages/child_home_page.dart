@@ -582,7 +582,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(ctx),
-                  child: const Text('取消'),
+                  child: const Text(AppTheme.msgCancel),
                 ),
                 PrimaryButton(
                   text: '创建',

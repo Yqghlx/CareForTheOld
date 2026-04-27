@@ -459,7 +459,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('取消'),
+            child: const Text(AppTheme.msgCancel),
           ),
           PrimaryButton(
             text: '保存',
@@ -599,7 +599,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('取消'),
+            child: const Text(AppTheme.msgCancel),
           ),
           PrimaryButton(
             text: '修改',
@@ -787,7 +787,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('取消'),
+            child: const Text(AppTheme.msgCancel),
           ),
           PrimaryButton(
             text: '退出',

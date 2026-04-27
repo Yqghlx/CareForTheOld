@@ -310,7 +310,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('取消'),
+            child: const Text(AppTheme.msgCancel),
           ),
         ],
       ),

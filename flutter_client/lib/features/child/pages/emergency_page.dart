@@ -374,7 +374,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('取消'),
+            child: const Text(AppTheme.msgCancel),
           ),
           PrimaryButton(
             text: '确认',

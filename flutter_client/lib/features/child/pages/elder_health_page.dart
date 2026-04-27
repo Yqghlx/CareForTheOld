@@ -479,7 +479,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       TextButton.icon(
                         onPressed: () => _showEditPlanDialog(plan),
                         icon: const Icon(Icons.edit_outlined, size: 18),
-                        label: const Text('编辑'),
+                        label: const Text(AppTheme.msgEdit),
                         style: TextButton.styleFrom(
                           padding: AppTheme.paddingH12V4,
                         ),
@@ -488,7 +488,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                         TextButton.icon(
                           onPressed: () => _deletePlan(plan),
                           icon: const Icon(Icons.delete_outline, size: 18, color: AppTheme.errorColor),
-                          label: const Text('删除', style: AppTheme.textError),
+                          label: Text(AppTheme.msgDelete, style: AppTheme.textError),
                           style: TextButton.styleFrom(
                             padding: AppTheme.paddingH12V4,
                           ),
@@ -505,7 +505,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       child: TextButton.icon(
                         onPressed: () => _deletePlan(plan),
                         icon: const Icon(Icons.delete_outline, size: 18, color: AppTheme.errorColor),
-                        label: const Text('删除计划', style: AppTheme.textError),
+                        label: Text('${AppTheme.msgDelete}计划', style: AppTheme.textError),
                         style: TextButton.styleFrom(
                           padding: AppTheme.paddingH12V4,
                         ),
@@ -611,7 +611,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('取消'),
+              child: const Text(AppTheme.msgCancel),
             ),
             ElevatedButton(
               onPressed: isSubmitting ? null : () async {
@@ -642,7 +642,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 }
               },
               style: AppTheme.elevatedPrimaryStyle,
-              child: const Text('保存', style: AppTheme.textWhite),
+              child: Text(AppTheme.msgSave, style: AppTheme.textWhite),
             ),
           ],
         ),
@@ -949,7 +949,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('取消'),
+            child: const Text(AppTheme.msgCancel),
           ),
         ],
       ),

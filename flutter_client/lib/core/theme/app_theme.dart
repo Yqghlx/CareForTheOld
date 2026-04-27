@@ -198,6 +198,13 @@ class AppTheme {
   static const String msgSaveSuccess = '保存成功';
   static const String msgDeleteSuccess = '删除成功';
 
+  // 通用按钮文案
+  static const String msgCancel = '取消';
+  static const String msgDelete = '删除';
+  static const String msgConfirm = '确定';
+  static const String msgSave = '保存';
+  static const String msgEdit = '编辑';
+
   // API 错误消息
   static const String msgForbidden = '权限不足，无法执行此操作';
   static const String msgNotFound = '请求的资源不存在';

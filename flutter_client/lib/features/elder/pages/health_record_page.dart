@@ -921,7 +921,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
               actions: [
                 TextButton(
                   onPressed: isSubmitting ? null : () => Navigator.pop(ctx),
-                  child: const Text('取消'),
+                  child: const Text(AppTheme.msgCancel),
                 ),
                 PrimaryButton(
                   text: '保存',
