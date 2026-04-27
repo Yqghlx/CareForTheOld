@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
+using CareForTheOld.Common.Filters;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Models.DTOs.Requests.GeoFences;
 using CareForTheOld.Models.DTOs.Responses;
@@ -45,6 +46,7 @@ public class GeoFenceController : ControllerBase
     /// 获取老人的电子围栏（需验证与老人是同一家庭成员）
     /// </summary>
     [HttpGet("elder/{elderId}")]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     public async Task<ApiResponse<GeoFenceResponse?>> GetElderFence(Guid elderId)
     {
         // 验证请求的子女与目标老人属于同一家庭

@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
+using CareForTheOld.Common.Filters;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Data;
 using CareForTheOld.Services.Interfaces;
@@ -51,6 +52,7 @@ public class AutoRescueController : ControllerBase
     /// 获取自动救援历史记录
     /// </summary>
     [HttpGet("history")]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     public async Task<ApiResponse<object>> GetHistory([FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultHistoryPageSize)
     {
         limit = this.ClampLimit(limit);

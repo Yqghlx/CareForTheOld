@@ -2,6 +2,7 @@ using Asp.Versioning;
 using System.ComponentModel.DataAnnotations;
 using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
+using CareForTheOld.Common.Filters;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -37,6 +38,7 @@ public class TrustScoreController : ControllerBase
     /// 获取圈内信任排行榜
     /// </summary>
     [HttpGet("ranking")]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     public async Task<ApiResponse<object>> GetRanking(Guid circleId, [FromQuery, Range(1, 100)] int top = AppConstants.Pagination.DefaultHistoryPageSize)
     {
         var userId = this.GetUserId();
@@ -60,6 +62,7 @@ public class TrustScoreController : ControllerBase
     /// 获取我的信任评分
     /// </summary>
     [HttpGet("me")]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     public async Task<ApiResponse<object>> GetMyScore(Guid circleId)
     {
         var userId = this.GetUserId();
