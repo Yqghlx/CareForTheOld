@@ -2,9 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/models/geo_fence.dart';
 import '../services/geo_fence_service.dart';
-import 'package:dio/dio.dart';
 import '../../../core/extensions/api_error_extension.dart';
-import '../../../core/theme/app_theme.dart';
 
 /// 电子围栏状态
 class GeoFenceState {
@@ -43,10 +41,8 @@ class GeoFenceNotifier extends StateNotifier<GeoFenceState> {
     try {
       final fence = await _service.getElderFence(elderId);
       state = state.copyWith(fence: fence, isLoading: false);
-    } on DioException catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toDisplayMessage());
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: AppTheme.msgOperationFailed);
+      state = state.copyWith(isLoading: false, error: errorMessageFrom(e));
     }
   }
 
@@ -83,11 +79,8 @@ class GeoFenceNotifier extends StateNotifier<GeoFenceState> {
         state = state.copyWith(fence: fence, isLoading: false);
       }
       return true;
-    } on DioException catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toDisplayMessage());
-      return false;
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: AppTheme.msgOperationFailed);
+      state = state.copyWith(isLoading: false, error: errorMessageFrom(e));
       return false;
     }
   }
@@ -101,11 +94,8 @@ class GeoFenceNotifier extends StateNotifier<GeoFenceState> {
       await _service.deleteFence(state.fence!.id);
       state = state.copyWith(fence: null, isLoading: false);
       return true;
-    } on DioException catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toDisplayMessage());
-      return false;
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: AppTheme.msgOperationFailed);
+      state = state.copyWith(isLoading: false, error: errorMessageFrom(e));
       return false;
     }
   }

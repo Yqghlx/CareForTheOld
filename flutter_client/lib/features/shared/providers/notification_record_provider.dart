@@ -2,9 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/models/notification_record.dart';
 import '../services/notification_record_service.dart';
-import 'package:dio/dio.dart';
 import '../../../core/extensions/api_error_extension.dart';
-import '../../../core/theme/app_theme.dart';
 import '../../../core/services/app_logger.dart';
 
 /// 通知状态
@@ -76,10 +74,8 @@ class NotificationListNotifier extends StateNotifier<NotificationListState> {
         hasMore: notifications.length >= NotificationListState._pageSize,
         skip: notifications.length,
       );
-    } on DioException catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toDisplayMessage());
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: AppTheme.msgOperationFailed);
+      state = state.copyWith(isLoading: false, error: errorMessageFrom(e));
     }
   }
 

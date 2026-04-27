@@ -1,4 +1,25 @@
 import 'package:dio/dio.dart';
+import '../theme/app_theme.dart';
+
+/// 将任意异常转为用户友好的显示消息
+///
+/// 统一处理 DioException（从后端响应提取错误信息）和其他异常（返回通用失败提示）。
+/// 用于 Provider 的 catch 块中，替代重复的 on DioException + catch 双分支模式。
+///
+/// 用法：
+/// ```dart
+/// try {
+///   ...
+/// } catch (e) {
+///   state = state.copyWith(error: errorMessageFrom(e));
+/// }
+/// ```
+String errorMessageFrom(Object error) {
+  if (error is DioException) {
+    return error.toDisplayMessage();
+  }
+  return AppTheme.msgOperationFailed;
+}
 
 /// DioException 的扩展方法，用于从后端响应中提取错误信息
 ///

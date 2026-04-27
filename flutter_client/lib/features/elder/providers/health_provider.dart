@@ -133,11 +133,8 @@ class HealthRecordsNotifier extends StateNotifier<HealthRecordsState> {
       // 更新缓存
       await _cacheService.cacheMyRecords(state.records);
       return true;
-    } on DioException catch (e) {
-      state = state.copyWith(error: e.toDisplayMessage());
-      return false;
     } catch (e) {
-      state = state.copyWith(error: AppTheme.msgOperationFailed);
+      state = state.copyWith(error: errorMessageFrom(e));
       return false;
     }
   }
@@ -151,11 +148,8 @@ class HealthRecordsNotifier extends StateNotifier<HealthRecordsState> {
       );
       await _cacheService.cacheMyRecords(state.records);
       return true;
-    } on DioException catch (e) {
-      state = state.copyWith(error: e.toDisplayMessage());
-      return false;
     } catch (e) {
-      state = state.copyWith(error: AppTheme.msgOperationFailed);
+      state = state.copyWith(error: errorMessageFrom(e));
       return false;
     }
   }
