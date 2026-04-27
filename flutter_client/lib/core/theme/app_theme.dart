@@ -470,6 +470,7 @@ class AppTheme {
 
   // 默认角色/称谓
   static const String labelElder = '老人';
+  static const String labelChild = '子女';
   static const String labelRelationOther = '其他';
 
   // 亲属称谓

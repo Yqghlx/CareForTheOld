@@ -836,8 +836,8 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                       border: OutlineInputBorder(borderRadius: AppTheme.radiusS),
                     ),
                     items: const [
-                      DropdownMenuItem(value: 'child', child: Text('子女')),
-                      DropdownMenuItem(value: 'elder', child: Text('老人')),
+                      DropdownMenuItem(value: 'child', child: Text(AppTheme.labelChild)),
+                      DropdownMenuItem(value: 'elder', child: Text(AppTheme.labelElder)),
                     ],
                     onChanged: (v) => setDialogState(() {
                       selectedRole = v!;

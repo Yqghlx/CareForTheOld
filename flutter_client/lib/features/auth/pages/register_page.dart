@@ -187,7 +187,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                   children: [
                     Expanded(
                       child: RadioListTile<UserRole>(
-                        title: const Text('老人'),
+                        title: const Text(AppTheme.labelElder),
                         subtitle: const Text('记录健康、查看用药提醒'),
                         value: UserRole.elder,
                         // ignore: deprecated_member_use - Flutter 3.32+ 推荐使用 RadioGroup，但 RadioListTile 仍可工作
@@ -200,7 +200,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                     ),
                     Expanded(
                       child: RadioListTile<UserRole>(
-                        title: const Text('子女'),
+                        title: const Text(AppTheme.labelChild),
                         subtitle: const Text('查看老人健康、管理用药计划'),
                         value: UserRole.child,
                         // ignore: deprecated_member_use

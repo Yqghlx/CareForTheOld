@@ -130,7 +130,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          authState.user?.realName ?? '子女',
+                          authState.user?.realName ?? AppTheme.labelChild,
                           style: AppTheme.textLargeTitle.copyWith(
                             color: AppTheme.cardColor,
                           ),
