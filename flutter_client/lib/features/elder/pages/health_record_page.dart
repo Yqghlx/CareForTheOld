@@ -181,7 +181,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
         if (warnings.isNotEmpty)
           Container(
             margin: AppTheme.marginBottom8,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            padding: AppTheme.paddingH16V10,
             decoration: BoxDecoration(
               color: AppTheme.warningColor.withValues(alpha: 0.1),
               borderRadius: AppTheme.radiusS,
@@ -224,7 +224,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
               final stat = stats[index];
               final avg7 = stat.average7Days?.toStringAsFixed(1) ?? '--';
               return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: AppTheme.paddingH12V6,
                 decoration: BoxDecoration(
                   color: AppTheme.cardColor.withValues(alpha: 0.8),
                   borderRadius: AppTheme.radius10,
@@ -1123,7 +1123,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
           shape: RoundedRectangleBorder(
             borderRadius: AppTheme.radiusS,
           ),
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          margin: AppTheme.paddingH16V12,
           duration: AppTheme.duration2s,
         ),
       );

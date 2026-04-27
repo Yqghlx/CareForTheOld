@@ -1183,7 +1183,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                           ),
                           const Spacer(),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                            padding: AppTheme.paddingH8V3,
                             decoration: BoxDecoration(
                               color: AppTheme.successColor.withValues(alpha: 0.12),
                               borderRadius: AppTheme.radius6,
