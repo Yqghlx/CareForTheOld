@@ -32,6 +32,7 @@ public class CacheService : ICacheService
 
     public async Task<T?> GetAsync<T>(string key) where T : class
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
         var bytes = await _cache.GetAsync(key);
         if (bytes == null) return null;
         return JsonSerializer.Deserialize<T>(bytes);
@@ -44,6 +45,8 @@ public class CacheService : ICacheService
     /// </summary>
     public async Task<T?> GetOrCreateAsync<T>(string key, Func<Task<T?>> factory, TimeSpan? expiration = null) where T : class
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
+
         // 先尝试直接获取
         var cached = await GetAsync<T>(key);
         if (cached != null) return cached;
@@ -76,6 +79,7 @@ public class CacheService : ICacheService
 
     public async Task SetAsync<T>(string key, T value, TimeSpan? expiration = null) where T : class
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
         var bytes = JsonSerializer.SerializeToUtf8Bytes(value);
         var options = new DistributedCacheEntryOptions();
         if (expiration.HasValue)
@@ -87,6 +91,7 @@ public class CacheService : ICacheService
 
     public async Task RemoveAsync(string key)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
         await _cache.RemoveAsync(key);
     }
 
@@ -96,6 +101,8 @@ public class CacheService : ICacheService
     /// </summary>
     public async Task RemoveByPrefixAsync(string prefix)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(prefix, nameof(prefix));
+
         if (_redis != null)
         {
             var db = _redis.GetDatabase();

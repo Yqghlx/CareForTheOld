@@ -7,6 +7,33 @@ namespace CareForTheOld.Common.Constants;
 public static class ErrorMessages
 {
     /// <summary>
+    /// 参数验证错误消息
+    /// </summary>
+    public static class Validation
+    {
+        /// <summary>缓存键不能为空</summary>
+        public const string CacheKeyRequired = "缓存键不能为空";
+
+        /// <summary>推送标题不能为空</summary>
+        public const string PushTitleRequired = "推送标题不能为空";
+
+        /// <summary>推送内容不能为空</summary>
+        public const string PushBodyRequired = "推送内容不能为空";
+
+        /// <summary>文件目录名不能为空</summary>
+        public const string FileDirectoryRequired = "文件目录名不能为空";
+
+        /// <summary>文件名不能为空</summary>
+        public const string FileNameRequired = "文件名不能为空";
+
+        /// <summary>文件流不能为空</summary>
+        public const string FileStreamRequired = "文件流不能为空";
+
+        /// <summary>内容类型不能为空</summary>
+        public const string ContentTypeRequired = "内容类型不能为空";
+    }
+
+    /// <summary>
     /// 通用错误消息
     /// </summary>
     public static class Common

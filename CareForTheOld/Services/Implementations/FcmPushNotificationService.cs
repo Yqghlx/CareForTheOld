@@ -42,6 +42,9 @@ public class FcmPushNotificationService : IPushNotificationService
     /// <inheritdoc />
     public async Task SendAsync(IEnumerable<Guid> userIds, string title, string body, Dictionary<string, string>? data = null)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(title, nameof(title));
+        ArgumentException.ThrowIfNullOrWhiteSpace(body, nameof(body));
+
         var userIdList = userIds.ToList();
         if (!userIdList.Any()) return;
 

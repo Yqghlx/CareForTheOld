@@ -27,6 +27,11 @@ public class LocalFileStorageService : IFileStorageService
     /// <inheritdoc />
     public async Task<string> UploadAsync(string directory, string fileName, Stream stream, string contentType)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(directory, nameof(directory));
+        ArgumentException.ThrowIfNullOrWhiteSpace(fileName, nameof(fileName));
+        ArgumentNullException.ThrowIfNull(stream, nameof(stream));
+        ArgumentException.ThrowIfNullOrWhiteSpace(contentType, nameof(contentType));
+
         // 确保目标目录存在
         var targetDir = Path.Combine(_env.ContentRootPath, _baseDirectory, directory);
         Directory.CreateDirectory(targetDir);
@@ -48,6 +53,9 @@ public class LocalFileStorageService : IFileStorageService
     /// <inheritdoc />
     public Task<string?> GetUrlAsync(string directory, string fileName)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(directory, nameof(directory));
+        ArgumentException.ThrowIfNullOrWhiteSpace(fileName, nameof(fileName));
+
         var filePath = Path.GetFullPath(Path.Combine(_env.ContentRootPath, _baseDirectory, directory, fileName));
         var basePath = Path.GetFullPath(Path.Combine(_env.ContentRootPath, _baseDirectory));
 
@@ -65,10 +73,9 @@ public class LocalFileStorageService : IFileStorageService
     /// <inheritdoc />
     public Task DeleteAsync(string fileUrl)
     {
-        // 从 URL 中解析出物理路径：/uploads/avatars/xxx.jpg → ContentRootPath/uploads/avatars/xxx.jpg
-        if (string.IsNullOrEmpty(fileUrl))
-            return Task.CompletedTask;
+        ArgumentException.ThrowIfNullOrWhiteSpace(fileUrl, nameof(fileUrl));
 
+        // 从 URL 中解析出物理路径：/uploads/avatars/xxx.jpg → ContentRootPath/uploads/avatars/xxx.jpg
         // 移除开头的 / 分隔符
         var relativePath = fileUrl.TrimStart('/');
         var filePath = Path.GetFullPath(Path.Combine(_env.ContentRootPath, relativePath));
