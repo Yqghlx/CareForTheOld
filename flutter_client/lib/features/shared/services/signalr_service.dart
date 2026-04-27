@@ -13,6 +13,13 @@ import 'emergency_alert_service.dart';
 import 'local_notification_service.dart';
 import '../../../core/services/app_logger.dart';
 
+/// SignalR 客户端方法名常量
+class _SignalRMethods {
+  static const String receiveNotification = 'ReceiveNotification';
+  static const String heartbeat = 'Heartbeat';
+  static const String heartbeatAlert = 'HeartbeatAlert';
+}
+
 /// SignalR 连接服务
 class SignalRService {
   HubConnection? _hubConnection;
@@ -58,7 +65,7 @@ class SignalRService {
         .build();
 
     // 监听服务器推送的通知
-    _hubConnection!.on('ReceiveNotification', _handleNotification);
+    _hubConnection!.on(_SignalRMethods.receiveNotification, _handleNotification);
 
     // 连接关闭回调
     _hubConnection!.onclose(({error}) {
@@ -181,7 +188,7 @@ class SignalRService {
             body: content,
           );
           break;
-        case 'HeartbeatAlert':
+        case _SignalRMethods.heartbeatAlert:
           // 心跳超时告警（老人设备离线）
           LocalNotificationService.showNotification(
             id: 8,
@@ -259,7 +266,7 @@ class SignalRService {
     _heartbeatTimer = Timer.periodic(AppTheme.duration60s, (_) async {
       if (_hubConnection != null && isConnected) {
         try {
-          await _hubConnection!.invoke('Heartbeat');
+          await _hubConnection!.invoke(_SignalRMethods.heartbeat);
           _heartbeatFailCount = 0;
         } catch (e) {
           _heartbeatFailCount++;
