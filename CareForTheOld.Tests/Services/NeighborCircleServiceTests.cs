@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.Neighbor;
 using CareForTheOld.Models.Entities;
@@ -133,7 +134,7 @@ public class NeighborCircleServiceTests
         // 执行并验证
         var act = async () => await _service.CreateCircleAsync(creator.Id, request);
         await act.Should().ThrowAsync<ArgumentException>()
-            .WithMessage("您已加入邻里圈，不能重复创建");
+            .WithMessage(ErrorMessages.NeighborCircle.AlreadyInCircleCreate);
     }
 
     [Fact]
@@ -184,7 +185,7 @@ public class NeighborCircleServiceTests
         // 执行并验证
         var act = async () => await _service.JoinCircleByCodeAsync(user.Id, request);
         await act.Should().ThrowAsync<KeyNotFoundException>()
-            .WithMessage("邀请码无效，请检查后重试");
+            .WithMessage(ErrorMessages.NeighborCircle.InvalidInviteCode);
     }
 
     [Fact]
@@ -219,7 +220,7 @@ public class NeighborCircleServiceTests
         // 执行并验证
         var act = async () => await _service.JoinCircleByCodeAsync(joiner.Id, request);
         await act.Should().ThrowAsync<ArgumentException>()
-            .WithMessage("邀请码已过期，请联系圈主获取新邀请码");
+            .WithMessage(ErrorMessages.NeighborCircle.InviteCodeExpired);
     }
 
     [Fact]
@@ -252,7 +253,7 @@ public class NeighborCircleServiceTests
         // 执行并验证
         var act = async () => await _service.JoinCircleByCodeAsync(creator.Id, request);
         await act.Should().ThrowAsync<ArgumentException>()
-            .WithMessage("您已加入邻里圈，不能重复加入");
+            .WithMessage(ErrorMessages.NeighborCircle.AlreadyInCircleJoin);
     }
 
     [Fact]

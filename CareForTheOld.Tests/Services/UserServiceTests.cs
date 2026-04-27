@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.Users;
 using CareForTheOld.Models.Entities;
@@ -106,7 +107,7 @@ public class UserServiceTests
         _context.Users.Add(new User { Id = userId, PhoneNumber = "13900008002", PasswordHash = hash, RealName = "改密测试2", Role = UserRole.Elder, CreatedAt = DateTime.UtcNow });
         await _context.SaveChangesAsync();
         var act = async () => await _service.ChangePasswordAsync(userId, new ChangePasswordRequest { OldPassword = "WrongPass1", NewPassword = "NewPass456" });
-        await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("旧密码不正确");
+        await act.Should().ThrowAsync<InvalidOperationException>().WithMessage(ErrorMessages.User.OldPasswordIncorrect);
     }
 
     [Fact]

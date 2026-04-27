@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Controllers;
 using CareForTheOld.Models.DTOs.Requests.Auth;
 using CareForTheOld.Models.DTOs.Responses;
@@ -122,13 +123,13 @@ public class AuthControllerTests
 
         _mockAuthService
             .Setup(s => s.RegisterAsync(request))
-            .ThrowsAsync(new InvalidOperationException("手机号已注册"));
+            .ThrowsAsync(new InvalidOperationException(ErrorMessages.Auth.PhoneAlreadyRegistered));
 
         // Act
         var act = () => _controller.Register(request);
 
         // Assert - 异常由中间件统一处理，控制器不捕获
         await act.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage("手机号已注册");
+            .WithMessage(ErrorMessages.Auth.PhoneAlreadyRegistered);
     }
 }

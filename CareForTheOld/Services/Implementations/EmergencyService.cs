@@ -197,7 +197,7 @@ public class EmergencyService : IEmergencyService
             var fcmType = isReminder ? AppConstants.NotificationTypes.EmergencyReminderFcm : AppConstants.NotificationTypes.EmergencyCallFcm;
             try
             {
-                BackgroundJob.Enqueue(() => SendFcmPushJobAsync(
+                BackgroundJob.Enqueue<EmergencyService>(svc => svc.SendFcmPushJobAsync(
                     fcmChildIds, fcmTitle, fcmContent, fcmType,
                     callId.ToString(), elderId.ToString(), elderName));
             }
@@ -209,7 +209,7 @@ public class EmergencyService : IEmergencyService
             // SMS 多通道告警（最终兜底），通过 Hangfire 异步发送
             try
             {
-                BackgroundJob.Enqueue(() => SendSmsAlertJobAsync(callId, isReminder));
+                BackgroundJob.Enqueue<EmergencyService>(svc => svc.SendSmsAlertJobAsync(callId, isReminder));
             }
             catch (Exception ex)
             {

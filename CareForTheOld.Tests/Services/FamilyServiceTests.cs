@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.Families;
 using CareForTheOld.Models.Entities;
@@ -152,7 +153,7 @@ public class FamilyServiceTests
         // 执行并验证：无效邀请码应抛出异常
         var act = async () => await _service.JoinFamilyByCodeAsync(joiner.Id, request);
         await act.Should().ThrowAsync<KeyNotFoundException>()
-            .WithMessage("邀请码无效，请检查后重试");
+            .WithMessage(ErrorMessages.Family.InvalidInviteCode);
     }
 
     [Fact]
@@ -189,7 +190,7 @@ public class FamilyServiceTests
         // 执行并验证：已在家庭中的用户不能重复申请
         var act = async () => await _service.JoinFamilyByCodeAsync(creator.Id, request);
         await act.Should().ThrowAsync<ArgumentException>()
-            .WithMessage("您已提交加入申请或已加入家庭组，不能重复申请");
+            .WithMessage(ErrorMessages.Family.AlreadyAppliedOrJoined);
     }
 
     [Fact]
@@ -349,7 +350,7 @@ public class FamilyServiceTests
         // 执行并验证：非家庭成员刷新邀请码应抛出权限异常
         var act = async () => await _service.RefreshInviteCodeAsync(family.Id, stranger.Id);
         await act.Should().ThrowAsync<UnauthorizedAccessException>()
-            .WithMessage("您不是该家庭成员");
+            .WithMessage(ErrorMessages.Family.NotFamilyMember);
     }
 
     [Fact]

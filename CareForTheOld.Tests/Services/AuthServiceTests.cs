@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.Auth;
 using CareForTheOld.Models.Entities;
@@ -75,7 +76,7 @@ public class AuthServiceTests
 
         var act = async () => await _service.RegisterAsync(request);
         await act.Should().ThrowAsync<ArgumentException>()
-            .WithMessage("该手机号已注册");
+            .WithMessage(ErrorMessages.Auth.PhoneAlreadyRegistered);
     }
 
     [Fact]
@@ -143,7 +144,7 @@ public class AuthServiceTests
         _context.RefreshTokens.Add(token);
         await _context.SaveChangesAsync();
         var act = async () => await _service.RefreshTokenAsync("expired_token");
-        await act.Should().ThrowAsync<ArgumentException>().WithMessage("刷新令牌已过期或已撤销");
+        await act.Should().ThrowAsync<ArgumentException>().WithMessage(ErrorMessages.Auth.RefreshTokenExpired);
     }
 
     [Fact]
@@ -157,14 +158,14 @@ public class AuthServiceTests
         await _service.RefreshTokenAsync(registerResult.RefreshToken);
         // 第二次重放 → 应吊销全部 token 并抛异常
         var act = async () => await _service.RefreshTokenAsync(registerResult.RefreshToken);
-        await act.Should().ThrowAsync<ArgumentException>().WithMessage("检测到安全异常，请重新登录");
+        await act.Should().ThrowAsync<ArgumentException>().WithMessage(ErrorMessages.Auth.SecurityAnomaly);
     }
 
     [Fact]
     public async Task RefreshTokenAsync_ShouldThrow_WhenTokenNotFound()
     {
         var act = async () => await _service.RefreshTokenAsync("nonexistent_token");
-        await act.Should().ThrowAsync<ArgumentException>().WithMessage("无效的刷新令牌");
+        await act.Should().ThrowAsync<ArgumentException>().WithMessage(ErrorMessages.Auth.InvalidRefreshToken);
     }
 
     [Fact]
