@@ -72,7 +72,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: const Text('关爱老人'),
+          title: const Text(AppTheme.appName),
           automaticallyImplyLeading: false,
           actions: [
             const NotificationBadgeButton(),

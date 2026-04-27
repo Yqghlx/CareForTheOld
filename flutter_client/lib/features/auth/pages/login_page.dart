@@ -145,7 +145,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                   AppTheme.spacer24,
                   // 标题
                   const Text(
-                    '关爱老人',
+                    AppTheme.appName,
                     style: AppTheme.textLogoTitle,
                   ),
                   AppTheme.spacer8,

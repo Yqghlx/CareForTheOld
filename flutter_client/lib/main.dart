@@ -144,7 +144,7 @@ class _CareForTheOldAppState extends ConsumerState<CareForTheOldApp> {
     final router = ref.watch(appRouterProvider);
 
     return MaterialApp.router(
-      title: '关爱老人',
+      title: AppTheme.appName,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       routerConfig: router,

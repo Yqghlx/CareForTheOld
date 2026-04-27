@@ -339,7 +339,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   _buildSettingItem(
                     icon: Icons.info_outline,
                     title: '关于我们',
-                    subtitle: '关爱老人 App ${_appVersion.isNotEmpty ? "v$_appVersion" : ""}',
+                    subtitle: '${AppTheme.appName} App ${_appVersion.isNotEmpty ? "v$_appVersion" : ""}',
                     onTap: () => _showAboutDialog(),
                   ),
                   const Divider(height: 1),
@@ -697,7 +697,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('关爱老人 App', style: AppTheme.textTitle),
+            Text('${AppTheme.appName} App', style: AppTheme.textTitle),
             AppTheme.spacer8,
             Text('版本: 1.0.0'),
             AppTheme.spacer12,

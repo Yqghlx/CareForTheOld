@@ -209,6 +209,9 @@ class AppTheme {
   static const String msgSave = '保存';
   static const String msgEdit = '编辑';
 
+  // 应用名
+  static const String appName = '关爱老人';
+
   // API 错误消息
   static const String msgForbidden = '权限不足，无法执行此操作';
   static const String msgNotFound = '请求的资源不存在';

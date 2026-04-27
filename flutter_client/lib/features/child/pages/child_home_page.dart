@@ -49,7 +49,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('关爱老人'),
+        title: const Text(AppTheme.appName),
         automaticallyImplyLeading: false,
         actions: [
           // 紧急呼叫按钮（带红点提示）
