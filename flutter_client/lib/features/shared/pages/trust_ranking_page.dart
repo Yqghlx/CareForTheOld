@@ -80,7 +80,7 @@ class _TrustRankingPageState extends ConsumerState<TrustRankingPage> {
                   ? Icon(medalIcons[item.rank],
                       color: medalColors[item.rank], size: AppTheme.iconSize2xl)
                   : Text('#${item.rank}',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      style: AppTheme.textBody18.copyWith(
                             color: AppTheme.grey600,
                           )),
             ),
@@ -98,9 +98,8 @@ class _TrustRankingPageState extends ConsumerState<TrustRankingPage> {
           children: [
             Text(
               item.score.toStringAsFixed(1),
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
+              style: AppTheme.textLargeTitle.copyWith(
+                    color: AppTheme.primaryColor,
                   ),
             ),
             const Text('信任分', style: AppTheme.textCaption),
