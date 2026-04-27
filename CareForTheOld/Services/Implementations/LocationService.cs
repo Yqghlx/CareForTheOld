@@ -236,7 +236,7 @@ public class LocationService : ILocationService
     {
         Id = r.Id,
         UserId = r.UserId,
-        RealName = r.User.RealName,
+        RealName = r.User?.RealName ?? string.Empty,
         Latitude = r.Latitude,
         Longitude = r.Longitude,
         RecordedAt = r.RecordedAt,

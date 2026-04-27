@@ -178,10 +178,10 @@ public class NeighborCircleService : INeighborCircleService
             .Select(m => new NeighborMemberResponse
             {
                 UserId = m.UserId,
-                RealName = m.User.RealName,
+                RealName = m.User != null ? m.User.RealName : string.Empty,
                 Role = m.Role,
                 Nickname = m.Nickname,
-                AvatarUrl = m.User.AvatarUrl,
+                AvatarUrl = m.User != null ? m.User.AvatarUrl : null,
                 JoinedAt = m.JoinedAt
             })
             .ToListAsync();
@@ -237,10 +237,10 @@ public class NeighborCircleService : INeighborCircleService
             .Select(m => new NeighborMemberResponse
             {
                 UserId = m.UserId,
-                RealName = m.User.RealName,
+                RealName = m.User != null ? m.User.RealName : string.Empty,
                 Role = m.Role,
                 Nickname = m.Nickname,
-                AvatarUrl = m.User.AvatarUrl,
+                AvatarUrl = m.User != null ? m.User.AvatarUrl : null,
                 JoinedAt = m.JoinedAt
             })
             .ToListAsync();
@@ -365,7 +365,7 @@ public class NeighborCircleService : INeighborCircleService
                 CenterLongitude = c.CenterLongitude,
                 RadiusMeters = c.RadiusMeters,
                 CreatorId = c.CreatorId,
-                CreatorName = c.Creator.RealName,
+                CreatorName = c.Creator != null ? c.Creator.RealName : string.Empty,
                 InviteCode = c.InviteCode,
                 InviteCodeExpiresAt = c.InviteCodeExpiresAt,
                 MemberCount = _context.NeighborCircleMembers.Count(m => m.CircleId == circleId),

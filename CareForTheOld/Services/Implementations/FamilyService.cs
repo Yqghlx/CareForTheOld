@@ -226,10 +226,10 @@ public class FamilyService : IFamilyService
             .Select(fm => new FamilyMemberResponse
             {
                 UserId = fm.UserId,
-                RealName = fm.User.RealName,
+                RealName = fm.User != null ? fm.User.RealName : string.Empty,
                 Role = fm.Role,
                 Relation = fm.Relation,
-                AvatarUrl = fm.User.AvatarUrl,
+                AvatarUrl = fm.User != null ? fm.User.AvatarUrl : null,
                 Status = fm.Status
             })
             .ToListAsync();
@@ -340,10 +340,10 @@ public class FamilyService : IFamilyService
             .Select(fm => new FamilyMemberResponse
             {
                 UserId = fm.UserId,
-                RealName = fm.User.RealName,
+                RealName = fm.User != null ? fm.User.RealName : string.Empty,
                 Role = fm.Role,
                 Relation = fm.Relation,
-                AvatarUrl = fm.User.AvatarUrl,
+                AvatarUrl = fm.User != null ? fm.User.AvatarUrl : null,
                 Status = fm.Status
             })
             .ToListAsync();
@@ -419,10 +419,10 @@ public class FamilyService : IFamilyService
                 .Select(fm => new FamilyMemberResponse
                 {
                     UserId = fm.UserId,
-                    RealName = fm.User.RealName,
+                    RealName = fm.User?.RealName ?? string.Empty,
                     Role = fm.Role,
                     Relation = fm.Relation,
-                    AvatarUrl = fm.User.AvatarUrl,
+                    AvatarUrl = fm.User?.AvatarUrl,
                     Status = fm.Status
                 }).ToList()
         };

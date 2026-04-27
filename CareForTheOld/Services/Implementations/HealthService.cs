@@ -282,7 +282,7 @@ public class HealthService : IHealthService
         {
             Id = r.Id,
             UserId = r.UserId,
-            RealName = r.User.RealName,
+            RealName = r.User != null ? r.User.RealName : string.Empty,
             Type = r.Type,
             Systolic = r.Systolic,
             Diastolic = r.Diastolic,
