@@ -92,7 +92,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                     Container(
                       padding: AppTheme.paddingAll8,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primaryContainer,
+                        color: AppTheme.primaryLight,
                         borderRadius: AppTheme.radiusXS,
                       ),
                       child: Row(

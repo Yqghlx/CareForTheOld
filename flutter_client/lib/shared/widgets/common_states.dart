@@ -94,12 +94,12 @@ class ErrorStateWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: AppTheme.iconSizeXxl, color: Theme.of(context).colorScheme.error),
+            Icon(icon, size: AppTheme.iconSizeXxl, color: AppTheme.errorColor),
             AppTheme.spacer12,
             Text(
               message,
               style: AppTheme.textBody16.copyWith(
-                color: Theme.of(context).colorScheme.error,
+                color: AppTheme.errorColor,
               ),
               textAlign: TextAlign.center,
             ),
