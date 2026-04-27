@@ -114,7 +114,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
             onPressed: () => context.push(
               '${RoutePaths.childElderHealthTrend(widget.elderId)}?name=$elderName',
             ),
-            tooltip: '健康趋势',
+            tooltip: AppTheme.tooltipViewTrend,
           ),
           // 导出报告按钮
           Semantics(
@@ -123,7 +123,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
             child: IconButton(
               icon: const Icon(Icons.picture_as_pdf),
               onPressed: () => _showExportDialog(context, elderName),
-              tooltip: '导出报告',
+              tooltip: AppTheme.tooltipExportReport,
             ),
           ),
         ],

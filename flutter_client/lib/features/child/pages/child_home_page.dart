@@ -58,7 +58,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
               IconButton(
                 icon: const Icon(Icons.emergency),
                 onPressed: () => context.push(RoutePaths.childEmergency),
-                tooltip: '紧急呼叫',
+                tooltip: AppTheme.tooltipEmergencyCall,
               ),
               if (emergencyState.hasUnreadCalls)
                 Positioned(
@@ -79,7 +79,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
           const NotificationBadgeButton(),
           IconButton(
             icon: const Icon(Icons.settings),
-            tooltip: '设置',
+            tooltip: AppTheme.tooltipSettings,
             onPressed: () => context.push(RoutePaths.settings),
           ),
         ],

@@ -61,7 +61,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
           IconButton(
             icon: const Icon(Icons.show_chart),
             onPressed: () => context.push(RoutePaths.elderHealthTrend),
-            tooltip: '查看趋势',
+            tooltip: AppTheme.tooltipViewTrend,
           ),
         ],
       ),

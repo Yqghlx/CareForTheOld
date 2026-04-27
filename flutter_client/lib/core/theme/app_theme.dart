@@ -422,6 +422,15 @@ class AppTheme {
   static const String labelConfirmPassword = '确认新密码';
   static const String helperPasswordRule = '至少8位，需包含字母和数字';
 
+  // 常用 tooltip
+  static const String tooltipSettings = '设置';
+  static const String tooltipRefresh = '刷新';
+  static const String tooltipExportReport = '导出报告';
+  static const String tooltipViewTrend = '查看趋势';
+  static const String tooltipVoiceConfirm = '语音确认服药';
+  static const String tooltipCallHistory = '历史记录';
+  static const String tooltipEmergencyCall = '紧急呼叫';
+
   // 通用按钮/操作标签
   static const String labelLogout = '退出登录';
   static const String labelLogoutAction = '退出';

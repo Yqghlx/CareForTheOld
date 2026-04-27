@@ -43,7 +43,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
           IconButton(
             icon: const Icon(Icons.history),
             onPressed: () => _showHistoryDialog(),
-            tooltip: '历史记录',
+            tooltip: AppTheme.tooltipCallHistory,
           ),
         ],
       ),

@@ -60,7 +60,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
               color: _isListening ? AppTheme.errorColor : null,
             ),
             onPressed: _startVoiceConfirm,
-            tooltip: '语音确认服药',
+            tooltip: AppTheme.tooltipVoiceConfirm,
           ),
         ],
       ),

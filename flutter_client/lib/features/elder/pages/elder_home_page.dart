@@ -77,7 +77,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
             const NotificationBadgeButton(),
             IconButton(
               icon: const Icon(Icons.settings),
-              tooltip: '设置',
+              tooltip: AppTheme.tooltipSettings,
               onPressed: () => context.push(RoutePaths.settings),
             ),
           ],

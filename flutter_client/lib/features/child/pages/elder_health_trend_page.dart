@@ -61,7 +61,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
                 (elderId: widget.elderId, type: _selectedType),
               ),
             ),
-            tooltip: '刷新',
+            tooltip: AppTheme.tooltipRefresh,
           ),
         ],
       ),

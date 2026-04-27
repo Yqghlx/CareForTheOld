@@ -45,13 +45,13 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
             IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: () => ref.invalidate(filteredHealthRecordsProvider(_selectedType)),
-              tooltip: '刷新',
+              tooltip: AppTheme.tooltipRefresh,
             ),
             // 导出报告按钮
             IconButton(
               icon: const Icon(Icons.picture_as_pdf),
               onPressed: () => _showExportDialog(context),
-              tooltip: '导出报告',
+              tooltip: AppTheme.tooltipExportReport,
             ),
           ],
         ),
