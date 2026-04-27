@@ -296,7 +296,7 @@ class _AnimatedQuickCardState extends State<AnimatedQuickCard>
             borderRadius: AppTheme.radiusL,
           ),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            padding: AppTheme.paddingAll12,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,

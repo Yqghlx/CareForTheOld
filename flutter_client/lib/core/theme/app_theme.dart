@@ -178,6 +178,7 @@ class AppTheme {
   static const EdgeInsets paddingH16V10 = EdgeInsets.symmetric(horizontal: 16, vertical: 10);
   static const EdgeInsets paddingH12V6 = EdgeInsets.symmetric(horizontal: 12, vertical: 6);
   static const EdgeInsets paddingH8V3 = EdgeInsets.symmetric(horizontal: 8, vertical: 3);
+  static const EdgeInsets paddingH32 = EdgeInsets.symmetric(horizontal: 32);
   static const EdgeInsets marginBottom8 = EdgeInsets.only(bottom: 8);
   static const EdgeInsets marginBottom12 = EdgeInsets.only(bottom: 12);
   static const EdgeInsets marginTop8 = EdgeInsets.only(top: 8);
