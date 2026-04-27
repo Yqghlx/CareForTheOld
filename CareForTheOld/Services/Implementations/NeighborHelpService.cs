@@ -274,6 +274,8 @@ public class NeighborHelpService : INeighborHelpService
                 });
         }
 
+        _logger.LogInformation("邻居 {ResponderId} 已接受求助请求 {RequestId}，求助者 {RequesterId}", responderId, requestId, request.RequesterId);
+
         return await BuildHelpRequestResponse(request.Id);
     }
 
@@ -370,6 +372,8 @@ public class NeighborHelpService : INeighborHelpService
         {
             throw new ArgumentException(ErrorMessages.NeighborHelp.AlreadyRated);
         }
+
+        _logger.LogInformation("用户 {RaterId} 对求助 {RequestId} 的响应者 {RateeId} 评分 {Rating}", raterId, requestId, helpRequest.ResponderId, request.Rating);
 
         return new NeighborHelpRatingResponse
         {

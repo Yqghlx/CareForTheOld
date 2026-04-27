@@ -4,6 +4,7 @@ using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace CareForTheOld.Services.Implementations;
 
@@ -14,11 +15,13 @@ public class HealthAlertService : IHealthAlertService
 {
     private readonly AppDbContext _context;
     private readonly INotificationService _notificationService;
+    private readonly ILogger<HealthAlertService> _logger;
 
-    public HealthAlertService(AppDbContext context, INotificationService notificationService)
+    public HealthAlertService(AppDbContext context, INotificationService notificationService, ILogger<HealthAlertService> logger)
     {
         _context = context;
         _notificationService = notificationService;
+        _logger = logger;
     }
 
     /// <summary>
@@ -78,6 +81,9 @@ public class HealthAlertService : IHealthAlertService
                 AlertLevel = GetAlertLevel(record.Type, alertMessage)
             }
         );
+
+        _logger.LogInformation("已向 {Count} 位子女发送健康异常预警：老人 {ElderId}，类型 {HealthType}，预警 {Alert}",
+            children.Count, elderId, record.Type, alertMessage);
     }
 
     /// <summary>
