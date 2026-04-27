@@ -139,7 +139,7 @@ Swagger → ExceptionHandlingMiddleware → SecurityHeadersMiddleware → AuditL
 
 ### 限流策略
 
-认证接口 10次/IP/分钟，通用 API 60次/IP/分钟，加入家庭 5次/用户/5分钟，紧急呼叫 3次/用户/1分钟。
+认证接口 15次/IP/分钟（生产）、30次/IP/分钟（开发），通用 API 60次/IP/分钟，加入家庭 5次/用户/5分钟，紧急呼叫 3次/用户/1分钟。配置项在 `appsettings.Production.json` 的 `RateLimit` 节点。
 
 ## 测试
 
@@ -163,3 +163,31 @@ SMS 配置：`Sms:Provider`（aliyun/twilio）、`Sms:Aliyun:*` 或 `Sms:Twilio:
 **端口说明**：后端 API 默认使用端口 **5001**（而非 5000），因为 macOS Monterey+ 的 AirPlay Receiver 占用了 5000 端口。
 Docker 容器内应用监听 5000，通过 `docker-compose.yml` 映射到宿主机 5001（`5001:5000`）。
 前端开发环境配置（`AppConfig.dev`）指向 `http://10.0.2.2:5001`，Android 模拟器通过该地址访问宿主机。
+
+## CI/CD 流水线
+
+GitHub Actions（`.github/workflows/ci.yml`）执行流程：
+
+```
+backend (单元测试)  →  backend-integration (Testcontainers + PostgreSQL)
+                   →  migration-check (DbSet 与迁移一致性)
+                   →  api-path-check (前后端 API 路径一致性)
+frontend (分析 + APK)
+→ docker (镜像构建 + 推送，仅 main)
+→ release (GitHub Release + APK，仅 main)
+```
+
+- **backend-integration**：使用 Testcontainers 在真实 PostgreSQL 上运行集成测试，ubuntu-latest 自带 Docker
+- **migration-check**：`scripts/check-migrations.sh` 对比 AppDbContext DbSet 与迁移快照，防止漏建迁移
+- **api-path-check**：`scripts/check-api-paths.sh` 对比后端 Controller 路由与前端 api_endpoints.dart
+
+## 运维脚本
+
+| 脚本 | 用途 |
+|------|------|
+| `scripts/deploy.sh` | 生产部署（迁移 + 重启 + 健康检查 + 冒烟测试） |
+| `scripts/migrate.sh` | 数据库迁移（支持 rollback） |
+| `scripts/backup.sh` | PostgreSQL 备份（保留 7 天） |
+| `scripts/smoke-test.sh` | 部署后冒烟测试（9 项检查） |
+| `scripts/check-migrations.sh` | 迁移一致性检查 |
+| `scripts/check-api-paths.sh` | API 路径一致性检查 |
