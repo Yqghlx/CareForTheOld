@@ -242,10 +242,8 @@ public class EmergencyService : IEmergencyService
             ? string.Format(NotificationMessages.Emergency.SmsReminderContentTemplate, elderName)
             : string.Format(NotificationMessages.Emergency.SmsCallContentTemplate, elderName);
 
-        // 批量收集 SmsRecord，循环结束后一次性写入数据库（避免 N+1）
-        var smsRecords = new List<SmsRecord>();
-
-        foreach (var child in children)
+        // 并行发送 SMS 给所有子女（紧急场景下延迟敏感，串行发送不可接受）
+        var smsTasks = children.Select(async child =>
         {
             var (success, errorMessage) = (false, ErrorMessages.Sms.SendFailed);
             try
@@ -259,7 +257,13 @@ public class EmergencyService : IEmergencyService
                     callId, child.UserId);
             }
 
-            smsRecords.Add(new SmsRecord
+            if (success)
+            {
+                _logger.LogInformation("紧急呼叫 SMS 已发送: 呼叫={CallId}, 子女={ChildId}, 服务={Service}",
+                    callId, child.UserId, _smsService.ServiceName);
+            }
+
+            return new SmsRecord
             {
                 Id = Guid.NewGuid(),
                 PhoneNumber = child.User.PhoneNumber,
@@ -269,14 +273,10 @@ public class EmergencyService : IEmergencyService
                 ErrorMessage = errorMessage,
                 RelatedEmergencyCallId = callId,
                 CreatedAt = DateTime.UtcNow,
-            });
+            };
+        }).ToList();
 
-            if (success)
-            {
-                _logger.LogInformation("紧急呼叫 SMS 已发送: 呼叫={CallId}, 子女={ChildId}, 服务={Service}",
-                    callId, child.UserId, _smsService.ServiceName);
-            }
-        }
+        var smsRecords = await Task.WhenAll(smsTasks);
 
         // 一次性批量写入所有短信记录
         if (smsRecords.Any())

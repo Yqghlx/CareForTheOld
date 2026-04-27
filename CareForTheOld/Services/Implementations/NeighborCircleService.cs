@@ -260,25 +260,24 @@ public class NeighborCircleService : INeighborCircleService
     public async Task<List<NeighborCircleResponse>> SearchNearbyCirclesAsync(
         double latitude, double longitude, double radiusMeters = AppConstants.NeighborCircle.SearchRadiusMeters, int maxResults = AppConstants.NeighborCircle.SearchMaxResults)
     {
-        // 只搜索活跃的圈子
-        var circles = await _context.NeighborCircles
-            .Where(c => c.IsActive)
-            .ToListAsync();
+        // 计算最大搜索范围阈值（取最大圈子半径 + 搜索半径对应的经纬度偏移）
+        // 用于在数据库层面粗筛，避免加载所有活跃圈子到内存
+        var maxExtendedRadius = radiusMeters + AppConstants.NeighborCircle.MaxCircleRadiusMeters;
+        var (latThreshold, lngThreshold) = GeoHelper.CalculateDegreeThresholds(maxExtendedRadius, latitude);
 
-        // 经纬度粗筛阈值
-        var (latThreshold, _) = GeoHelper.CalculateDegreeThresholds(radiusMeters, latitude);
+        // 数据库层粗筛：只查经纬度在矩形范围内的活跃圈子
+        var circles = await _context.NeighborCircles
+            .Where(c => c.IsActive
+                && c.CenterLatitude >= latitude - latThreshold
+                && c.CenterLatitude <= latitude + latThreshold
+                && c.CenterLongitude >= longitude - lngThreshold
+                && c.CenterLongitude <= longitude + lngThreshold)
+            .ToListAsync();
 
         var results = new List<(NeighborCircle Circle, double Distance)>();
 
         foreach (var circle in circles)
         {
-            // 粗筛：搜索点到圈子中心距离不超过（搜索半径 + 圈子半径）
-            var (extendedLatThreshold, extendedLngThreshold) = GeoHelper.CalculateDegreeThresholds(radiusMeters + circle.RadiusMeters, latitude);
-
-            if (Math.Abs(circle.CenterLatitude - latitude) > extendedLatThreshold ||
-                Math.Abs(circle.CenterLongitude - longitude) > extendedLngThreshold)
-                continue;
-
             // Haversine 精算：搜索点到圈子中心距离
             var distToCenter = GeoHelper.HaversineDistance(latitude, longitude, circle.CenterLatitude, circle.CenterLongitude);
 

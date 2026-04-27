@@ -86,6 +86,9 @@ public static class AppConstants
         /// <summary>附近圈子搜索半径（米）</summary>
         public const int SearchRadiusMeters = 2000;
 
+        /// <summary>圈子最大覆盖半径（米），用于地理预筛选矩形范围</summary>
+        public const int MaxCircleRadiusMeters = 2000;
+
         /// <summary>搜索返回最大结果数</summary>
         public const int SearchMaxResults = 20;
     }
