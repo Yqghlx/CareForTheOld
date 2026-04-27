@@ -1313,7 +1313,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     }
 
     final time = event.detectedAt.toLocal();
-    final timeStr = '${time.month}/${time.day}';
+    final timeStr = time.toMonthDay();
 
     return Container(
       margin: AppTheme.marginBottom8,

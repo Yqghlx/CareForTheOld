@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import '../../core/extensions/date_format_extension.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/models/health_record.dart';
 
@@ -233,7 +234,7 @@ class HealthTrendChart extends StatelessWidget {
                   return Padding(
                     padding: const EdgeInsets.only(top: 8),
                     child: Text(
-                      '${date.month}/${date.day}',
+                      date.toMonthDay(),
                       style: AppTheme.textAxisLabel,
                     ),
                   );
@@ -257,7 +258,7 @@ class HealthTrendChart extends StatelessWidget {
                 if (idx >= data.length) return null;
                 final r = data[idx];
                 return LineTooltipItem(
-                  '${r.recordedAt.month}/${r.recordedAt.day}\n收缩压: ${r.systolic ?? "-"}  舒张压: ${r.diastolic ?? "-"}',
+                  '${r.recordedAt.toMonthDay()}\n收缩压: ${r.systolic ?? "-"}  舒张压: ${r.diastolic ?? "-"}',
                   AppTheme.textWhite14,
                 );
               }).toList(),
@@ -343,7 +344,7 @@ class HealthTrendChart extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: Text(
-                    '${date.month}/${date.day}',
+                    date.toMonthDay(),
                     style: AppTheme.textAxisLabel,
                   ),
                 );
@@ -367,7 +368,7 @@ class HealthTrendChart extends StatelessWidget {
               if (idx >= data.length) return null;
               final r = data[idx];
               return LineTooltipItem(
-                '${r.recordedAt.month}/${r.recordedAt.day}  ${_getValue(r)}${type.unit}',
+                '${r.recordedAt.toMonthDay()}  ${_getValue(r)}${type.unit}',
                 AppTheme.textWhite14,
               );
             }).toList(),

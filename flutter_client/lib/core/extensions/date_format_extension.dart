@@ -18,6 +18,9 @@ extension DateTimeFormatting on DateTime {
   /// 格式化为友好日期：1月15日
   String toFriendlyDate() => '$month月$day日';
 
+  /// 格式化为月/日：1/15（图表 X 轴标签等紧凑展示）
+  String toMonthDay() => '$month/$day';
+
   /// 格式化为友好时间范围：14:30 - 15:00
   String toTimeRange(DateTime end) => '${toTimeString()} - ${end.toTimeString()}';
 

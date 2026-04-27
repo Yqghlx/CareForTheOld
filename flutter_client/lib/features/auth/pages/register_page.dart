@@ -160,7 +160,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                     if (picked != null && mounted) {
                       setState(() {
                         _selectedBirthDate = picked;
-                        _birthDateController.text = '${picked.year}年${picked.month}月${picked.day}日';
+                        _birthDateController.text = picked.toFriendlyDate();
                       });
                     }
                   },
