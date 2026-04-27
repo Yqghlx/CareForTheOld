@@ -40,7 +40,7 @@ class HealthTrendChart extends StatelessWidget {
         // 血压图例（仅血压类型显示）
         if (type == HealthType.bloodPressure)
           Padding(
-            padding: const EdgeInsets.only(bottom: 12),
+            padding: AppTheme.marginBottom12,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
