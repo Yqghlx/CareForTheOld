@@ -184,7 +184,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                             width: 64,
                             height: 64,
                             decoration: BoxDecoration(
-                              color: Colors.black.withValues(alpha: 0.4),
+                              color: AppTheme.overlayDark,
                               borderRadius: AppTheme.radiusL,
                             ),
                             child: const Center(

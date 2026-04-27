@@ -56,6 +56,11 @@ class AppTheme {
   static const Color grey700 = Color(0xFF616161);
   static const Color grey800 = Color(0xFF424242);
 
+  /// 阴影色（5% 黑，用于卡片 BoxShadow）
+  static const Color shadowLight = Color(0x0D000000);
+  /// 遮罩色（40% 黑，用于上传遮罩等场景）
+  static const Color overlayDark = Color(0x66000000);
+
   /// 预定义文本样式（高频组合，统一管理）
   static const TextStyle textTitle = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
   static const TextStyle textSubtitle = TextStyle(fontSize: 14, color: grey600);

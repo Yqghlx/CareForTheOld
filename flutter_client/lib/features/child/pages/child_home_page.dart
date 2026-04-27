@@ -551,7 +551,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                                           fontSize: 16,
                                           color: entry.value.text.isEmpty
                                               ? AppTheme.grey500
-                                              : Colors.black,
+                                              : AppTheme.textPrimary,
                                         ),
                                       ),
                                     ],
