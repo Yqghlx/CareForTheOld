@@ -856,8 +856,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       if (delayInfo != null)
                         Text(
                           delayInfo,
-                          style: TextStyle(
-                            fontSize: 12,
+                          style: AppTheme.textCaption.copyWith(
                             color: AppTheme.warningDark,
                             fontWeight: FontWeight.w500,
                           ),
@@ -865,9 +864,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       if (log.note != null && log.note!.isNotEmpty)
                         Text(
                           '备注: ${log.note}',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: AppTheme.grey500,
+                          style: AppTheme.textCaption.copyWith(
                             fontStyle: FontStyle.italic,
                           ),
                           maxLines: 2,
@@ -1132,8 +1129,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       AppTheme.hSpacer8,
                       Text(
                         '个人基线',
-                        style: TextStyle(
-                          fontSize: 14,
+                        style: AppTheme.textBody.copyWith(
                           fontWeight: FontWeight.w600,
                           color: AppTheme.grey700,
                         ),
@@ -1175,8 +1171,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                           AppTheme.hSpacer8,
                           Text(
                             anomaly.positiveFeedback!.quality,
-                            style: TextStyle(
-                              fontSize: 16,
+                            style: AppTheme.textBody16.copyWith(
                               fontWeight: FontWeight.bold,
                               color: AppTheme.successDark,
                             ),

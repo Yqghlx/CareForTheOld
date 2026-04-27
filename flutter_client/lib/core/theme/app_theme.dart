@@ -90,6 +90,7 @@ class AppTheme {
   static const TextStyle textLink14 = TextStyle(fontSize: 14, color: primaryColor);
   static const TextStyle textError14 = TextStyle(fontSize: 14, color: errorColor);
   static const TextStyle textErrorAlpha12 = TextStyle(fontSize: 12, color: Color(0x99FF4D4F));
+  static const TextStyle textSectionTitle = TextStyle(fontSize: 22, fontWeight: FontWeight.bold);
 
   /// 渐变配置
   static const LinearGradient primaryGradient = LinearGradient(

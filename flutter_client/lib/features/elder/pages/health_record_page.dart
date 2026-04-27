@@ -270,10 +270,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       fit: BoxFit.scaleDown,
                       child: Text(
                         '30天: ${stat.average30Days?.toStringAsFixed(1) ?? '--'} | 共${stat.totalCount}条',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: AppTheme.grey500,
-                        ),
+                        style: AppTheme.textBody16.copyWith(color: AppTheme.grey500),
                       ),
                     ),
                   ],
@@ -411,8 +408,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                     AppTheme.spacer4,
                     Text(
                       '备注: ${record.note}',
-                      style: TextStyle(
-                        fontSize: 16,
+                      style: AppTheme.textBody16.copyWith(
                         color: AppTheme.grey500,
                         fontStyle: FontStyle.italic,
                       ),
@@ -673,9 +669,8 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                         AppTheme.spacer8,
                                         Text(
                                           isListening ? '停止' : '语音输入',
-                                          style: const TextStyle(
+                                          style: AppTheme.textBody16.copyWith(
                                             color: AppTheme.cardColor,
-                                            fontSize: 16,
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
@@ -759,7 +754,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                         ),
                                       ],
                                     ),
-                                    child: const Column(
+                                    child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Icon(
@@ -770,9 +765,8 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                         AppTheme.spacer8,
                                         Text(
                                           '拍照识别',
-                                          style: TextStyle(
+                                          style: AppTheme.textBody16.copyWith(
                                             color: AppTheme.cardColor,
-                                            fontSize: 16,
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
@@ -788,8 +782,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                             AppTheme.spacer12,
                             Text(
                               voiceText.isEmpty ? '请说出数值...' : voiceText,
-                              style: TextStyle(
-                                fontSize: 16,
+                              style: AppTheme.textBody16.copyWith(
                                 color: AppTheme.primaryColor,
                                 fontWeight: FontWeight.bold,
                               ),

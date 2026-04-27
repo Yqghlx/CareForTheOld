@@ -83,10 +83,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                   AppTheme.hSpacer12,
                   Text(
                     '${_selectedType.label}趋势',
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: AppTheme.textSectionTitle,
                   ),
                 ],
               ),

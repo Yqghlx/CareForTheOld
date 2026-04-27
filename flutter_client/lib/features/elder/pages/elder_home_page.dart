@@ -251,10 +251,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
           // 快捷操作
           const Text(
             '快捷操作',
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
+            style: AppTheme.textSectionTitle,
           ),
           AppTheme.spacer20,
 
@@ -401,8 +398,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(
                       '松手取消',
-                      style: TextStyle(
-                        fontSize: 16,
+                      style: AppTheme.textBody16.copyWith(
                         color: AppTheme.cardColor.withValues(alpha: 0.9),
                       ),
                     ),

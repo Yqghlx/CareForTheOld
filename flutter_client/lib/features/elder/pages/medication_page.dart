@@ -148,10 +148,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
         AppTheme.spacer8,
         Text(
           label,
-          style: TextStyle(
-            fontSize: 16,
-            color: AppTheme.grey700,
-          ),
+          style: AppTheme.textBody16.copyWith(color: AppTheme.grey700),
         ),
       ],
     );

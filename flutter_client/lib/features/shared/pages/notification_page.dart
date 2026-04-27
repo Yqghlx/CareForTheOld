@@ -179,10 +179,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
                         if (notification.content.length > 60)
                           Text(
                             _expandedNotificationId == notification.id ? '收起' : '展开全文',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: AppTheme.primaryColor,
-                            ),
+                            style: AppTheme.textCaption.copyWith(color: AppTheme.primaryColor),
                           ),
                       ],
                     ),

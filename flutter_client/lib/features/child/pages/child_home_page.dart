@@ -131,9 +131,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                       children: [
                         Text(
                           authState.user?.realName ?? '子女',
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                          style: AppTheme.textLargeTitle.copyWith(
                             color: AppTheme.cardColor,
                           ),
                         ),
@@ -734,9 +732,8 @@ class _EmergencyPulseBannerState extends State<_EmergencyPulseBanner>
                     ),
                     Text(
                       '${widget.unreadCount} 条待处理，点击查看',
-                      style: TextStyle(
+                      style: AppTheme.textBody16.copyWith(
                         color: AppTheme.cardColor.withValues(alpha: 0.9),
-                        fontSize: 16,
                       ),
                     ),
                   ],

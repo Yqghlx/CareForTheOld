@@ -161,17 +161,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         children: [
                           Text(
                             userState.user?.realName ?? authState.user?.realName ?? '用户',
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                            style: AppTheme.textLargeTitle.copyWith(
                               color: AppTheme.cardColor,
                             ),
                           ),
                           AppTheme.spacer4,
                           Text(
                             userState.user?.phoneNumber ?? authState.user?.phoneNumber ?? '',
-                            style: TextStyle(
-                              fontSize: 14,
+                            style: AppTheme.textWhite14.copyWith(
                               color: AppTheme.cardColor.withValues(alpha: 0.9),
                             ),
                           ),

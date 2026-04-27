@@ -100,8 +100,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               ),
               child: Text(
                 '${pending.length}',
-                style: TextStyle(
-                  fontSize: 12,
+                style: AppTheme.textCaption.copyWith(
                   color: AppTheme.warningDark,
                   fontWeight: FontWeight.bold,
                 ),
@@ -414,9 +413,8 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
           AppTheme.spacer4,
           Text(
             '将邀请码分享给家人，提交后需审批通过',
-            style: TextStyle(
+            style: AppTheme.textCaption.copyWith(
               color: AppTheme.cardColor.withValues(alpha: 0.8),
-              fontSize: 12,
             ),
           ),
         ],

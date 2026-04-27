@@ -99,8 +99,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text('邀请码：${circle.inviteCode}',
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18)),
+                              style: AppTheme.textTitle),
                           AppTheme.hSpacer8,
                           IconButton(
                             icon: const Icon(Icons.refresh, size: AppTheme.iconSizeMd),
