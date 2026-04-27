@@ -244,7 +244,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                           ),
                           // 趋势指示小图标
                           if (stat.trend != null && stat.trend != 'stable') ...[
-                            const SizedBox(width: 4),
+                            AppTheme.hSpacer4,
                             Icon(
                               stat.trendIcon,
                               size: 14,

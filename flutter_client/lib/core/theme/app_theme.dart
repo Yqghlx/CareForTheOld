@@ -177,13 +177,16 @@ class AppTheme {
   static const SizedBox spacer20 = SizedBox(height: 20);
   static const SizedBox spacer16 = SizedBox(height: 16);
   static const SizedBox spacer12 = SizedBox(height: 12);
+  static const SizedBox spacer10 = SizedBox(height: 10);
   static const SizedBox spacer8 = SizedBox(height: 8);
   static const SizedBox spacer4 = SizedBox(height: 4);
 
   /// 常用水平间距组件
+  static const SizedBox hSpacer20 = SizedBox(width: 20);
   static const SizedBox hSpacer16 = SizedBox(width: 16);
   static const SizedBox hSpacer12 = SizedBox(width: 12);
   static const SizedBox hSpacer8 = SizedBox(width: 8);
+  static const SizedBox hSpacer4 = SizedBox(width: 4);
 
   /// 统一用户消息常量
   static const String msgLoadFailed = '加载失败，请重试';

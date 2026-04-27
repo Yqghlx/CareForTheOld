@@ -215,7 +215,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                   children: [
                     if (call.hasLocation) ...[
                       const Icon(Icons.location_on, size: 18, color: AppTheme.infoBlueDark),
-                      const SizedBox(width: 4),
+                      AppTheme.hSpacer4,
                       Text(
                         '${call.latitude!.toStringAsFixed(4)}, ${call.longitude!.toStringAsFixed(4)}',
                         style: AppTheme.textCaption13Grey700,
@@ -227,7 +227,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                       AppTheme.hSpacer16,
                     if (call.batteryLevel != null) ...[
                       Icon(Icons.battery_std, size: 18, color: call.batteryColor),
-                      const SizedBox(width: 4),
+                      AppTheme.hSpacer4,
                       Text(
                         '电量 ${call.batteryText}',
                         style: TextStyle(

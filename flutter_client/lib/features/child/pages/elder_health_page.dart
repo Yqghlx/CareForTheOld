@@ -1195,7 +1195,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10),
+                      AppTheme.spacer10,
                       Text(
                         anomaly.positiveFeedback!.message,
                         style: TextStyle(fontSize: 14, color: AppTheme.successDark, height: 1.4),
@@ -1204,7 +1204,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       Row(
                         children: [
                           const Icon(Icons.show_chart, size: 14, color: AppTheme.successMedium),
-                          const SizedBox(width: 4),
+                          AppTheme.hSpacer4,
                           Text(
                             '变异系数: ${anomaly.positiveFeedback!.coefficientOfVariation.toStringAsFixed(1)}%',
                             style: TextStyle(fontSize: 12, color: AppTheme.successMedium),
@@ -1286,7 +1286,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
           baselineText,
           style: AppTheme.textHeading,
         ),
-        const SizedBox(width: 4),
+        AppTheme.hSpacer4,
         Text(
           unit,
           style: AppTheme.textSubtitle,

@@ -220,7 +220,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                     ),
                   ),
                   ),
-                  const SizedBox(width: 20),
+                  AppTheme.hSpacer20,
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
