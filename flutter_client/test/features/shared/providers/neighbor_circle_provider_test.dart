@@ -1,3 +1,4 @@
+import 'package:care_for_the_old_client/core/theme/app_theme.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -67,7 +68,7 @@ void main() {
 
         expect(notifier.state.isLoading, isFalse);
         expect(notifier.state.error, isNotNull);
-        expect(notifier.state.error, contains('网络错误'));
+        expect(notifier.state.error, AppTheme.msgOperationFailed);
       });
     });
 
@@ -126,7 +127,7 @@ void main() {
         final success = await notifier.joinCircle('000000');
 
         expect(success, isFalse);
-        expect(notifier.state.error, contains('邀请码无效'));
+        expect(notifier.state.error, AppTheme.msgOperationFailed);
       });
     });
 

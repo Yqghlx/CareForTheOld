@@ -1,3 +1,4 @@
+import 'package:care_for_the_old_client/core/theme/app_theme.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -131,7 +132,7 @@ void main() {
         final success = await notifier.acceptRequest('req-001');
 
         expect(success, isFalse);
-        expect(notifier.state.error, contains('已被他人接受'));
+        expect(notifier.state.error, AppTheme.msgOperationFailed);
       });
     });
 

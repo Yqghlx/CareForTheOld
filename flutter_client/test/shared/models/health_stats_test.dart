@@ -1,3 +1,4 @@
+import 'package:care_for_the_old_client/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:care_for_the_old_client/shared/models/health_stats.dart';
@@ -86,19 +87,19 @@ void main() {
       expect(
           HealthStats.fromJson(createTestJson(overrides: {'trend': 'rising'}))
               .trendColor,
-          Colors.orange);
+          AppTheme.warningColor);
       expect(
           HealthStats.fromJson(createTestJson(overrides: {'trend': 'falling'}))
               .trendColor,
-          Colors.blue);
+          AppTheme.infoBlue);
       expect(
           HealthStats.fromJson(createTestJson(overrides: {'trend': 'stable'}))
               .trendColor,
-          Colors.green);
+          AppTheme.successColor);
       expect(
           HealthStats.fromJson(createTestJson(overrides: {'trend': null}))
               .trendColor,
-          Colors.grey);
+          AppTheme.grey500);
     });
   });
 }

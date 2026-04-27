@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:care_for_the_old_client/core/theme/app_theme.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:care_for_the_old_client/shared/models/emergency_call.dart';
 
@@ -122,19 +122,19 @@ void main() {
     test('batteryColor 应根据电量返回正确颜色', () {
       final high = EmergencyCall.fromJson(
           createTestJson(overrides: {'batteryLevel': 80}));
-      expect(high.batteryColor, Colors.green);
+      expect(high.batteryColor, AppTheme.successColor);
 
       final medium = EmergencyCall.fromJson(
           createTestJson(overrides: {'batteryLevel': 30}));
-      expect(medium.batteryColor, Colors.orange);
+      expect(medium.batteryColor, AppTheme.warningColor);
 
       final low = EmergencyCall.fromJson(
           createTestJson(overrides: {'batteryLevel': 10}));
-      expect(low.batteryColor, Colors.red);
+      expect(low.batteryColor, AppTheme.errorColor);
 
       final unknown = EmergencyCall.fromJson(
           createTestJson(overrides: {'batteryLevel': null}));
-      expect(unknown.batteryColor, Colors.grey);
+      expect(unknown.batteryColor, AppTheme.grey500);
     });
 
     test('formattedTime 应正确格式化', () {

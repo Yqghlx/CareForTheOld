@@ -163,7 +163,7 @@ void main() {
       test('404 转为资源不存在', () {
         expect(
           ErrorStateWidget.friendlyMessage('404 Not Found'),
-          '请求的内容不存在',
+          '请求的资源不存在',
         );
       });
 

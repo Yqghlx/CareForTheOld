@@ -1,3 +1,4 @@
+import 'package:care_for_the_old_client/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:care_for_the_old_client/shared/models/notification_record.dart';
@@ -83,19 +84,19 @@ void main() {
       test('紧急呼叫应返回红色', () {
         final record = NotificationRecord.fromJson(
             createTestJson(overrides: {'type': 'EmergencyCall'}));
-        expect(record.color, Colors.red);
+        expect(record.color, AppTheme.errorColor);
       });
 
       test('围栏警报应返回紫色', () {
         final record = NotificationRecord.fromJson(
             createTestJson(overrides: {'type': 'GeoFenceAlert'}));
-        expect(record.color, Colors.purple);
+        expect(record.color, AppTheme.purpleColor);
       });
 
       test('未知类型应返回绿色', () {
         final record = NotificationRecord.fromJson(
             createTestJson(overrides: {'type': 'CustomType'}));
-        expect(record.color, Colors.green);
+        expect(record.color, AppTheme.successColor);
       });
     });
 
