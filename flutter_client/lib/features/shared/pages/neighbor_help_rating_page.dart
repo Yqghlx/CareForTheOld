@@ -31,7 +31,7 @@ class _NeighborHelpRatingPageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('评价互助')),
+      appBar: AppBar(title: const Text(AppTheme.titleHelpRating)),
       body: Padding(
         padding: AppTheme.paddingAll16,
         child: Column(

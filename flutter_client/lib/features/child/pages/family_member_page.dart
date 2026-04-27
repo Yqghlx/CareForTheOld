@@ -35,7 +35,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
     final isElder = authState.role?.isElder ?? authState.user?.role.isElder ?? false;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('家庭成员')),
+      appBar: AppBar(title: const Text(AppTheme.titleFamilyMember)),
       body: RefreshIndicator(
         onRefresh: () => ref.read(familyProvider.notifier).loadFamily(),
         child: SingleChildScrollView(
@@ -200,7 +200,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
-        title: const Text('审批确认'),
+        title: const Text(AppTheme.titleApproveConfirm),
         content: Text('确定通过 ${member.realName} 的加入申请吗？'),
         actions: [
           TextButton(
@@ -232,7 +232,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
-        title: const Text('拒绝申请'),
+        title: const Text(AppTheme.titleRejectApply),
         content: Text('确定拒绝 ${member.realName} 的加入申请吗？'),
         actions: [
           TextButton(
@@ -382,7 +382,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     context: context,
                     builder: (ctx) => AlertDialog(
                       shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
-                      title: const Text('刷新邀请码'),
+                      title: const Text(AppTheme.titleRefreshInviteCode),
                       content: const Text('刷新后旧邀请码将失效，确定要刷新吗？'),
                       actions: [
                         TextButton(
@@ -906,7 +906,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
-        title: const Text('移除成员'),
+        title: const Text(AppTheme.titleRemoveMember),
         content: Text('确定要将 ${member.realName} 移出家庭组吗？'),
         actions: [
           TextButton(

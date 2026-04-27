@@ -94,7 +94,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('注册账号')),
+      appBar: AppBar(title: const Text(AppTheme.titleRegister)),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: AppTheme.paddingAll24,

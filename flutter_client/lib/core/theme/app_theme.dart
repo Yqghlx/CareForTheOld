@@ -306,6 +306,24 @@ class AppTheme {
   static const String msgStatsLoadFailed = '统计加载失败';
   static const String msgRetry = '重试';
 
+  // 页面标题
+  static const String titleRegister = '注册账号';
+  static const String titleNeighborHelp = '邻里互助';
+  static const String titleHelpRating = '评价互助';
+  static const String titleTrustRanking = '信任排行榜';
+  static const String titleNotification = '通知中心';
+  static const String titleNeighborCircle = '邻里圈';
+  static const String titleSettings = '设置';
+  static const String titleEmergencyCall = '紧急呼叫';
+  static const String titleConfirmHandle = '确认处理';
+  static const String titleCallHistory = '历史呼叫记录';
+  static const String titleLocationView = '位置查看';
+  static const String titleFamilyMember = '家庭成员';
+  static const String titleApproveConfirm = '审批确认';
+  static const String titleRejectApply = '拒绝申请';
+  static const String titleRefreshInviteCode = '刷新邀请码';
+  static const String titleRemoveMember = '移除成员';
+
   // 家庭成员消息
   static const String msgFamilyApproved = '已通过';
   static const String msgFamilyRejected = '已拒绝申请';

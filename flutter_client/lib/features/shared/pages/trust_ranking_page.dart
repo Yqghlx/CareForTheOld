@@ -31,7 +31,7 @@ class _TrustRankingPageState extends ConsumerState<TrustRankingPage> {
     final state = ref.watch(trustScoreProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('信任排行榜')),
+      appBar: AppBar(title: const Text(AppTheme.titleTrustRanking)),
       body: state.isLoading
           ? SingleChildScrollView(
               padding: AppTheme.paddingAll16,

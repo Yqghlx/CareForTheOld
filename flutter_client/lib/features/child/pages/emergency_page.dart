@@ -38,7 +38,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('紧急呼叫'),
+        title: const Text(AppTheme.titleEmergencyCall),
         actions: [
           IconButton(
             icon: const Icon(Icons.history),
@@ -369,7 +369,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
         shape: RoundedRectangleBorder(
           borderRadius: AppTheme.radiusL,
         ),
-        title: const Text('确认处理'),
+        title: const Text(AppTheme.titleConfirmHandle),
         content: Text('确定要标记 ${call.elderName} 的紧急呼叫为已处理吗？'),
         actions: [
           TextButton(
@@ -410,7 +410,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
         shape: RoundedRectangleBorder(
           borderRadius: AppTheme.radiusL,
         ),
-        title: const Text('历史呼叫记录'),
+        title: const Text(AppTheme.titleCallHistory),
         content: SizedBox(
           width: double.maxFinite,
           height: 400,

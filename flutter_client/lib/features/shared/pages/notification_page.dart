@@ -30,7 +30,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('通知中心'),
+        title: const Text(AppTheme.titleNotification),
         actions: [
           if (state.unreadCount > 0)
             TextButton(

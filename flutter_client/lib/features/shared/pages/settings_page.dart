@@ -125,7 +125,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('设置'),
+        title: const Text(AppTheme.titleSettings),
       ),
       body: SingleChildScrollView(
         padding: AppTheme.paddingAll20,

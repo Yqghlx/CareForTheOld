@@ -36,7 +36,7 @@ class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('邻里互助'),
+          title: const Text(AppTheme.titleNeighborHelp),
           bottom: const TabBar(
             tabs: [
               Tab(text: '待响应'),

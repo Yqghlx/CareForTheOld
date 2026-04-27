@@ -46,7 +46,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
     final state = ref.watch(neighborCircleProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('邻里圈')),
+      appBar: AppBar(title: const Text(AppTheme.titleNeighborCircle)),
       body: state.isLoading
           ? SingleChildScrollView(
               padding: AppTheme.paddingAll16,

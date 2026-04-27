@@ -47,7 +47,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
 
     if (familyId == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('位置查看')),
+        appBar: AppBar(title: const Text(AppTheme.titleLocationView)),
         body: const Center(child: Text('未加入家庭组')),
       );
     }
