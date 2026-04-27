@@ -335,14 +335,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 children: [
                   _buildSettingItem(
                     icon: Icons.info_outline,
-                    title: '关于我们',
+                    title: AppTheme.titleAboutUs,
                     subtitle: '${AppTheme.appName} App ${_appVersion.isNotEmpty ? "v$_appVersion" : ""}',
                     onTap: () => _showAboutDialog(),
                   ),
                   const Divider(height: 1),
                   _buildSettingItem(
                     icon: Icons.help_outline,
-                    title: '帮助与反馈',
+                    title: AppTheme.titleHelpFeedback,
                     subtitle: '使用帮助、问题反馈',
                     onTap: () => _showHelpDialog(),
                   ),
@@ -353,7 +353,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
             // 退出登录按钮
             PrimaryButton(
-              text: '退出登录',
+              text: AppTheme.labelLogout,
               onPressed: () => _showLogoutDialog(),
               gradient: const LinearGradient(
                 colors: [AppTheme.errorColor, AppTheme.errorAccent],
@@ -687,7 +687,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               child: const Icon(Icons.info, color: AppTheme.primaryColor),
             ),
             AppTheme.hSpacer12,
-            const Text('关于我们'),
+            const Text(AppTheme.titleAboutUs),
           ],
         ),
         content: const Column(
@@ -731,7 +731,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               child: const Icon(Icons.help, color: AppTheme.primaryColor),
             ),
             AppTheme.hSpacer12,
-            const Text('帮助与反馈'),
+            const Text(AppTheme.titleHelpFeedback),
           ],
         ),
         content: const Column(
@@ -777,7 +777,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               child: const Icon(Icons.logout, color: AppTheme.errorColor),
             ),
             AppTheme.hSpacer12,
-            const Text('退出登录'),
+            const Text(AppTheme.labelLogout),
           ],
         ),
         content: const Text('确定要退出登录吗？'),
@@ -787,7 +787,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             child: const Text(AppTheme.msgCancel),
           ),
           PrimaryButton(
-            text: '退出',
+            text: AppTheme.labelLogoutAction,
             onPressed: () {
               Navigator.pop(ctx);
               // 清除所有业务 Provider 状态，防止残留旧数据

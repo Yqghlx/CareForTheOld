@@ -65,7 +65,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                       TextButton.icon(
                         onPressed: () => _showAddMemberDialog(),
                         icon: const Icon(Icons.person_add, size: AppTheme.iconSizeMd),
-                        label: const Text('添加成员'),
+                        label: const Text(AppTheme.labelAddMember),
                       ),
                   ],
                 ),
@@ -179,12 +179,12 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                 IconButton(
                   icon: const Icon(Icons.check_circle, color: AppTheme.successColor),
                   onPressed: () => _approveMember(member),
-                  tooltip: '通过',
+                  tooltip: AppTheme.labelApprove,
                 ),
                 IconButton(
                   icon: const Icon(Icons.cancel, color: AppTheme.errorMedium),
                   onPressed: () => _rejectMember(member),
-                  tooltip: '拒绝',
+                  tooltip: AppTheme.labelReject,
                 ),
               ],
             ),
@@ -208,7 +208,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
             child: const Text(AppTheme.msgCancel),
           ),
           PrimaryButton(
-            text: '通过',
+            text: AppTheme.labelApprove,
             onPressed: () => Navigator.pop(ctx, true),
           ),
         ],
@@ -240,7 +240,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
             child: const Text(AppTheme.msgCancel),
           ),
           PrimaryButton(
-            text: '拒绝',
+            text: AppTheme.labelReject,
             gradient: const LinearGradient(colors: [AppTheme.errorColor, AppTheme.errorAccent]),
             onPressed: () => Navigator.pop(ctx, true),
           ),
@@ -812,7 +812,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     child: const Icon(Icons.person_add, color: AppTheme.primaryColor),
                   ),
                   AppTheme.hSpacer12,
-                  const Text('添加成员'),
+                  const Text(AppTheme.labelAddMember),
                 ],
               ),
               content: Column(

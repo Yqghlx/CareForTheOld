@@ -242,7 +242,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                             width: 20, height: 20,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Text('创建'),
+                        : const Text(AppTheme.labelCreate),
                   ),
                 ],
               ),

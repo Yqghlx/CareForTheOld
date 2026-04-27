@@ -408,6 +408,21 @@ class AppTheme {
   static const String tooltipShowPassword = '显示密码';
   static const String tooltipHidePassword = '隐藏密码';
 
+  // 通用按钮/操作标签
+  static const String labelLogout = '退出登录';
+  static const String labelLogoutAction = '退出';
+  static const String labelApprove = '通过';
+  static const String labelReject = '拒绝';
+  static const String labelClose = '关闭';
+  static const String labelAddMember = '添加成员';
+  static const String labelCreate = '创建';
+  static const String labelRefresh = '刷新';
+
+  // 设置页面区域标题
+  static const String titleAboutUs = '关于我们';
+  static const String titleHelpFeedback = '帮助与反馈';
+  static const String titleSetGeoFence = '设置安全区域';
+
   // 健康状态标签
   static const String labelHigh = '偏高';
   static const String labelLow = '偏低';

@@ -1479,7 +1479,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('关闭'),
+            child: const Text(AppTheme.labelClose),
           ),
         ],
       ),

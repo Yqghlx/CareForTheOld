@@ -424,7 +424,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('关闭'),
+            child: const Text(AppTheme.labelClose),
           ),
         ],
       ),

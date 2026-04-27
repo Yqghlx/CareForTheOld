@@ -74,7 +74,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                   : AppTheme.grey500,
             ),
             onPressed: () => _showGeoFenceDialog(context, elderName, latestLocationAsync),
-            tooltip: '设置安全区域',
+            tooltip: AppTheme.titleSetGeoFence,
           ),
         ],
       ),
@@ -244,7 +244,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                     child: const Icon(Icons.security, color: AppTheme.successColor),
                   ),
                   AppTheme.hSpacer12,
-                  const Text('设置安全区域'),
+                  const Text(AppTheme.titleSetGeoFence),
                 ],
               ),
               content: SingleChildScrollView(
