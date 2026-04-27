@@ -66,6 +66,7 @@ public class GeoFenceService : IGeoFenceService
             existingFence.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
             await InvalidateCacheAsync(request.ElderId);
+            _logger.LogInformation("电子围栏已更新：老人 {ElderId}，操作者 {OperatorId}", request.ElderId, creatorId);
             return MapToResponse(existingFence);
         }
 
@@ -86,6 +87,7 @@ public class GeoFenceService : IGeoFenceService
         _context.GeoFences.Add(fence);
         await _context.SaveChangesAsync();
         await InvalidateCacheAsync(request.ElderId);
+        _logger.LogInformation("电子围栏已创建：老人 {ElderId}，操作者 {OperatorId}，半径 {Radius}m", request.ElderId, creatorId, request.Radius);
 
         return MapToResponse(fence);
     }
@@ -127,6 +129,7 @@ public class GeoFenceService : IGeoFenceService
 
         await _context.SaveChangesAsync();
         await InvalidateCacheAsync(fence.ElderId);
+        _logger.LogInformation("电子围栏已更新：围栏 {FenceId}，操作者 {OperatorId}", fenceId, operatorId);
 
         return MapToResponse(fence);
     }
@@ -150,6 +153,7 @@ public class GeoFenceService : IGeoFenceService
         _context.GeoFences.Remove(fence);
         await _context.SaveChangesAsync();
         await InvalidateCacheAsync(fence.ElderId);
+        _logger.LogInformation("电子围栏已删除：围栏 {FenceId}，老人 {ElderId}，操作者 {OperatorId}", fenceId, fence.ElderId, operatorId);
     }
 
     /// <summary>

@@ -74,6 +74,7 @@ public class NeighborCircleService : INeighborCircleService
             throw new ArgumentException(ErrorMessages.NeighborCircle.AlreadyInCircleCreate);
         }
 
+        _logger.LogInformation("邻里圈已创建：圈子 {CircleId}，圈主 {CreatorId}，名称 {CircleName}", circle.Id, creatorId, request.CircleName);
         return await BuildCircleResponse(circle.Id);
     }
 
@@ -140,6 +141,7 @@ public class NeighborCircleService : INeighborCircleService
             throw new ArgumentException(ErrorMessages.NeighborCircle.AlreadyInCircleJoin);
         }
 
+        _logger.LogInformation("用户 {UserId} 加入邻里圈：圈子 {CircleId}", userId, circle.Id);
         return await BuildCircleResponse(circle.Id);
     }
 
@@ -167,6 +169,7 @@ public class NeighborCircleService : INeighborCircleService
         }
 
         await _context.SaveChangesAsync();
+        _logger.LogInformation("用户 {UserId} 退出邻里圈：圈子 {CircleId}，是否圈主：{IsCreator}", userId, circleId, circle.CreatorId == userId);
     }
 
     /// <inheritdoc />
