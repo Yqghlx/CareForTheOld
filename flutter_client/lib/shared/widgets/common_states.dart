@@ -108,7 +108,7 @@ class ErrorStateWidget extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh, size: 18),
-              label: const Text('重试'),
+              label: const Text(AppTheme.msgRetry),
             ),
           ],
         ),

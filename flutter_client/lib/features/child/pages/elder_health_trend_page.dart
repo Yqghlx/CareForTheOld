@@ -152,7 +152,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
                             (elderId: widget.elderId, type: _selectedType),
                           ),
                         ),
-                        child: const Text('重试'),
+                        child: const Text(AppTheme.msgRetry),
                       ),
                     ],
                   ),
