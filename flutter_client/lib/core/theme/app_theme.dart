@@ -56,6 +56,9 @@ class AppTheme {
   static const Color grey700 = Color(0xFF616161);
   static const Color grey800 = Color(0xFF424242);
 
+  /// 透明色（替代 Colors.transparent）
+  static const Color transparentColor = Colors.transparent;
+
   /// 阴影色（5% 黑，用于卡片 BoxShadow）
   static const Color shadowLight = Color(0x0D000000);
   /// 遮罩色（40% 黑，用于上传遮罩等场景）
@@ -161,6 +164,7 @@ class AppTheme {
   static const BorderRadius radiusTopXL = BorderRadius.vertical(top: Radius.circular(20));
   static const BorderRadius radius2XL = BorderRadius.all(Radius.circular(24));
   static const BorderRadius radius3XL = BorderRadius.all(Radius.circular(32));
+  static const BorderRadius radiusZero = BorderRadius.zero;
 
   /// 统一间距常量
   static const double spacingXs = 4.0;

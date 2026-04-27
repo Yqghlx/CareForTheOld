@@ -130,6 +130,8 @@ public class EmergencyService : IEmergencyService
     /// </summary>
     public async Task SendEmergencyNotificationJobAsync(Guid elderId, string elderName, Guid callId)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(elderName, nameof(elderName));
+
         try
         {
             await SendEmergencyNotificationAsync(elderId, elderName, callId);

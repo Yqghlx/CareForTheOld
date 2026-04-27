@@ -103,7 +103,7 @@ class _PrimaryButtonState extends State<PrimaryButton>
           ],
         ),
         child: Material(
-          color: Colors.transparent,
+          color: AppTheme.transparentColor,
           child: InkWell(
             borderRadius: AppTheme.radiusM,
             onTap: widget.isLoading ? null : widget.onPressed,
@@ -176,7 +176,7 @@ class _SecondaryButtonState extends State<SecondaryButton>
           borderRadius: AppTheme.radiusM,
         ),
         child: Material(
-          color: Colors.transparent,
+          color: AppTheme.transparentColor,
           child: InkWell(
             borderRadius: AppTheme.radiusM,
             onTap: widget.onPressed,
@@ -251,7 +251,7 @@ class _PrimaryIconButtonState extends State<PrimaryIconButton>
           ],
         ),
         child: Material(
-          color: Colors.transparent,
+          color: AppTheme.transparentColor,
           child: InkWell(
             borderRadius: AppTheme.radiusM,
             onTap: widget.isLoading ? null : widget.onPressed,

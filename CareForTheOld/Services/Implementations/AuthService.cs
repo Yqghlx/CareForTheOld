@@ -78,6 +78,8 @@ public class AuthService : IAuthService
     /// </summary>
     public async Task<AuthResponse> RefreshTokenAsync(string token)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(token, nameof(token));
+
         var refreshToken = await _context.RefreshTokens
             .AsTracking()
             .Include(rt => rt.User)

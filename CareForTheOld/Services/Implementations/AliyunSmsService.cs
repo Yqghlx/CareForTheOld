@@ -29,6 +29,9 @@ public class AliyunSmsService : ISmsService
     /// <inheritdoc />
     public async Task<(bool Success, string? ErrorMessage)> SendAsync(string phoneNumber, string content)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(phoneNumber, nameof(phoneNumber));
+        ArgumentException.ThrowIfNullOrWhiteSpace(content, nameof(content));
+
         // 配置检查
         var accessKeyId = _configuration[ConfigurationKeys.Sms.Aliyun.AccessKeyId];
         var accessKeySecret = _configuration[ConfigurationKeys.Sms.Aliyun.AccessKeySecret];

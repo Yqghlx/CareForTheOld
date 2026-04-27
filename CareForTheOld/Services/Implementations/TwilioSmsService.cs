@@ -29,6 +29,9 @@ public class TwilioSmsService : ISmsService
     /// <inheritdoc />
     public async Task<(bool Success, string? ErrorMessage)> SendAsync(string phoneNumber, string content)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(phoneNumber, nameof(phoneNumber));
+        ArgumentException.ThrowIfNullOrWhiteSpace(content, nameof(content));
+
         // 配置检查
         var accountSid = _configuration[ConfigurationKeys.Sms.Twilio.AccountSid];
         var authToken = _configuration[ConfigurationKeys.Sms.Twilio.AuthToken];

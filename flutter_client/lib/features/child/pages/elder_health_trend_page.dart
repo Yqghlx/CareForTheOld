@@ -182,8 +182,8 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
-                  color: isSelected ? type.color : Colors.transparent,
-                  borderRadius: isSelected ? AppTheme.radiusL : BorderRadius.zero,
+                  color: isSelected ? type.color : AppTheme.transparentColor,
+                  borderRadius: isSelected ? AppTheme.radiusL : AppTheme.radiusZero,
                 ),
                 child: Column(
                   children: [
