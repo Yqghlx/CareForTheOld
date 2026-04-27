@@ -131,6 +131,13 @@ class AppTheme {
   static const double iconSizeXxl = 48.0;
   static const double iconSizeHuge = 64.0;
 
+  /// 小型加载指示器（按钮内使用）
+  static const Widget smallLoadingIndicator = SizedBox(
+    width: iconSizeLg,
+    height: iconSizeLg,
+    child: CircularProgressIndicator(strokeWidth: 2),
+  );
+
   /// 按钮高度
   static const double buttonHeight = 56.0;
 

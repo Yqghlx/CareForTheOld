@@ -270,7 +270,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     title: '健康数据通知',
                     subtitle: '健康异常预警、趋势提醒',
                     trailing: _isLoadingPrefs
-                        ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2))
+                        ? AppTheme.smallLoadingIndicator
                         : Switch(
                             value: _notifyHealth,
                             onChanged: (v) {
@@ -287,7 +287,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     title: '用药提醒通知',
                     subtitle: '用药时间到了提醒',
                     trailing: _isLoadingPrefs
-                        ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2))
+                        ? AppTheme.smallLoadingIndicator
                         : Switch(
                             value: _notifyMedication,
                             onChanged: (v) {
@@ -304,7 +304,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     title: '邻里动态通知',
                     subtitle: '邻里圈、邻里互助消息',
                     trailing: _isLoadingPrefs
-                        ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2))
+                        ? AppTheme.smallLoadingIndicator
                         : Switch(
                             value: _notifyNeighbor,
                             onChanged: (v) {
