@@ -35,7 +35,7 @@ public class NotificationController : ControllerBase
     /// 获取我的通知列表
     /// </summary>
     [HttpGet("me")]
-    [CacheControl(MaxAgeSeconds = 30)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
     public async Task<ApiResponse<List<NotificationResponse>>> GetMyNotifications([FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize)
     {
         var notifications = await _notificationService.GetUserNotificationsAsync(this.GetUserId(), limit);
@@ -46,7 +46,7 @@ public class NotificationController : ControllerBase
     /// 获取未读通知数量
     /// </summary>
     [HttpGet("me/unread-count")]
-    [CacheControl(MaxAgeSeconds = 30)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
     public async Task<ApiResponse<object>> GetUnreadCount()
     {
         var count = await _notificationService.GetUnreadCountAsync(this.GetUserId());

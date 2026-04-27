@@ -142,6 +142,15 @@ public static class AppConstants
 
         /// <summary>用户缓存键前缀，完整键格式：user:{userId}</summary>
         public const string UserPrefix = "user:";
+
+        /// <summary>HTTP 响应缓存时间（秒）：频繁变化数据（通知、位置、紧急呼叫）</summary>
+        public const int HttpCacheShortSeconds = 30;
+
+        /// <summary>HTTP 响应缓存时间（秒）：一般数据（用户信息、家庭、用药、邻里圈）</summary>
+        public const int HttpCacheMediumSeconds = 60;
+
+        /// <summary>HTTP 响应缓存时间（秒）：较少变化数据（健康统计、异常检测、报告）</summary>
+        public const int HttpCacheLongSeconds = 300;
     }
 
     /// <summary>

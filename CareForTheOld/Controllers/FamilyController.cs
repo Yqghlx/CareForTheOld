@@ -32,7 +32,7 @@ public class FamilyController : ControllerBase
     /// 获取当前用户所属的家庭信息
     /// </summary>
     [HttpGet("me")]
-    [CacheControl(MaxAgeSeconds = 60)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     public async Task<ApiResponse<FamilyResponse?>> GetMyFamily()
     {
         var userId = this.GetUserId();
@@ -92,7 +92,7 @@ public class FamilyController : ControllerBase
     /// 获取已通过审批的家庭成员列表
     /// </summary>
     [HttpGet("{id:guid}/members")]
-    [CacheControl(MaxAgeSeconds = 60)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     public async Task<ApiResponse<List<FamilyMemberResponse>>> GetMembers(Guid id)
     {
         // 验证请求者是该家庭成员，防止越权查看

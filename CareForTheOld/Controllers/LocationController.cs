@@ -48,7 +48,7 @@ public class LocationController : ControllerBase
     /// 获取我的最新位置
     /// </summary>
     [HttpGet("me/latest")]
-    [CacheControl(MaxAgeSeconds = 30)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
     public async Task<ApiResponse<LocationRecordResponse?>> GetMyLatestLocation()
     {
         var userId = this.GetUserId();
@@ -60,7 +60,7 @@ public class LocationController : ControllerBase
     /// 获取我的位置历史
     /// </summary>
     [HttpGet("me/history")]
-    [CacheControl(MaxAgeSeconds = 60)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     public async Task<ApiResponse<List<LocationRecordResponse>>> GetMyHistory([FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize)
     {
         limit = this.ClampLimit(limit);
@@ -73,7 +73,7 @@ public class LocationController : ControllerBase
     /// 获取家庭成员最新位置（子女查看老人）
     /// </summary>
     [HttpGet("family/{familyId:guid}/member/{memberId:guid}/latest")]
-    [CacheControl(MaxAgeSeconds = 30)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
     [Authorize(Roles = "Child")]
     public async Task<ApiResponse<LocationRecordResponse?>> GetFamilyMemberLatestLocation(Guid familyId, Guid memberId)
     {
@@ -92,7 +92,7 @@ public class LocationController : ControllerBase
     /// 获取家庭成员位置历史（子女查看老人）
     /// </summary>
     [HttpGet("family/{familyId:guid}/member/{memberId:guid}/history")]
-    [CacheControl(MaxAgeSeconds = 60)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [Authorize(Roles = "Child")]
     public async Task<ApiResponse<List<LocationRecordResponse>>> GetFamilyMemberHistory(
         Guid familyId, Guid memberId, [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize)

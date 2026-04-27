@@ -51,7 +51,7 @@ public class EmergencyController : ControllerBase
     /// 获取未处理的紧急呼叫（子女端）
     /// </summary>
     [HttpGet("unread")]
-    [CacheControl(MaxAgeSeconds = 30)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
     [Authorize(Roles = "Child")]
     public async Task<ApiResponse<List<EmergencyCallResponse>>> GetUnreadCalls()
     {
@@ -64,7 +64,7 @@ public class EmergencyController : ControllerBase
     /// 获取历史呼叫记录
     /// </summary>
     [HttpGet("history")]
-    [CacheControl(MaxAgeSeconds = 60)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     public async Task<ApiResponse<List<EmergencyCallResponse>>> GetHistory([FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultHistoryPageSize)
     {
         limit = this.ClampLimit(limit);

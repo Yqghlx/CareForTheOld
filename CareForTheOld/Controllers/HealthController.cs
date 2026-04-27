@@ -61,7 +61,7 @@ public class HealthController : ControllerBase
     /// 获取自己的健康记录列表
     /// </summary>
     [HttpGet("me")]
-    [CacheControl(MaxAgeSeconds = 60)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     public async Task<ApiResponse<List<HealthRecordResponse>>> GetMyRecords(
         [FromQuery] HealthType? type,
         [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip,
@@ -77,7 +77,7 @@ public class HealthController : ControllerBase
     /// 获取家庭成员的健康记录（子女查看老人数据）
     /// </summary>
     [HttpGet("family/{familyId:guid}/member/{memberId:guid}")]
-    [CacheControl(MaxAgeSeconds = 60)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [Authorize(Roles = "Child")]
     public async Task<ApiResponse<List<HealthRecordResponse>>> GetFamilyMemberRecords(
         Guid familyId,
@@ -100,7 +100,7 @@ public class HealthController : ControllerBase
     /// 获取健康数据统计
     /// </summary>
     [HttpGet("me/stats")]
-    [CacheControl(MaxAgeSeconds = 300)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheLongSeconds)]
     public async Task<ApiResponse<List<HealthStatsResponse>>> GetMyStats()
     {
         var userId = this.GetUserId();
@@ -112,7 +112,7 @@ public class HealthController : ControllerBase
     /// 获取家庭成员的健康数据统计
     /// </summary>
     [HttpGet("family/{familyId:guid}/member/{memberId:guid}/stats")]
-    [CacheControl(MaxAgeSeconds = 300)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheLongSeconds)]
     [Authorize(Roles = "Child")]
     public async Task<ApiResponse<List<HealthStatsResponse>>> GetFamilyMemberStats(
         Guid familyId,
@@ -175,7 +175,7 @@ public class HealthController : ControllerBase
     /// </summary>
     [HttpGet("me/anomaly-detection")]
     [Authorize(Roles = "Elder")]
-    [CacheControl(MaxAgeSeconds = 300)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheLongSeconds)]
     public async Task<ApiResponse<TrendAnomalyDetectionResponse>> GetMyAnomalyDetection(
         [FromQuery] HealthType? type)
     {
@@ -212,7 +212,7 @@ public class HealthController : ControllerBase
     /// 获取家庭成员的健康趋势异常检测（子女查看老人）
     /// </summary>
     [HttpGet("family/{familyId:guid}/member/{memberId:guid}/anomaly-detection")]
-    [CacheControl(MaxAgeSeconds = 300)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheLongSeconds)]
     [Authorize(Roles = "Child")]
     public async Task<ApiResponse<TrendAnomalyDetectionResponse>> GetFamilyMemberAnomalyDetection(
         Guid familyId,

@@ -36,7 +36,7 @@ public class UserController : ControllerBase
     /// 获取当前登录用户信息
     /// </summary>
     [HttpGet("me")]
-    [CacheControl(MaxAgeSeconds = 60)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     public async Task<ApiResponse<UserResponse>> GetCurrentUser()
     {
         var userId = this.GetUserId();
@@ -115,7 +115,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    [CacheControl(MaxAgeSeconds = 60)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     public async Task<ApiResponse<UserResponse>> GetUserById(Guid id)
     {
         // 仅允许查看本人或同一家庭成员的信息，防止越权访问

@@ -33,7 +33,7 @@ public class NeighborCircleController : ControllerBase
     /// 获取当前用户加入的邻里圈
     /// </summary>
     [HttpGet("me")]
-    [CacheControl(MaxAgeSeconds = 60)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     public async Task<ApiResponse<NeighborCircleResponse?>> GetMyCircle()
     {
         var userId = this.GetUserId();
@@ -56,7 +56,7 @@ public class NeighborCircleController : ControllerBase
     /// 获取邻里圈详情（仅成员可查看）
     /// </summary>
     [HttpGet("{id:guid}")]
-    [CacheControl(MaxAgeSeconds = 60)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     public async Task<ApiResponse<NeighborCircleResponse>> GetCircle(Guid id)
     {
         var userId = this.GetUserId();
@@ -70,7 +70,7 @@ public class NeighborCircleController : ControllerBase
     /// 获取邻里圈成员列表（仅成员可查看）
     /// </summary>
     [HttpGet("{id:guid}/members")]
-    [CacheControl(MaxAgeSeconds = 60)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     public async Task<ApiResponse<List<NeighborMemberResponse>>> GetMembers(Guid id)
     {
         var userId = this.GetUserId();
@@ -84,7 +84,7 @@ public class NeighborCircleController : ControllerBase
     /// 获取附近成员（基于最近位置记录）
     /// </summary>
     [HttpGet("{id:guid}/nearby-members")]
-    [CacheControl(MaxAgeSeconds = 60)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     public async Task<ApiResponse<List<NeighborMemberResponse>>> GetNearbyMembers(
         Guid id, [FromQuery, Range(-90.0, 90.0)] double latitude, [FromQuery, Range(-180.0, 180.0)] double longitude, [FromQuery] double radius = AppConstants.NeighborCircle.DefaultMemberRadiusMeters)
     {
@@ -133,7 +133,7 @@ public class NeighborCircleController : ControllerBase
     /// 搜索附近的邻里圈
     /// </summary>
     [HttpGet("nearby")]
-    [CacheControl(MaxAgeSeconds = 60)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     public async Task<ApiResponse<List<NeighborCircleResponse>>> SearchNearby(
         [FromQuery, Range(-90.0, 90.0)] double latitude, [FromQuery, Range(-180.0, 180.0)] double longitude, [FromQuery] double radius = AppConstants.NeighborCircle.SearchRadiusMeters)
     {

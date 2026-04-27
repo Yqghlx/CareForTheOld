@@ -33,7 +33,7 @@ public class NeighborHelpController : ControllerBase
     /// 获取待响应的求助列表
     /// </summary>
     [HttpGet("pending")]
-    [CacheControl(MaxAgeSeconds = 30)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
     public async Task<ApiResponse<List<NeighborHelpRequestResponse>>> GetPending()
     {
         var userId = this.GetUserId();
@@ -45,7 +45,7 @@ public class NeighborHelpController : ControllerBase
     /// 获取互助历史记录
     /// </summary>
     [HttpGet("history")]
-    [CacheControl(MaxAgeSeconds = 60)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     public async Task<ApiResponse<List<NeighborHelpRequestResponse>>> GetHistory(
         [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultHistoryPageSize)
     {
@@ -58,7 +58,7 @@ public class NeighborHelpController : ControllerBase
     /// 获取求助请求详情
     /// </summary>
     [HttpGet("{id:guid}")]
-    [CacheControl(MaxAgeSeconds = 60)]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     public async Task<ApiResponse<NeighborHelpRequestResponse>> GetRequest(Guid id)
     {
         var result = await _helpService.GetRequestAsync(id);
