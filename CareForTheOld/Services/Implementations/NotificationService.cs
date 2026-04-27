@@ -113,7 +113,7 @@ public class NotificationService : INotificationService
     public async Task SendToFamilyAsync(Guid familyId, string type, object data)
     {
         await _hubContext.Clients.Group(AppConstants.SignalRGroups.FamilyGroupName(familyId))
-            .SendAsync("ReceiveNotification", type, data);
+            .SendAsync(AppConstants.SignalRMethods.ReceiveNotification, type, data);
     }
 
     /// <summary>

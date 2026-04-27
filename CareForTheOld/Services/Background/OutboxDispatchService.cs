@@ -64,7 +64,7 @@ public class OutboxDispatchService
 
                 // 通过 SignalR 推送
                 await hubContext.Clients.Group(AppConstants.SignalRGroups.UserGroupName(message.UserId))
-                    .SendAsync("ReceiveNotification", message.Type, data);
+                    .SendAsync(AppConstants.SignalRMethods.ReceiveNotification, message.Type, data);
 
                 // 标记为已投递
                 message.Status = OutboxStatus.Sent;

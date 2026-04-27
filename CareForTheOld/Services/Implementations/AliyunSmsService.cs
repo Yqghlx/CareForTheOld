@@ -18,7 +18,7 @@ public class AliyunSmsService : ISmsService
     private readonly IConfiguration _configuration;
     private readonly ILogger<AliyunSmsService> _logger;
 
-    public string ServiceName => "Aliyun";
+    public string ServiceName => AppConstants.SmsProviders.Aliyun;
 
     public AliyunSmsService(IConfiguration configuration, ILogger<AliyunSmsService> logger)
     {

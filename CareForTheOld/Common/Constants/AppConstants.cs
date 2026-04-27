@@ -337,6 +337,28 @@ public static class AppConstants
     }
 
     /// <summary>
+    /// SignalR 客户端方法名
+    /// 集中管理 Hub 调用客户端的方法名，防止拼写错误导致通知静默失败
+    /// </summary>
+    public static class SignalRMethods
+    {
+        /// <summary>推送通知到客户端</summary>
+        public const string ReceiveNotification = "ReceiveNotification";
+    }
+
+    /// <summary>
+    /// SMS 服务名称常量
+    /// </summary>
+    public static class SmsProviders
+    {
+        /// <summary>阿里云短信服务标识</summary>
+        public const string Aliyun = "Aliyun";
+
+        /// <summary>Twilio 短信服务标识</summary>
+        public const string Twilio = "Twilio";
+    }
+
+    /// <summary>
     /// 信任评分算法参数
     /// 评分公式：AvgRating×RatingMultiplier×RatingWeight + Min(TotalHelps/MaxHelpsCap,1)×100×HelpsWeight + ResponseRate×100×ResponseWeight
     /// </summary>

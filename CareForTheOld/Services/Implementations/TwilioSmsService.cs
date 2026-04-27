@@ -18,7 +18,7 @@ public class TwilioSmsService : ISmsService
     private readonly IConfiguration _configuration;
     private readonly ILogger<TwilioSmsService> _logger;
 
-    public string ServiceName => "Twilio";
+    public string ServiceName => AppConstants.SmsProviders.Twilio;
 
     public TwilioSmsService(IConfiguration configuration, ILogger<TwilioSmsService> logger)
     {
