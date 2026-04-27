@@ -143,7 +143,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
                       const Icon(Icons.error_outline,
                           size: 48, color: AppTheme.errorColor),
                       AppTheme.spacer12,
-                      const Text('加载失败，请重试',
+                      Text(AppTheme.msgLoadFailed,
                           style: AppTheme.textError),
                       AppTheme.spacer12,
                       ElevatedButton(

@@ -125,6 +125,9 @@ class AppTheme {
   static const double iconSizeSm = 18.0;
   static const double iconSizeMd = 20.0;
 
+  /// 按钮高度
+  static const double buttonHeight = 56.0;
+
   /// 卡片阴影
   static const double cardElevation = 4.0;
   static const double cardElevationLow = 2.0;

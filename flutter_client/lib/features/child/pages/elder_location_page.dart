@@ -105,7 +105,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                     color: AppTheme.errorColor.withValues(alpha: 0.1),
                     borderRadius: AppTheme.radiusL,
                   ),
-                  child: const Text('加载失败，请重试', style: AppTheme.textError),
+                  child: Text(AppTheme.msgLoadFailed, style: AppTheme.textError),
                 ),
               ),
               AppTheme.spacer24,

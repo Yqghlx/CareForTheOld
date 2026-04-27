@@ -67,7 +67,7 @@ class _PrimaryButtonState extends State<PrimaryButton>
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: Container(
-          height: 56,
+          height: AppTheme.buttonHeight,
           decoration: BoxDecoration(
             gradient: widget.gradient ?? AppTheme.primaryGradient,
             borderRadius: AppTheme.radiusM,
@@ -173,7 +173,7 @@ class _SecondaryButtonState extends State<SecondaryButton>
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: Container(
-          height: 56,
+          height: AppTheme.buttonHeight,
           decoration: BoxDecoration(
             border: Border.all(color: widget.borderColor, width: 2),
             borderRadius: AppTheme.radiusM,
@@ -269,7 +269,7 @@ class _PrimaryIconButtonState extends State<PrimaryIconButton>
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: Container(
-          height: 56,
+          height: AppTheme.buttonHeight,
           decoration: BoxDecoration(
             gradient: widget.gradient ?? AppTheme.primaryGradient,
             borderRadius: AppTheme.radiusM,
