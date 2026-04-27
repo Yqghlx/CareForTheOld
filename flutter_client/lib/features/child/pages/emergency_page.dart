@@ -131,10 +131,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
           if (state.historyCalls.isEmpty)
             Container(
               padding: AppTheme.paddingAll24,
-              decoration: BoxDecoration(
-                color: AppTheme.grey100,
-                borderRadius: AppTheme.radiusL,
-              ),
+              decoration: AppTheme.decorationCardLight,
               child: const Center(
                 child: Text('暂无呼叫记录', style: AppTheme.textGrey),
               ),

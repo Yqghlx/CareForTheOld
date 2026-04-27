@@ -499,6 +499,12 @@ class AppTheme {
     borderRadius: radiusS,
   );
 
+  /// 预设 BoxDecoration — 卡片/区域浅灰背景（grey100 + radiusL）
+  static const BoxDecoration decorationCardLight = BoxDecoration(
+    color: grey100,
+    borderRadius: radiusL,
+  );
+
   /// 预设 BoxDecoration — 图标圆形背景（primaryColor 15% + circle）
   static BoxDecoration decorationIconBg(Color color) => BoxDecoration(
     color: color.withValues(alpha: 0.15),

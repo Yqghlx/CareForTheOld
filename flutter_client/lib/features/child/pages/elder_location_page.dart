@@ -389,10 +389,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
     if (location == null) {
       return Container(
         padding: AppTheme.paddingAll24,
-        decoration: BoxDecoration(
-          color: AppTheme.grey100,
-          borderRadius: AppTheme.radiusL,
-        ),
+        decoration: AppTheme.decorationCardLight,
         child: Center(
           child: Column(
             children: [
@@ -511,10 +508,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
     if (history.isEmpty) {
       return Container(
         padding: AppTheme.paddingAll24,
-        decoration: BoxDecoration(
-          color: AppTheme.grey100,
-          borderRadius: AppTheme.radiusL,
-        ),
+        decoration: AppTheme.decorationCardLight,
         child: const Center(
           child: Text('暂无历史记录', style: AppTheme.textGrey),
         ),

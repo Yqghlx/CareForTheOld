@@ -168,10 +168,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
   /// 健康类型选择器
   Widget _buildTypeSelector() {
     return Container(
-      decoration: BoxDecoration(
-        color: AppTheme.grey100,
-        borderRadius: AppTheme.radiusL,
-      ),
+      decoration: AppTheme.decorationCardLight,
       child: Row(
         children: HealthType.values.map((type) {
           final isSelected = type == _selectedType;

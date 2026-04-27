@@ -166,10 +166,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 data: (anomaly) => _buildAnomalyDetectionCard(anomaly, elderName),
                 loading: () => Container(
                   padding: AppTheme.paddingAll16,
-                  decoration: BoxDecoration(
-                    color: AppTheme.grey100,
-                    borderRadius: AppTheme.radiusL,
-                  ),
+                  decoration: AppTheme.decorationCardLight,
                   child: const Center(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -766,10 +763,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     if (logs.isEmpty) {
       return Container(
         padding: AppTheme.paddingAll24,
-        decoration: BoxDecoration(
-          color: AppTheme.grey100,
-          borderRadius: AppTheme.radiusL,
-        ),
+        decoration: AppTheme.decorationCardLight,
         child: const Center(
           child: Text('暂无用药记录', style: AppTheme.textGreyLight),
         ),
