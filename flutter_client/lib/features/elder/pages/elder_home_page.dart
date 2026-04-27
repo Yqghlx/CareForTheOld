@@ -23,7 +23,6 @@ import '../../shared/services/emergency_service.dart';
 import '../../../core/api/api_client.dart';
 import 'health_record_page.dart';
 import 'medication_page.dart';
-import 'package:dio/dio.dart';
 import '../../../core/extensions/api_error_extension.dart';
 
 /// 老人端首页
@@ -492,13 +491,9 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
         context.showSuccessSnackBar(AppTheme.msgEmergencySent);
         _showCallSuccessDialog(call);
       }
-    } on DioException catch (e) {
-      if (mounted) {
-        context.showErrorSnackBar(e.toDisplayMessage(fallback: AppTheme.msgEmergencyFailed));
-      }
     } catch (e) {
       if (mounted) {
-        context.showErrorSnackBar(AppTheme.msgEmergencyFailed);
+        context.showErrorSnackBar(errorMessageFrom(e, fallback: AppTheme.msgEmergencyFailed));
       }
     }
   }
@@ -655,13 +650,9 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
           }
         }
       }
-    } on DioException catch (e) {
-      if (mounted) {
-        context.showErrorSnackBar(e.toDisplayMessage(fallback: AppTheme.msgAvatarFailed));
-      }
     } catch (e) {
       if (mounted) {
-        context.showErrorSnackBar(AppTheme.msgAvatarFailed);
+        context.showErrorSnackBar(errorMessageFrom(e, fallback: AppTheme.msgAvatarFailed));
       }
     } finally {
       if (mounted) {

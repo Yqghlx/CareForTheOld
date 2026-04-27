@@ -14,11 +14,11 @@ import '../theme/app_theme.dart';
 ///   state = state.copyWith(error: errorMessageFrom(e));
 /// }
 /// ```
-String errorMessageFrom(Object error) {
+String errorMessageFrom(Object error, {String? fallback}) {
   if (error is DioException) {
-    return error.toDisplayMessage();
+    return error.toDisplayMessage(fallback: fallback ?? AppTheme.msgOperationFailed);
   }
-  return AppTheme.msgOperationFailed;
+  return fallback ?? AppTheme.msgOperationFailed;
 }
 
 /// DioException 的扩展方法，用于从后端响应中提取错误信息
