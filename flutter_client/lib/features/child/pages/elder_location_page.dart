@@ -357,7 +357,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                   child: const Text(AppTheme.msgCancel),
                 ),
                 PrimaryButton(
-                  text: '保存',
+                  text: AppTheme.msgSave,
                   onPressed: centerLat == 0
                       ? null
                       : () async {

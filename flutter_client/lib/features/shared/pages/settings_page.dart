@@ -462,7 +462,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             child: const Text(AppTheme.msgCancel),
           ),
           PrimaryButton(
-            text: '保存',
+            text: AppTheme.msgSave,
             onPressed: () async {
               final newName = nameController.text.trim();
               if (newName.isEmpty) return;
@@ -706,7 +706,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         ),
         actions: [
           PrimaryButton(
-            text: '确定',
+            text: AppTheme.msgConfirm,
             onPressed: () => Navigator.pop(ctx),
           ),
         ],
@@ -752,7 +752,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         ),
         actions: [
           PrimaryButton(
-            text: '确定',
+            text: AppTheme.msgConfirm,
             onPressed: () => Navigator.pop(ctx),
           ),
         ],

@@ -391,7 +391,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                           child: const Text(AppTheme.msgCancel),
                         ),
                         PrimaryButton(
-                          text: '确定',
+                          text: AppTheme.msgConfirm,
                           onPressed: () => Navigator.pop(ctx, true),
                         ),
                       ],

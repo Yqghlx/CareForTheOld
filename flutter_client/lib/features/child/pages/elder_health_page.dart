@@ -687,7 +687,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       context,
       title: '确认删除',
       message: '确定删除 ${plan.medicineName} 的用药计划吗？此操作不可恢复。',
-      confirmText: '删除',
+      confirmText: AppTheme.msgDelete,
     );
     if (confirmed != true) return;
 

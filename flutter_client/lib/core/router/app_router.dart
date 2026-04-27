@@ -22,6 +22,7 @@ import '../../features/shared/pages/neighbor_help_rating_page.dart';
 import '../../features/shared/pages/trust_ranking_page.dart';
 import '../../shared/providers/auth_provider.dart';
 import 'page_transitions.dart';
+import 'route_paths.dart';
 
 /// 认证状态变化监听器，用于触发 GoRouter 重新执行 redirect
 class _AuthStateListenable extends ChangeNotifier {
@@ -37,14 +38,14 @@ final _authListenableProvider = Provider<_AuthStateListenable>((ref) {
 });
 
 /// 公开路由（无需认证）
-const _publicRoutes = ['/login', '/register'];
+const _publicRoutes = [RoutePaths.login, RoutePaths.register];
 
 /// 应用路由 Provider
 final appRouterProvider = Provider<GoRouter>((ref) {
   final authListenable = ref.watch(_authListenableProvider);
 
   return GoRouter(
-    initialLocation: '/login',
+    initialLocation: RoutePaths.login,
     refreshListenable: authListenable,
     redirect: (context, state) {
       final authState = ref.read(authProvider);
@@ -56,12 +57,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 
       // 未登录访问受保护路由 → 重定向到登录页
       if (!isAuth && !isPublicRoute) {
-        return '/login';
+        return RoutePaths.login;
       }
 
       // 已登录访问登录/注册页 → 根据角色跳转首页
       if (isAuth && isPublicRoute) {
-        return authState.isElder ? '/elder/home' : '/child/home';
+        return authState.isElder ? RoutePaths.elderHome : RoutePaths.childHome;
       }
 
       return null;
@@ -69,54 +70,54 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     routes: [
       // 认证路由
       GoRoute(
-        path: '/login',
+        path: RoutePaths.login,
         builder: (context, state) => const LoginPage(),
       ),
       GoRoute(
-        path: '/register',
+        path: RoutePaths.register,
         builder: (context, state) => const RegisterPage(),
       ),
 
       // 老人端路由
       GoRoute(
-        path: '/elder/home',
+        path: RoutePaths.elderHome,
         builder: (context, state) => const ElderHomePage(),
       ),
       GoRoute(
-        path: '/elder/health',
+        path: RoutePaths.elderHealth,
         builder: (context, state) => const HealthRecordPage(),
       ),
       GoRoute(
-        path: '/elder/health/trend',
+        path: RoutePaths.elderHealthTrend,
         pageBuilder: (context, state) => SlidePageTransition(child: const HealthTrendPage()),
       ),
       GoRoute(
-        path: '/elder/medication',
+        path: RoutePaths.elderMedication,
         builder: (context, state) => const MedicationPage(),
       ),
       GoRoute(
-        path: '/elder/family',
+        path: RoutePaths.elderFamily,
         pageBuilder: (context, state) => SlidePageTransition(child: const FamilyMemberPage()),
       ),
 
       // 子女端路由
       GoRoute(
-        path: '/child/home',
+        path: RoutePaths.childHome,
         builder: (context, state) => const ChildHomePage(),
       ),
       GoRoute(
-        path: '/child/family',
+        path: RoutePaths.childFamily,
         pageBuilder: (context, state) => SlidePageTransition(child: const FamilyMemberPage()),
       ),
       GoRoute(
-        path: '/child/elder/:elderId/health',
+        path: RoutePaths.childElderHealthPattern,
         pageBuilder: (context, state) {
           final elderId = state.pathParameters['elderId']!;
           return SlidePageTransition(child: ElderHealthPage(elderId: elderId));
         },
       ),
       GoRoute(
-        path: '/child/elder/:elderId/health/trend',
+        path: RoutePaths.childElderHealthTrendPattern,
         pageBuilder: (context, state) {
           final elderId = state.pathParameters['elderId']!;
           final elderName = state.uri.queryParameters['name'] ?? '老人';
@@ -126,43 +127,43 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
-        path: '/child/elder/:elderId/location',
+        path: RoutePaths.childElderLocationPattern,
         pageBuilder: (context, state) {
           final elderId = state.pathParameters['elderId']!;
           return SlidePageTransition(child: ElderLocationPage(elderId: elderId));
         },
       ),
       GoRoute(
-        path: '/child/emergency',
+        path: RoutePaths.childEmergency,
         pageBuilder: (context, state) => SlidePageTransition(child: const EmergencyPage()),
       ),
 
       // 通用路由
       GoRoute(
-        path: '/settings',
+        path: RoutePaths.settings,
         pageBuilder: (context, state) => FadePageTransition(child: const SettingsPage()),
       ),
       GoRoute(
-        path: '/notifications',
+        path: RoutePaths.notifications,
         pageBuilder: (context, state) => FadePageTransition(child: const NotificationPage()),
       ),
       GoRoute(
-        path: '/neighbor-circle',
+        path: RoutePaths.neighborCircle,
         pageBuilder: (context, state) => SlidePageTransition(child: const NeighborCirclePage()),
       ),
       GoRoute(
-        path: '/neighbor-help',
+        path: RoutePaths.neighborHelp,
         pageBuilder: (context, state) => SlidePageTransition(child: const NeighborHelpPage()),
       ),
       GoRoute(
-        path: '/neighbor-help/:id/rate',
+        path: RoutePaths.neighborHelpRatePattern,
         pageBuilder: (context, state) {
           final id = state.pathParameters['id']!;
           return SlidePageTransition(child: NeighborHelpRatingPage(requestId: id));
         },
       ),
       GoRoute(
-        path: '/trust-ranking/:circleId',
+        path: RoutePaths.trustRankingPattern,
         pageBuilder: (context, state) {
           final circleId = state.pathParameters['circleId']!;
           return SlidePageTransition(child: TrustRankingPage(circleId: circleId));

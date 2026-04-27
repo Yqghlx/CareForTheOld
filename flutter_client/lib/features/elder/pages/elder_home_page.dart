@@ -577,7 +577,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
         ),
         actions: [
           PrimaryButton(
-            text: '确定',
+            text: AppTheme.msgConfirm,
             onPressed: () => Navigator.pop(ctx),
             gradient: const LinearGradient(
               colors: [AppTheme.successColor, AppTheme.successLight],

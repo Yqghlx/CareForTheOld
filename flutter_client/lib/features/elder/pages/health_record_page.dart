@@ -334,7 +334,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
         context,
         title: '确认删除',
         message: '确定删除 ${record.type.label} 记录（${record.displayValue}）吗？',
-        confirmText: '删除',
+        confirmText: AppTheme.msgDelete,
       ),
       onDismissed: (_) => _deleteRecord(record.id),
       background: Container(
@@ -924,7 +924,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                   child: const Text(AppTheme.msgCancel),
                 ),
                 PrimaryButton(
-                  text: '保存',
+                  text: AppTheme.msgSave,
                   isLoading: isSubmitting,
                   onPressed: isSubmitting ? null : () async {
                     setDialogState(() => isSubmitting = true);
