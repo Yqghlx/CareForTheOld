@@ -394,7 +394,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                 // 长按时显示进度提示
                 if (_isLongPressing)
                   Padding(
-                    padding: const EdgeInsets.only(top: 4),
+                    padding: AppTheme.marginTop4,
                     child: Text(
                       '松手取消',
                       style: AppTheme.textBody16.copyWith(

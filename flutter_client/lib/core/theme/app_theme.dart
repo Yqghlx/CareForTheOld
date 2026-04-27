@@ -198,6 +198,8 @@ class AppTheme {
   static const EdgeInsets marginTop12 = EdgeInsets.only(top: 12);
   static const EdgeInsets paddingAll14 = EdgeInsets.all(14);
   static const EdgeInsets marginBottom16 = EdgeInsets.only(bottom: 16);
+  static const EdgeInsets marginBottom4 = EdgeInsets.only(bottom: 4);
+  static const EdgeInsets marginTop4 = EdgeInsets.only(top: 4);
 
   /// 常用垂直间距组件
   static const SizedBox spacer24 = SizedBox(height: 24);

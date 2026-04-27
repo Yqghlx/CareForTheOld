@@ -112,7 +112,7 @@ class HealthTrendChart extends StatelessWidget {
             label: HorizontalLineLabel(
               show: true,
               alignment: Alignment.topRight,
-              padding: const EdgeInsets.only(bottom: 4),
+              padding: AppTheme.marginBottom4,
               style: AppTheme.textErrorAlpha12,
               labelResolver: (_) => '收缩压上限',
             ),
@@ -126,7 +126,7 @@ class HealthTrendChart extends StatelessWidget {
             label: HorizontalLineLabel(
               show: true,
               alignment: Alignment.bottomRight,
-              padding: const EdgeInsets.only(top: 4),
+              padding: AppTheme.marginTop4,
               style: AppTheme.textCaption.copyWith(color: AppTheme.infoBlue.withValues(alpha: 0.6)),
               labelResolver: (_) => '舒张压上限',
             ),
@@ -142,7 +142,7 @@ class HealthTrendChart extends StatelessWidget {
             label: HorizontalLineLabel(
               show: true,
               alignment: Alignment.topRight,
-              padding: const EdgeInsets.only(bottom: 4),
+              padding: AppTheme.marginBottom4,
               style: AppTheme.textCaption.copyWith(color: AppTheme.warningColor.withValues(alpha: 0.7)),
               labelResolver: (_) => '空腹上限',
             ),
@@ -155,7 +155,7 @@ class HealthTrendChart extends StatelessWidget {
             label: HorizontalLineLabel(
               show: true,
               alignment: Alignment.topRight,
-              padding: const EdgeInsets.only(bottom: 4),
+              padding: AppTheme.marginBottom4,
               style: AppTheme.textCaption.copyWith(color: AppTheme.errorColor.withValues(alpha: 0.7)),
               labelResolver: (_) => '餐后上限',
             ),
@@ -168,7 +168,7 @@ class HealthTrendChart extends StatelessWidget {
             label: HorizontalLineLabel(
               show: true,
               alignment: Alignment.topRight,
-              padding: const EdgeInsets.only(bottom: 4),
+              padding: AppTheme.marginBottom4,
               style: AppTheme.textErrorAlpha12,
               labelResolver: (_) => '正常 60-100',
             ),
@@ -181,7 +181,7 @@ class HealthTrendChart extends StatelessWidget {
             label: HorizontalLineLabel(
               show: true,
               alignment: Alignment.topRight,
-              padding: const EdgeInsets.only(bottom: 4),
+              padding: AppTheme.marginBottom4,
               style: AppTheme.textErrorAlpha12,
               labelResolver: (_) => '正常 36-37.3',
             ),
@@ -226,7 +226,7 @@ class HealthTrendChart extends StatelessWidget {
                   final record = data[value.toInt()];
                   final date = record.recordedAt;
                   return Padding(
-                    padding: const EdgeInsets.only(top: 8),
+                    padding: AppTheme.marginTop8,
                     child: Text(
                       date.toMonthDay(),
                       style: AppTheme.textAxisLabel,
@@ -336,7 +336,7 @@ class HealthTrendChart extends StatelessWidget {
                 final record = data[value.toInt()];
                 final date = record.recordedAt;
                 return Padding(
-                  padding: const EdgeInsets.only(top: 8),
+                  padding: AppTheme.marginTop8,
                   child: Text(
                     date.toMonthDay(),
                     style: AppTheme.textAxisLabel,

@@ -574,7 +574,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   ),
                   if (strengthText.isNotEmpty)
                     Padding(
-                      padding: const EdgeInsets.only(top: 4),
+                      padding: AppTheme.marginTop4,
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(strengthText, style: AppTheme.textCaption.copyWith(color: strengthColor)),
