@@ -183,11 +183,15 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                       Text(
                         '${call.elderName} 发起紧急呼叫',
                         style: AppTheme.textTitle,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
                       AppTheme.spacer4,
                       Text(
                         call.relativeTime,
                         style: AppTheme.textSecondary14,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
                     ],
                   ),
@@ -215,6 +219,8 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                       Text(
                         '${call.latitude!.toStringAsFixed(4)}, ${call.longitude!.toStringAsFixed(4)}',
                         style: AppTheme.textCaption13Grey700,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
                     ],
                     if (call.hasLocation && call.batteryLevel != null)

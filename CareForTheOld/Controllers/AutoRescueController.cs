@@ -53,6 +53,7 @@ public class AutoRescueController : ControllerBase
     [HttpGet("history")]
     public async Task<ApiResponse<object>> GetHistory([FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultHistoryPageSize)
     {
+        limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
         var familyMember = await _context.FamilyMembers
             .FirstOrDefaultAsync(fm => fm.UserId == userId);
