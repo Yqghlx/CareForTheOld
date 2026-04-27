@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using CareForTheOld.Common.Extensions;
 
 namespace CareForTheOld.Common.Middleware;
 
@@ -33,7 +34,7 @@ public class AuditLogMiddleware
         var userRole = context.User.FindFirstValue(ClaimTypes.Role);
         var path = context.Request.Path;
         var timestamp = DateTime.UtcNow;
-        var clientIp = context.Connection.RemoteIpAddress?.ToString() ?? "未知";
+        var clientIp = context.GetClientIp() ?? "未知";
         var userAgent = context.Request.Headers.UserAgent.ToString();
 
         // 先执行请求，再记录结果
