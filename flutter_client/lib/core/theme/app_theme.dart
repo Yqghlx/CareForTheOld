@@ -260,6 +260,17 @@ class AppTheme {
   static const String msgNoPhoneNumber = '无法获取老人电话号码';
   static const String msgCannotDial = '无法拨打电话，请手动拨打';
 
+  // 页面标题与通用 UI 文案
+  static const String msgHealthRecords = '健康记录';
+  static const String msgHealthTrends = '健康趋势';
+  static const String msgMedicationReminder = '用药提醒';
+  static const String msgConfirmSkip = '确认跳过';
+  static const String msgExportReport = '导出健康报告';
+  static const String msgSelectDateRange = '选择报告时间范围：';
+  static const String msgLoadingStats = '加载统计中...';
+  static const String msgStatsLoadFailed = '统计加载失败';
+  static const String msgRetry = '重试';
+
   // 家庭成员消息
   static const String msgFamilyApproved = '已通过';
   static const String msgFamilyRejected = '已拒绝申请';
@@ -293,6 +304,8 @@ class AppTheme {
   static const String msgMedicineNameInvalid = '请输入有效的药品名称（1-50字符）';
   static const String msgDosageInvalid = '请输入有效的剂量（1-30字符）';
   static const String msgReminderTimeRequired = '请至少添加一个提醒时间';
+  static const String msgConfirmSkipMedicine = '确定跳过本次用药吗？';
+  static String msgConfirmSkipWithName(String name) => '确定跳过 $name 本次用药吗？';
 
   // 定位消息
   static const String msgLocationServiceDisabled = '定位服务未开启，将使用默认位置';

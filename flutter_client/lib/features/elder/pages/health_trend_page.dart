@@ -40,7 +40,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
       data: theme,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('健康趋势'),
+          title: const Text(AppTheme.msgHealthTrends),
           actions: [
             IconButton(
               icon: const Icon(Icons.refresh),
@@ -135,7 +135,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                         AppTheme.spacer12,
                         ElevatedButton(
                           onPressed: () => ref.invalidate(filteredHealthRecordsProvider(_selectedType)),
-                          child: const Text('重试'),
+                          child: const Text(AppTheme.msgRetry),
                         ),
                       ],
                     ),
@@ -272,13 +272,13 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
               child: const Icon(Icons.picture_as_pdf, color: AppTheme.infoBlue),
             ),
             AppTheme.hSpacer12,
-            const Text('导出健康报告'),
+            const Text(AppTheme.msgExportReport),
           ],
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('选择报告时间范围：'),
+            const Text(AppTheme.msgSelectDateRange),
             AppTheme.spacer16,
             Row(
               children: [

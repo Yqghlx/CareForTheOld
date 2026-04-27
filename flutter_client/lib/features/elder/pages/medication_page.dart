@@ -51,7 +51,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('用药提醒'),
+        title: const Text(AppTheme.msgMedicationReminder),
         actions: [
           // 语音确认服药按钮
           IconButton(
@@ -314,8 +314,8 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
-        title: const Text('确认跳过'),
-        content: Text('确定跳过 ${log.medicineName} 本次用药吗？'),
+        title: const Text(AppTheme.msgConfirmSkip),
+        content: Text(AppTheme.msgConfirmSkipWithName(log.medicineName)),
         actions: [
           TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('取消')),
           PrimaryButton(

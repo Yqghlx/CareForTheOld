@@ -57,7 +57,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('健康记录'),
+        title: const Text(AppTheme.msgHealthRecords),
         actions: [
           IconButton(
             icon: const Icon(Icons.show_chart),
@@ -121,11 +121,11 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                     borderRadius: AppTheme.radiusS,
                   ),
                   child: const Center(
-                    child: Text('加载统计中...', style: AppTheme.textGrey),
+                    child: Text(AppTheme.msgLoadingStats, style: AppTheme.textGrey),
                   ),
                 ),
                 error: (_, __) => const Center(
-                    child: Text('统计加载失败', style: AppTheme.textGrey),
+                    child: Text(AppTheme.msgStatsLoadFailed, style: AppTheme.textGrey),
                   ),
               ),
               AppTheme.spacer16,
