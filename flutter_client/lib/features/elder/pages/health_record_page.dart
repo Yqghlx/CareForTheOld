@@ -796,7 +796,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                         child: TextField(
                           controller: valueController,
                           decoration: const InputDecoration(
-                            labelText: '收缩压（mmHg）',
+                            labelText: AppTheme.labelSystolic,
                             hintText: '60-250',
                             border: InputBorder.none,
                             contentPadding: AppTheme.paddingH16V12,
@@ -812,7 +812,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                         child: TextField(
                           controller: valueController2,
                           decoration: const InputDecoration(
-                            labelText: '舒张压（mmHg）',
+                            labelText: AppTheme.labelDiastolic,
                             hintText: '40-150',
                             border: InputBorder.none,
                             contentPadding: AppTheme.paddingH16V12,
@@ -829,7 +829,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                         child: TextField(
                           controller: valueController,
                           decoration: const InputDecoration(
-                            labelText: '血糖值（mmol/L）',
+                            labelText: AppTheme.labelBloodSugarValue,
                             hintText: '1.0-35.0',
                             border: InputBorder.none,
                             contentPadding: AppTheme.paddingH16V12,
@@ -845,7 +845,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                         child: TextField(
                           controller: valueController,
                           decoration: const InputDecoration(
-                            labelText: '心率（次/分）',
+                            labelText: AppTheme.labelHeartRateValue,
                             hintText: '30-200',
                             border: InputBorder.none,
                             contentPadding: AppTheme.paddingH16V12,
@@ -861,7 +861,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                         child: TextField(
                           controller: valueController,
                           decoration: const InputDecoration(
-                            labelText: '体温（°C）',
+                            labelText: AppTheme.labelTemperatureValue,
                             hintText: '35.0-42.0',
                             border: InputBorder.none,
                             contentPadding: AppTheme.paddingH16V12,
@@ -877,7 +877,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       child: TextField(
                         controller: noteController,
                         decoration: const InputDecoration(
-                          labelText: '备注（可选）',
+                          labelText: AppTheme.labelNoteOptional,
                           border: InputBorder.none,
                           contentPadding: AppTheme.paddingH16V12,
                         ),

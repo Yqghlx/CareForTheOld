@@ -120,7 +120,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                   decoration: InputDecoration(
                     labelText: AppTheme.labelPassword,
                     prefixIcon: const Icon(Icons.lock),
-                    helperText: '至少8位，需包含字母和数字',
+                    helperText: AppTheme.helperPasswordRule,
                     suffixIcon: IconButton(
                       icon: Icon(
                         _obscurePassword ? Icons.visibility_off : Icons.visibility,

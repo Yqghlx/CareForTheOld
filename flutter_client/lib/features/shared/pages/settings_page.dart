@@ -552,7 +552,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   TextField(
                     controller: oldPasswordController,
                     decoration: InputDecoration(
-                      labelText: '旧密码',
+                      labelText: AppTheme.labelOldPassword,
                       border: OutlineInputBorder(
                         borderRadius: AppTheme.radiusS,
                       ),
@@ -563,7 +563,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   TextField(
                     controller: newPasswordController,
                     decoration: InputDecoration(
-                      labelText: '新密码',
+                      labelText: AppTheme.labelNewPassword,
                       border: OutlineInputBorder(
                         borderRadius: AppTheme.radiusS,
                       ),
@@ -584,7 +584,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   TextField(
                     controller: confirmPasswordController,
                     decoration: InputDecoration(
-                      labelText: '确认新密码',
+                      labelText: AppTheme.labelConfirmPassword,
                       border: OutlineInputBorder(
                         borderRadius: AppTheme.radiusS,
                       ),

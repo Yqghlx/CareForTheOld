@@ -408,6 +408,20 @@ class AppTheme {
   static const String tooltipShowPassword = '显示密码';
   static const String tooltipHidePassword = '隐藏密码';
 
+  // 健康录入表单标签
+  static const String labelSystolic = '收缩压（mmHg）';
+  static const String labelDiastolic = '舒张压（mmHg）';
+  static const String labelBloodSugarValue = '血糖值（mmol/L）';
+  static const String labelHeartRateValue = '心率（次/分）';
+  static const String labelTemperatureValue = '体温（°C）';
+  static const String labelNoteOptional = '备注（可选）';
+
+  // 密码修改表单标签
+  static const String labelOldPassword = '旧密码';
+  static const String labelNewPassword = '新密码';
+  static const String labelConfirmPassword = '确认新密码';
+  static const String helperPasswordRule = '至少8位，需包含字母和数字';
+
   // 通用按钮/操作标签
   static const String labelLogout = '退出登录';
   static const String labelLogoutAction = '退出';
