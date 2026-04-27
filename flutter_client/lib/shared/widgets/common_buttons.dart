@@ -91,7 +91,7 @@ class _PrimaryButtonState extends State<PrimaryButton>
                         height: 24,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(AppTheme.cardColor),
                         ),
                       )
                     : Text(
@@ -289,7 +289,7 @@ class _PrimaryIconButtonState extends State<PrimaryIconButton>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(widget.icon, color: Colors.white, size: AppTheme.iconSizeMd),
+                  Icon(widget.icon, color: AppTheme.cardColor, size: AppTheme.iconSizeMd),
                   AppTheme.hSpacer8,
                   widget.isLoading
                       ? const SizedBox(
@@ -297,7 +297,7 @@ class _PrimaryIconButtonState extends State<PrimaryIconButton>
                           height: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor: AlwaysStoppedAnimation<Color>(AppTheme.cardColor),
                           ),
                         )
                       : Text(

@@ -143,7 +143,7 @@ class _ElderLocationMapState extends State<ElderLocationMap> {
                     ),
                     child: const Icon(
                       Icons.location_on,
-                      color: Colors.white,
+                      color: AppTheme.cardColor,
                       size: AppTheme.iconSizeLg,
                     ),
                   ),
