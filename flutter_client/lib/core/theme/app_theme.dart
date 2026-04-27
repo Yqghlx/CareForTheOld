@@ -390,6 +390,16 @@ class AppTheme {
   static const String labelElder = '老人';
   static const String labelRelationOther = '其他';
 
+  // 亲属称谓
+  static const String labelGrandpaP = '爷爷';
+  static const String labelGrandmaP = '奶奶';
+  static const String labelGrandpaM = '外公';
+  static const String labelGrandmaM = '外婆';
+  static const String labelFather = '爸爸';
+  static const String labelMother = '妈妈';
+  static const String labelSon = '儿子';
+  static const String labelDaughter = '女儿';
+
   /// 业务常量
   /// 邻里圈搜索默认半径（米）
   static const double defaultNeighborSearchRadius = 2000.0;

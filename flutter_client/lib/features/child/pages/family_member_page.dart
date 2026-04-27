@@ -711,12 +711,12 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                       border: OutlineInputBorder(borderRadius: AppTheme.radiusS),
                     ),
                     items: const [
-                      DropdownMenuItem(value: '爸爸', child: Text('爸爸')),
-                      DropdownMenuItem(value: '妈妈', child: Text('妈妈')),
-                      DropdownMenuItem(value: '爷爷', child: Text('爷爷')),
-                      DropdownMenuItem(value: '奶奶', child: Text('奶奶')),
-                      DropdownMenuItem(value: '外公', child: Text('外公')),
-                      DropdownMenuItem(value: '外婆', child: Text('外婆')),
+                      DropdownMenuItem(value: '爸爸', child: Text(AppTheme.labelFather)),
+                      DropdownMenuItem(value: '妈妈', child: Text(AppTheme.labelMother)),
+                      DropdownMenuItem(value: '爷爷', child: Text(AppTheme.labelGrandpaP)),
+                      DropdownMenuItem(value: '奶奶', child: Text(AppTheme.labelGrandmaP)),
+                      DropdownMenuItem(value: '外公', child: Text(AppTheme.labelGrandpaM)),
+                      DropdownMenuItem(value: '外婆', child: Text(AppTheme.labelGrandmaM)),
                       DropdownMenuItem(value: '其他', child: Text(AppTheme.labelRelationOther)),
                     ],
                     onChanged: (v) => setDialogState(() => selectedRelation = v),
@@ -780,17 +780,17 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
             // 根据角色动态生成关系选项
             final relationItems = selectedRole == 'elder'
                 ? const [
-                    DropdownMenuItem(value: '爷爷', child: Text('爷爷')),
-                    DropdownMenuItem(value: '奶奶', child: Text('奶奶')),
-                    DropdownMenuItem(value: '外公', child: Text('外公')),
-                    DropdownMenuItem(value: '外婆', child: Text('外婆')),
-                    DropdownMenuItem(value: '爸爸', child: Text('爸爸')),
-                    DropdownMenuItem(value: '妈妈', child: Text('妈妈')),
+                    DropdownMenuItem(value: '爷爷', child: Text(AppTheme.labelGrandpaP)),
+                    DropdownMenuItem(value: '奶奶', child: Text(AppTheme.labelGrandmaP)),
+                    DropdownMenuItem(value: '外公', child: Text(AppTheme.labelGrandpaM)),
+                    DropdownMenuItem(value: '外婆', child: Text(AppTheme.labelGrandmaM)),
+                    DropdownMenuItem(value: '爸爸', child: Text(AppTheme.labelFather)),
+                    DropdownMenuItem(value: '妈妈', child: Text(AppTheme.labelMother)),
                     DropdownMenuItem(value: '其他', child: Text(AppTheme.labelRelationOther)),
                   ]
                 : const [
-                    DropdownMenuItem(value: '儿子', child: Text('儿子')),
-                    DropdownMenuItem(value: '女儿', child: Text('女儿')),
+                    DropdownMenuItem(value: '儿子', child: Text(AppTheme.labelSon)),
+                    DropdownMenuItem(value: '女儿', child: Text(AppTheme.labelDaughter)),
                     DropdownMenuItem(value: '其他', child: Text(AppTheme.labelRelationOther)),
                   ];
             // 角色切换时重置关系选项
