@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  # 后端：构建 + 测试（排除 Testcontainers 集成测试，CI 环境无 Docker daemon）
+  # 后端：构建 + 单元测试（快速反馈，不需要 Docker）
   backend:
     runs-on: ubuntu-latest
     defaults:
@@ -28,7 +28,7 @@ jobs:
       - name: 构建
         run: dotnet build --no-restore --configuration Release
 
-      - name: 运行测试（排除集成测试）
+      - name: 运行单元测试
         run: dotnet test --no-build --configuration Release --filter "FullyQualifiedName!~Integration" --collect:"XPlat Code Coverage" --results-directory ./coverage
 
       - name: 上传测试结果
@@ -37,6 +37,72 @@ jobs:
         with:
           name: test-results
           path: coverage/
+
+  # 后端集成测试：使用 Testcontainers 在真实 PostgreSQL 上运行
+  # github-hosted ubuntu-latest 自带 Docker，可直接运行
+  backend-integration:
+    runs-on: ubuntu-latest
+    needs: backend
+    defaults:
+      run:
+        working-directory: .
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 设置 .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: 还原依赖
+        run: dotnet restore
+
+      - name: 构建
+        run: dotnet build --no-restore --configuration Release
+
+      - name: 运行集成测试（Testcontainers + PostgreSQL）
+        run: dotnet test --no-build --configuration Release --filter "FullyQualifiedName~Integration" --collect:"XPlat Code Coverage" --results-directory ./coverage-integration
+
+      - name: 上传集成测试结果
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-results
+          path: coverage-integration/
+
+  # 数据库迁移一致性检查：确保所有 DbSet 实体都有对应迁移
+  migration-check:
+    runs-on: ubuntu-latest
+    needs: backend
+    defaults:
+      run:
+        working-directory: .
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 设置 .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: 检查迁移一致性
+        run: bash scripts/check-migrations.sh
+
+  # 前后端 API 路径一致性检查
+  api-path-check:
+    runs-on: ubuntu-latest
+    needs: backend
+    defaults:
+      run:
+        working-directory: .
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 检查 API 路径一致性
+        run: bash scripts/check-api-paths.sh
 
   # 前端：分析 + 构建
   frontend:
@@ -95,10 +161,10 @@ jobs:
           name: app-release
           path: flutter_client/build/app/outputs/flutter-apk/app-release.apk
 
-  # Docker 镜像构建 + 推送（仅 main 分支）
+  # Docker 镜像构建 + 推送（仅 main 分支，所有测试通过后）
   docker:
     runs-on: ubuntu-latest
-    needs: [backend]
+    needs: [backend, backend-integration, migration-check, api-path-check]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     permissions:
       packages: write
@@ -135,10 +201,10 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  # 发布 GitHub Release（仅 main 分支推送时触发）
+  # 发布 GitHub Release（仅 main 分支推送时触发，所有检查通过后）
   release:
     runs-on: ubuntu-latest
-    needs: [backend, frontend]
+    needs: [backend, backend-integration, frontend, migration-check, api-path-check]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     permissions:
       contents: write

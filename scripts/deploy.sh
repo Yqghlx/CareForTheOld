@@ -79,8 +79,16 @@ if [ $retry -eq $MAX_RETRIES ]; then
 fi
 
 # Step 5: 清理旧镜像
-echo "[5/5] 清理旧镜像..."
+echo "[5/6] 清理旧镜像..."
 docker image prune -f 2>/dev/null || true
+
+# Step 6: 冒烟测试
+echo "[6/6] 运行冒烟测试..."
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+bash "$SCRIPT_DIR/smoke-test.sh" "$HEALTH_URL" || {
+    echo "警告: 冒烟测试未通过，请检查服务状态"
+    echo "查看日志: docker compose $COMPOSE_FILES logs api"
+}
 
 echo ""
 echo "===== 部署完成 ====="
@@ -92,4 +100,5 @@ echo ""
 echo "常用命令："
 echo "  查看日志: docker compose $COMPOSE_FILES logs -f api"
 echo "  查看状态: docker compose $COMPOSE_FILES ps"
+echo "  冒烟测试: ./scripts/smoke-test.sh https://localhost"
 echo "  回滚部署: docker compose $COMPOSE_FILES down"
