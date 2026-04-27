@@ -372,6 +372,18 @@ class AppTheme {
   static const String msgLocationPermissionPermanentlyDenied = '定位权限被永久拒绝，将使用默认位置';
   static const String msgLocationFailed = '获取位置失败，将使用默认位置';
 
+  // 时间范围标签
+  static const String labelRecent7Days = '最近7天';
+  static const String labelRecent30Days = '最近30天';
+
+  // 健康状态标签
+  static const String labelHigh = '偏高';
+  static const String labelLow = '偏低';
+
+  // 默认角色/称谓
+  static const String labelElder = '老人';
+  static const String labelRelationOther = '其他';
+
   /// 业务常量
   /// 邻里圈搜索默认半径（米）
   static const double defaultNeighborSearchRadius = 2000.0;

@@ -230,9 +230,9 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
         Expanded(
           child: Row(
             children: [
-              _buildRangeButton('最近7天', 7),
+              _buildRangeButton(AppTheme.labelRecent7Days, 7),
               AppTheme.hSpacer12,
-              _buildRangeButton('最近30天', 30),
+              _buildRangeButton(AppTheme.labelRecent30Days, 30),
             ],
           ),
         ),

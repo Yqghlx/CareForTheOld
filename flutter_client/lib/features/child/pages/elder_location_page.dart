@@ -43,7 +43,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
     final geoFenceState = ref.watch(elderGeoFenceProvider);
     final familyId = familyState.familyId;
     final elder = familyState.members.where((m) => m.userId == widget.elderId).firstOrNull;
-    final elderName = elder?.realName ?? '老人';
+    final elderName = elder?.realName ?? AppTheme.labelElder;
 
     if (familyId == null) {
       return Scaffold(

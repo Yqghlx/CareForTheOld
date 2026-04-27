@@ -717,7 +717,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                       DropdownMenuItem(value: '奶奶', child: Text('奶奶')),
                       DropdownMenuItem(value: '外公', child: Text('外公')),
                       DropdownMenuItem(value: '外婆', child: Text('外婆')),
-                      DropdownMenuItem(value: '其他', child: Text('其他')),
+                      DropdownMenuItem(value: '其他', child: Text(AppTheme.labelRelationOther)),
                     ],
                     onChanged: (v) => setDialogState(() => selectedRelation = v),
                   ),
@@ -786,12 +786,12 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     DropdownMenuItem(value: '外婆', child: Text('外婆')),
                     DropdownMenuItem(value: '爸爸', child: Text('爸爸')),
                     DropdownMenuItem(value: '妈妈', child: Text('妈妈')),
-                    DropdownMenuItem(value: '其他', child: Text('其他')),
+                    DropdownMenuItem(value: '其他', child: Text(AppTheme.labelRelationOther)),
                   ]
                 : const [
                     DropdownMenuItem(value: '儿子', child: Text('儿子')),
                     DropdownMenuItem(value: '女儿', child: Text('女儿')),
-                    DropdownMenuItem(value: '其他', child: Text('其他')),
+                    DropdownMenuItem(value: '其他', child: Text(AppTheme.labelRelationOther)),
                   ];
             // 角色切换时重置关系选项
             if (selectedRelation != null &&

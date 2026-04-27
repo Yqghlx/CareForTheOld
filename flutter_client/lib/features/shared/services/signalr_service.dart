@@ -152,7 +152,7 @@ class SignalRService {
           );
           EmergencyAlertService.instance.triggerAlert(
             callId: notificationData['CallId']?.toString() ?? '',
-            elderName: notificationData['ElderName']?.toString() ?? '老人',
+            elderName: notificationData['ElderName']?.toString() ?? AppTheme.labelElder,
             elderId: notificationData['ElderId']?.toString() ?? '',
           );
           _ref.invalidate(emergencyProvider);
@@ -166,7 +166,7 @@ class SignalRService {
           );
           EmergencyAlertService.instance.triggerAlert(
             callId: notificationData['CallId']?.toString() ?? '',
-            elderName: notificationData['ElderName']?.toString() ?? '老人',
+            elderName: notificationData['ElderName']?.toString() ?? AppTheme.labelElder,
             elderId: notificationData['ElderId']?.toString() ?? '',
             isReminder: true,
           );

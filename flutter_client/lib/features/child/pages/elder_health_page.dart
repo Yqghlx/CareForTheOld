@@ -91,7 +91,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
   @override
   Widget build(BuildContext context) {
     final elderName = ref.watch(familyProvider
-        .select((s) => s.members.where((m) => m.userId == widget.elderId).firstOrNull?.realName)) ?? '老人';
+        .select((s) => s.members.where((m) => m.userId == widget.elderId).firstOrNull?.realName)) ?? AppTheme.labelElder;
 
     final statsAsync =
         ref.watch(elderHealthStatsProvider(widget.elderId));
@@ -914,7 +914,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       _exportReport(context, 7);
                     },
                     style: AppTheme.elevatedPrimaryStyle,
-                    child: const Text('最近7天', style: AppTheme.textWhite),
+                    child: Text(AppTheme.labelRecent7Days, style: AppTheme.textWhite),
                   ),
                 ),
                 AppTheme.hSpacer16,
@@ -925,7 +925,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       _exportReport(context, 30);
                     },
                     style: AppTheme.elevatedPrimaryStyle,
-                    child: const Text('最近30天', style: AppTheme.textWhite),
+                    child: Text(AppTheme.labelRecent30Days, style: AppTheme.textWhite),
                   ),
                 ),
               ],

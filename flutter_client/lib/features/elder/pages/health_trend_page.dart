@@ -208,9 +208,9 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
         Expanded(
           child: Row(
             children: [
-              _buildRangeButton('最近7天', 7),
+              _buildRangeButton(AppTheme.labelRecent7Days, 7),
               AppTheme.hSpacer12,
-              _buildRangeButton('最近30天', 30),
+              _buildRangeButton(AppTheme.labelRecent30Days, 30),
             ],
           ),
         ),
@@ -283,7 +283,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                       _exportReport(context, 7);
                     },
                     style: AppTheme.elevatedPrimaryStyle,
-                    child: const Text('最近7天', style: AppTheme.textWhite),
+                    child: Text(AppTheme.labelRecent7Days, style: AppTheme.textWhite),
                   ),
                 ),
                 AppTheme.hSpacer16,
@@ -294,7 +294,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                       _exportReport(context, 30);
                     },
                     style: AppTheme.elevatedPrimaryStyle,
-                    child: const Text('最近30天', style: AppTheme.textWhite),
+                    child: Text(AppTheme.labelRecent30Days, style: AppTheme.textWhite),
                   ),
                 ),
               ],

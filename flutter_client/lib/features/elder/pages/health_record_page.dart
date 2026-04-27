@@ -445,25 +445,25 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
   String? _getAbnormalLabel(HealthRecord record) {
     switch (record.type) {
       case HealthType.bloodPressure:
-        if (record.systolic != null && record.systolic! > 140) return '偏高';
-        if (record.systolic != null && record.systolic! < 90) return '偏低';
-        if (record.diastolic != null && record.diastolic! > 90) return '偏高';
-        if (record.diastolic != null && record.diastolic! < 60) return '偏低';
+        if (record.systolic != null && record.systolic! > 140) return AppTheme.labelHigh;
+        if (record.systolic != null && record.systolic! < 90) return AppTheme.labelLow;
+        if (record.diastolic != null && record.diastolic! > 90) return AppTheme.labelHigh;
+        if (record.diastolic != null && record.diastolic! < 60) return AppTheme.labelLow;
         return null;
       case HealthType.bloodSugar:
         if (record.bloodSugar == null) return null;
-        if (record.bloodSugar! > 6.1) return '偏高';
-        if (record.bloodSugar! < 3.9) return '偏低';
+        if (record.bloodSugar! > 6.1) return AppTheme.labelHigh;
+        if (record.bloodSugar! < 3.9) return AppTheme.labelLow;
         return null;
       case HealthType.heartRate:
         if (record.heartRate == null) return null;
-        if (record.heartRate! > 100) return '偏高';
-        if (record.heartRate! < 60) return '偏低';
+        if (record.heartRate! > 100) return AppTheme.labelHigh;
+        if (record.heartRate! < 60) return AppTheme.labelLow;
         return null;
       case HealthType.temperature:
         if (record.temperature == null) return null;
-        if (record.temperature! > 37.3) return '偏高';
-        if (record.temperature! < 36.0) return '偏低';
+        if (record.temperature! > 37.3) return AppTheme.labelHigh;
+        if (record.temperature! < 36.0) return AppTheme.labelLow;
         return null;
     }
   }
