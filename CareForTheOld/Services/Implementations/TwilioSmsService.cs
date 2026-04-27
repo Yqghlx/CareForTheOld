@@ -67,7 +67,7 @@ public class TwilioSmsService : ISmsService
         catch (Exception ex)
         {
             _logger.LogError(ex, "[Twilio短信] 发送失败: 手机号={Phone}", phoneNumber);
-            return (false, ex.Message);
+            return (false, ErrorMessages.Sms.SendFailed);
         }
     }
 }

@@ -334,6 +334,9 @@ public static class ErrorMessages
 
         /// <summary>手机号需要国际格式（如 +8613800138000）</summary>
         public const string PhoneFormatInternational = "手机号格式不正确，需要国际格式";
+
+        /// <summary>短信发送失败（通用描述，不暴露内部异常详情）</summary>
+        public const string SendFailed = "短信发送失败";
     }
 
     /// <summary>

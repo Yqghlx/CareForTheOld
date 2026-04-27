@@ -242,6 +242,7 @@ public class HealthAnomalyDetector
         // 1. 峰值检测（单值突增/突降）
         foreach (var record in dailyRecords)
         {
+            if (baselineValue == 0) break;
             var deviation = (record.Value - baselineValue) / baselineValue * 100;
 
             if (Math.Abs(deviation) > _options.SpikeThresholdPercent)

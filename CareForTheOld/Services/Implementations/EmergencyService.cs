@@ -236,14 +236,14 @@ public class EmergencyService : IEmergencyService
 
         foreach (var child in children)
         {
-            var (success, errorMessage) = (false, "未知错误");
+            var (success, errorMessage) = (false, ErrorMessages.Sms.SendFailed);
             try
             {
                 (success, errorMessage) = await _smsService.SendAsync(child.User.PhoneNumber, smsContent);
             }
             catch (Exception ex)
             {
-                errorMessage = ex.Message;
+                errorMessage = ErrorMessages.Sms.SendFailed;
                 _logger.LogError(ex, "紧急呼叫 SMS 发送异常: 呼叫={CallId}, 子女={ChildId}",
                     callId, child.UserId);
             }

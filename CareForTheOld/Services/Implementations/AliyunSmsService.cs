@@ -58,7 +58,7 @@ public class AliyunSmsService : ISmsService
         catch (Exception ex)
         {
             _logger.LogError(ex, "[阿里云短信] 发送失败: 手机号={Phone}", phoneNumber);
-            return (false, ex.Message);
+            return (false, ErrorMessages.Sms.SendFailed);
         }
     }
 }
