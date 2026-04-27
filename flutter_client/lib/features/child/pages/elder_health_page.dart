@@ -1111,10 +1111,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
             // 个人基线对比
             Container(
               padding: AppTheme.paddingAll12,
-              decoration: BoxDecoration(
-                color: AppTheme.grey50,
-                borderRadius: AppTheme.radiusS,
-              ),
+              decoration: AppTheme.decorationInput,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -1449,10 +1446,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               // 最近7天统计
               Container(
                 padding: AppTheme.paddingAll12,
-                decoration: BoxDecoration(
-                  color: AppTheme.grey50,
-                  borderRadius: AppTheme.radiusS,
-                ),
+                decoration: AppTheme.decorationInput,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

@@ -261,10 +261,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                     // 围栏中心位置
                     Container(
                       padding: AppTheme.paddingAll12,
-                      decoration: BoxDecoration(
-                        color: AppTheme.grey50,
-                        borderRadius: AppTheme.radiusS,
-                      ),
+                      decoration: AppTheme.decorationInput,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -468,10 +465,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                 AppTheme.spacer16,
                 Container(
                   padding: AppTheme.paddingAll16,
-                  decoration: BoxDecoration(
-                    color: AppTheme.grey50,
-                    borderRadius: AppTheme.radiusS,
-                  ),
+                  decoration: AppTheme.decorationInput,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

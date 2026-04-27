@@ -407,10 +407,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                   children: [
                     // 选择老人
                     Container(
-                      decoration: BoxDecoration(
-                        color: AppTheme.grey50,
-                        borderRadius: AppTheme.radiusS,
-                      ),
+                      decoration: AppTheme.decorationInput,
                       child: DropdownButtonFormField<String>(
                         // ignore: deprecated_member_use - StatefulBuilder 中动态更新需要 value
                         value: selectedElderId,
@@ -430,10 +427,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     ),
                     AppTheme.spacer12,
                     Container(
-                      decoration: BoxDecoration(
-                        color: AppTheme.grey50,
-                        borderRadius: AppTheme.radiusS,
-                      ),
+                      decoration: AppTheme.decorationInput,
                       child: TextField(
                         controller: nameCtl,
                         decoration: const InputDecoration(
@@ -450,10 +444,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     ),
                     AppTheme.spacer12,
                     Container(
-                      decoration: BoxDecoration(
-                        color: AppTheme.grey50,
-                        borderRadius: AppTheme.radiusS,
-                      ),
+                      decoration: AppTheme.decorationInput,
                       child: TextField(
                         controller: dosageCtl,
                         decoration: const InputDecoration(
@@ -470,10 +461,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     ),
                     AppTheme.spacer12,
                     Container(
-                      decoration: BoxDecoration(
-                        color: AppTheme.grey50,
-                        borderRadius: AppTheme.radiusS,
-                      ),
+                      decoration: AppTheme.decorationInput,
                       child: DropdownButtonFormField<int>(
                         // ignore: deprecated_member_use - StatefulBuilder 中动态更新需要 value
                         value: selectedFrequency,
@@ -533,10 +521,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                                 },
                                 child: Container(
                                   padding: AppTheme.paddingH16V12,
-                                  decoration: BoxDecoration(
-                                    color: AppTheme.grey50,
-                                    borderRadius: AppTheme.radiusS,
-                                  ),
+                                  decoration: AppTheme.decorationInput,
                                   child: Row(
                                     children: [
                                       const Icon(Icons.access_time, color: AppTheme.primaryColor),

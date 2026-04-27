@@ -492,4 +492,16 @@ class AppTheme {
   static const Duration duration30s = Duration(seconds: 30);
   static const Duration duration60s = Duration(seconds: 60);
   static const Duration duration5min = Duration(minutes: 5);
+
+  /// 预设 BoxDecoration — 表单输入区域背景（grey50 + radiusS）
+  static const BoxDecoration decorationInput = BoxDecoration(
+    color: grey50,
+    borderRadius: radiusS,
+  );
+
+  /// 预设 BoxDecoration — 图标圆形背景（primaryColor 15% + circle）
+  static BoxDecoration decorationIconBg(Color color) => BoxDecoration(
+    color: color.withValues(alpha: 0.15),
+    shape: BoxShape.circle,
+  );
 }

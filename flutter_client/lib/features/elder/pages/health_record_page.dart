@@ -792,10 +792,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                     // 根据类型显示不同输入字段
                     if (type == HealthType.bloodPressure) ...[
                       Container(
-                        decoration: BoxDecoration(
-                          color: AppTheme.grey50,
-                          borderRadius: AppTheme.radiusS,
-                        ),
+                        decoration: AppTheme.decorationInput,
                         child: TextField(
                           controller: valueController,
                           decoration: const InputDecoration(
@@ -811,10 +808,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       ),
                       AppTheme.spacer12,
                       Container(
-                        decoration: BoxDecoration(
-                          color: AppTheme.grey50,
-                          borderRadius: AppTheme.radiusS,
-                        ),
+                        decoration: AppTheme.decorationInput,
                         child: TextField(
                           controller: valueController2,
                           decoration: const InputDecoration(
@@ -831,10 +825,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                     ],
                     if (type == HealthType.bloodSugar)
                       Container(
-                        decoration: BoxDecoration(
-                          color: AppTheme.grey50,
-                          borderRadius: AppTheme.radiusS,
-                        ),
+                        decoration: AppTheme.decorationInput,
                         child: TextField(
                           controller: valueController,
                           decoration: const InputDecoration(
@@ -850,10 +841,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       ),
                     if (type == HealthType.heartRate)
                       Container(
-                        decoration: BoxDecoration(
-                          color: AppTheme.grey50,
-                          borderRadius: AppTheme.radiusS,
-                        ),
+                        decoration: AppTheme.decorationInput,
                         child: TextField(
                           controller: valueController,
                           decoration: const InputDecoration(
@@ -869,10 +857,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       ),
                     if (type == HealthType.temperature)
                       Container(
-                        decoration: BoxDecoration(
-                          color: AppTheme.grey50,
-                          borderRadius: AppTheme.radiusS,
-                        ),
+                        decoration: AppTheme.decorationInput,
                         child: TextField(
                           controller: valueController,
                           decoration: const InputDecoration(
@@ -888,10 +873,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       ),
                     AppTheme.spacer12,
                     Container(
-                      decoration: BoxDecoration(
-                        color: AppTheme.grey50,
-                        borderRadius: AppTheme.radiusS,
-                      ),
+                      decoration: AppTheme.decorationInput,
                       child: TextField(
                         controller: noteController,
                         decoration: const InputDecoration(
