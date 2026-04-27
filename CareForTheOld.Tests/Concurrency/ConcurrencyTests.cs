@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.Auth;
 using CareForTheOld.Models.Entities;
@@ -114,7 +115,8 @@ public class ConcurrencyTests
 
         // 第二次使用同一 token 应触发重放检测
         var act = async () => await service.RefreshTokenAsync(refreshToken);
-        await act.Should().ThrowAsync<ArgumentException>();
+        await act.Should().ThrowAsync<ArgumentException>()
+            .WithMessage(ErrorMessages.Auth.SecurityAnomaly);
     }
 
     /// <summary>

@@ -341,6 +341,7 @@ public class MedicationServiceTests
 
         // 执行并验证：非家庭成员应抛出权限异常
         var act = async () => await _service.CreatePlanAsync(stranger.Id, request);
-        await act.Should().ThrowAsync<UnauthorizedAccessException>();
+        await act.Should().ThrowAsync<UnauthorizedAccessException>()
+            .WithMessage(ErrorMessages.Family.NotElderFamilyMember);
     }
 }

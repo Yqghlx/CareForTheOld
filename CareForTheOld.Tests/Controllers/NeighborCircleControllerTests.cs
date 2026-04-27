@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Controllers;
 using CareForTheOld.Models.DTOs.Requests.Neighbor;
 using CareForTheOld.Models.DTOs.Responses;
@@ -115,11 +116,12 @@ public class NeighborCircleControllerTests
         SetUser(_userId);
         var circleId = Guid.NewGuid();
         _mockService.Setup(s => s.EnsureCircleMemberAsync(circleId, _userId))
-            .ThrowsAsync(new UnauthorizedAccessException("您不是该邻里圈成员"));
+            .ThrowsAsync(new UnauthorizedAccessException(ErrorMessages.NeighborCircle.NotCircleMember));
 
         // Act & Assert
         var act = async () => await _controller.GetCircle(circleId);
-        await act.Should().ThrowAsync<UnauthorizedAccessException>();
+        await act.Should().ThrowAsync<UnauthorizedAccessException>()
+            .WithMessage(ErrorMessages.NeighborCircle.NotCircleMember);
     }
 
     [Fact]

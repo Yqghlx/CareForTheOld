@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
@@ -228,7 +229,8 @@ public class AutoRescueServiceTests
         var record = await _context.AutoRescueRecords.FirstAsync();
 
         var act = async () => await _service.ChildRespondAsync(record.Id, stranger.Id);
-        await act.Should().ThrowAsync<UnauthorizedAccessException>();
+        await act.Should().ThrowAsync<UnauthorizedAccessException>()
+            .WithMessage(ErrorMessages.AutoRescue.OnlyChildCanRespond);
     }
 
     [Fact]
