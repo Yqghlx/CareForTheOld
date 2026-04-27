@@ -82,7 +82,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(circle.circleName,
-                      style: Theme.of(context).textTheme.titleLarge),
+                      style: AppTheme.textLargeTitle),
                   AppTheme.spacer8,
                   Text('圈主：${circle.creatorName}'),
                   Text('成员数：${circle.memberCount} 人'),
@@ -117,7 +117,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
           AppTheme.spacer16,
 
           // 成员列表
-          Text('圈内成员', style: Theme.of(context).textTheme.titleMedium),
+          Text('圈内成员', style: AppTheme.textHeading),
           AppTheme.spacer8,
           ...state.members.map((m) => ListTile(
                 leading: CircleAvatar(
@@ -193,7 +193,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('加入邻里圈', style: Theme.of(context).textTheme.titleMedium),
+                  Text('加入邻里圈', style: AppTheme.textHeading),
                   AppTheme.spacer8,
                   TextField(
                     controller: _inviteCodeController,
@@ -224,7 +224,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('创建邻里圈', style: Theme.of(context).textTheme.titleMedium),
+                  Text('创建邻里圈', style: AppTheme.textHeading),
                   AppTheme.spacer8,
                   TextField(
                     controller: _circleNameController,
