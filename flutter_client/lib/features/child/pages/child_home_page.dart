@@ -120,9 +120,9 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                                 memCacheHeight: 256,
                                 maxWidthDiskCache: 512,
                                 maxHeightDiskCache: 512,
-                                errorWidget: (_, __, ___) => const Icon(Icons.person, size: 32, color: AppTheme.cardColor),
+                                errorWidget: (_, __, ___) => const Icon(Icons.person, size: AppTheme.iconSizeXl, color: AppTheme.cardColor),
                               )
-                            : const Icon(Icons.person, size: 32, color: AppTheme.cardColor),
+                            : const Icon(Icons.person, size: AppTheme.iconSizeXl, color: AppTheme.cardColor),
                       ),
                     ),
                     AppTheme.hSpacer16,
@@ -233,7 +233,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
           children: [
             Icon(
               Icons.people_outline,
-              size: 64,
+              size: AppTheme.iconSizeHuge,
               color: AppTheme.grey400,
             ),
             AppTheme.spacer16,
@@ -289,9 +289,9 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                                   memCacheHeight: 256,
                                   maxWidthDiskCache: 512,
                                   maxHeightDiskCache: 512,
-                                  errorWidget: (_, __, ___) => const Icon(Icons.elderly, size: 32, color: AppTheme.warningColor),
+                                  errorWidget: (_, __, ___) => const Icon(Icons.elderly, size: AppTheme.iconSizeXl, color: AppTheme.warningColor),
                                 )
-                              : const Icon(Icons.elderly, size: 32, color: AppTheme.warningColor),
+                              : const Icon(Icons.elderly, size: AppTheme.iconSizeXl, color: AppTheme.warningColor),
                         ),
                       ),
                       AppTheme.hSpacer16,

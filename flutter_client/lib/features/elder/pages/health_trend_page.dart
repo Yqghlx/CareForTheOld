@@ -101,7 +101,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(_selectedType.icon, size: 64, color: AppTheme.grey400),
+                            Icon(_selectedType.icon, size: AppTheme.iconSizeHuge, color: AppTheme.grey400),
                             AppTheme.spacer16,
                             Text(
                               '暂无${_selectedType.label}记录',
@@ -129,7 +129,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.error_outline, size: 48, color: AppTheme.errorColor),
+                        const Icon(Icons.error_outline, size: AppTheme.iconSizeXxl, color: AppTheme.errorColor),
                         AppTheme.spacer12,
                         Text(AppTheme.msgLoadFailed, style: AppTheme.textError),
                         AppTheme.spacer12,

@@ -555,7 +555,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                 color: AppTheme.successColor.withValues(alpha: 0.15),
                 borderRadius: AppTheme.radiusS,
               ),
-              child: const Icon(Icons.check_circle, color: AppTheme.successColor, size: 32),
+              child: const Icon(Icons.check_circle, color: AppTheme.successColor, size: AppTheme.iconSizeXl),
             ),
             AppTheme.hSpacer16,
             const Text('呼叫已发送'),

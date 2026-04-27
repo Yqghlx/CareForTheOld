@@ -172,7 +172,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                   child: const Icon(
                     Icons.emergency,
                     color: AppTheme.errorColor,
-                    size: 32,
+                    size: AppTheme.iconSizeXl,
                   ),
                 ),
                 AppTheme.hSpacer16,

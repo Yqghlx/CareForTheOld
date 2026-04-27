@@ -668,7 +668,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                         Icon(
                                           isListening ? Icons.stop : Icons.mic,
                                           color: AppTheme.cardColor,
-                                          size: 32,
+                                          size: AppTheme.iconSizeXl,
                                         ),
                                         AppTheme.spacer8,
                                         Text(
@@ -765,7 +765,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                         Icon(
                                           Icons.camera_alt,
                                           color: AppTheme.cardColor,
-                                          size: 32,
+                                          size: AppTheme.iconSizeXl,
                                         ),
                                         AppTheme.spacer8,
                                         Text(

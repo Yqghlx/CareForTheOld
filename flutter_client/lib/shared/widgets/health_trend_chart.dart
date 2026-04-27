@@ -80,7 +80,7 @@ class HealthTrendChart extends StatelessWidget {
           children: [
             Icon(
               Icons.show_chart,
-              size: 48,
+              size: AppTheme.iconSizeXxl,
               color: AppTheme.grey400,
             ),
             AppTheme.spacer8,

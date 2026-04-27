@@ -73,7 +73,7 @@ class _ElderLocationMapState extends State<ElderLocationMap> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.map_outlined, size: 48, color: AppTheme.grey400),
+              const Icon(Icons.map_outlined, size: AppTheme.iconSizeXxl, color: AppTheme.grey400),
               AppTheme.spacer12,
               const Text('暂无位置数据', style: AppTheme.textGreyLight),
             ],
@@ -144,7 +144,7 @@ class _ElderLocationMapState extends State<ElderLocationMap> {
                     child: const Icon(
                       Icons.location_on,
                       color: Colors.white,
-                      size: 24,
+                      size: AppTheme.iconSizeLg,
                     ),
                   ),
                 ),

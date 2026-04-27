@@ -250,7 +250,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
                         ? const Icon(
                             Icons.check_circle_rounded,
                             color: AppTheme.cardColor,
-                            size: 32,
+                            size: AppTheme.iconSizeXl,
                           )
                         : const Icon(
                             Icons.skip_next,

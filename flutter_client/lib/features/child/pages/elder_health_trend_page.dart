@@ -109,7 +109,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(_selectedType.icon,
-                              size: 64, color: AppTheme.grey400),
+                              size: AppTheme.iconSizeHuge, color: AppTheme.grey400),
                           AppTheme.spacer16,
                           Text(
                             '暂无${_selectedType.label}记录',
@@ -141,7 +141,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(Icons.error_outline,
-                          size: 48, color: AppTheme.errorColor),
+                          size: AppTheme.iconSizeXxl, color: AppTheme.errorColor),
                       AppTheme.spacer12,
                       Text(AppTheme.msgLoadFailed,
                           style: AppTheme.textError),

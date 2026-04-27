@@ -27,7 +27,7 @@ class EmptyStateWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 64, color: AppTheme.grey400),
+            Icon(icon, size: AppTheme.iconSizeHuge, color: AppTheme.grey400),
             AppTheme.spacer16,
             Text(
               title,
@@ -94,7 +94,7 @@ class ErrorStateWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 48, color: Theme.of(context).colorScheme.error),
+            Icon(icon, size: AppTheme.iconSizeXxl, color: Theme.of(context).colorScheme.error),
             AppTheme.spacer12,
             Text(
               message,

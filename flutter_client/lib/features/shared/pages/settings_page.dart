@@ -390,7 +390,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 color: AppTheme.primaryColor.withValues(alpha: 0.1),
                 borderRadius: AppTheme.radiusS,
               ),
-              child: Icon(icon, color: AppTheme.primaryColor, size: 24),
+              child: Icon(icon, color: AppTheme.primaryColor, size: AppTheme.iconSizeLg),
             ),
             AppTheme.hSpacer16,
             Expanded(

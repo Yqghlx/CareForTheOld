@@ -129,7 +129,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
                   color: notification.color.withValues(alpha: 0.15),
                   borderRadius: AppTheme.radiusS,
                 ),
-                child: Icon(notification.icon, color: notification.color, size: 24),
+                child: Icon(notification.icon, color: notification.color, size: AppTheme.iconSizeLg),
               ),
               AppTheme.hSpacer16,
               // 内容

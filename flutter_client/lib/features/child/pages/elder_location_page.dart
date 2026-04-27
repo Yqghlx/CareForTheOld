@@ -159,7 +159,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
             child: Icon(
               isEnabled ? Icons.security : Icons.security_outlined,
               color: isEnabled ? AppTheme.successColor : AppTheme.grey500,
-              size: 24,
+              size: AppTheme.iconSizeLg,
             ),
           ),
           AppTheme.hSpacer12,
@@ -399,7 +399,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
         child: Center(
           child: Column(
             children: [
-              const Icon(Icons.location_off, size: 48, color: AppTheme.grey400),
+              const Icon(Icons.location_off, size: AppTheme.iconSizeXxl, color: AppTheme.grey400),
               AppTheme.spacer12,
               const Text('暂无位置记录', style: AppTheme.textGrey),
               const Text('老人尚未开启定位上报', style: AppTheme.textCaptionDark),

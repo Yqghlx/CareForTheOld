@@ -124,6 +124,10 @@ class AppTheme {
   /// 图标尺寸常量
   static const double iconSizeSm = 18.0;
   static const double iconSizeMd = 20.0;
+  static const double iconSizeLg = 24.0;
+  static const double iconSizeXl = 32.0;
+  static const double iconSizeXxl = 48.0;
+  static const double iconSizeHuge = 64.0;
 
   /// 按钮高度
   static const double buttonHeight = 56.0;

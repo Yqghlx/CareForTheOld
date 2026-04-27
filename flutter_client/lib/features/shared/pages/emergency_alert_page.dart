@@ -98,7 +98,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.person, color: AppTheme.cardColor, size: 32),
+                          const Icon(Icons.person, color: AppTheme.cardColor, size: AppTheme.iconSizeXl),
                           AppTheme.hSpacer12,
                           Text(
                             alert.elderName,
