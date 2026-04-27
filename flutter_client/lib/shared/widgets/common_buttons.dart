@@ -183,9 +183,7 @@ class _SecondaryButtonState extends State<SecondaryButton>
             child: Center(
               child: Text(
                 widget.text,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
+                style: AppTheme.textWhite18W600.copyWith(
                   color: widget.textColor,
                 ),
               ),

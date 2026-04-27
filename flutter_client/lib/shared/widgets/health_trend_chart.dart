@@ -86,17 +86,11 @@ class HealthTrendChart extends StatelessWidget {
             AppTheme.spacer8,
             Text(
               '暂无数据',
-              style: TextStyle(
-                color: AppTheme.grey800,
-                fontSize: 16,
-              ),
+              style: AppTheme.textBody16.copyWith(color: AppTheme.grey800),
             ),
             Text(
               '请先录入健康数据',
-              style: TextStyle(
-                color: AppTheme.grey400,
-                fontSize: 14,
-              ),
+              style: AppTheme.textBody.copyWith(color: AppTheme.grey400),
             ),
           ],
         ),
@@ -133,7 +127,7 @@ class HealthTrendChart extends StatelessWidget {
               show: true,
               alignment: Alignment.bottomRight,
               padding: const EdgeInsets.only(top: 4),
-              style: TextStyle(color: AppTheme.infoBlue.withValues(alpha: 0.6), fontSize: 12),
+              style: AppTheme.textCaption.copyWith(color: AppTheme.infoBlue.withValues(alpha: 0.6)),
               labelResolver: (_) => '舒张压上限',
             ),
           ),
@@ -149,7 +143,7 @@ class HealthTrendChart extends StatelessWidget {
               show: true,
               alignment: Alignment.topRight,
               padding: const EdgeInsets.only(bottom: 4),
-              style: TextStyle(color: AppTheme.warningColor.withValues(alpha: 0.7), fontSize: 12),
+              style: AppTheme.textCaption.copyWith(color: AppTheme.warningColor.withValues(alpha: 0.7)),
               labelResolver: (_) => '空腹上限',
             ),
           ),
@@ -162,7 +156,7 @@ class HealthTrendChart extends StatelessWidget {
               show: true,
               alignment: Alignment.topRight,
               padding: const EdgeInsets.only(bottom: 4),
-              style: TextStyle(color: AppTheme.errorColor.withValues(alpha: 0.7), fontSize: 12),
+              style: AppTheme.textCaption.copyWith(color: AppTheme.errorColor.withValues(alpha: 0.7)),
               labelResolver: (_) => '餐后上限',
             ),
           ),
@@ -437,16 +431,11 @@ class HealthTrendChart extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TextStyle(
-            fontSize: 14,
-            color: AppTheme.grey700,
-          ),
+          style: AppTheme.textBody.copyWith(color: AppTheme.grey700),
         ),
         Text(
           value,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+          style: AppTheme.textLargeTitle.copyWith(
             color: color,
           ),
         ),

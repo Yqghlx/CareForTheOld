@@ -180,9 +180,8 @@ class StatusChip extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: TextStyle(
+        style: AppTheme.textBody16.copyWith(
           color: color,
-          fontSize: 16,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -323,10 +322,7 @@ class _AnimatedQuickCardState extends State<AnimatedQuickCard>
                   fit: BoxFit.scaleDown,
                   child: Text(
                     widget.subtitle,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: AppTheme.grey600,
-                    ),
+                    style: AppTheme.textCaptionSmall.copyWith(color: AppTheme.grey600),
                     maxLines: 1,
                   ),
                 ),

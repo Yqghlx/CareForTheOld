@@ -98,9 +98,8 @@ class ErrorStateWidget extends StatelessWidget {
             AppTheme.spacer12,
             Text(
               message,
-              style: TextStyle(
+              style: AppTheme.textBody16.copyWith(
                 color: Theme.of(context).colorScheme.error,
-                fontSize: 16,
               ),
               textAlign: TextAlign.center,
             ),
