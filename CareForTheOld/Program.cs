@@ -3,6 +3,7 @@ using Asp.Versioning.ApiExplorer;
 using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
 using CareForTheOld.Common.Helpers;
+using Microsoft.AspNetCore.ResponseCompression;
 using CareForTheOld.Common.Middleware;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
@@ -208,6 +209,15 @@ builder.Services.AddSingleton<OutboxDispatchService>();
 // 注册心跳监控服务（检测老人端离线并触发告警）
 builder.Services.AddSingleton<HeartbeatMonitorService>();
 
+// 响应压缩：减少 JSON 传输体积（健康数据、通知列表等受益显著）
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+    options.Providers.Add<GzipCompressionProvider>();
+});
+builder.Services.Configure<GzipCompressionProviderOptions>(
+    options => options.Level = System.IO.Compression.CompressionLevel.Fastest);
+
 // HSTS 配置：生产环境强制 HTTPS，1 年有效期
 builder.Services.AddHsts(options =>
 {
@@ -378,6 +388,9 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<SecurityHeadersMiddleware>();
 app.UseMiddleware<AuditLogMiddleware>();
+
+// 响应压缩（放在异常处理之后、CORS 之前，压缩所有 JSON 响应）
+app.UseResponseCompression();
 
 // 生产环境强制 HTTPS
 if (!app.Environment.IsDevelopment() && !app.Environment.IsEnvironment("Testing"))

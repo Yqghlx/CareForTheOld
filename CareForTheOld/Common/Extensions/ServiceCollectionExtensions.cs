@@ -34,9 +34,13 @@ public static class ServiceCollectionExtensions
 
         if (isPostgres)
         {
-            // PostgreSQL 生产环境
+            // PostgreSQL 生产环境（启用连接失败自动重试，应对短暂网络抖动）
             services.AddDbContext<AppDbContext>(options =>
-                options.UseNpgsql(connectionString)
+                options.UseNpgsql(connectionString, npgsqlOptions =>
+                    npgsqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 3,
+                        maxRetryDelay: TimeSpan.FromSeconds(5),
+                        errorCodesToAdd: null))
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
                     .ConfigureWarnings(w => w.Log(RelationalEventId.PendingModelChangesWarning)));
         }
