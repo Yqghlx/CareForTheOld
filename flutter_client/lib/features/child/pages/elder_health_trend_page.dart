@@ -193,7 +193,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
                     Icon(
                       type.icon,
                       color: isSelected ? AppTheme.cardColor : AppTheme.grey500,
-                      size: 20,
+                      size: AppTheme.iconSizeMd,
                     ),
                     AppTheme.spacer2,
                     FittedBox(
