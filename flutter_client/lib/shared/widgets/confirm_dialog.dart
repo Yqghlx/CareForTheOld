@@ -19,8 +19,8 @@ Future<bool> showConfirmDialog(
   BuildContext context, {
   required String title,
   required String message,
-  String confirmText = '确定',
-  String cancelText = '取消',
+  String confirmText = AppTheme.msgConfirm,
+  String cancelText = AppTheme.msgCancel,
 }) {
   return showDialog<bool>(
     context: context,
