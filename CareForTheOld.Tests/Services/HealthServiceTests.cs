@@ -183,7 +183,8 @@ public class HealthServiceTests
     {
         var userId = await CreateTestUserAsync();
         var act = async () => await _service.DeleteRecordAsync(userId, Guid.NewGuid());
-        await act.Should().ThrowAsync<KeyNotFoundException>();
+        await act.Should().ThrowAsync<KeyNotFoundException>()
+            .WithMessage(ErrorMessages.Health.RecordNotFoundOrNoPermission);
     }
 
     [Fact]

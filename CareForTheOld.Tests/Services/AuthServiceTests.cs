@@ -116,7 +116,8 @@ public class AuthServiceTests
         };
 
         var act = async () => await _service.LoginAsync(loginRequest);
-        await act.Should().ThrowAsync<ArgumentException>();
+        await act.Should().ThrowAsync<ArgumentException>()
+            .WithMessage(ErrorMessages.Auth.InvalidCredentials);
     }
 
     [Fact]

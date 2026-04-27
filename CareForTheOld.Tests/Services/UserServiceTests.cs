@@ -63,7 +63,8 @@ public class UserServiceTests
         var nonExistentId = Guid.NewGuid();
 
         var act = async () => await _service.GetCurrentUserAsync(nonExistentId);
-        await act.Should().ThrowAsync<KeyNotFoundException>();
+        await act.Should().ThrowAsync<KeyNotFoundException>()
+            .WithMessage(ErrorMessages.Common.UserNotFound);
     }
 
     [Fact]

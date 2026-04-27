@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.Families;
 using CareForTheOld.Models.Entities;
@@ -78,7 +79,7 @@ public class FamilyServiceIntegrationTests : IAsyncLifetime
             FamilyName = "第二个家庭",
         });
         await act.Should().ThrowAsync<ArgumentException>()
-            .WithMessage("*已加入家庭组*");
+            .WithMessage($"*{ErrorMessages.Family.AlreadyInFamily}*");
     }
 
     [Fact]
@@ -141,7 +142,7 @@ public class FamilyServiceIntegrationTests : IAsyncLifetime
             Relation = "父亲"
         });
         await act.Should().ThrowAsync<ArgumentException>()
-            .WithMessage("*已提交加入申请或已加入家庭组*");
+            .WithMessage($"*{ErrorMessages.Family.AlreadyAppliedOrJoined}*");
     }
 
     [Fact]
@@ -162,6 +163,6 @@ public class FamilyServiceIntegrationTests : IAsyncLifetime
         var act = async () => await _service.AddMemberAsync(familyB.Id, creatorC.Id,
             new AddFamilyMemberRequest { PhoneNumber = userB.PhoneNumber, Relation = "父亲", Role = UserRole.Elder });
         await act.Should().ThrowAsync<ArgumentException>()
-            .WithMessage("*已加入其他家庭组*");
+            .WithMessage($"*{ErrorMessages.Family.UserAlreadyInOtherFamily}*");
     }
 }

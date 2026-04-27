@@ -243,7 +243,8 @@ public class NeighborHelpServiceTests
 
         // 执行并验证
         var act = async () => await _service.AcceptHelpRequestAsync(request.Id, responder.Id);
-        await act.Should().ThrowAsync<InvalidOperationException>();
+        await act.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage(ErrorMessages.NeighborHelp.InvalidStatus);
     }
 
     [Fact]
@@ -316,7 +317,8 @@ public class NeighborHelpServiceTests
 
         // 执行并验证
         var act = async () => await _service.CancelHelpRequestAsync(request.Id, stranger.Id);
-        await act.Should().ThrowAsync<UnauthorizedAccessException>();
+        await act.Should().ThrowAsync<UnauthorizedAccessException>()
+            .WithMessage(ErrorMessages.NeighborHelp.OnlyRequesterOrChildCancel);
     }
 
     [Fact]
