@@ -423,6 +423,19 @@ class AppTheme {
   static const String titleHelpFeedback = '帮助与反馈';
   static const String titleSetGeoFence = '设置安全区域';
 
+  // 头像选择
+  static const String labelChangeAvatar = '更换头像';
+  static const String labelFromAlbum = '从相册选择';
+  static const String labelTakePhoto = '拍照';
+
+  // 用药计划表单
+  static const String labelMedicineName = '药品名称';
+  static const String labelFrequency = '用药频率';
+
+  // 杂项
+  static const String labelNoName = '未设置姓名';
+  static const String tooltipRefreshCode = '刷新邀请码';
+
   // 健康状态标签
   static const String labelHigh = '偏高';
   static const String labelLow = '偏低';

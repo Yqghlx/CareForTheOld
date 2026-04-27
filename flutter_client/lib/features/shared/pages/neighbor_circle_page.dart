@@ -103,7 +103,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                           AppTheme.hSpacer8,
                           IconButton(
                             icon: const Icon(Icons.refresh, size: AppTheme.iconSizeMd),
-                            tooltip: '刷新邀请码',
+                            tooltip: AppTheme.tooltipRefreshCode,
                             onPressed: () => _refreshInviteCode(),
                           ),
                         ],

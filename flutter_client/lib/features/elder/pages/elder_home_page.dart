@@ -596,18 +596,18 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
             const Padding(
               padding: AppTheme.paddingAll16,
               child: Text(
-                '更换头像',
+                AppTheme.labelChangeAvatar,
                 style: AppTheme.textLargeTitle,
               ),
             ),
             ListTile(
               leading: const Icon(Icons.photo_library, color: AppTheme.primaryColor),
-              title: const Text('从相册选择', style: AppTheme.textBody18),
+              title: const Text(AppTheme.labelFromAlbum, style: AppTheme.textBody18),
               onTap: () => Navigator.pop(ctx, ImageSource.gallery),
             ),
             ListTile(
               leading: const Icon(Icons.camera_alt, color: AppTheme.primaryColor),
-              title: const Text('拍照', style: AppTheme.textBody18),
+              title: const Text(AppTheme.labelTakePhoto, style: AppTheme.textBody18),
               onTap: () => Navigator.pop(ctx, ImageSource.camera),
             ),
             AppTheme.spacer8,

@@ -543,7 +543,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 TextField(
                   controller: nameController,
                   decoration: const InputDecoration(
-                    labelText: '药品名称',
+                    labelText: AppTheme.labelMedicineName,
                     border: OutlineInputBorder(),
                   ),
                   inputFormatters: [
@@ -568,7 +568,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   // ignore: deprecated_member_use - StatefulBuilder 中动态更新需要 value，initialValue 仅用于初始设置
                   value: selectedFrequency,
                   decoration: const InputDecoration(
-                    labelText: '用药频率',
+                    labelText: AppTheme.labelFrequency,
                     border: OutlineInputBorder(),
                   ),
                   items: Frequency.values.map((f) => DropdownMenuItem(

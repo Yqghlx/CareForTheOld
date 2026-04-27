@@ -145,7 +145,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    member.realName.isEmpty ? '未设置姓名' : member.realName,
+                    member.realName.isEmpty ? AppTheme.labelNoName : member.realName,
                     style: AppTheme.textHeading,
                   ),
                   AppTheme.spacer2,
@@ -406,7 +406,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     }
                   }
                 },
-                tooltip: '刷新邀请码',
+                tooltip: AppTheme.tooltipRefreshCode,
               ),
             ],
           ),
@@ -558,7 +558,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    member.realName.isEmpty ? '未设置姓名' : member.realName,
+                    member.realName.isEmpty ? AppTheme.labelNoName : member.realName,
                     style: AppTheme.textTitle,
                   ),
                   AppTheme.spacer4,

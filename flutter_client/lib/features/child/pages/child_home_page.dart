@@ -431,7 +431,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                       child: TextField(
                         controller: nameCtl,
                         decoration: const InputDecoration(
-                          labelText: '药品名称',
+                          labelText: AppTheme.labelMedicineName,
                           border: InputBorder.none,
                           contentPadding: AppTheme.paddingH16V12,
                         ),
@@ -466,7 +466,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         // ignore: deprecated_member_use - StatefulBuilder 中动态更新需要 value
                         value: selectedFrequency,
                         decoration: const InputDecoration(
-                          labelText: '用药频率',
+                          labelText: AppTheme.labelFrequency,
                           border: InputBorder.none,
                           contentPadding: AppTheme.paddingH16V8,
                         ),
