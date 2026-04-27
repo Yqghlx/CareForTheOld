@@ -477,7 +477,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.explore, size: 20, color: AppTheme.grey500),
+                          const Icon(Icons.explore, size: AppTheme.iconSizeMd, color: AppTheme.grey500),
                           AppTheme.hSpacer8,
                           Text(
                             '纬度: ${location.latitude.toStringAsFixed(4)}',
@@ -488,7 +488,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                       AppTheme.spacer8,
                       Row(
                         children: [
-                          const Icon(Icons.explore, size: 20, color: AppTheme.grey500),
+                          const Icon(Icons.explore, size: AppTheme.iconSizeMd, color: AppTheme.grey500),
                           AppTheme.hSpacer8,
                           Text(
                             '经度: ${location.longitude.toStringAsFixed(4)}',
@@ -551,7 +551,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                 color: AppTheme.infoBlue.withValues(alpha: 0.15),
                 borderRadius: AppTheme.radiusXS,
               ),
-              child: const Icon(Icons.location_history, color: AppTheme.infoBlue, size: 20),
+              child: const Icon(Icons.location_history, color: AppTheme.infoBlue, size: AppTheme.iconSizeMd),
             ),
             AppTheme.hSpacer12,
             Expanded(

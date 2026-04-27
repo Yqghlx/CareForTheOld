@@ -214,7 +214,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                 child: Row(
                   children: [
                     if (call.hasLocation) ...[
-                      const Icon(Icons.location_on, size: 18, color: AppTheme.infoBlueDark),
+                      const Icon(Icons.location_on, size: AppTheme.iconSizeSm, color: AppTheme.infoBlueDark),
                       AppTheme.hSpacer4,
                       Text(
                         '${call.latitude!.toStringAsFixed(4)}, ${call.longitude!.toStringAsFixed(4)}',
@@ -226,7 +226,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                     if (call.hasLocation && call.batteryLevel != null)
                       AppTheme.hSpacer16,
                     if (call.batteryLevel != null) ...[
-                      Icon(Icons.battery_std, size: 18, color: call.batteryColor),
+                      Icon(Icons.battery_std, size: AppTheme.iconSizeSm, color: call.batteryColor),
                       AppTheme.hSpacer4,
                       Text(
                         '电量 ${call.batteryText}',
@@ -249,7 +249,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: () => _callElder(call.elderPhoneNumber!),
-                      icon: const Icon(Icons.phone, size: 20),
+                      icon: const Icon(Icons.phone, size: AppTheme.iconSizeMd),
                       label: const Text('拨打电话'),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppTheme.infoBlue,

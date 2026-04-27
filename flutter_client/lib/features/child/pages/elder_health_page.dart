@@ -258,7 +258,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   ),
                   if (_selectedLogDate != null)
                     IconButton(
-                      icon: const Icon(Icons.close, size: 18),
+                      icon: const Icon(Icons.close, size: AppTheme.iconSizeSm),
                       onPressed: () => setState(() => _selectedLogDate = null),
                       tooltip: '清除日期筛选',
                     ),
@@ -478,7 +478,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     children: [
                       TextButton.icon(
                         onPressed: () => _showEditPlanDialog(plan),
-                        icon: const Icon(Icons.edit_outlined, size: 18),
+                        icon: const Icon(Icons.edit_outlined, size: AppTheme.iconSizeSm),
                         label: const Text(AppTheme.msgEdit),
                         style: TextButton.styleFrom(
                           padding: AppTheme.paddingH12V4,
@@ -487,7 +487,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       if (!plan.isActive) ...[
                         TextButton.icon(
                           onPressed: () => _deletePlan(plan),
-                          icon: const Icon(Icons.delete_outline, size: 18, color: AppTheme.errorColor),
+                          icon: const Icon(Icons.delete_outline, size: AppTheme.iconSizeSm, color: AppTheme.errorColor),
                           label: Text(AppTheme.msgDelete, style: AppTheme.textError),
                           style: TextButton.styleFrom(
                             padding: AppTheme.paddingH12V4,
@@ -504,7 +504,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       alignment: Alignment.centerRight,
                       child: TextButton.icon(
                         onPressed: () => _deletePlan(plan),
-                        icon: const Icon(Icons.delete_outline, size: 18, color: AppTheme.errorColor),
+                        icon: const Icon(Icons.delete_outline, size: AppTheme.iconSizeSm, color: AppTheme.errorColor),
                         label: Text('${AppTheme.msgDelete}计划', style: AppTheme.textError),
                         style: TextButton.styleFrom(
                           padding: AppTheme.paddingH12V4,
@@ -1107,7 +1107,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   label: '查看$elderName的健康趋势分析详情',
                   button: true,
                   child: IconButton(
-                    icon: const Icon(Icons.arrow_forward_ios, size: 18),
+                    icon: const Icon(Icons.arrow_forward_ios, size: AppTheme.iconSizeSm),
                     onPressed: () => _showAnomalyDetailDialog(anomaly, elderName),
                     tooltip: '查看详情',
                   ),
@@ -1128,7 +1128,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.person_outline, size: 18, color: AppTheme.grey700),
+                      const Icon(Icons.person_outline, size: AppTheme.iconSizeSm, color: AppTheme.grey700),
                       AppTheme.hSpacer8,
                       Text(
                         '个人基线',
@@ -1223,7 +1223,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.check_circle_outline, color: AppTheme.successColor, size: 20),
+                      const Icon(Icons.check_circle_outline, color: AppTheme.successColor, size: AppTheme.iconSizeMd),
                       AppTheme.hSpacer8,
                       Expanded(
                         child: Text(
@@ -1345,7 +1345,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               Icon(
                 _getAnomalyTypeIcon(event.type),
                 color: color,
-                size: 20,
+                size: AppTheme.iconSizeMd,
               ),
               AppTheme.hSpacer8,
               // 异常描述

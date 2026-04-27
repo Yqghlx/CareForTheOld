@@ -99,7 +99,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.cloud_off, size: 18, color: AppTheme.warningDark),
+                      const Icon(Icons.cloud_off, size: AppTheme.iconSizeSm, color: AppTheme.warningDark),
                       AppTheme.hSpacer8,
                       Expanded(
                         child: Text(
@@ -191,7 +191,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: warnings.map((w) => Row(
                 children: [
-                  Icon(w.trendIcon, size: 18, color: w.trendColor),
+                  Icon(w.trendIcon, size: AppTheme.iconSizeSm, color: w.trendColor),
                   AppTheme.hSpacer8,
                   Expanded(
                     child: Text(
@@ -531,7 +531,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.info_outline, size: 18, color: type.color),
+                          Icon(Icons.info_outline, size: AppTheme.iconSizeSm, color: type.color),
                           AppTheme.hSpacer8,
                           Flexible(
                             child: Text(

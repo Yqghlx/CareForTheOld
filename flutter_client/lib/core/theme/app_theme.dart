@@ -121,6 +121,10 @@ class AppTheme {
   static const double cardRadius = 16.0;
   static const double cardRadiusLarge = 20.0;
 
+  /// 图标尺寸常量
+  static const double iconSizeSm = 18.0;
+  static const double iconSizeMd = 20.0;
+
   /// 卡片阴影
   static const double cardElevation = 4.0;
   static const double cardElevationLow = 2.0;

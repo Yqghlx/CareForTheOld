@@ -64,7 +64,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     if (!isElder)
                       TextButton.icon(
                         onPressed: () => _showAddMemberDialog(),
-                        icon: const Icon(Icons.person_add, size: 20),
+                        icon: const Icon(Icons.person_add, size: AppTheme.iconSizeMd),
                         label: const Text('添加成员'),
                       ),
                   ],

@@ -237,7 +237,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.error_outline, color: AppTheme.errorColor, size: 20),
+                          const Icon(Icons.error_outline, color: AppTheme.errorColor, size: AppTheme.iconSizeMd),
                           AppTheme.hSpacer8,
                           Expanded(
                             child: Text(

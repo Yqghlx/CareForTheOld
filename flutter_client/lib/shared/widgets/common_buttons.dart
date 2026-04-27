@@ -289,7 +289,7 @@ class _PrimaryIconButtonState extends State<PrimaryIconButton>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(widget.icon, color: Colors.white, size: 20),
+                  Icon(widget.icon, color: Colors.white, size: AppTheme.iconSizeMd),
                   AppTheme.hSpacer8,
                   widget.isLoading
                       ? const SizedBox(
