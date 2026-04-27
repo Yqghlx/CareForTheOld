@@ -17,6 +17,12 @@ public class NeighborCircleConfiguration : IEntityTypeConfiguration<NeighborCirc
         // 经纬度复合索引（用于附近搜索粗筛）
         builder.HasIndex(c => new { c.CenterLatitude, c.CenterLongitude });
 
+        // 活跃状态索引（SearchNearbyCirclesAsync 按 IsActive 筛选）
+        builder.HasIndex(c => c.IsActive);
+
+        // 邀请码 + 活跃状态复合索引（JoinCircleByCodeAsync 按邀请码查找活跃圈子）
+        builder.HasIndex(c => new { c.InviteCode, c.IsActive });
+
         builder.HasOne(c => c.Creator)
             .WithMany()
             .HasForeignKey(c => c.CreatorId)

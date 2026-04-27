@@ -140,17 +140,15 @@ public class NeighborHelpService : INeighborHelpService
 
         _context.NeighborHelpRequests.Add(helpRequest);
 
-        // 记录通知日志（用于后续计算响应率）
-        foreach (var neighborId in nearbyUserIds)
-        {
-            _context.HelpNotificationLogs.Add(new HelpNotificationLog
+        // 批量记录通知日志（用于后续计算响应率）
+        _context.HelpNotificationLogs.AddRange(nearbyUserIds.Select(neighborId =>
+            new HelpNotificationLog
             {
                 Id = Guid.NewGuid(),
                 HelpRequestId = helpRequest.Id,
                 UserId = neighborId,
                 NotifiedAt = now,
-            });
-        }
+            }));
 
         // 一次性保存请求和通知日志，减少数据库交互
         await _context.SaveChangesAsync();
@@ -498,17 +496,15 @@ public class NeighborHelpService : INeighborHelpService
 
         _context.NeighborHelpRequests.Add(helpRequest);
 
-        // 记录通知日志
-        foreach (var memberId in memberIds)
-        {
-            _context.HelpNotificationLogs.Add(new HelpNotificationLog
+        // 批量记录通知日志
+        _context.HelpNotificationLogs.AddRange(memberIds.Select(memberId =>
+            new HelpNotificationLog
             {
                 Id = Guid.NewGuid(),
                 HelpRequestId = helpRequest.Id,
                 UserId = memberId,
                 NotifiedAt = requestNow,
-            });
-        }
+            }));
 
         // 一次性保存请求和通知日志
         await _context.SaveChangesAsync();
