@@ -6,6 +6,7 @@ using CareForTheOld.Services.Implementations;
 using FluentAssertions;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Xunit;
 
@@ -36,7 +37,7 @@ public class NotificationServiceTests
         _mockHubContext.Setup(h => h.Clients).Returns(_mockClients.Object);
         _mockClients.Setup(c => c.Group(It.IsAny<string>())).Returns(_mockClientProxy.Object);
 
-        _service = new NotificationService(_mockHubContext.Object, _context);
+        _service = new NotificationService(_mockHubContext.Object, _context, NullLogger<NotificationService>.Instance);
     }
 
     /// <summary>

@@ -20,11 +20,13 @@ public class NotificationService : INotificationService
 {
     private readonly IHubContext<NotificationHub> _hubContext;
     private readonly AppDbContext _context;
+    private readonly ILogger<NotificationService> _logger;
 
-    public NotificationService(IHubContext<NotificationHub> hubContext, AppDbContext context)
+    public NotificationService(IHubContext<NotificationHub> hubContext, AppDbContext context, ILogger<NotificationService> logger)
     {
         _hubContext = hubContext;
         _context = context;
+        _logger = logger;
     }
 
     /// <summary>
@@ -63,6 +65,8 @@ public class NotificationService : INotificationService
 
         // 同一事务中写入两张表，确保数据一致性
         await _context.SaveChangesAsync();
+
+        _logger.LogDebug("通知已写入：用户 {UserId}，类型 {Type}", userId, type);
     }
 
     /// <inheritdoc />
@@ -99,6 +103,8 @@ public class NotificationService : INotificationService
 
         // 所有记录一次写入，避免循环中多次 SaveChanges 的 N+1 问题
         await _context.SaveChangesAsync();
+
+        _logger.LogDebug("批量通知已写入：{Count} 个用户，类型 {Type}", userIds.Count(), type);
     }
 
     /// <summary>
