@@ -637,7 +637,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
             child: const Text(AppTheme.msgCancel),
           ),
           PrimaryButton(
-            text: '创建',
+            text: AppTheme.msgCreate,
             onPressed: () async {
               final name = nameController.text.trim();
               if (name.isEmpty) return;

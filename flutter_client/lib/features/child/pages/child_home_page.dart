@@ -568,7 +568,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                   child: const Text(AppTheme.msgCancel),
                 ),
                 PrimaryButton(
-                  text: '创建',
+                  text: AppTheme.msgCreate,
                   onPressed: () async {
                     final name = nameCtl.text.trim();
                     final dosage = dosageCtl.text.trim();
