@@ -685,7 +685,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
   Future<void> _deletePlan(MedicationPlan plan) async {
     final confirmed = await showConfirmDialog(
       context,
-      title: '确认删除',
+      title: AppTheme.msgConfirmDelete,
       message: '确定删除 ${plan.medicineName} 的用药计划吗？此操作不可恢复。',
       confirmText: AppTheme.msgDelete,
     );

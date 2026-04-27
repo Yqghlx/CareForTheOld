@@ -265,7 +265,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
 
                   // 渐变登录按钮
                   PrimaryButton(
-                    text: '登录',
+                    text: AppTheme.msgLogin,
                     onPressed: login,
                     isLoading: isLoading,
                   ),

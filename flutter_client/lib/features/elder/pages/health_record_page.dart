@@ -332,7 +332,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
       direction: DismissDirection.endToStart,
       confirmDismiss: (_) => showConfirmDialog(
         context,
-        title: '确认删除',
+        title: AppTheme.msgConfirmDelete,
         message: '确定删除 ${record.type.label} 记录（${record.displayValue}）吗？',
         confirmText: AppTheme.msgDelete,
       ),

@@ -211,6 +211,8 @@ class AppTheme {
   static const String msgConfirm = '确定';
   static const String msgSave = '保存';
   static const String msgEdit = '编辑';
+  static const String msgLogin = '登录';
+  static const String msgConfirmDelete = '确认删除';
 
   // 应用名
   static const String appName = '关爱老人';
