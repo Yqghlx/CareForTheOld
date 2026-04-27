@@ -155,7 +155,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
                   color: AppTheme.errorColor,
                 ),
               )
-            : const Icon(Icons.check_circle_outline, size: 28),
+            : const Icon(Icons.check_circle_outline, size: AppTheme.iconSize2xl),
         label: Text(
           _isResponding ? '处理中...' : '立即响应',
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
@@ -178,7 +178,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
       height: 64,
       child: OutlinedButton.icon(
         onPressed: _callElder,
-        icon: const Icon(Icons.phone, size: 28, color: AppTheme.cardColor),
+        icon: const Icon(Icons.phone, size: AppTheme.iconSize2xl, color: AppTheme.cardColor),
         label: const Text(
           '拨打电话',
           style: TextStyle(

@@ -78,7 +78,7 @@ class _TrustRankingPageState extends ConsumerState<TrustRankingPage> {
               width: 40,
               child: isTop3
                   ? Icon(medalIcons[item.rank],
-                      color: medalColors[item.rank], size: 28)
+                      color: medalColors[item.rank], size: AppTheme.iconSize2xl)
                   : Text('#${item.rank}',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             color: AppTheme.grey600,

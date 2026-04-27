@@ -255,7 +255,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
                         : const Icon(
                             Icons.skip_next,
                             color: AppTheme.grey600,
-                            size: 28,
+                            size: AppTheme.iconSize2xl,
                           ),
                   ),
                 );
@@ -523,7 +523,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
                     color: AppTheme.warningColor.withValues(alpha: 0.15),
                     borderRadius: AppTheme.radiusM,
                   ),
-                  child: const Icon(Icons.medication, color: AppTheme.warningColor, size: 28),
+                  child: const Icon(Icons.medication, color: AppTheme.warningColor, size: AppTheme.iconSize2xl),
                 ),
                 AppTheme.hSpacer16,
                 Expanded(

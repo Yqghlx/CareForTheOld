@@ -125,6 +125,7 @@ class AppTheme {
   static const double iconSizeSm = 18.0;
   static const double iconSizeMd = 20.0;
   static const double iconSizeLg = 24.0;
+  static const double iconSize2xl = 28.0;
   static const double iconSizeXl = 32.0;
   static const double iconSizeXxl = 48.0;
   static const double iconSizeHuge = 64.0;

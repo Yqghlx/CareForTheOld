@@ -298,7 +298,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                         color: AppTheme.cardColor.withValues(alpha: 0.2),
                         borderRadius: AppTheme.radiusS,
                       ),
-                      child: const Icon(Icons.home, color: AppTheme.cardColor, size: 28),
+                      child: const Icon(Icons.home, color: AppTheme.cardColor, size: AppTheme.iconSize2xl),
                     ),
                     AppTheme.hSpacer16,
                     Expanded(
@@ -543,13 +543,13 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                         errorWidget: (_, __, ___) => Icon(
                           member.role.isElder ? Icons.elderly : Icons.person,
                           color: member.role.isElder ? AppTheme.warningColor : AppTheme.infoBlue,
-                          size: 28,
+                          size: AppTheme.iconSize2xl,
                         ),
                       )
                     : Icon(
                         member.role.isElder ? Icons.elderly : Icons.person,
                         color: member.role.isElder ? AppTheme.warningColor : AppTheme.infoBlue,
-                        size: 28,
+                        size: AppTheme.iconSize2xl,
                       ),
               ),
             ),

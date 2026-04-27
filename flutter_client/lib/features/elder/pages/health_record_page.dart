@@ -344,7 +344,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
           color: AppTheme.errorColor.withValues(alpha: 0.1),
           borderRadius: AppTheme.radiusL,
         ),
-        child: const Icon(Icons.delete, color: AppTheme.errorColor, size: 28),
+        child: const Icon(Icons.delete, color: AppTheme.errorColor, size: AppTheme.iconSize2xl),
       ),
       child: Card(
       elevation: AppTheme.cardElevation,
@@ -369,7 +369,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
               child: Icon(
                 abnormal ? Icons.warning_amber : record.type.icon,
                 color: abnormal ? AppTheme.warningColor : record.type.color,
-                size: 28,
+                size: AppTheme.iconSize2xl,
               ),
             ),
             AppTheme.hSpacer16,
@@ -1104,7 +1104,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                 child: const Icon(
                   Icons.check_circle_rounded,
                   color: AppTheme.cardColor,
-                  size: 28,
+                  size: AppTheme.iconSize2xl,
                 ),
               ),
               AppTheme.hSpacer12,

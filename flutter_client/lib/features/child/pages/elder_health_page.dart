@@ -412,7 +412,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       child: Icon(
                         Icons.medication,
                         color: plan.isActive ? AppTheme.infoBlue : AppTheme.grey500,
-                        size: 28,
+                        size: AppTheme.iconSize2xl,
                       ),
                     ),
                     AppTheme.hSpacer12,

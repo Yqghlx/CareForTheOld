@@ -742,7 +742,7 @@ class _EmergencyPulseBannerState extends State<_EmergencyPulseBanner>
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right, color: AppTheme.cardColor, size: 28),
+              const Icon(Icons.chevron_right, color: AppTheme.cardColor, size: AppTheme.iconSize2xl),
             ],
           ),
         ),

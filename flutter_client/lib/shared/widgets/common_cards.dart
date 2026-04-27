@@ -42,7 +42,7 @@ class StatCard extends StatelessWidget {
                   color: color.withValues(alpha: 0.15),
                   borderRadius: AppTheme.radiusS,
                 ),
-                child: Icon(icon, size: 28, color: color),
+                child: Icon(icon, size: AppTheme.iconSize2xl, color: color),
               ),
               AppTheme.spacer12,
               Text(
@@ -308,7 +308,7 @@ class _AnimatedQuickCardState extends State<AnimatedQuickCard>
                     color: widget.color.withValues(alpha: 0.15),
                     borderRadius: AppTheme.radiusM,
                   ),
-                  child: Icon(widget.icon, size: 28, color: widget.color),
+                  child: Icon(widget.icon, size: AppTheme.iconSize2xl, color: widget.color),
                 ),
                 AppTheme.spacer8,
                 FittedBox(

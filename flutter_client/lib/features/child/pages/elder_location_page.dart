@@ -447,7 +447,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                         color: AppTheme.primaryColor.withValues(alpha: 0.15),
                         borderRadius: AppTheme.radiusS,
                       ),
-                      child: const Icon(Icons.location_on, color: AppTheme.primaryColor, size: 28),
+                      child: const Icon(Icons.location_on, color: AppTheme.primaryColor, size: AppTheme.iconSize2xl),
                     ),
                     AppTheme.hSpacer16,
                     Column(
