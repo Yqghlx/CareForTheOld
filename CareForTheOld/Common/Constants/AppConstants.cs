@@ -109,6 +109,12 @@ public static class AppConstants
 
         /// <summary>后台检查轮询间隔（分钟）</summary>
         public const int CheckIntervalMinutes = 1;
+
+        /// <summary>提前提醒分钟数（在计划服药时间前 N 分钟推送通知）</summary>
+        public const int AdvanceReminderMinutes = 5;
+
+        /// <summary>提醒检查窗口（分钟），用于判断当前时间是否落在提醒窗口内</summary>
+        public const int ReminderWindowMinutes = 1;
     }
 
     /// <summary>

@@ -33,7 +33,7 @@ public class MedicationReminderService : BackgroundService
     {
         _serviceProvider = serviceProvider;
         _logger = logger;
-        _advanceMinutes = configuration.GetValue(ConfigurationKeys.MedicationReminder.AdvanceMinutes, 5);
+        _advanceMinutes = configuration.GetValue(ConfigurationKeys.MedicationReminder.AdvanceMinutes, AppConstants.Medication.AdvanceReminderMinutes);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -101,7 +101,7 @@ public class MedicationReminderService : BackgroundService
                 var reminderTimeWithBuffer = reminderTime.AddMinutes(-_advanceMinutes);
 
                 // 检查是否在当前时间的1分钟窗口内
-                if (currentTime >= reminderTimeWithBuffer && currentTime < reminderTimeWithBuffer.AddMinutes(1))
+                if (currentTime >= reminderTimeWithBuffer && currentTime < reminderTimeWithBuffer.AddMinutes(AppConstants.Medication.ReminderWindowMinutes))
                 {
                     var scheduledAt = DateTime.SpecifyKind(today.ToDateTime(reminderTime), DateTimeKind.Utc);
 

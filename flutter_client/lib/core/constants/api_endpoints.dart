@@ -3,6 +3,9 @@
 class ApiEndpoints {
   ApiEndpoints._();
 
+  /// API 路径前缀，用于从 apiBaseUrl 中提取服务器基础地址
+  static const apiPathPrefix = '/api/v1';
+
   // ==================== 认证 ====================
   static const authLogin = '/auth/login';
   static const authRegister = '/auth/register';

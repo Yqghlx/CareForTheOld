@@ -1,3 +1,4 @@
+import '../../../core/constants/api_endpoints.dart';
 import '../../../core/router/route_paths.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -164,7 +165,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                                 ? CachedNetworkImage(
                                     imageUrl: authState.user!.avatarUrl!.startsWith('http')
                                         ? authState.user!.avatarUrl!
-                                        : '${AppConfig.current.apiBaseUrl.replaceFirst('/api/v1', '')}${authState.user!.avatarUrl}',
+                                        : '${AppConfig.current.apiBaseUrl.replaceFirst(ApiEndpoints.apiPathPrefix, '')}${authState.user!.avatarUrl}',
                                     fit: BoxFit.cover,
                                     width: 64,
                                     height: 64,
