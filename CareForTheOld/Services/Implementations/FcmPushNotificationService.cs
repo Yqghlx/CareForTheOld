@@ -34,19 +34,19 @@ public class FcmPushNotificationService : IPushNotificationService
     }
 
     /// <inheritdoc />
-    public async Task SendAsync(Guid userId, string title, string body, Dictionary<string, string>? data = null)
+    public async Task<bool> SendAsync(Guid userId, string title, string body, Dictionary<string, string>? data = null)
     {
-        await SendAsync(new[] { userId }, title, body, data);
+        return await SendAsync(new[] { userId }, title, body, data);
     }
 
     /// <inheritdoc />
-    public async Task SendAsync(IEnumerable<Guid> userIds, string title, string body, Dictionary<string, string>? data = null)
+    public async Task<bool> SendAsync(IEnumerable<Guid> userIds, string title, string body, Dictionary<string, string>? data = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(title, nameof(title));
         ArgumentException.ThrowIfNullOrWhiteSpace(body, nameof(body));
 
         var userIdList = userIds.ToList();
-        if (!userIdList.Any()) return;
+        if (!userIdList.Any()) return true;
 
         // 查询目标用户的所有设备 token
         var tokens = await _context.DeviceTokens
@@ -57,22 +57,26 @@ public class FcmPushNotificationService : IPushNotificationService
         if (!tokens.Any())
         {
             _logger.LogDebug("无设备 token 可推送，目标用户数: {Count}", userIdList.Count);
-            return;
+            return false;
         }
 
         // FCM multicast 最多 500 token/批次
         var batches = tokens.Chunk(AppConstants.Fcm.MaxBatchSize);
+        var allSuccess = true;
 
         foreach (var batch in batches)
         {
-            await SendBatchAsync(batch.ToList(), title, body, data);
+            var success = await SendBatchAsync(batch.ToList(), title, body, data);
+            if (!success) allSuccess = false;
         }
+
+        return allSuccess;
     }
 
     /// <summary>
     /// 发送一批 FCM 推送消息
     /// </summary>
-    private async Task SendBatchAsync(List<string> tokens, string title, string body, Dictionary<string, string>? data)
+    private async Task<bool> SendBatchAsync(List<string> tokens, string title, string body, Dictionary<string, string>? data)
     {
         try
         {
@@ -110,10 +114,13 @@ public class FcmPushNotificationService : IPushNotificationService
             {
                 await CleanupInvalidTokensAsync(tokens, response.Responses);
             }
+
+            return response.FailureCount == 0;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "FCM 推送发送异常，token 数: {Count}", tokens.Count);
+            return false;
         }
     }
 

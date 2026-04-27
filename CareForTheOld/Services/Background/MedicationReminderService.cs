@@ -140,7 +140,8 @@ public class MedicationReminderService : BackgroundService
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "调度用药跟进任务失败（非测试环境忽略）");
+            // 用药跟进调度失败会导致老人收不到重要提醒，必须以 Error 级别记录以便监控告警
+            _logger.LogError(ex, "调度用药跟进任务失败，老人可能收不到用药提醒，老人ID: {ElderId}", plan.ElderId);
         }
     }
 

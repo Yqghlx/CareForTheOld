@@ -75,7 +75,7 @@ public class EmergencyService : IEmergencyService
 
         _logger.LogWarning("紧急呼叫已创建：老人 {ElderId}，呼叫 {CallId}，电量 {BatteryLevel}", elderId, call.Id, batteryLevel);
 
-        // 异步发送紧急呼叫通知给子女（通过 Hangfire 持久化）
+        // 异步发送紧急呼叫通知给子女（通过 Hangfire 持久化，失败时同步兜底）
         try
         {
             BackgroundJob.Enqueue(() => SendEmergencyNotificationJobAsync(
@@ -83,7 +83,16 @@ public class EmergencyService : IEmergencyService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "紧急呼叫通知入队失败，呼叫 {CallId}", call.Id);
+            _logger.LogError(ex, "紧急呼叫通知入队失败，尝试同步兜底发送，呼叫 {CallId}", call.Id);
+            // Hangfire 不可用时同步发送，确保子女能收到通知
+            try
+            {
+                await SendEmergencyNotificationJobAsync(elderId, familyMember.User.RealName, call.Id);
+            }
+            catch (Exception fallbackEx)
+            {
+                _logger.LogError(fallbackEx, "紧急呼叫同步兜底发送也失败，呼叫 {CallId}，需人工关注！", call.Id);
+            }
         }
 
         // 异步广播给邻里圈附近邻居（通过 Hangfire 持久化）

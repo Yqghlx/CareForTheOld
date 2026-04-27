@@ -18,15 +18,15 @@ public class NullPushNotificationService : IPushNotificationService
         _logger = logger;
     }
 
-    public Task SendAsync(Guid userId, string title, string body, Dictionary<string, string>? data = null)
+    public Task<bool> SendAsync(Guid userId, string title, string body, Dictionary<string, string>? data = null)
     {
         _logger.LogDebug("推送通知已跳过（未配置 FCM），目标用户: {UserId}", userId);
-        return Task.CompletedTask;
+        return Task.FromResult(false);
     }
 
-    public Task SendAsync(IEnumerable<Guid> userIds, string title, string body, Dictionary<string, string>? data = null)
+    public Task<bool> SendAsync(IEnumerable<Guid> userIds, string title, string body, Dictionary<string, string>? data = null)
     {
         _logger.LogDebug("推送通知已跳过（未配置 FCM），目标用户数: {Count}", userIds.Count());
-        return Task.CompletedTask;
+        return Task.FromResult(false);
     }
 }
