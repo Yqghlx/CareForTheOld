@@ -380,6 +380,12 @@ class AppTheme {
   static const String labelHigh = '偏高';
   static const String labelLow = '偏低';
 
+  // 健康类型标签
+  static const String labelBloodPressure = '血压';
+  static const String labelBloodSugar = '血糖';
+  static const String labelHeartRate = '心率';
+  static const String labelTemperature = '体温';
+
   // 默认角色/称谓
   static const String labelElder = '老人';
   static const String labelRelationOther = '其他';

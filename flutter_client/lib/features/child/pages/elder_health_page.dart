@@ -62,7 +62,7 @@ final elderAnomalyDetectionProvider =
   if (familyId == null) {
     return TrendAnomalyDetectionResponse(
       type: 'BloodPressure',
-      typeName: '血压',
+      typeName: AppTheme.labelBloodPressure,
       baseline: PersonalBaseline(),
       recentStats: RecentStatsSummary(),
     );
@@ -301,42 +301,42 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       crossAxisSpacing: 12,
       children: [
         Semantics(
-          label: '血压: ${_getStatsValue(typeMap, '血压')}',
+          label: '${AppTheme.labelBloodPressure}: ${_getStatsValue(typeMap, AppTheme.labelBloodPressure)}',
           child: StatCard(
             icon: Icons.favorite,
-            title: '血压',
-            value: _getStatsValue(typeMap, '血压'),
-            subtitle: _getStatsSubtitle(typeMap, '血压'),
+            title: AppTheme.labelBloodPressure,
+            value: _getStatsValue(typeMap, AppTheme.labelBloodPressure),
+            subtitle: _getStatsSubtitle(typeMap, AppTheme.labelBloodPressure),
             color: AppTheme.errorColor,
           ),
         ),
         Semantics(
-          label: '血糖: ${_getStatsValue(typeMap, '血糖')}',
+          label: '${AppTheme.labelBloodSugar}: ${_getStatsValue(typeMap, AppTheme.labelBloodSugar)}',
           child: StatCard(
             icon: Icons.water_drop,
-            title: '血糖',
-            value: _getStatsValue(typeMap, '血糖'),
-            subtitle: _getStatsSubtitle(typeMap, '血糖'),
+            title: AppTheme.labelBloodSugar,
+            value: _getStatsValue(typeMap, AppTheme.labelBloodSugar),
+            subtitle: _getStatsSubtitle(typeMap, AppTheme.labelBloodSugar),
             color: AppTheme.infoBlue,
           ),
         ),
         Semantics(
-          label: '心率: ${_getStatsValue(typeMap, '心率')}',
+          label: '${AppTheme.labelHeartRate}: ${_getStatsValue(typeMap, AppTheme.labelHeartRate)}',
           child: StatCard(
             icon: Icons.monitor_heart,
-            title: '心率',
-            value: _getStatsValue(typeMap, '心率'),
-            subtitle: _getStatsSubtitle(typeMap, '心率'),
+            title: AppTheme.labelHeartRate,
+            value: _getStatsValue(typeMap, AppTheme.labelHeartRate),
+            subtitle: _getStatsSubtitle(typeMap, AppTheme.labelHeartRate),
             color: AppTheme.purpleColor,
           ),
         ),
         Semantics(
-          label: '体温: ${_getStatsValue(typeMap, '体温')}',
+          label: '${AppTheme.labelTemperature}: ${_getStatsValue(typeMap, AppTheme.labelTemperature)}',
           child: StatCard(
             icon: Icons.thermostat,
-            title: '体温',
-            value: _getStatsValue(typeMap, '体温'),
-            subtitle: _getStatsSubtitle(typeMap, '体温'),
+            title: AppTheme.labelTemperature,
+            value: _getStatsValue(typeMap, AppTheme.labelTemperature),
+            subtitle: _getStatsSubtitle(typeMap, AppTheme.labelTemperature),
             color: AppTheme.warningColor,
           ),
         ),
@@ -361,10 +361,10 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
 
   String _getUnit(String typeName) {
     return switch (typeName) {
-      '血压' => 'mmHg',
-      '血糖' => 'mmol/L',
-      '心率' => '次/分',
-      '体温' => '°C',
+      AppTheme.labelBloodPressure => 'mmHg',
+      AppTheme.labelBloodSugar => 'mmol/L',
+      AppTheme.labelHeartRate => '次/分',
+      AppTheme.labelTemperature => '°C',
       _ => '',
     };
   }
