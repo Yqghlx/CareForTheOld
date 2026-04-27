@@ -76,7 +76,7 @@ class ErrorStateWidget extends StatelessWidget {
       return AppTheme.msgNetworkError;
     }
     if (error.contains('401')) return AppTheme.msgSessionExpired;
-    if (error.contains('403')) return '没有权限执行此操作';
+    if (error.contains('403')) return AppTheme.msgForbidden;
     if (error.contains('404')) return AppTheme.msgNotFound;
     if (error.contains('500') || error.contains('502') || error.contains('503')) {
       return AppTheme.msgServerError;

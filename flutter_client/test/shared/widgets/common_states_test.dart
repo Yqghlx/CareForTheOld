@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:care_for_the_old_client/core/theme/app_theme.dart';
 import 'package:care_for_the_old_client/shared/widgets/common_states.dart';
 
 void main() {
@@ -91,7 +92,7 @@ void main() {
       );
 
       expect(find.text('加载失败'), findsOneWidget);
-      expect(find.text('重试'), findsOneWidget);
+      expect(find.text(AppTheme.msgRetry), findsOneWidget);
       expect(find.byIcon(Icons.error_outline), findsOneWidget);
       expect(find.byIcon(Icons.refresh), findsOneWidget);
     });
@@ -109,7 +110,7 @@ void main() {
         ),
       );
 
-      await tester.tap(find.text('重试'));
+      await tester.tap(find.text(AppTheme.msgRetry));
       expect(retried, isTrue);
     });
 
@@ -132,53 +133,53 @@ void main() {
 
     group('friendlyMessage', () {
       test('null 返回默认提示', () {
-        expect(ErrorStateWidget.friendlyMessage(null), '加载失败，请重试');
+        expect(ErrorStateWidget.friendlyMessage(null), AppTheme.msgLoadFailed);
       });
 
       test('网络错误转为友好提示', () {
         expect(
           ErrorStateWidget.friendlyMessage('SocketException: Connection refused'),
-          '网络连接失败，请检查网络设置',
+          AppTheme.msgNetworkError,
         );
         expect(
           ErrorStateWidget.friendlyMessage('网络不可用'),
-          '网络连接失败，请检查网络设置',
+          AppTheme.msgNetworkError,
         );
       });
 
       test('401 转为登录过期', () {
         expect(
           ErrorStateWidget.friendlyMessage('HttpException 401'),
-          '登录已过期，请重新登录',
+          AppTheme.msgSessionExpired,
         );
       });
 
       test('403 转为权限不足', () {
         expect(
           ErrorStateWidget.friendlyMessage('403 Forbidden'),
-          '没有权限执行此操作',
+          AppTheme.msgForbidden,
         );
       });
 
       test('404 转为资源不存在', () {
         expect(
           ErrorStateWidget.friendlyMessage('404 Not Found'),
-          '请求的资源不存在',
+          AppTheme.msgNotFound,
         );
       });
 
       test('500/502/503 转为服务器繁忙', () {
         expect(
           ErrorStateWidget.friendlyMessage('500 Internal Server Error'),
-          '服务器繁忙，请稍后重试',
+          AppTheme.msgServerError,
         );
         expect(
           ErrorStateWidget.friendlyMessage('502 Bad Gateway'),
-          '服务器繁忙，请稍后重试',
+          AppTheme.msgServerError,
         );
         expect(
           ErrorStateWidget.friendlyMessage('503 Service Unavailable'),
-          '服务器繁忙，请稍后重试',
+          AppTheme.msgServerError,
         );
       });
 
@@ -186,7 +187,7 @@ void main() {
         final longError = 'A' * 100;
         expect(
           ErrorStateWidget.friendlyMessage(longError),
-          '加载失败，请重试',
+          AppTheme.msgLoadFailed,
         );
       });
 
