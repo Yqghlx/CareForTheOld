@@ -339,10 +339,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                             onPressed: () => context.push(RoutePaths.childElderLocation(elder.userId)),
                             icon: const Icon(Icons.location_on, size: AppTheme.iconSizeSm),
                             label: const Text('查看位置'),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: AppTheme.successColor,
-                              side: const BorderSide(color: AppTheme.successColor),
-                            ),
+                            style: AppTheme.outlinedColorStyle(AppTheme.successColor),
                           ),
                         ),
                       ),
@@ -358,10 +355,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                             onPressed: () => context.push(RoutePaths.childElderHealth(elder.userId)),
                             icon: const Icon(Icons.favorite, size: AppTheme.iconSizeSm),
                             label: const Text('查看健康'),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: AppTheme.errorColor,
-                              side: const BorderSide(color: AppTheme.errorColor),
-                            ),
+                            style: AppTheme.outlinedColorStyle(AppTheme.errorColor),
                           ),
                         ),
                       ),

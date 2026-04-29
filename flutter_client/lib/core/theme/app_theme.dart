@@ -129,9 +129,16 @@ class AppTheme {
   );
 
   /// ElevatedButton 样式：主色背景 + 圆角
+  /// ElevatedButton 样式：主色背景 + 圆角
   static final ButtonStyle elevatedPrimaryStyle = ElevatedButton.styleFrom(
     backgroundColor: primaryColor,
     shape: RoundedRectangleBorder(borderRadius: radiusS),
+  );
+
+  /// 通用 OutlinedButton 样式工厂：前景色与边框同色
+  static ButtonStyle outlinedColorStyle(Color color) => OutlinedButton.styleFrom(
+    foregroundColor: color,
+    side: BorderSide(color: color),
   );
 
   static const LinearGradient warmGradient = LinearGradient(
@@ -227,6 +234,8 @@ class AppTheme {
   static const EdgeInsets paddingV8 = EdgeInsets.symmetric(vertical: 8);
   static const EdgeInsets paddingV10 = EdgeInsets.symmetric(vertical: 10);
   static const EdgeInsets paddingV12 = EdgeInsets.symmetric(vertical: 12);
+  static const EdgeInsets paddingV4 = EdgeInsets.symmetric(vertical: 4);
+  static const EdgeInsets paddingV14 = EdgeInsets.symmetric(vertical: 14);
   static const EdgeInsets paddingV16 = EdgeInsets.symmetric(vertical: 16);
   static const EdgeInsets paddingH8 = EdgeInsets.symmetric(horizontal: 8);
   static const EdgeInsets paddingH24V12 = EdgeInsets.symmetric(horizontal: 24, vertical: 12);

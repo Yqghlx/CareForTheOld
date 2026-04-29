@@ -88,10 +88,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
 
                     // 老人姓名
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 12,
-                      ),
+                      padding: AppTheme.paddingH24V12,
                       decoration: BoxDecoration(
                         color: AppTheme.cardColor.withValues(alpha: 0.2),
                         borderRadius: AppTheme.radiusL,

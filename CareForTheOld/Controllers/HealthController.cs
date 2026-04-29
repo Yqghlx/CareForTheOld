@@ -171,6 +171,7 @@ public class HealthController : ControllerBase
     [HttpGet("family/{familyId:guid}/member/{memberId:guid}/report")]
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> ExportFamilyMemberReport(
         Guid familyId,
         Guid memberId,
@@ -180,7 +181,7 @@ public class HealthController : ControllerBase
         var userId = this.GetUserId();
 
         if (!await this.IsFamilyMemberAsync(_familyService, familyId, userId))
-            return Forbid();
+            return StatusCode(403, ApiResponse<object>.Fail(ErrorMessages.Family.NotFamilyMember));
 
         var pdfBytes = await _reportService.GeneratePdfReportAsync(memberId, days, cancellationToken);
         return File(pdfBytes, AppConstants.MimeTypes.Pdf, GenerateReportFileName());

@@ -261,7 +261,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                             TextButton(
                               onPressed: () => context.go(RoutePaths.register),
                               style: TextButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                padding: AppTheme.paddingH8,
                                 minimumSize: Size.zero,
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),

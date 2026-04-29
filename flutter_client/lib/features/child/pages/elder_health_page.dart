@@ -1395,7 +1395,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
             AppTheme.spacer8,
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(10),
+              padding: AppTheme.paddingAll10,
               decoration: BoxDecoration(
                 color: AppTheme.grey50,
                 borderRadius: AppTheme.radiusXS,
@@ -1515,7 +1515,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         : value.toStringAsFixed(1);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: AppTheme.paddingV4,
       child: Row(
         children: [
           Text(

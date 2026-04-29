@@ -629,7 +629,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                   },
                                   child: AnimatedContainer(
                                     duration: AppTheme.duration200ms,
-                                    padding: const EdgeInsets.symmetric(vertical: 16),
+                                    padding: AppTheme.paddingV16,
                                     decoration: BoxDecoration(
                                       gradient: isListening
                                           ? const LinearGradient(
@@ -743,7 +743,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                     }
                                   },
                                   child: Container(
-                                    padding: const EdgeInsets.symmetric(vertical: 16),
+                                    padding: AppTheme.paddingV16,
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
                                         colors: [

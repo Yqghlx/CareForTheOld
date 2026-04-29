@@ -156,7 +156,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                 child: OutlinedButton.icon(
                   icon: const Icon(Icons.exit_to_app),
                   label: const Text('退出圈子'),
-                  style: OutlinedButton.styleFrom(foregroundColor: AppTheme.errorColor),
+                  style: AppTheme.outlinedColorStyle(AppTheme.errorColor),
                   onPressed: _isSubmitting ? null : () => _leaveCircle(),
                 ),
               ),
