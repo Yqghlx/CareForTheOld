@@ -132,20 +132,9 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                       const Expanded(child: SkeletonCard()),
                     ],
                   ),
-                  error: (e, _) => Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.error_outline, size: AppTheme.iconSizeXxl, color: AppTheme.errorColor),
-                        AppTheme.spacer12,
-                        Text(AppTheme.msgLoadFailed, style: AppTheme.textError),
-                        AppTheme.spacer12,
-                        ElevatedButton(
-                          onPressed: () => ref.invalidate(filteredHealthRecordsProvider(_selectedType)),
-                          child: const Text(AppTheme.msgRetry),
-                        ),
-                      ],
-                    ),
+                  error: (e, _) => ErrorStateWidget(
+                    message: AppTheme.msgLoadFailed,
+                    onRetry: () => ref.invalidate(filteredHealthRecordsProvider(_selectedType)),
                   ),
                 ),
               ),

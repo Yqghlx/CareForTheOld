@@ -6,6 +6,7 @@ import '../../elder/services/health_service.dart';
 import '../../../core/api/api_client.dart';
 import '../../../shared/widgets/health_trend_chart.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/common_states.dart';
 import '../providers/family_provider.dart';
 
 /// 子女端查看老人健康趋势的 Provider（按 elderId + type）
@@ -136,25 +137,12 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
                 },
                 loading: () =>
                     const Center(child: CircularProgressIndicator()),
-                error: (e, _) => Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.error_outline,
-                          size: AppTheme.iconSizeXxl, color: AppTheme.errorColor),
-                      AppTheme.spacer12,
-                      Text(AppTheme.msgLoadFailed,
-                          style: AppTheme.textError),
-                      AppTheme.spacer12,
-                      ElevatedButton(
-                        onPressed: () => ref.invalidate(
-                          elderFilteredRecordsProvider(
-                            (elderId: widget.elderId, type: _selectedType),
-                          ),
-                        ),
-                        child: const Text(AppTheme.msgRetry),
-                      ),
-                    ],
+                error: (e, _) => ErrorStateWidget(
+                  message: AppTheme.msgLoadFailed,
+                  onRetry: () => ref.invalidate(
+                    elderFilteredRecordsProvider(
+                      (elderId: widget.elderId, type: _selectedType),
+                    ),
                   ),
                 ),
               ),
