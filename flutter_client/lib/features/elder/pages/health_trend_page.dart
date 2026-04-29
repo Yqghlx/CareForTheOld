@@ -56,9 +56,14 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
             ),
           ],
         ),
-        body: Padding(
-          padding: AppTheme.paddingAll20,
-          child: Column(
+        body: RefreshIndicator(
+          onRefresh: () async {
+            ref.invalidate(filteredHealthRecordsProvider(_selectedType));
+            ref.invalidate(healthStatsProvider);
+          },
+          child: Padding(
+            padding: AppTheme.paddingAll20,
+            child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 健康类型切换
@@ -141,6 +146,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
             ],
           ),
         ),
+      ),
       ),
     );
   }
