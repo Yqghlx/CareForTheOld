@@ -40,12 +40,12 @@ public class NeighborHelpService : INeighborHelpService
     }
 
     /// <inheritdoc />
-    public async Task BroadcastHelpRequestAsync(Guid emergencyCallId)
+    public async Task BroadcastHelpRequestAsync(Guid emergencyCallId, CancellationToken cancellationToken = default)
     {
         // 获取紧急呼叫记录
         var call = await _context.EmergencyCalls
             .Include(c => c.Elder)
-            .FirstOrDefaultAsync(c => c.Id == emergencyCallId);
+            .FirstOrDefaultAsync(c => c.Id == emergencyCallId, cancellationToken);
 
         if (call == null)
         {
@@ -55,7 +55,7 @@ public class NeighborHelpService : INeighborHelpService
 
         // 查找老人加入的邻里圈
         var membership = await _context.NeighborCircleMembers
-            .FirstOrDefaultAsync(m => m.UserId == call.ElderId);
+            .FirstOrDefaultAsync(m => m.UserId == call.ElderId, cancellationToken);
 
         if (membership == null)
         {
@@ -69,7 +69,7 @@ public class NeighborHelpService : INeighborHelpService
         if (!call.Latitude.HasValue || !call.Longitude.HasValue)
         {
             _logger.LogInformation("紧急呼叫 {CallId} 无位置信息，广播给全圈成员", emergencyCallId);
-            await BroadcastToAllMembersAsync(call, circleId);
+            await BroadcastToAllMembersAsync(call, circleId, cancellationToken);
             return;
         }
 
@@ -77,7 +77,7 @@ public class NeighborHelpService : INeighborHelpService
         var memberIds = await _context.NeighborCircleMembers
             .Where(m => m.CircleId == circleId && m.UserId != call.ElderId)
             .Select(m => m.UserId)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         if (!memberIds.Any())
         {
@@ -90,7 +90,7 @@ public class NeighborHelpService : INeighborHelpService
             .Where(l => memberIds.Contains(l.UserId))
             .GroupBy(l => l.UserId)
             .Select(g => g.OrderByDescending(l => l.RecordedAt).First())
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         // 粗筛 + Haversine 精算，筛选广播半径内的邻居
         var nearbyUserIds = new List<Guid>();
@@ -152,7 +152,7 @@ public class NeighborHelpService : INeighborHelpService
             }));
 
         // 一次性保存请求和通知日志，减少数据库交互
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         // Outbox Pattern 推送通知给附近邻居
         await _notificationService.SendToUsersAsync(
@@ -177,11 +177,11 @@ public class NeighborHelpService : INeighborHelpService
     }
 
     /// <inheritdoc />
-    public async Task<NeighborHelpRequestResponse> AcceptHelpRequestAsync(Guid requestId, Guid responderId)
+    public async Task<NeighborHelpRequestResponse> AcceptHelpRequestAsync(Guid requestId, Guid responderId, CancellationToken cancellationToken = default)
     {
         var request = await _context.NeighborHelpRequests
             .Include(r => r.Requester)
-            .FirstOrDefaultAsync(r => r.Id == requestId)
+            .FirstOrDefaultAsync(r => r.Id == requestId, cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.NeighborHelp.RequestNotFound);
 
         if (request.Status != HelpRequestStatus.Pending)
@@ -200,7 +200,7 @@ public class NeighborHelpService : INeighborHelpService
             .ExecuteUpdateAsync(setters => setters
                 .SetProperty(r => r.Status, HelpRequestStatus.Accepted)
                 .SetProperty(r => r.ResponderId, responderId)
-                .SetProperty(r => r.RespondedAt, now));
+                .SetProperty(r => r.RespondedAt, now), cancellationToken);
 
         if (updated == 0)
             throw new InvalidOperationException(ErrorMessages.NeighborHelp.InvalidStatus);
@@ -209,10 +209,10 @@ public class NeighborHelpService : INeighborHelpService
         await _context.HelpNotificationLogs
             .Where(h => h.HelpRequestId == requestId && h.UserId == responderId)
             .ExecuteUpdateAsync(setters => setters
-                .SetProperty(h => h.RespondedAt, now));
+                .SetProperty(h => h.RespondedAt, now), cancellationToken);
 
         // 查询响应者信息
-        var responder = await _context.Users.FindAsync(responderId)
+        var responder = await _context.Users.FindAsync([responderId], cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.Common.ResponderNotFound);
 
         // 通知老人："邻居XX正在赶来"
@@ -229,13 +229,13 @@ public class NeighborHelpService : INeighborHelpService
 
         // 通知老人的子女："邻居已响应紧急呼叫"
         var familyMember = await _context.FamilyMembers
-            .FirstOrDefaultAsync(fm => fm.UserId == request.RequesterId);
+            .FirstOrDefaultAsync(fm => fm.UserId == request.RequesterId, cancellationToken);
         if (familyMember != null)
         {
             var childIds = await _context.FamilyMembers
                 .Where(fm => fm.FamilyId == familyMember.FamilyId && fm.Role == UserRole.Child)
                 .Select(fm => fm.UserId)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             if (childIds.Any())
             {
@@ -259,7 +259,7 @@ public class NeighborHelpService : INeighborHelpService
                         m.UserId != responderId &&
                         m.UserId != request.RequesterId)
             .Select(m => m.UserId)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         if (otherMemberIds.Any())
         {
@@ -276,23 +276,23 @@ public class NeighborHelpService : INeighborHelpService
 
         _logger.LogInformation("邻居 {ResponderId} 已接受求助请求 {RequestId}，求助者 {RequesterId}", responderId, requestId, request.RequesterId);
 
-        return await BuildHelpRequestResponse(request.Id);
+        return await BuildHelpRequestResponse(request.Id, cancellationToken);
     }
 
     /// <inheritdoc />
-    public async Task CancelHelpRequestAsync(Guid requestId, Guid operatorId)
+    public async Task CancelHelpRequestAsync(Guid requestId, Guid operatorId, CancellationToken cancellationToken = default)
     {
         var request = await _context.NeighborHelpRequests
             .AsTracking()
             .Include(r => r.Requester)
-            .FirstOrDefaultAsync(r => r.Id == requestId)
+            .FirstOrDefaultAsync(r => r.Id == requestId, cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.NeighborHelp.RequestNotFound);
 
         if (request.Status != HelpRequestStatus.Pending && request.Status != HelpRequestStatus.Accepted)
             throw new InvalidOperationException(ErrorMessages.NeighborHelp.InvalidStatus);
 
         // 验证操作者：老人本人或其子女
-        if (!await IsRequesterOrFamilyChildAsync(request.RequesterId, operatorId))
+        if (!await IsRequesterOrFamilyChildAsync(request.RequesterId, operatorId, cancellationToken))
             throw new UnauthorizedAccessException(ErrorMessages.NeighborHelp.OnlyRequesterOrChildCancel);
 
         request.Status = HelpRequestStatus.Cancelled;
@@ -303,14 +303,14 @@ public class NeighborHelpService : INeighborHelpService
         var pendingLogs = await _context.HelpNotificationLogs
             .AsTracking()
             .Where(h => h.HelpRequestId == requestId && h.RespondedAt == null)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
         foreach (var log in pendingLogs)
         {
             // 设为取消时间表示未响应（保持 RespondedAt 为 null，统计时视为未响应）
             log.RespondedAt = null;
         }
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         // 通知已响应的邻居
         if (request.ResponderId.HasValue)
@@ -331,10 +331,10 @@ public class NeighborHelpService : INeighborHelpService
 
     /// <inheritdoc />
     public async Task<NeighborHelpRatingResponse> RateHelpRequestAsync(
-        Guid requestId, Guid raterId, RateHelpRequest request)
+        Guid requestId, Guid raterId, RateHelpRequest request, CancellationToken cancellationToken = default)
     {
         var helpRequest = await _context.NeighborHelpRequests
-            .FirstOrDefaultAsync(r => r.Id == requestId)
+            .FirstOrDefaultAsync(r => r.Id == requestId, cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.NeighborHelp.RequestNotFound);
 
         if (helpRequest.Status != HelpRequestStatus.Accepted)
@@ -344,11 +344,11 @@ public class NeighborHelpService : INeighborHelpService
             throw new InvalidOperationException(ErrorMessages.NeighborHelp.NotRespondedCannotRate);
 
         // 验证评价者：老人本人或其子女
-        if (!await IsRequesterOrFamilyChildAsync(helpRequest.RequesterId, raterId))
+        if (!await IsRequesterOrFamilyChildAsync(helpRequest.RequesterId, raterId, cancellationToken))
             throw new UnauthorizedAccessException(ErrorMessages.NeighborHelp.OnlyRequesterOrChildRate);
 
         // 应用层检查：同一用户对同一请求不能重复评价
-        if (await _context.NeighborHelpRatings.AnyAsync(r => r.HelpRequestId == requestId && r.RaterId == raterId))
+        if (await _context.NeighborHelpRatings.AnyAsync(r => r.HelpRequestId == requestId && r.RaterId == raterId, cancellationToken))
             throw new ArgumentException(ErrorMessages.NeighborHelp.AlreadyRated);
 
         var rating = new NeighborHelpRating
@@ -366,7 +366,7 @@ public class NeighborHelpService : INeighborHelpService
 
         try
         {
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
         catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex))
         {
@@ -388,11 +388,11 @@ public class NeighborHelpService : INeighborHelpService
     }
 
     /// <inheritdoc />
-    public async Task<List<NeighborHelpRequestResponse>> GetPendingRequestsAsync(Guid userId)
+    public async Task<List<NeighborHelpRequestResponse>> GetPendingRequestsAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         // 查找用户加入的邻里圈
         var membership = await _context.NeighborCircleMembers
-            .FirstOrDefaultAsync(m => m.UserId == userId);
+            .FirstOrDefaultAsync(m => m.UserId == userId, cancellationToken);
 
         if (membership == null)
             return [];
@@ -408,15 +408,15 @@ public class NeighborHelpService : INeighborHelpService
                         r.RequesterId != userId)
             .OrderByDescending(r => r.RequestedAt)
             .Select(r => MapToResponse(r))
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
     /// <inheritdoc />
-    public async Task<List<NeighborHelpRequestResponse>> GetHistoryAsync(Guid userId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultHistoryPageSize)
+    public async Task<List<NeighborHelpRequestResponse>> GetHistoryAsync(Guid userId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultHistoryPageSize, CancellationToken cancellationToken = default)
     {
         // 查找用户加入的邻里圈
         var membership = await _context.NeighborCircleMembers
-            .FirstOrDefaultAsync(m => m.UserId == userId);
+            .FirstOrDefaultAsync(m => m.UserId == userId, cancellationToken);
 
         if (membership == null)
             return [];
@@ -430,24 +430,24 @@ public class NeighborHelpService : INeighborHelpService
             .Skip(skip)
             .Take(limit)
             .Select(r => MapToResponse(r))
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
     /// <inheritdoc />
-    public async Task<NeighborHelpRequestResponse> GetRequestAsync(Guid requestId)
+    public async Task<NeighborHelpRequestResponse> GetRequestAsync(Guid requestId, CancellationToken cancellationToken = default)
     {
-        return await BuildHelpRequestResponse(requestId);
+        return await BuildHelpRequestResponse(requestId, cancellationToken);
     }
 
     /// <inheritdoc />
     [AutomaticRetry(Attempts = 3, DelaysInSeconds = new[] { 10, 30 })]
-    public async Task CleanupExpiredRequestsAsync()
+    public async Task CleanupExpiredRequestsAsync(CancellationToken cancellationToken = default)
     {
         var now = DateTime.UtcNow;
         var expiredRequests = await _context.NeighborHelpRequests
             .AsTracking()
             .Where(r => r.Status == HelpRequestStatus.Pending && r.ExpiresAt < now)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         if (!expiredRequests.Any())
             return;
@@ -463,10 +463,10 @@ public class NeighborHelpService : INeighborHelpService
         var pendingLogs = await _context.HelpNotificationLogs
             .AsTracking()
             .Where(h => expiredIds.Contains(h.HelpRequestId) && h.RespondedAt == null)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
         // 过期的通知日志保持 RespondedAt 为 null，表示未响应
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("已清理 {Count} 个过期邻里求助请求", expiredRequests.Count);
     }
@@ -474,12 +474,12 @@ public class NeighborHelpService : INeighborHelpService
     /// <summary>
     /// 无位置信息时，广播给全圈成员
     /// </summary>
-    private async Task BroadcastToAllMembersAsync(EmergencyCall call, Guid circleId)
+    private async Task BroadcastToAllMembersAsync(EmergencyCall call, Guid circleId, CancellationToken cancellationToken = default)
     {
         var memberIds = await _context.NeighborCircleMembers
             .Where(m => m.CircleId == circleId && m.UserId != call.ElderId)
             .Select(m => m.UserId)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         if (!memberIds.Any()) return;
 
@@ -510,7 +510,7 @@ public class NeighborHelpService : INeighborHelpService
             }));
 
         // 一次性保存请求和通知日志
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         await _notificationService.SendToUsersAsync(
             memberIds,
@@ -532,12 +532,12 @@ public class NeighborHelpService : INeighborHelpService
     /// <summary>
     /// 构建求助请求响应
     /// </summary>
-    private async Task<NeighborHelpRequestResponse> BuildHelpRequestResponse(Guid requestId)
+    private async Task<NeighborHelpRequestResponse> BuildHelpRequestResponse(Guid requestId, CancellationToken cancellationToken = default)
     {
         var request = await _context.NeighborHelpRequests
             .Include(r => r.Requester)
             .Include(r => r.Responder)
-            .FirstAsync(r => r.Id == requestId);
+            .FirstAsync(r => r.Id == requestId, cancellationToken);
 
         return MapToResponse(request);
     }
@@ -565,17 +565,17 @@ public class NeighborHelpService : INeighborHelpService
     /// <summary>
     /// 验证操作者是否为请求者本人或其家庭成员（子女）
     /// </summary>
-    private async Task<bool> IsRequesterOrFamilyChildAsync(Guid requesterId, Guid operatorId)
+    private async Task<bool> IsRequesterOrFamilyChildAsync(Guid requesterId, Guid operatorId, CancellationToken cancellationToken = default)
     {
         if (requesterId == operatorId) return true;
 
         var familyMember = await _context.FamilyMembers
-            .FirstOrDefaultAsync(fm => fm.UserId == requesterId);
+            .FirstOrDefaultAsync(fm => fm.UserId == requesterId, cancellationToken);
 
         if (familyMember == null) return false;
 
         return await _context.FamilyMembers
             .AnyAsync(fm => fm.FamilyId == familyMember.FamilyId &&
-                            fm.UserId == operatorId && fm.Role == UserRole.Child);
+                            fm.UserId == operatorId && fm.Role == UserRole.Child, cancellationToken);
     }
 }

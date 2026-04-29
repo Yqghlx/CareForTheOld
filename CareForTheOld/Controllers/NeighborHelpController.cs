@@ -37,7 +37,7 @@ public class NeighborHelpController : ControllerBase
     public async Task<ApiResponse<List<NeighborHelpRequestResponse>>> GetPending(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _helpService.GetPendingRequestsAsync(userId);
+        var result = await _helpService.GetPendingRequestsAsync(userId, cancellationToken);
         return ApiResponse<List<NeighborHelpRequestResponse>>.Ok(result);
     }
 
@@ -51,7 +51,7 @@ public class NeighborHelpController : ControllerBase
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
-        var result = await _helpService.GetHistoryAsync(userId, skip, limit);
+        var result = await _helpService.GetHistoryAsync(userId, skip, limit, cancellationToken);
         return ApiResponse<List<NeighborHelpRequestResponse>>.Ok(result);
     }
 
@@ -62,7 +62,7 @@ public class NeighborHelpController : ControllerBase
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     public async Task<ApiResponse<NeighborHelpRequestResponse>> GetRequest(Guid id, CancellationToken cancellationToken = default)
     {
-        var result = await _helpService.GetRequestAsync(id);
+        var result = await _helpService.GetRequestAsync(id, cancellationToken);
         return ApiResponse<NeighborHelpRequestResponse>.Ok(result);
     }
 
@@ -73,7 +73,7 @@ public class NeighborHelpController : ControllerBase
     public async Task<ApiResponse<NeighborHelpRequestResponse>> Accept(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _helpService.AcceptHelpRequestAsync(id, userId);
+        var result = await _helpService.AcceptHelpRequestAsync(id, userId, cancellationToken);
         return ApiResponse<NeighborHelpRequestResponse>.Ok(result, SuccessMessages.NeighborHelp.AcceptSuccess);
     }
 
@@ -84,7 +84,7 @@ public class NeighborHelpController : ControllerBase
     public async Task<ApiResponse<object>> Cancel(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        await _helpService.CancelHelpRequestAsync(id, userId);
+        await _helpService.CancelHelpRequestAsync(id, userId, cancellationToken);
         return ApiResponse<object>.Ok(null!, SuccessMessages.NeighborHelp.CancelSuccess);
     }
 
@@ -96,7 +96,7 @@ public class NeighborHelpController : ControllerBase
         Guid id, [FromBody] RateHelpRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _helpService.RateHelpRequestAsync(id, userId, request);
+        var result = await _helpService.RateHelpRequestAsync(id, userId, request, cancellationToken);
         return ApiResponse<NeighborHelpRatingResponse>.Ok(result, SuccessMessages.NeighborHelp.RateSuccess);
     }
 }
