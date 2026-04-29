@@ -74,6 +74,7 @@ public class LocationService : ILocationService
             if (outsideResult != null)
             {
                 var (fence, distance) = outsideResult.Value;
+                _logger.LogWarning("老人 {UserId} 已超出电子围栏 {FenceId}，距离 {Distance:F0}m", userId, fence!.Id, distance);
                 HangfireJobHelper.EnqueueSafely(
                     () => SendGeoFenceAlertJobAsync(userId, fence!.Id, fence.Radius, distance),
                     "围栏预警", _logger, userId);
