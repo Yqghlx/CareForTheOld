@@ -240,7 +240,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                         firstDate: DateTime(2024, 1, 1),
                         lastDate: DateTime.now(),
                       );
-                      if (picked != null) {
+                      if (picked != null && mounted) {
                         setState(() {
                           _selectedLogDate = picked.toDateString();
                         });
