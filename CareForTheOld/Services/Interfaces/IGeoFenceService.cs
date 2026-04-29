@@ -34,6 +34,7 @@ public interface IGeoFenceService
     /// <param name="userId">用户ID</param>
     /// <param name="latitude">当前位置纬度</param>
     /// <param name="longitude">当前位置经度</param>
+    /// <param name="cancellationToken">取消令牌</param>
     /// <returns>超出围栏时返回围栏信息和超出距离，null 表示未超出或无围栏</returns>
     Task<(GeoFenceResponse? fence, double distance)?> CheckOutsideFenceAsync(Guid userId, double latitude, double longitude, CancellationToken cancellationToken = default);
 }
