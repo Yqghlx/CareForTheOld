@@ -188,6 +188,7 @@ public class AutoRescueService : IAutoRescueService
         }
 
         await context.SaveChangesAsync(cancellationToken);
+        _logger.LogInformation("自动救援批量检查完成，共处理 {Count} 条待处理记录", pendingRecords.Count);
     }
 
     /// <inheritdoc />

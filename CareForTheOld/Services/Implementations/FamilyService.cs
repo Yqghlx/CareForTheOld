@@ -95,6 +95,8 @@ public class FamilyService : IFamilyService
             throw new ArgumentException(ErrorMessages.Family.AlreadyInFamily);
         }
 
+        _logger.LogInformation("家庭已创建：{FamilyId}，创建者 {UserId}", family.Id, creatorId);
+
         return await GetFamilyResponse(family.Id, cancellationToken);
     }
 
@@ -131,6 +133,9 @@ public class FamilyService : IFamilyService
         {
             throw new ArgumentException(ErrorMessages.Family.UserAlreadyInOtherFamily);
         }
+
+        _logger.LogInformation("家庭成员已添加：家庭 {FamilyId}，新成员 {UserId}，操作者 {OperatorId}",
+            familyId, user.Id, operatorId);
 
         return await GetFamilyResponse(familyId, cancellationToken);
     }
@@ -177,6 +182,8 @@ public class FamilyService : IFamilyService
         {
             throw new ArgumentException(ErrorMessages.Family.AlreadyAppliedOrJoined);
         }
+
+        _logger.LogInformation("用户申请加入家庭：家庭 {FamilyId}，申请人 {UserId}", family.Id, userId);
 
         // 通知家庭中所有子女角色成员审批
         var childMembers = await _context.FamilyMembers
@@ -261,6 +268,9 @@ public class FamilyService : IFamilyService
         member.Status = FamilyMemberStatus.Approved;
         await _context.SaveChangesAsync(cancellationToken);
 
+        _logger.LogInformation("家庭成员已审批通过：家庭 {FamilyId}，成员 {MemberId}，操作者 {OperatorId}",
+            familyId, memberId, operatorId);
+
         // 通知申请人审批已通过（使用已加载的导航属性，无需额外查询）
         await _notificationService.SendToUserAsync(memberId, AppConstants.NotificationTypes.FamilyJoinApproved, new
         {
@@ -297,6 +307,9 @@ public class FamilyService : IFamilyService
         // 删除申请记录（而非保留 Rejected 状态，避免唯一约束冲突导致无法再次申请）
         _context.FamilyMembers.Remove(member);
         await _context.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation("家庭成员申请已拒绝：家庭 {FamilyId}，成员 {MemberId}，操作者 {OperatorId}",
+            familyId, memberId, operatorId);
 
         // 通知申请人被拒绝（使用已加载的导航属性）
         await _notificationService.SendToUserAsync(memberId, AppConstants.NotificationTypes.FamilyJoinRejected, new
@@ -337,6 +350,8 @@ public class FamilyService : IFamilyService
                 family.InviteCode = GenerateInviteCode();
             }
         }
+
+        _logger.LogInformation("家庭邀请码已刷新：家庭 {FamilyId}，操作者 {OperatorId}", familyId, operatorId);
 
         return await GetFamilyResponse(familyId, cancellationToken);
     }
@@ -384,6 +399,9 @@ public class FamilyService : IFamilyService
 
         _context.FamilyMembers.Remove(member);
         await _context.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation("家庭成员已移除：家庭 {FamilyId}，成员 {UserId}，操作者 {OperatorId}",
+            familyId, userId, operatorId);
     }
 
     private async Task EnsureMemberAsync(Guid familyId, Guid userId, CancellationToken cancellationToken = default)

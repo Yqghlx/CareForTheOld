@@ -111,6 +111,9 @@ public class MedicationService : IMedicationService
         plan.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation("用药计划已更新：计划 {PlanId}，操作者 {OperatorId}", planId, operatorId);
+
         return MapToPlanResponse(plan, plan.Elder.RealName);
     }
 
@@ -156,6 +159,10 @@ public class MedicationService : IMedicationService
             existingLog.TakenAt = request.TakenAt ?? DateTime.UtcNow;
             existingLog.Note = request.Note;
             await _context.SaveChangesAsync(cancellationToken);
+
+            _logger.LogInformation("用药日志已更新：计划 {PlanId}，时间 {ScheduledAt}，状态 {Status}",
+                request.PlanId, request.ScheduledAt, request.Status);
+
             return MapToLogResponse(existingLog, plan.MedicineName, plan.Elder.RealName);
         }
 
@@ -187,8 +194,14 @@ public class MedicationService : IMedicationService
             concurrentLog.TakenAt = request.TakenAt ?? DateTime.UtcNow;
             concurrentLog.Note = request.Note;
             await _context.SaveChangesAsync(cancellationToken);
+
+            _logger.LogInformation("用药日志并发更新：计划 {PlanId}，时间 {ScheduledAt}", request.PlanId, request.ScheduledAt);
+
             return MapToLogResponse(concurrentLog, plan.MedicineName, plan.Elder.RealName);
         }
+
+        _logger.LogInformation("用药日志已创建：计划 {PlanId}，时间 {ScheduledAt}，状态 {Status}",
+            request.PlanId, request.ScheduledAt, request.Status);
 
         return MapToLogResponse(log, plan.MedicineName, plan.Elder.RealName);
     }

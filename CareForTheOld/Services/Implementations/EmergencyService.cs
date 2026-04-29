@@ -309,6 +309,7 @@ public class EmergencyService : IEmergencyService
         {
             _context.SmsRecords.AddRange(smsRecords);
             await _context.SaveChangesAsync();
+            _logger.LogInformation("紧急呼叫 SMS 记录已保存：呼叫 {CallId}，记录数 {Count}", callId, smsRecords.Length);
         }
     }
 
@@ -457,6 +458,9 @@ public class EmergencyService : IEmergencyService
         callToUpdate.RespondedByRealName = user.RealName;
         callToUpdate.RespondedAt = now;
         await _context.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation("紧急呼叫已响应：呼叫 {CallId}，响应人 {UserId}（{RealName}）",
+            callId, userId, user.RealName);
 
         // 重新查询完整记录返回响应
         var respondedCall = await _context.EmergencyCalls
