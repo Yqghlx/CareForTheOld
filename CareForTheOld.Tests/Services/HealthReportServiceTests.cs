@@ -5,6 +5,8 @@ using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Implementations;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
 using Xunit;
 
 namespace CareForTheOld.Tests.Services;
@@ -23,7 +25,7 @@ public class HealthReportServiceTests
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
         _context = new AppDbContext(options);
-        _service = new HealthReportService(_context);
+        _service = new HealthReportService(_context, Mock.Of<ILogger<HealthReportService>>());
     }
 
     private async Task<Guid> CreateTestUserAsync(string realName = "测试老人")

@@ -17,8 +17,13 @@ public class HealthReportService : IHealthReportService
 {
     private static readonly HealthType[] AllHealthTypes = Enum.GetValues<HealthType>();
     private readonly AppDbContext _context;
+    private readonly ILogger<HealthReportService> _logger;
 
-    public HealthReportService(AppDbContext context) => _context = context;
+    public HealthReportService(AppDbContext context, ILogger<HealthReportService> logger)
+    {
+        _context = context;
+        _logger = logger;
+    }
 
     /// <summary>
     /// 生成健康报告 PDF
@@ -62,6 +67,8 @@ public class HealthReportService : IHealthReportService
                 });
             });
         });
+
+        _logger.LogInformation("用户 {UserId} 生成健康报告 PDF，天数范围：{Days}，记录数：{Count}", userId, daysRange, records.Count);
 
         return document.GeneratePdf();
     }
