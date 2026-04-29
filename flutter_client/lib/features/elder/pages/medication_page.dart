@@ -185,7 +185,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
         final log = state.todayPending[index];
         if (log.isPending) {
           final key = ref.read(medicationProvider.notifier).logKey(log);
-          final isSubmitting = ref.watch(medicationProvider).isSubmitting(key);
+          final isSubmitting = ref.watch(medicationProvider.select((s) => s.isSubmitting(key)));
           // 限制脉冲动画卡片数量，超过3个时不再动画以节省性能
           final animate = index < 3;
           return _PendingMedicationCard(

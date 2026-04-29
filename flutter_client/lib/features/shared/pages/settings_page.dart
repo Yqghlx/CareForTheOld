@@ -121,7 +121,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
-    final userState = ref.watch(userProvider);
+    final user = ref.watch(userProvider.select((s) => s.user));
     final isElder = authState.isElder;
 
     return Scaffold(
@@ -150,7 +150,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       child: ClipRRect(
                         borderRadius: AppTheme.radiusL,
                         child: _buildAvatar(
-                          userState.user?.avatarUrl ?? authState.user?.avatarUrl,
+                          user?.avatarUrl ?? authState.user?.avatarUrl,
                           40,
                         ),
                       ),
@@ -161,14 +161,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            userState.user?.realName ?? authState.user?.realName ?? '用户',
+                            user?.realName ?? authState.user?.realName ?? '用户',
                             style: AppTheme.textLargeTitle.copyWith(
                               color: AppTheme.cardColor,
                             ),
                           ),
                           AppTheme.spacer4,
                           Text(
-                            userState.user?.phoneNumber ?? authState.user?.phoneNumber ?? '',
+                            user?.phoneNumber ?? authState.user?.phoneNumber ?? '',
                             style: AppTheme.textWhite14.copyWith(
                               color: AppTheme.cardColor.withValues(alpha: 0.9),
                             ),
@@ -198,7 +198,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   _buildSettingItem(
                     icon: Icons.person_outline,
                     title: AppTheme.titleChangeName,
-                    subtitle: userState.user?.realName ?? authState.user?.realName ?? '未设置',
+                    subtitle: user?.realName ?? authState.user?.realName ?? '未设置',
                     onTap: () => _showEditNameDialog(),
                   ),
                   const Divider(height: 1),

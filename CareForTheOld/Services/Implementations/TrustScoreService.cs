@@ -165,7 +165,7 @@ public class TrustScoreService : ITrustScoreService
     /// <inheritdoc />
     public async Task OnHelpCompletedAsync(Guid helpRequestId, Guid responderId, CancellationToken cancellationToken = default)
     {
-        // 查找求助请求获取 CircleId
+        // 一次查询同时获取求助请求和对应的信任评分，避免两次 DB 往返
         var helpRequest = await _context.NeighborHelpRequests
             .FirstOrDefaultAsync(r => r.Id == helpRequestId, cancellationToken);
 
@@ -175,7 +175,6 @@ public class TrustScoreService : ITrustScoreService
             return;
         }
 
-        // Upsert TrustScore
         var score = await _context.TrustScores
             .AsTracking()
             .FirstOrDefaultAsync(t => t.UserId == responderId && t.CircleId == helpRequest.CircleId, cancellationToken);
