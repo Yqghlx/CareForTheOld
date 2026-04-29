@@ -12,15 +12,19 @@ import 'package:image_picker/image_picker.dart';
 import 'package:battery_plus/battery_plus.dart';
 
 import '../../../shared/models/emergency_call.dart';
+import '../../../shared/models/health_stats.dart';
 import '../../../shared/providers/auth_provider.dart';
 import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/extensions/snackbar_extension.dart';
+import '../../../core/extensions/date_format_extension.dart';
 import '../../shared/providers/user_provider.dart';
 import '../../shared/providers/notification_record_provider.dart';
 import '../../shared/services/emergency_service.dart';
+import '../providers/health_provider.dart';
+import '../providers/medication_provider.dart';
 import '../../../core/api/api_client.dart';
 import 'health_record_page.dart';
 import 'medication_page.dart';
@@ -253,6 +257,14 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
           ),
           const SizedBox(height: 28),
 
+          // 今日健康摘要
+          _buildHealthSummary(),
+          AppTheme.spacer20,
+
+          // 用药提醒
+          _buildMedicationReminder(),
+          AppTheme.spacer20,
+
           // 快捷操作
           const Text(
             '快捷操作',
@@ -316,6 +328,252 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
       ),
       ),
     );
+  }
+
+  /// 今日健康摘要卡片：显示最近一次血压/血糖/心率/体温
+  Widget _buildHealthSummary() {
+    final statsAsync = ref.watch(healthStatsProvider);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('今日健康', style: AppTheme.textSectionTitle),
+            TextButton(
+              onPressed: () => setState(() => _selectedIndex = 1),
+              child: const Text('查看详情', style: TextStyle(fontSize: 16)),
+            ),
+          ],
+        ),
+        AppTheme.spacer12,
+        statsAsync.when(
+          data: (stats) {
+            if (stats.isEmpty) {
+              return StandardCard(
+                child: Center(
+                  child: Padding(
+                    padding: AppTheme.paddingAll24,
+                    child: Column(
+                      children: [
+                        const Icon(Icons.favorite_border, size: 40, color: AppTheme.grey400),
+                        AppTheme.spacer8,
+                        const Text('暂无健康记录', style: AppTheme.textSecondary16),
+                        AppTheme.spacer8,
+                        PrimaryButton(
+                          text: '去记录',
+                          onPressed: () => setState(() => _selectedIndex = 1),
+                          gradient: const LinearGradient(
+                            colors: [AppTheme.errorColor, AppTheme.errorAccent],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }
+
+            return Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: stats.map((stat) {
+                final hasData = stat.latestValue != null;
+                return SizedBox(
+                  width: (MediaQuery.of(context).size.width - AppTheme.paddingAll20.horizontal - 12) / 2,
+                  child: StandardCard(
+                    padding: AppTheme.paddingAll12,
+                    onTap: () => setState(() => _selectedIndex = 1),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              _healthTypeIcon(stat.typeName),
+                              size: 20,
+                              color: stat.hasWarning ? AppTheme.warningColor : AppTheme.primaryColor,
+                            ),
+                            AppTheme.hSpacer8,
+                            Expanded(
+                              child: Text(
+                                stat.typeName,
+                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            if (stat.trend != null)
+                              Icon(stat.trendIcon, size: 16, color: stat.trendColor),
+                          ],
+                        ),
+                        AppTheme.spacer8,
+                        if (hasData)
+                          Text(
+                            _formatHealthValue(stat),
+                            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                          )
+                        else
+                          const Text('--', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppTheme.grey400)),
+                        if (hasData && stat.latestRecordedAt != null)
+                          Text(
+                            stat.latestRecordedAt!.toFriendlyDate(),
+                            style: AppTheme.textCaption,
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            );
+          },
+          loading: () => const Center(child: Padding(
+            padding: AppTheme.paddingAll24,
+            child: CircularProgressIndicator(),
+          )),
+          error: (_, __) => const SizedBox.shrink(),
+        ),
+      ],
+    );
+  }
+
+  /// 用药提醒卡片：显示今日待服用药物
+  Widget _buildMedicationReminder() {
+    final medState = ref.watch(medicationProvider);
+    final pendingList = medState.todayPending.where((l) => l.isPending).toList()
+      ..sort((a, b) => a.scheduledAt.compareTo(b.scheduledAt));
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('今日用药', style: AppTheme.textSectionTitle),
+            if (medState.pendingCount > 0)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppTheme.warningColor.withValues(alpha: 0.15),
+                  borderRadius: AppTheme.radiusS,
+                ),
+                child: Text(
+                  '${medState.pendingCount} 项待服',
+                  style: const TextStyle(fontSize: 14, color: AppTheme.warningColor, fontWeight: FontWeight.w600),
+                ),
+              ),
+          ],
+        ),
+        AppTheme.spacer12,
+        if (medState.isLoading)
+          const Center(child: Padding(
+            padding: AppTheme.paddingAll24,
+            child: CircularProgressIndicator(),
+          ))
+        else if (medState.todayPending.isEmpty)
+          StandardCard(
+            child: Center(
+              child: Padding(
+                padding: AppTheme.paddingAll24,
+                child: Column(
+                  children: [
+                    const Icon(Icons.medication_outlined, size: 40, color: AppTheme.grey400),
+                    AppTheme.spacer8,
+                    const Text('今日暂无用药计划', style: AppTheme.textSecondary16),
+                  ],
+                ),
+              ),
+            ),
+          )
+        else if (pendingList.isEmpty)
+          StandardCard(
+            child: Center(
+              child: Padding(
+                padding: AppTheme.paddingAll16,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.check_circle, color: AppTheme.successColor, size: 24),
+                    AppTheme.hSpacer8,
+                    Text(
+                      '今日 ${medState.takenCount} 项已全部完成',
+                      style: const TextStyle(fontSize: 16, color: AppTheme.successColor),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )
+        else
+          ...pendingList.take(3).map((log) => Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: StandardCard(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              onTap: () => setState(() => _selectedIndex = 2),
+              child: Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: AppTheme.infoBlue.withValues(alpha: 0.12),
+                      borderRadius: AppTheme.radiusS,
+                    ),
+                    child: const Icon(Icons.medication, color: AppTheme.infoBlue, size: 24),
+                  ),
+                  AppTheme.hSpacer12,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          log.medicineName,
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          log.scheduledAt.toTimeString(),
+                          style: AppTheme.textSecondary16,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(Icons.chevron_right, color: AppTheme.grey400),
+                ],
+              ),
+            ),
+          )),
+      ],
+    );
+  }
+
+  /// 根据健康类型名称返回图标
+  IconData _healthTypeIcon(String typeName) {
+    switch (typeName) {
+      case '血压': return Icons.favorite;
+      case '血糖': return Icons.water_drop;
+      case '心率': return Icons.monitor_heart;
+      case '体温': return Icons.thermostat;
+      default: return Icons.analytics;
+    }
+  }
+
+  /// 格式化健康数据显示值
+  String _formatHealthValue(HealthStats stat) {
+    if (stat.latestValue == null) return '--';
+    switch (stat.typeName) {
+      case '血压':
+        // 血压的 latestValue 是收缩压，同时有 average7Days 可以参考
+        return '${stat.latestValue!.toInt()} mmHg';
+      case '血糖':
+        return '${stat.latestValue!.toStringAsFixed(1)} mmol/L';
+      case '心率':
+        return '${stat.latestValue!.toInt()} 次/分';
+      case '体温':
+        return '${stat.latestValue!.toStringAsFixed(1)} °C';
+      default:
+        return stat.latestValue!.toStringAsFixed(1);
+    }
   }
 
   /// 紧急呼叫按钮 - 长按 2 秒触发，带进度指示器，松手取消
