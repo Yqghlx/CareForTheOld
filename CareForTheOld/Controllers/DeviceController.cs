@@ -52,7 +52,7 @@ public class DeviceController : ControllerBase
         // 查找是否已有相同 token 的记录（同一设备可能换了用户）
         var existingToken = await _context.DeviceTokens
             .AsTracking()
-            .FirstOrDefaultAsync(dt => dt.Token == request.Token);
+            .FirstOrDefaultAsync(dt => dt.Token == request.Token, cancellationToken);
 
         if (existingToken != null)
         {
