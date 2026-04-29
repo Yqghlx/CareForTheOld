@@ -6,17 +6,17 @@ namespace CareForTheOld.Services.Interfaces;
 public interface ICacheService
 {
     /// <summary>获取缓存，不存在则返回 null</summary>
-    Task<T?> GetAsync<T>(string key) where T : class;
+    Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default) where T : class;
 
     /// <summary>获取或创建缓存（带防击穿保护，factory 允许返回 null 表示无数据）</summary>
-    Task<T?> GetOrCreateAsync<T>(string key, Func<Task<T?>> factory, TimeSpan? expiration = null) where T : class;
+    Task<T?> GetOrCreateAsync<T>(string key, Func<Task<T?>> factory, TimeSpan? expiration = null, CancellationToken cancellationToken = default) where T : class;
 
     /// <summary>设置缓存</summary>
-    Task SetAsync<T>(string key, T value, TimeSpan? expiration = null) where T : class;
+    Task SetAsync<T>(string key, T value, TimeSpan? expiration = null, CancellationToken cancellationToken = default) where T : class;
 
     /// <summary>删除缓存</summary>
-    Task RemoveAsync(string key);
+    Task RemoveAsync(string key, CancellationToken cancellationToken = default);
 
     /// <summary>按前缀删除缓存</summary>
-    Task RemoveByPrefixAsync(string prefix);
+    Task RemoveByPrefixAsync(string prefix, CancellationToken cancellationToken = default);
 }

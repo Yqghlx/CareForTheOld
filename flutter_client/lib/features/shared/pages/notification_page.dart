@@ -51,6 +51,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
       return ListView.builder(
         padding: AppTheme.paddingAll16,
         itemCount: 5,
+        cacheExtent: 800,
         itemBuilder: (_, __) => const SkeletonListTile(),
       );
     }

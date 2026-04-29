@@ -34,13 +34,13 @@ public class FcmPushNotificationService : IPushNotificationService
     }
 
     /// <inheritdoc />
-    public async Task<bool> SendAsync(Guid userId, string title, string body, Dictionary<string, string>? data = null)
+    public async Task<bool> SendAsync(Guid userId, string title, string body, Dictionary<string, string>? data = null, CancellationToken cancellationToken = default)
     {
-        return await SendAsync(new[] { userId }, title, body, data);
+        return await SendAsync(new[] { userId }, title, body, data, cancellationToken);
     }
 
     /// <inheritdoc />
-    public async Task<bool> SendAsync(IEnumerable<Guid> userIds, string title, string body, Dictionary<string, string>? data = null)
+    public async Task<bool> SendAsync(IEnumerable<Guid> userIds, string title, string body, Dictionary<string, string>? data = null, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(title, nameof(title));
         ArgumentException.ThrowIfNullOrWhiteSpace(body, nameof(body));
@@ -52,7 +52,7 @@ public class FcmPushNotificationService : IPushNotificationService
         var tokens = await _context.DeviceTokens
             .Where(dt => userIdList.Contains(dt.UserId))
             .Select(dt => dt.Token)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         if (!tokens.Any())
         {
@@ -66,7 +66,7 @@ public class FcmPushNotificationService : IPushNotificationService
 
         foreach (var batch in batches)
         {
-            var success = await SendBatchAsync(batch.ToList(), title, body, data);
+            var success = await SendBatchAsync(batch.ToList(), title, body, data, cancellationToken);
             if (!success) allSuccess = false;
         }
 
@@ -76,7 +76,7 @@ public class FcmPushNotificationService : IPushNotificationService
     /// <summary>
     /// 发送一批 FCM 推送消息
     /// </summary>
-    private async Task<bool> SendBatchAsync(List<string> tokens, string title, string body, Dictionary<string, string>? data)
+    private async Task<bool> SendBatchAsync(List<string> tokens, string title, string body, Dictionary<string, string>? data, CancellationToken cancellationToken)
     {
         try
         {
@@ -103,7 +103,7 @@ public class FcmPushNotificationService : IPushNotificationService
                 Data = data ?? new Dictionary<string, string>(),
             };
 
-            var response = await FirebaseMessaging.DefaultInstance.SendEachForMulticastAsync(message);
+            var response = await FirebaseMessaging.DefaultInstance.SendEachForMulticastAsync(message, cancellationToken);
 
             _logger.LogInformation(
                 "FCM 推送完成: 总数={Total}, 成功={Success}, 失败={Failure}",
@@ -112,7 +112,7 @@ public class FcmPushNotificationService : IPushNotificationService
             // 清理无效 token
             if (response.FailureCount > 0)
             {
-                await CleanupInvalidTokensAsync(tokens, response.Responses);
+                await CleanupInvalidTokensAsync(tokens, response.Responses, cancellationToken);
             }
 
             return response.FailureCount == 0;
@@ -129,7 +129,8 @@ public class FcmPushNotificationService : IPushNotificationService
     /// </summary>
     private async Task CleanupInvalidTokensAsync(
         List<string> tokens,
-        IReadOnlyList<SendResponse> responses)
+        IReadOnlyList<SendResponse> responses,
+        CancellationToken cancellationToken)
     {
         var invalidTokens = new List<string>();
 
@@ -151,7 +152,7 @@ public class FcmPushNotificationService : IPushNotificationService
         {
             var deleted = await _context.DeviceTokens
                 .Where(dt => invalidTokens.Contains(dt.Token))
-                .ExecuteDeleteAsync();
+                .ExecuteDeleteAsync(cancellationToken);
 
             if (deleted > 0)
             {

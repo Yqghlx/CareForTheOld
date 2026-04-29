@@ -10,6 +10,7 @@ public interface IHealthReportService
     /// </summary>
     /// <param name="userId">用户ID</param>
     /// <param name="daysRange">报告时间范围（天数）</param>
+    /// <param name="cancellationToken">取消令牌</param>
     /// <returns>PDF 文件字节数组</returns>
-    Task<byte[]> GeneratePdfReportAsync(Guid userId, int daysRange);
+    Task<byte[]> GeneratePdfReportAsync(Guid userId, int daysRange, CancellationToken cancellationToken = default);
 }

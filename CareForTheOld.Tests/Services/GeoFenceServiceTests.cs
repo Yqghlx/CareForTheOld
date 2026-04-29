@@ -31,10 +31,10 @@ public class GeoFenceServiceTests
         // Mock ICacheService：GetOrCreateAsync 直接执行 factory（模拟缓存未命中）
         _mockCacheService = new Mock<ICacheService>();
         _mockCacheService
-            .Setup(c => c.GetOrCreateAsync<GeoFenceCacheEntry>(It.IsAny<string>(), It.IsAny<Func<Task<GeoFenceCacheEntry?>>>(), It.IsAny<TimeSpan?>()))
-            .Returns((string _, Func<Task<GeoFenceCacheEntry?>> factory, TimeSpan? _) => factory());
+            .Setup(c => c.GetOrCreateAsync<GeoFenceCacheEntry>(It.IsAny<string>(), It.IsAny<Func<Task<GeoFenceCacheEntry?>>>(), It.IsAny<TimeSpan?>(), It.IsAny<CancellationToken>()))
+            .Returns((string _, Func<Task<GeoFenceCacheEntry?>> factory, TimeSpan? _, CancellationToken _) => factory());
         _mockCacheService
-            .Setup(c => c.RemoveAsync(It.IsAny<string>()))
+            .Setup(c => c.RemoveAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
         var mockNotification = new Mock<INotificationService>();

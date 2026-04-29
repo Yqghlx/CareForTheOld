@@ -31,10 +31,10 @@ public class CacheService : ICacheService
     }
 
     /// <inheritdoc />
-    public async Task<T?> GetAsync<T>(string key) where T : class
+    public async Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default) where T : class
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
-        var bytes = await _cache.GetAsync(key);
+        var bytes = await _cache.GetAsync(key, cancellationToken);
         if (bytes == null) return null;
         return JsonSerializer.Deserialize<T>(bytes);
     }
@@ -44,29 +44,29 @@ public class CacheService : ICacheService
     /// 同一 key 的并发请求只触发一次重建，其余请求等待结果
     /// factory 允许返回 null 表示无数据可缓存
     /// </summary>
-    public async Task<T?> GetOrCreateAsync<T>(string key, Func<Task<T?>> factory, TimeSpan? expiration = null) where T : class
+    public async Task<T?> GetOrCreateAsync<T>(string key, Func<Task<T?>> factory, TimeSpan? expiration = null, CancellationToken cancellationToken = default) where T : class
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
 
         // 先尝试直接获取
-        var cached = await GetAsync<T>(key);
+        var cached = await GetAsync<T>(key, cancellationToken);
         if (cached != null) return cached;
 
         // 获取或创建该 key 专属的信号量
         var semaphore = _locks.GetOrAdd(key, _ => new SemaphoreSlim(1, 1));
 
-        await semaphore.WaitAsync();
+        await semaphore.WaitAsync(cancellationToken);
         try
         {
             // 双重检查：等待期间可能已被其他请求填充
-            cached = await GetAsync<T>(key);
+            cached = await GetAsync<T>(key, cancellationToken);
             if (cached != null) return cached;
 
             // 重建缓存
             var value = await factory();
             if (value != null)
             {
-                await SetAsync(key, value, expiration);
+                await SetAsync(key, value, expiration, cancellationToken);
             }
             return value;
         }
@@ -79,7 +79,7 @@ public class CacheService : ICacheService
     }
 
     /// <inheritdoc />
-    public async Task SetAsync<T>(string key, T value, TimeSpan? expiration = null) where T : class
+    public async Task SetAsync<T>(string key, T value, TimeSpan? expiration = null, CancellationToken cancellationToken = default) where T : class
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
         var bytes = JsonSerializer.SerializeToUtf8Bytes(value);
@@ -88,21 +88,21 @@ public class CacheService : ICacheService
             options.AbsoluteExpirationRelativeToNow = expiration;
         else
             options.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(AppConstants.Cache.DefaultExpirationMinutes);
-        await _cache.SetAsync(key, bytes, options);
+        await _cache.SetAsync(key, bytes, options, cancellationToken);
     }
 
     /// <inheritdoc />
-    public async Task RemoveAsync(string key)
+    public async Task RemoveAsync(string key, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
-        await _cache.RemoveAsync(key);
+        await _cache.RemoveAsync(key, cancellationToken);
     }
 
     /// <summary>
     /// 按前缀批量删除缓存键
     /// 优先使用 Redis SCAN 命令精确删除；未配置 Redis 时记录警告日志
     /// </summary>
-    public async Task RemoveByPrefixAsync(string prefix)
+    public async Task RemoveByPrefixAsync(string prefix, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(prefix, nameof(prefix));
 

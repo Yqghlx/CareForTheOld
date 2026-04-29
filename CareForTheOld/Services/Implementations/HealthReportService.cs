@@ -28,10 +28,10 @@ public class HealthReportService : IHealthReportService
     /// <summary>
     /// 生成健康报告 PDF
     /// </summary>
-    public async Task<byte[]> GeneratePdfReportAsync(Guid userId, int daysRange)
+    public async Task<byte[]> GeneratePdfReportAsync(Guid userId, int daysRange, CancellationToken cancellationToken = default)
     {
         // 获取用户信息
-        var user = await _context.Users.FindAsync(userId)
+        var user = await _context.Users.FindAsync([userId], cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
         // 获取指定时间范围内的健康记录
@@ -39,7 +39,7 @@ public class HealthReportService : IHealthReportService
         var records = await _context.HealthRecords
             .Where(r => r.UserId == userId && !r.IsDeleted && r.RecordedAt >= startDate)
             .OrderByDescending(r => r.RecordedAt)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         // 生成 PDF
         QuestPDF.Settings.License = LicenseType.Community;

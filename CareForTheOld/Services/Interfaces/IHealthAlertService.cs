@@ -20,5 +20,6 @@ public interface IHealthAlertService
     /// <param name="elderId">老人用户ID</param>
     /// <param name="record">异常的健康记录</param>
     /// <param name="alertMessage">异常描述消息</param>
-    Task SendAlertToChildrenAsync(Guid elderId, HealthRecord record, string alertMessage);
+    /// <param name="cancellationToken">取消令牌</param>
+    Task SendAlertToChildrenAsync(Guid elderId, HealthRecord record, string alertMessage, CancellationToken cancellationToken = default);
 }

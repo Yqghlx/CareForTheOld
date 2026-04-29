@@ -42,12 +42,12 @@ public class HealthAlertService : IHealthAlertService
     /// <summary>
     /// 发送异常预警通知给老人的子女
     /// </summary>
-    public async Task SendAlertToChildrenAsync(Guid elderId, HealthRecord record, string alertMessage)
+    public async Task SendAlertToChildrenAsync(Guid elderId, HealthRecord record, string alertMessage, CancellationToken cancellationToken = default)
     {
         // 获取老人所在的家庭（含用户信息，避免额外查询）
         var familyMember = await _context.FamilyMembers
             .Include(fm => fm.User)
-            .FirstOrDefaultAsync(fm => fm.UserId == elderId);
+            .FirstOrDefaultAsync(fm => fm.UserId == elderId, cancellationToken);
 
         if (familyMember == null) return; // 老人没有加入家庭，无法通知
 
@@ -55,7 +55,7 @@ public class HealthAlertService : IHealthAlertService
         var children = await _context.FamilyMembers
             .Include(fm => fm.User)
             .Where(fm => fm.FamilyId == familyMember.FamilyId && fm.Role == UserRole.Child)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         if (!children.Any()) return; // 没有子女成员
 

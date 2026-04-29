@@ -12,11 +12,11 @@ public interface IPushNotificationService
     /// 向单个用户的所有设备发送推送通知
     /// </summary>
     /// <returns>是否全部推送成功</returns>
-    Task<bool> SendAsync(Guid userId, string title, string body, Dictionary<string, string>? data = null);
+    Task<bool> SendAsync(Guid userId, string title, string body, Dictionary<string, string>? data = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 向多个用户的所有设备批量发送推送通知
     /// </summary>
     /// <returns>是否全部推送成功</returns>
-    Task<bool> SendAsync(IEnumerable<Guid> userIds, string title, string body, Dictionary<string, string>? data = null);
+    Task<bool> SendAsync(IEnumerable<Guid> userIds, string title, string body, Dictionary<string, string>? data = null, CancellationToken cancellationToken = default);
 }

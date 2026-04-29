@@ -26,13 +26,13 @@ public class DapperHealthQueryService : IHealthQueryService
     }
 
     /// <inheritdoc />
-    public async Task<List<HealthStatsResponse>> GetUserStatsAsync(Guid userId)
+    public async Task<List<HealthStatsResponse>> GetUserStatsAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         var connectionString = _configuration.GetConnectionString("DefaultConnection")
             ?? "Data Source=carefortheold.db";
 
         using var connection = CreateConnection(connectionString);
-        await connection.OpenAsync();
+        await connection.OpenAsync(cancellationToken);
 
         var now = DateTime.UtcNow;
         var sevenDaysAgo = now.AddDays(-AppConstants.HealthStatsDays.RecentDays);

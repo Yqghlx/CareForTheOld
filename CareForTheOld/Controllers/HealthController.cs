@@ -113,7 +113,7 @@ public class HealthController : ControllerBase
     public async Task<ApiResponse<List<HealthStatsResponse>>> GetMyStats(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _healthQueryService.GetUserStatsAsync(userId);
+        var result = await _healthQueryService.GetUserStatsAsync(userId, cancellationToken);
         return ApiResponse<List<HealthStatsResponse>>.Ok(result);
     }
 
@@ -134,7 +134,7 @@ public class HealthController : ControllerBase
         if (!await this.IsFamilyMemberAsync(_familyService, familyId, userId))
             return ApiResponse<List<HealthStatsResponse>>.Fail(ErrorMessages.Family.NotFamilyMember);
 
-        var result = await _healthQueryService.GetUserStatsAsync(memberId);
+        var result = await _healthQueryService.GetUserStatsAsync(memberId, cancellationToken);
         return ApiResponse<List<HealthStatsResponse>>.Ok(result);
     }
 
@@ -161,7 +161,7 @@ public class HealthController : ControllerBase
     public async Task<IActionResult> ExportMyReport([FromQuery][Range(1, 365)] int days = 7, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var pdfBytes = await _reportService.GeneratePdfReportAsync(userId, days);
+        var pdfBytes = await _reportService.GeneratePdfReportAsync(userId, days, cancellationToken);
         return File(pdfBytes, AppConstants.MimeTypes.Pdf, GenerateReportFileName());
     }
 
@@ -182,7 +182,7 @@ public class HealthController : ControllerBase
         if (!await this.IsFamilyMemberAsync(_familyService, familyId, userId))
             return Forbid();
 
-        var pdfBytes = await _reportService.GeneratePdfReportAsync(memberId, days);
+        var pdfBytes = await _reportService.GeneratePdfReportAsync(memberId, days, cancellationToken);
         return File(pdfBytes, AppConstants.MimeTypes.Pdf, GenerateReportFileName());
     }
 

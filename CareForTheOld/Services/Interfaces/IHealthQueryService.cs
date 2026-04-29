@@ -17,5 +17,5 @@ public interface IHealthQueryService
     /// <summary>
     /// 获取用户健康趋势数据（7 天和 30 天统计摘要）
     /// </summary>
-    Task<List<HealthStatsResponse>> GetUserStatsAsync(Guid userId);
+    Task<List<HealthStatsResponse>> GetUserStatsAsync(Guid userId, CancellationToken cancellationToken = default);
 }
