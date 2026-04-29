@@ -34,6 +34,7 @@ public class HealthService : IHealthService
         // 验证必填字段
         ValidateHealthData(request);
 
+        var now = DateTime.UtcNow;
         var record = new HealthRecord
         {
             Id = Guid.NewGuid(),
@@ -45,8 +46,8 @@ public class HealthService : IHealthService
             HeartRate = request.HeartRate,
             Temperature = request.Temperature,
             Note = request.Note,
-            RecordedAt = request.RecordedAt ?? DateTime.UtcNow,
-            CreatedAt = DateTime.UtcNow
+            RecordedAt = request.RecordedAt ?? now,
+            CreatedAt = now,
         };
 
         _context.HealthRecords.Add(record);

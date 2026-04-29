@@ -205,17 +205,17 @@ public class NeighborHelpService : INeighborHelpService
         requestToUpdate.Status = HelpRequestStatus.Accepted;
         requestToUpdate.ResponderId = responderId;
         requestToUpdate.RespondedAt = now;
-        await _context.SaveChangesAsync(cancellationToken);
 
-        // 更新通知日志
+        // 同一事务中更新通知日志，确保数据一致性
         var notifyLog = await _context.HelpNotificationLogs
             .AsTracking()
             .FirstOrDefaultAsync(h => h.HelpRequestId == requestId && h.UserId == responderId, cancellationToken);
         if (notifyLog != null)
         {
             notifyLog.RespondedAt = now;
-            await _context.SaveChangesAsync(cancellationToken);
         }
+
+        await _context.SaveChangesAsync(cancellationToken);
 
         // 查询响应者信息
         var responder = await _context.Users.FindAsync([responderId], cancellationToken)
