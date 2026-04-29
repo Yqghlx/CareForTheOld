@@ -680,6 +680,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                               Expanded(
                                 child: GestureDetector(
                                   onTap: () async {
+                                    try {
                                     final image = await imagePicker.pickImage(
                                       source: ImageSource.camera,
                                       maxWidth: 1024,
@@ -726,6 +727,11 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                       if (mounted) {
                                         context.showErrorSnackBar(e.message);
                                       }
+                                    } catch (e) {
+                                      if (mounted) {
+                                        context.showErrorSnackBar(AppTheme.msgOcrFailed);
+                                      }
+                                    }
                                     } catch (e) {
                                       if (mounted) {
                                         context.showErrorSnackBar(AppTheme.msgOcrFailed);
