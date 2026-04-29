@@ -85,7 +85,24 @@ public class GeoFenceService : IGeoFenceService
         };
 
         _context.GeoFences.Add(fence);
-        await _context.SaveChangesAsync(cancellationToken);
+
+        try
+        {
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex))
+        {
+            // 并发创建同一老人围栏时的唯一约束冲突，重新查询已创建的围栏返回
+            _logger.LogWarning("电子围栏并发创建冲突，老人 {ElderId}，回查已有围栏", request.ElderId);
+            var existing = await _context.GeoFences.FirstOrDefaultAsync(f => f.ElderId == request.ElderId, cancellationToken);
+            if (existing != null)
+            {
+                await InvalidateCacheAsync(request.ElderId);
+                return MapToResponse(existing);
+            }
+            throw;
+        }
+
         await InvalidateCacheAsync(request.ElderId);
         _logger.LogInformation("电子围栏已创建：老人 {ElderId}，操作者 {OperatorId}，半径 {Radius}m", request.ElderId, creatorId, request.Radius);
 

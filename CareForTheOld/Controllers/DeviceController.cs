@@ -72,7 +72,25 @@ public class DeviceController : ControllerBase
             });
         }
 
-        await _context.SaveChangesAsync();
+        try
+        {
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex))
+        {
+            // 并发注册同一 token 的唯一约束冲突，回查并更新关联用户
+            _logger.LogWarning("设备 token 并发注册冲突，用户 {UserId}，回查更新", userId);
+            var conflict = await _context.DeviceTokens
+                .AsTracking()
+                .FirstOrDefaultAsync(dt => dt.Token == request.Token, cancellationToken);
+            if (conflict != null)
+            {
+                conflict.UserId = userId;
+                conflict.Platform = request.Platform;
+                conflict.LastActiveAt = now;
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+        }
 
         _logger.LogInformation("FCM token 已注册: 用户={UserId}, 平台={Platform}", userId, request.Platform);
         return ApiResponse<object>.Ok(null!, SuccessMessages.Device.TokenRegistered);
