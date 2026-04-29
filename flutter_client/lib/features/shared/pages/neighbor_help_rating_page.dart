@@ -110,21 +110,26 @@ class _NeighborHelpRatingPageState
   }
 
   Future<void> _submitRating() async {
+    if (!mounted) return;
     setState(() => _isSubmitting = true);
-    final trimmedComment = _commentController.text.trim();
-    final success = await ref.read(neighborHelpProvider.notifier).rateRequest(
-          requestId: widget.requestId,
-          rating: _rating,
-          comment: trimmedComment.isEmpty ? null : trimmedComment,
-        );
-    if (mounted) {
-      setState(() => _isSubmitting = false);
-      if (success) {
-        context.showSnackBar(AppTheme.msgRateSuccess);
-        Navigator.of(context).pop();
-      } else {
-        context.showErrorSnackBar(ref.read(neighborHelpProvider).error ?? AppTheme.msgOperationFailed);
+    try {
+      final trimmedComment = _commentController.text.trim();
+      final success = await ref.read(neighborHelpProvider.notifier).rateRequest(
+            requestId: widget.requestId,
+            rating: _rating,
+            comment: trimmedComment.isEmpty ? null : trimmedComment,
+          );
+      if (mounted) {
+        setState(() => _isSubmitting = false);
+        if (success) {
+          context.showSnackBar(AppTheme.msgRateSuccess);
+          Navigator.of(context).pop();
+        } else {
+          context.showErrorSnackBar(ref.read(neighborHelpProvider).error ?? AppTheme.msgOperationFailed);
+        }
       }
+    } catch (e) {
+      if (mounted) setState(() => _isSubmitting = false);
     }
   }
 }

@@ -200,7 +200,9 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
 
   /// 立即响应
   Future<void> _respond() async {
+    if (_isResponding) return;
     HapticFeedback.mediumImpact();
+    if (!mounted) return;
     setState(() => _isResponding = true);
 
     try {
