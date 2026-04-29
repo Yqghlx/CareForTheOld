@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/models/location_record.dart';
 import '../../../shared/widgets/common_buttons.dart';
+import '../../../shared/widgets/common_states.dart';
 import '../../../shared/widgets/elder_location_map.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 import '../../../core/theme/app_theme.dart';
@@ -98,7 +99,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
               AppTheme.spacer12,
               latestLocationAsync.when(
                 data: (location) => _buildLatestLocationCard(location, elderName),
-                loading: () => const Center(child: CircularProgressIndicator()),
+                loading: () => const SkeletonCard(),
                 error: (e, _) => Container(
                   padding: AppTheme.paddingAll20,
                   decoration: BoxDecoration(
@@ -118,7 +119,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
               AppTheme.spacer12,
               historyAsync.when(
                 data: (history) => _buildHistoryList(history),
-                loading: () => const Center(child: CircularProgressIndicator()),
+                loading: () => Column(children: List.generate(3, (_) => const SkeletonListTile())),
                 error: (e, _) => Text('加载失败: $e', style: AppTheme.textError),
               ),
             ],
