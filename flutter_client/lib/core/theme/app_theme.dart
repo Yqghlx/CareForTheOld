@@ -203,6 +203,7 @@ class AppTheme {
 
   /// 预定义 EdgeInsets 常量（高频组合，统一管理）
   static const EdgeInsets paddingAll4 = EdgeInsets.all(4);
+  static const EdgeInsets paddingAll6 = EdgeInsets.all(6);
   static const EdgeInsets paddingAll8 = EdgeInsets.all(8);
   static const EdgeInsets paddingAll12 = EdgeInsets.all(12);
   static const EdgeInsets paddingAll16 = EdgeInsets.all(16);

@@ -565,8 +565,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
                     ),
                   ),
                   AppTheme.hSpacer12,
-                  SizedBox(
-                    width: 100,
+                  Expanded(
                     child: Tooltip(
                       message: '跳过此次用药',
                       child: Semantics(

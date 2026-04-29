@@ -455,6 +455,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               counterText: '',
             ),
             maxLength: 50,
+            keyboardType: TextInputType.name,
           ),
         ),
         actions: [

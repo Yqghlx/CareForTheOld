@@ -204,17 +204,17 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                         // 右下角相机图标
                         if (!_isUploadingAvatar)
                           Positioned(
-                            right: -2,
-                            bottom: -2,
+                            right: -4,
+                            bottom: -4,
                             child: Container(
-                              padding: AppTheme.paddingAll4,
+                              padding: AppTheme.paddingAll6,
                               decoration: BoxDecoration(
                                 color: AppTheme.cardColor,
                                 borderRadius: AppTheme.radiusXS,
                               ),
                               child: const Icon(
                                 Icons.camera_alt,
-                                size: 16,
+                                size: 18,
                                 color: AppTheme.primaryColor,
                               ),
                             ),
