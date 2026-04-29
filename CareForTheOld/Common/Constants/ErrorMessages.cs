@@ -70,6 +70,9 @@ public static class ErrorMessages
 
         /// <summary>Token 已被吊销，需重新登录</summary>
         public const string TokenRevoked = "登录已失效，请重新登录";
+
+        /// <summary>密码已更改，需重新登录</summary>
+        public const string PasswordChanged = "密码已更改，请重新登录";
     }
 
     /// <summary>

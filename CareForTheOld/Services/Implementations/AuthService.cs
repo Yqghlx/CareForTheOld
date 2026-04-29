@@ -264,7 +264,15 @@ public class AuthService : IAuthService
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        Log.Information("已吊销用户 {UserId} 的所有刷新令牌", userId);
+        // 标记密码已更改，使该用户所有在此时间之前签发的 AccessToken 失效
+        var expirationMinutes = int.Parse(_configuration[ConfigurationKeys.Jwt.AccessTokenExpirationMinutes] ?? AppConstants.Security.JwtAccessTokenExpirationMinutes.ToString());
+        await _cacheService.SetAsync(
+            $"{AppConstants.Cache.PasswordChangedPrefix}{userId}",
+            DateTime.UtcNow.ToString("o"),
+            TimeSpan.FromMinutes(expirationMinutes + AppConstants.Security.JwtClockSkewMinutes),
+            cancellationToken);
+
+        Log.Information("已吊销用户 {UserId} 的所有令牌并标记密码已更改", userId);
     }
 
     /// <summary>

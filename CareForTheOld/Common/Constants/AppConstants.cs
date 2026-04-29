@@ -163,6 +163,9 @@ public static class AppConstants
 
         /// <summary>Token 黑名单缓存键前缀，完整键格式：token_blacklist:{jti}</summary>
         public const string TokenBlacklistPrefix = "token_blacklist:";
+
+        /// <summary>密码更改标记缓存键前缀，完整键格式：password_changed:{userId}，值为 UTC 时间戳</summary>
+        public const string PasswordChangedPrefix = "password_changed:";
     }
 
     /// <summary>

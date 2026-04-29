@@ -132,15 +132,36 @@ public static class ServiceCollectionExtensions
                 },
                 OnTokenValidated = async context =>
                 {
+                    var cacheService = context.HttpContext.RequestServices.GetRequiredService<ICacheService>();
+                    var ct = context.HttpContext.RequestAborted;
+
                     // 检查 Token 是否已被吊销（黑名单）
                     var jti = context.Principal?.FindFirst(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Jti)?.Value;
                     if (!string.IsNullOrEmpty(jti))
                     {
-                        var cacheService = context.HttpContext.RequestServices.GetRequiredService<ICacheService>();
-                        var isRevoked = await AuthService.IsTokenRevokedAsync(cacheService, jti, context.HttpContext.RequestAborted);
+                        var isRevoked = await AuthService.IsTokenRevokedAsync(cacheService, jti, ct);
                         if (isRevoked)
                         {
                             context.Fail(ErrorMessages.Auth.TokenRevoked);
+                            return;
+                        }
+                    }
+
+                    // 检查密码是否在 Token 签发后被更改
+                    var userId = context.Principal?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                    var iatClaim = context.Principal?.FindFirst(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Iat)?.Value;
+                    if (!string.IsNullOrEmpty(userId) && !string.IsNullOrEmpty(iatClaim))
+                    {
+                        var passwordChangedStr = await cacheService.GetAsync<string>(
+                            $"{AppConstants.Cache.PasswordChangedPrefix}{userId}", ct);
+                        if (!string.IsNullOrEmpty(passwordChangedStr)
+                            && DateTime.TryParse(passwordChangedStr, out var passwordChangedTime))
+                        {
+                            var tokenIssuedAt = DateTimeOffset.FromUnixTimeSeconds(long.Parse(iatClaim));
+                            if (tokenIssuedAt.UtcDateTime < passwordChangedTime)
+                            {
+                                context.Fail(ErrorMessages.Auth.PasswordChanged);
+                            }
                         }
                     }
                 }
