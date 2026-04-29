@@ -141,6 +141,7 @@ class SignalRService {
             id: 3,
             title: title,
             body: content,
+            payload: 'medication',
           );
           break;
         case 'EmergencyCall':
@@ -149,6 +150,7 @@ class SignalRService {
             id: 4,
             title: title,
             body: content,
+            payload: 'emergency',
           );
           EmergencyAlertService.instance.triggerAlert(
             callId: notificationData['CallId']?.toString() ?? '',
@@ -186,6 +188,7 @@ class SignalRService {
             id: 7,
             title: title,
             body: content,
+            payload: 'health',
           );
           break;
         case _SignalRMethods.heartbeatAlert:

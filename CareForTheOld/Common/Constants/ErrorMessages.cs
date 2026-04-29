@@ -675,6 +675,12 @@ public static class NotificationMessages
 
         /// <summary>SMS 紧急提醒内容模板（占位符：老人姓名）</summary>
         public const string SmsReminderContentTemplate = "【紧急提醒】{0}的紧急呼叫已超过3分钟未响应，请尽快处理！";
+
+        /// <summary>紧急呼叫已响应通知标题（发送给老人）</summary>
+        public const string CallRespondedTitle = "呼叫已响应";
+
+        /// <summary>紧急呼叫已响应内容模板（占位符：响应人姓名）</summary>
+        public const string CallRespondedContentTemplate = "您的家人{0}已响应您的紧急呼叫，正在处理中";
     }
 
     /// <summary>用药提醒相关通知</summary>

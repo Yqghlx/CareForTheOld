@@ -264,6 +264,9 @@ public static class AppConstants
         /// <summary>紧急呼叫二次提醒 FCM 推送类型</summary>
         public const string EmergencyReminderFcm = "emergency_reminder";
 
+        /// <summary>紧急呼叫已响应通知（发送给老人）</summary>
+        public const string EmergencyCallResponded = "EmergencyCallResponded";
+
         /// <summary>用药紧急提醒通知（老人端）</summary>
         public const string MedicationReminderUrgent = "MedicationReminderUrgent";
 

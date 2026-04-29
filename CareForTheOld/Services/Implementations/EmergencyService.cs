@@ -463,6 +463,19 @@ public class EmergencyService : IEmergencyService
         _logger.LogInformation("紧急呼叫已响应：呼叫 {CallId}，响应人 {UserId}（{RealName}）",
             callId, userId, user.RealName);
 
+        // 异步通知老人：您的家人已响应呼叫
+        BackgroundJob.Enqueue<INotificationService>(svc =>
+            svc.SendToUserAsync(
+                call.ElderId,
+                AppConstants.NotificationTypes.EmergencyCallResponded,
+                new
+                {
+                    Title = NotificationMessages.Emergency.CallRespondedTitle,
+                    Content = string.Format(NotificationMessages.Emergency.CallRespondedContentTemplate, user.RealName),
+                    CallId = callId,
+                },
+                CancellationToken.None));
+
         // 重新查询完整记录返回响应
         var respondedCall = await _context.EmergencyCalls
             .Include(c => c.Elder)

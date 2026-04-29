@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -21,6 +22,9 @@ import 'features/shared/pages/emergency_alert_page.dart';
 /// 全局 ScaffoldMessenger Key，用于在无 Context 场景下显示 SnackBar
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
     GlobalKey<ScaffoldMessengerState>();
+
+/// 全局 GoRouter 引用，用于通知点击等无 Context 场景的页面跳转
+GoRouter? globalRouter;
 
 /// 全局 SnackBar 提示工具
 void showGlobalSnackBar(String message, {Color? backgroundColor}) {
@@ -143,6 +147,8 @@ class _CareForTheOldAppState extends ConsumerState<CareForTheOldApp> {
   @override
   Widget build(BuildContext context) {
     final router = ref.watch(appRouterProvider);
+    // 保存全局引用，供通知跳转使用
+    globalRouter = router;
 
     return MaterialApp.router(
       title: AppTheme.appName,

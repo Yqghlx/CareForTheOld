@@ -1,7 +1,9 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/router/route_paths.dart';
 import '../../../core/services/app_logger.dart';
+import '../../../main.dart';
 
 /// 本地通知服务
 class LocalNotificationService {
@@ -84,10 +86,25 @@ class LocalNotificationService {
     AppLogger.debug('显示通知: $title - $body');
   }
 
-  /// 通知点击回调
+  /// 通知点击回调 — 根据 payload 跳转到对应页面
   static void _onNotificationTapped(NotificationResponse response) {
     AppLogger.debug('通知点击: ${response.payload}');
-    // 后续可扩展：根据 payload 跳转到对应页面
+    final payload = response.payload;
+    if (payload == null || payload.isEmpty) return;
+
+    final router = globalRouter;
+    if (router == null) return;
+
+    switch (payload) {
+      case 'medication':
+        router.push(RoutePaths.elderMedication);
+      case 'emergency':
+        router.push(RoutePaths.childEmergency);
+      case 'health':
+        router.push(RoutePaths.elderHealth);
+      case 'settings':
+        router.push(RoutePaths.settings);
+    }
   }
 
   /// 取消指定通知
