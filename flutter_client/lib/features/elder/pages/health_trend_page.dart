@@ -82,9 +82,12 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                     child: Icon(_selectedType.icon, color: _selectedType.color),
                   ),
                   AppTheme.hSpacer12,
-                  Text(
-                    '${_selectedType.label}趋势',
-                    style: AppTheme.textSectionTitle,
+                  Flexible(
+                    child: Text(
+                      '${_selectedType.label}趋势',
+                      style: AppTheme.textSectionTitle,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
               ),

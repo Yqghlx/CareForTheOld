@@ -50,6 +50,7 @@ class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
         body: state.isLoading
             ? Column(children: List.generate(3, (_) => const SkeletonCard()))
             : TabBarView(
+                key: const PageStorageKey('neighbor_help_tab_view'),
                 children: [
                   _buildPendingList(context, state.pendingRequests),
                   _buildHistoryList(context, state.history),
