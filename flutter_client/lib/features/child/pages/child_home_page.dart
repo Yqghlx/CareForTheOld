@@ -8,6 +8,7 @@ import '../../../shared/widgets/notification_badge.dart';
 
 import '../../../shared/providers/auth_provider.dart';
 import '../../../shared/models/medication_plan.dart';
+import '../../../shared/models/family.dart';
 import '../../elder/services/medication_service.dart';
 import '../../../core/api/api_client.dart';
 import '../providers/family_provider.dart';
@@ -44,7 +45,8 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(authProvider.select((s) => s.user));
-    final familyState = ref.watch(familyProvider);
+    final familyIsLoading = ref.watch(familyProvider.select((s) => s.isLoading));
+    final elders = ref.watch(familyProvider.select((s) => s.elders));
     final emergencyInfo = ref.watch(emergencyProvider.select((s) => (s.hasUnreadCalls, s.unreadCount)));
 
     return Scaffold(
@@ -167,7 +169,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
             AppTheme.spacer16,
 
             // 老人列表
-            Expanded(child: _buildElderList(familyState)),
+            Expanded(child: _buildElderList(familyIsLoading, elders)),
 
             AppTheme.spacer16,
 
@@ -228,12 +230,10 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
   }
 
   /// 老人列表
-  Widget _buildElderList(FamilyState familyState) {
-    if (familyState.isLoading) {
+  Widget _buildElderList(bool isLoading, List<FamilyMember> elders) {
+    if (isLoading) {
       return Column(children: List.generate(2, (_) => const SkeletonCard()));
     }
-
-    final elders = familyState.elders;
 
     if (elders.isEmpty) {
       return EmptyStateWidget(
