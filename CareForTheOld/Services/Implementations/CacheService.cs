@@ -122,7 +122,7 @@ public class CacheService : ICacheService
         }
         else
         {
-            _logger.LogError("未配置 Redis，无法按前缀删除缓存: {Prefix}", prefix);
+            _logger.LogWarning("未配置 Redis，无法按前缀删除缓存: {Prefix}", prefix);
         }
     }
 }
