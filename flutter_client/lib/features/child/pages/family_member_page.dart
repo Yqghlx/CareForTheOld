@@ -799,6 +799,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                       border: OutlineInputBorder(borderRadius: AppTheme.radiusS),
                     ),
                     keyboardType: TextInputType.phone,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   ),
                   AppTheme.spacer16,
                   DropdownButtonFormField<String>(

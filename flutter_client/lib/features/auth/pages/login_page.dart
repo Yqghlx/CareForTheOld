@@ -10,6 +10,7 @@ import '../../../core/constants/api_endpoints.dart';
 import '../../../shared/models/user.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../core/theme/app_theme.dart';
+import 'package:flutter/services.dart';
 import '../../../core/services/app_logger.dart';
 import '../../../core/extensions/api_error_extension.dart';
 import '../../../core/validators/form_validators.dart';
@@ -181,6 +182,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                         contentPadding: AppTheme.paddingAll16,
                       ),
                       keyboardType: TextInputType.phone,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       textInputAction: TextInputAction.next,
                       style: AppTheme.textBody18,
                       validator: FormValidators.phone,
