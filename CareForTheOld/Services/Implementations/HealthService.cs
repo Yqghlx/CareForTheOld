@@ -127,80 +127,6 @@ public class HealthService : IHealthService
     }
 
     /// <summary>
-    /// 获取用户健康统计数据：包括每种类型的最新值、7天和30天均值
-    /// </summary>
-    public async Task<List<HealthStatsResponse>> GetUserStatsAsync(Guid userId, CancellationToken cancellationToken = default)
-    {
-        var now = DateTime.UtcNow;
-        var sevenDaysAgo = now.AddDays(-AppConstants.HealthStatsDays.RecentDays);
-        var thirtyDaysAgo = now.AddDays(-AppConstants.HealthStatsDays.LongTermDays);
-
-        // 单次查询同时获取最新值和聚合统计，减少数据库往返
-        var typeGroups = await _context.HealthRecords
-            .Where(r => r.UserId == userId && !r.IsDeleted)
-            .GroupBy(r => r.Type)
-            .Select(g => new
-            {
-                Type = g.Key,
-                TotalCount = g.Count(),
-                LatestRecordedAt = g.Max(r => r.RecordedAt),
-                LatestSystolic = g.OrderByDescending(r => r.RecordedAt).Select(r => (int?)r.Systolic).FirstOrDefault(),
-                LatestBloodSugar = g.OrderByDescending(r => r.RecordedAt).Select(r => (decimal?)r.BloodSugar).FirstOrDefault(),
-                LatestHeartRate = g.OrderByDescending(r => r.RecordedAt).Select(r => (int?)r.HeartRate).FirstOrDefault(),
-                LatestTemperature = g.OrderByDescending(r => r.RecordedAt).Select(r => (decimal?)r.Temperature).FirstOrDefault(),
-                Avg7Systolic = g.Where(r => r.RecordedAt >= sevenDaysAgo).Select(r => (double?)r.Systolic).Average(),
-                Avg30Systolic = g.Where(r => r.RecordedAt >= thirtyDaysAgo).Select(r => (double?)r.Systolic).Average(),
-                Avg7BloodSugar = g.Where(r => r.RecordedAt >= sevenDaysAgo).Select(r => (decimal?)r.BloodSugar).Average(),
-                Avg30BloodSugar = g.Where(r => r.RecordedAt >= thirtyDaysAgo).Select(r => (decimal?)r.BloodSugar).Average(),
-                Avg7HeartRate = g.Where(r => r.RecordedAt >= sevenDaysAgo).Select(r => (double?)r.HeartRate).Average(),
-                Avg30HeartRate = g.Where(r => r.RecordedAt >= thirtyDaysAgo).Select(r => (double?)r.HeartRate).Average(),
-                Avg7Temperature = g.Where(r => r.RecordedAt >= sevenDaysAgo).Select(r => (decimal?)r.Temperature).Average(),
-                Avg30Temperature = g.Where(r => r.RecordedAt >= thirtyDaysAgo).Select(r => (decimal?)r.Temperature).Average(),
-            })
-            .ToListAsync(cancellationToken);
-
-        var stats = new List<HealthStatsResponse>();
-
-        foreach (var g in typeGroups)
-        {
-            var statsResponse = new HealthStatsResponse
-            {
-                TypeName = GetTypeDisplayName(g.Type),
-                TotalCount = g.TotalCount,
-                LatestRecordedAt = g.LatestRecordedAt
-            };
-
-            switch (g.Type)
-            {
-                case HealthType.BloodPressure:
-                    statsResponse.LatestValue = g.LatestSystolic;
-                    statsResponse.Average7Days = g.Avg7Systolic.HasValue ? (decimal)g.Avg7Systolic.Value : null;
-                    statsResponse.Average30Days = g.Avg30Systolic.HasValue ? (decimal)g.Avg30Systolic.Value : null;
-                    break;
-                case HealthType.BloodSugar:
-                    statsResponse.LatestValue = g.LatestBloodSugar;
-                    statsResponse.Average7Days = g.Avg7BloodSugar;
-                    statsResponse.Average30Days = g.Avg30BloodSugar;
-                    break;
-                case HealthType.HeartRate:
-                    statsResponse.LatestValue = g.LatestHeartRate;
-                    statsResponse.Average7Days = g.Avg7HeartRate.HasValue ? (decimal)g.Avg7HeartRate.Value : null;
-                    statsResponse.Average30Days = g.Avg30HeartRate.HasValue ? (decimal)g.Avg30HeartRate.Value : null;
-                    break;
-                case HealthType.Temperature:
-                    statsResponse.LatestValue = g.LatestTemperature;
-                    statsResponse.Average7Days = g.Avg7Temperature;
-                    statsResponse.Average30Days = g.Avg30Temperature;
-                    break;
-            }
-
-            stats.Add(statsResponse);
-        }
-
-        return stats;
-    }
-
-    /// <summary>
     /// 软删除健康记录：标记为已删除并保留原始数据
     /// </summary>
     public async Task DeleteRecordAsync(Guid userId, Guid recordId, CancellationToken cancellationToken = default)
@@ -284,18 +210,6 @@ public class HealthService : IHealthService
             Note = r.Note,
             RecordedAt = r.RecordedAt,
             CreatedAt = r.CreatedAt
-        };
-    }
-
-    private static string GetTypeDisplayName(HealthType type)
-    {
-        return type switch
-        {
-            HealthType.BloodPressure => AppConstants.HealthTypeLabels.BloodPressure,
-            HealthType.BloodSugar => AppConstants.HealthTypeLabels.BloodSugar,
-            HealthType.HeartRate => AppConstants.HealthTypeLabels.HeartRate,
-            HealthType.Temperature => AppConstants.HealthTypeLabels.Temperature,
-            _ => type.ToString()
         };
     }
 }

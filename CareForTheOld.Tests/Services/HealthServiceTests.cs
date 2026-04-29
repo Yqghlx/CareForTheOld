@@ -149,16 +149,6 @@ public class HealthServiceTests
     }
 
     [Fact]
-    public async Task GetUserStatsAsync_ShouldReturnStatsForAllTypes()
-    {
-        var userId = await CreateTestUserAsync();
-        await _service.CreateRecordAsync(userId, new Models.DTOs.Requests.Health.CreateHealthRecordRequest { Type = HealthType.BloodPressure, Systolic = 120, Diastolic = 80 });
-        await _service.CreateRecordAsync(userId, new Models.DTOs.Requests.Health.CreateHealthRecordRequest { Type = HealthType.HeartRate, HeartRate = 72 });
-        var stats = await _service.GetUserStatsAsync(userId);
-        stats.Should().NotBeEmpty();
-    }
-
-    [Fact]
     public async Task DeleteRecordAsync_ShouldSoftDelete()
     {
         var userId = await CreateTestUserAsync();

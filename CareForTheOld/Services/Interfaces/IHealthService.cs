@@ -26,11 +26,6 @@ public interface IHealthService
     Task<List<HealthRecordResponse>> GetFamilyMemberRecordsAsync(Guid familyId, Guid memberId, HealthType? type, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// 获取健康数据统计
-    /// </summary>
-    Task<List<HealthStatsResponse>> GetUserStatsAsync(Guid userId, CancellationToken cancellationToken = default);
-
-    /// <summary>
     /// 删除健康记录
     /// </summary>
     Task DeleteRecordAsync(Guid userId, Guid recordId, CancellationToken cancellationToken = default);
