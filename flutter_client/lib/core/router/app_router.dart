@@ -65,6 +65,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         return authState.isElder ? RoutePaths.elderHome : RoutePaths.childHome;
       }
 
+      // 角色权限验证：老人不能访问子女端路由
+      if (isAuth && currentPath.startsWith('/child') && authState.isElder) {
+        return RoutePaths.elderHome;
+      }
+
+      // 角色权限验证：子女不能访问老人端路由
+      if (isAuth && currentPath.startsWith('/elder') && authState.isChild) {
+        return RoutePaths.childHome;
+      }
+
       return null;
     },
     routes: [

@@ -762,11 +762,11 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                       }
                                     } on OcrException catch (e) {
                                       if (mounted) {
-                                        context.showErrorSnackBar(e.message);
+                                        context.showWarningSnackBar('${e.message}，请手动输入');
                                       }
                                     } catch (e) {
                                       if (mounted) {
-                                        context.showErrorSnackBar(AppTheme.msgOcrFailed);
+                                        context.showWarningSnackBar('${AppTheme.msgOcrFailed}，请手动输入');
                                       }
                                     }
                                     } catch (e) {
