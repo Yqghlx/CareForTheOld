@@ -1035,10 +1035,10 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
           }
       }
     } on FormatException catch (e) {
-      context.showErrorSnackBar(e.message);
+      if (mounted) context.showErrorSnackBar(e.message);
       return;
     } catch (_) {
-      context.showErrorSnackBar(AppTheme.msgInvalidValue);
+      if (mounted) context.showErrorSnackBar(AppTheme.msgInvalidValue);
       return;
     }
 
