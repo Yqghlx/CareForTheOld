@@ -171,6 +171,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                     child: TextFormField(
                       controller: phoneController,
                       enabled: !isLoading,
+                      autofocus: true,
                       decoration: const InputDecoration(
                         labelText: AppTheme.labelPhone,
                         prefixIcon: Icon(Icons.phone, color: AppTheme.primaryColor),
