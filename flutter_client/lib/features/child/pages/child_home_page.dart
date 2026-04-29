@@ -234,26 +234,12 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
     final elders = familyState.elders;
 
     if (elders.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.people_outline,
-              size: AppTheme.iconSizeHuge,
-              color: AppTheme.grey400,
-            ),
-            AppTheme.spacer16,
-            const Text(
-              '暂无关注的老人',
-              style: AppTheme.textSecondary16,
-            ),
-            AppTheme.spacer12,
-            PrimaryButton(
-              text: '添加家庭成员',
-              onPressed: () => context.push(RoutePaths.childFamily),
-            ),
-          ],
+      return EmptyStateWidget(
+        icon: Icons.people_outline,
+        title: '暂无关注的老人',
+        action: PrimaryButton(
+          text: '添加家庭成员',
+          onPressed: () => context.push(RoutePaths.childFamily),
         ),
       );
     }
