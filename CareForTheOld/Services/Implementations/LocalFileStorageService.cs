@@ -14,14 +14,16 @@ namespace CareForTheOld.Services.Implementations;
 public class LocalFileStorageService : IFileStorageService
 {
     private readonly IWebHostEnvironment _env;
+    private readonly ILogger<LocalFileStorageService> _logger;
     /// <summary>
     /// 文件存储的基础目录名
     /// </summary>
     private const string _baseDirectory = "uploads";
 
-    public LocalFileStorageService(IWebHostEnvironment env)
+    public LocalFileStorageService(IWebHostEnvironment env, ILogger<LocalFileStorageService> logger)
     {
         _env = env;
+        _logger = logger;
     }
 
     /// <inheritdoc />
@@ -46,6 +48,8 @@ public class LocalFileStorageService : IFileStorageService
         // 覆盖写入（头像场景下同一用户只保留一个文件）
         using var fileStream = new FileStream(filePath, FileMode.Create);
         await stream.CopyToAsync(fileStream);
+
+        _logger.LogInformation("文件上传成功：{Directory}/{FileName}", directory, fileName);
 
         return $"/{_baseDirectory}/{directory}/{fileName}";
     }
@@ -88,6 +92,7 @@ public class LocalFileStorageService : IFileStorageService
         if (File.Exists(filePath))
         {
             File.Delete(filePath);
+            _logger.LogInformation("文件删除成功：{FileUrl}", fileUrl);
         }
 
         return Task.CompletedTask;
