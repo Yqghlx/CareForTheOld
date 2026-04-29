@@ -204,7 +204,7 @@ public class FamilyService : IFamilyService
                     ApplicantId = userId,
                     ApplicantName = user.RealName,
                     Relation = request.Relation
-                });
+                }, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -280,7 +280,7 @@ public class FamilyService : IFamilyService
                 operatorMember.Family?.FamilyName ?? NotificationMessages.Family.DefaultFamilyName),
             FamilyId = familyId,
             FamilyName = operatorMember.Family?.FamilyName ?? ""
-        });
+        }, cancellationToken);
     }
 
     /// <summary>
@@ -318,7 +318,7 @@ public class FamilyService : IFamilyService
             Content = string.Format(NotificationMessages.Family.JoinRejectedContentTemplate, operatorMember.Family?.FamilyName ?? NotificationMessages.Family.DefaultFamilyName),
             FamilyId = familyId,
             FamilyName = operatorMember.Family?.FamilyName ?? ""
-        });
+        }, cancellationToken);
     }
 
     /// <summary>

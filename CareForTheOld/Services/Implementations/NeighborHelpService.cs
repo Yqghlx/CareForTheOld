@@ -169,7 +169,8 @@ public class NeighborHelpService : INeighborHelpService
                 Latitude = call.Latitude,
                 Longitude = call.Longitude,
                 ExpiresAt = helpRequest.ExpiresAt,
-            });
+            },
+            cancellationToken);
 
         _logger.LogInformation(
             "已广播邻里求助：呼叫={CallId}, 请求={RequestId}, 通知邻居数={Count}",
@@ -231,7 +232,8 @@ public class NeighborHelpService : INeighborHelpService
                 Content = string.Format(NotificationMessages.NeighborHelp.HelperComingContentTemplate, responder.RealName),
                 HelpRequestId = requestId,
                 ResponderName = responder.RealName,
-            });
+            },
+            cancellationToken);
 
         // 通知老人的子女："邻居已响应紧急呼叫"
         var familyMember = await _context.FamilyMembers
@@ -255,7 +257,8 @@ public class NeighborHelpService : INeighborHelpService
                         HelpRequestId = requestId,
                         EmergencyCallId = request.EmergencyCallId,
                         ResponderName = responder.RealName,
-                    });
+                    },
+                    cancellationToken);
             }
         }
 
@@ -277,7 +280,8 @@ public class NeighborHelpService : INeighborHelpService
                     Title = NotificationMessages.NeighborHelp.RequestRespondedTitle,
                     Content = string.Format(NotificationMessages.NeighborHelp.RequestAcceptedContentTemplate, request.Requester.RealName, responder.RealName),
                     HelpRequestId = requestId,
-                });
+                },
+                cancellationToken);
         }
 
         _logger.LogInformation("邻居 {ResponderId} 已接受求助请求 {RequestId}，求助者 {RequesterId}", responderId, requestId, request.RequesterId);
@@ -329,7 +333,8 @@ public class NeighborHelpService : INeighborHelpService
                     Title = NotificationMessages.NeighborHelp.RequestCancelledTitle,
                     Content = string.Format(NotificationMessages.NeighborHelp.RequestCancelledContentTemplate, request.Requester.RealName),
                     HelpRequestId = requestId,
-                });
+                },
+                cancellationToken);
         }
 
         _logger.LogInformation("求助请求 {RequestId} 已被用户 {OperatorId} 取消", requestId, operatorId);
@@ -534,7 +539,8 @@ public class NeighborHelpService : INeighborHelpService
                 Latitude = call.Latitude,
                 Longitude = call.Longitude,
                 ExpiresAt = helpRequest.ExpiresAt,
-            });
+            },
+            cancellationToken);
     }
 
     /// <summary>

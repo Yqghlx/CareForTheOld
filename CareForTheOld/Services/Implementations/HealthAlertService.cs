@@ -79,7 +79,8 @@ public class HealthAlertService : IHealthAlertService
                 RecordId = record.Id,
                 RecordedAt = record.RecordedAt,
                 AlertLevel = GetAlertLevel(record.Type, alertMessage)
-            }
+            },
+            cancellationToken
         );
 
         _logger.LogInformation("已向 {Count} 位子女发送健康异常预警：老人 {ElderId}，类型 {HealthType}，预警 {Alert}",

@@ -104,7 +104,7 @@ public class AutoRescueService : IAutoRescueService
                     TriggerType = triggerType.ToString(),
                     DelayMinutes = _delayMinutes,
                     AlertLevel = AppConstants.AlertLevels.Critical,
-                });
+                }, cancellationToken);
 
             // 更新通知时间
             record.ChildNotifiedAt = DateTime.UtcNow;
@@ -194,7 +194,7 @@ public class AutoRescueService : IAutoRescueService
                         AutoRescueId = record.Id,
                         ElderId = record.ElderId,
                         ElderName = elderName,
-                    });
+                    }, cancellationToken);
             }
         }
 

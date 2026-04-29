@@ -224,7 +224,8 @@ public class EmergencyService : IEmergencyService
                     ElderName = elderName,
                     CallId = callId,
                     IsReminder = isReminder,
-                }
+                },
+                CancellationToken.None
             );
 
             // FCM 推送通知（后台/锁屏唤醒），通过 Hangfire 异步发送
