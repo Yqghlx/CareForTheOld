@@ -100,13 +100,9 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
               latestLocationAsync.when(
                 data: (location) => _buildLatestLocationCard(location, elderName),
                 loading: () => const SkeletonCard(),
-                error: (e, _) => Container(
-                  padding: AppTheme.paddingAll20,
-                  decoration: BoxDecoration(
-                    color: AppTheme.errorColor.withValues(alpha: 0.1),
-                    borderRadius: AppTheme.radiusL,
-                  ),
-                  child: Text(AppTheme.msgLoadFailed, style: AppTheme.textError),
+                error: (_, __) => ErrorStateWidget(
+                  message: AppTheme.msgLoadFailed,
+                  onRetry: () => ref.invalidate(familyMemberLatestLocationProvider((familyId, widget.elderId))),
                 ),
               ),
               AppTheme.spacer24,
@@ -120,7 +116,10 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
               historyAsync.when(
                 data: (history) => _buildHistoryList(history),
                 loading: () => Column(children: List.generate(3, (_) => const SkeletonListTile())),
-                error: (e, _) => Text('加载失败: $e', style: AppTheme.textError),
+                error: (_, __) => ErrorStateWidget(
+                  message: AppTheme.msgLoadFailed,
+                  onRetry: () => ref.invalidate(familyMemberLocationHistoryProvider((familyId, widget.elderId))),
+                ),
               ),
             ],
           ),
