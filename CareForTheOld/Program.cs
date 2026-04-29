@@ -202,8 +202,7 @@ else
 
 // 注册后台任务调度（Hangfire）
 builder.Services.AddHangfireServices(builder.Configuration, builder.Environment);
-// 注册用药提醒服务（同时支持 IHostedService 回退模式和 Hangfire 调度）
-builder.Services.AddHostedService<MedicationReminderService>();
+// 注册用药提醒服务（仅通过 Hangfire 调度，不再注册 IHostedService 避免重复执行）
 builder.Services.AddSingleton<MedicationReminderService>();
 // 注册 Outbox 投递服务（用于 SignalR 通知的异步投递）
 builder.Services.AddSingleton<OutboxDispatchService>();

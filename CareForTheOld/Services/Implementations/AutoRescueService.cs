@@ -1,4 +1,5 @@
 using CareForTheOld.Common.Constants;
+using CareForTheOld.Common.Helpers;
 using CareForTheOld.Data;
 using Hangfire;
 using CareForTheOld.Models.Entities;
@@ -65,8 +66,17 @@ public class AutoRescueService : IAutoRescueService
             TriggeredAt = DateTime.UtcNow,
         };
 
-        context.AutoRescueRecords.Add(record);
-        await context.SaveChangesAsync(cancellationToken);
+        try
+        {
+            context.AutoRescueRecords.Add(record);
+            await context.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex))
+        {
+            // 并发场景：另一触发源已创建救援记录，安全忽略
+            _logger.LogDebug("老人 {ElderId} 的救援记录已被并发创建，跳过", elderId);
+            return;
+        }
 
         // 通知子女
         var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();

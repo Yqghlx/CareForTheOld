@@ -1,6 +1,52 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_theme.dart';
 
+/// 标准卡片 — 统一 elevation、圆角、内边距和底部间距
+class StandardCard extends StatelessWidget {
+  final Widget child;
+  final EdgeInsetsGeometry? margin;
+  final EdgeInsetsGeometry padding;
+  final Color? sideColor;
+  final double sideWidth;
+  final VoidCallback? onTap;
+
+  const StandardCard({
+    super.key,
+    required this.child,
+    this.margin,
+    this.padding = AppTheme.paddingAll16,
+    this.sideColor,
+    this.sideWidth = 1.0,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final card = Card(
+      elevation: AppTheme.cardElevation,
+      margin: margin ?? AppTheme.marginBottom12,
+      shape: RoundedRectangleBorder(
+        borderRadius: AppTheme.radiusL,
+        side: sideColor != null
+            ? BorderSide(color: sideColor!.withValues(alpha: 0.3), width: sideWidth)
+            : BorderSide.none,
+      ),
+      child: Padding(
+        padding: padding,
+        child: child,
+      ),
+    );
+    if (onTap != null) {
+      return InkWell(
+        onTap: onTap,
+        borderRadius: AppTheme.radiusL,
+        child: card,
+      );
+    }
+    return card;
+  }
+}
+
 /// 统计卡片组件 - 用于显示数值统计
 class StatCard extends StatelessWidget {
   final IconData icon;
