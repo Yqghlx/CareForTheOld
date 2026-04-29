@@ -246,6 +246,7 @@ public class NeighborCircleService : INeighborCircleService
                 AvatarUrl = m.User != null ? m.User.AvatarUrl : null,
                 JoinedAt = m.JoinedAt
             })
+            .Take(100)
             .ToListAsync(cancellationToken);
 
         // 附加距离信息
