@@ -38,30 +38,30 @@ public class FamilyService : IFamilyService
     /// <summary>
     /// 获取用户所属的家庭信息（仅返回已通过审批的成员）
     /// </summary>
-    public async Task<FamilyResponse?> GetMyFamilyAsync(Guid userId)
+    public async Task<FamilyResponse?> GetMyFamilyAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         var familyMember = await _context.FamilyMembers
-            .FirstOrDefaultAsync(fm => fm.UserId == userId && fm.Status == FamilyMemberStatus.Approved);
+            .FirstOrDefaultAsync(fm => fm.UserId == userId && fm.Status == FamilyMemberStatus.Approved, cancellationToken);
 
         if (familyMember == null)
             return null;
 
-        return await GetFamilyResponse(familyMember.FamilyId);
+        return await GetFamilyResponse(familyMember.FamilyId, cancellationToken);
     }
 
     /// <summary>
     /// 创建家庭组（仅子女可创建，创建者自动加入）
     /// </summary>
-    public async Task<FamilyResponse> CreateFamilyAsync(Guid creatorId, CreateFamilyRequest request)
+    public async Task<FamilyResponse> CreateFamilyAsync(Guid creatorId, CreateFamilyRequest request, CancellationToken cancellationToken = default)
     {
         // 验证创建者角色：只有子女才能创建家庭组
-        var creator = await _context.Users.FindAsync(creatorId)
+        var creator = await _context.Users.FindAsync([creatorId], cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
         if (creator.Role != UserRole.Child)
             throw new UnauthorizedAccessException(ErrorMessages.Family.OnlyChildCanCreate);
 
         // 检查用户是否已加入其他家庭
-        if (await _context.FamilyMembers.AnyAsync(fm => fm.UserId == creatorId))
+        if (await _context.FamilyMembers.AnyAsync(fm => fm.UserId == creatorId, cancellationToken))
             throw new ArgumentException(ErrorMessages.Family.AlreadyInFamily);
 
         var family = new Family
@@ -88,29 +88,29 @@ public class FamilyService : IFamilyService
 
         try
         {
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
         catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex))
         {
             throw new ArgumentException(ErrorMessages.Family.AlreadyInFamily);
         }
 
-        return await GetFamilyResponse(family.Id);
+        return await GetFamilyResponse(family.Id, cancellationToken);
     }
 
     /// <summary>
     /// 直接添加家庭成员（子女操作，被添加者默认通过审批）
     /// </summary>
-    public async Task<FamilyResponse> AddMemberAsync(Guid familyId, Guid operatorId, AddFamilyMemberRequest request)
+    public async Task<FamilyResponse> AddMemberAsync(Guid familyId, Guid operatorId, AddFamilyMemberRequest request, CancellationToken cancellationToken = default)
     {
-        await EnsureMemberAsync(familyId, operatorId);
+        await EnsureMemberAsync(familyId, operatorId, cancellationToken);
 
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber, cancellationToken);
         // 使用模糊错误消息，防止用户枚举攻击
         if (user == null)
             throw new KeyNotFoundException(ErrorMessages.Family.CannotAddUser);
 
-        if (await _context.FamilyMembers.AnyAsync(fm => fm.FamilyId == familyId && fm.UserId == user.Id))
+        if (await _context.FamilyMembers.AnyAsync(fm => fm.FamilyId == familyId && fm.UserId == user.Id, cancellationToken))
             throw new ArgumentException(ErrorMessages.Family.UserAlreadyInFamily);
 
         _context.FamilyMembers.Add(new FamilyMember
@@ -125,31 +125,31 @@ public class FamilyService : IFamilyService
 
         try
         {
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
         catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex))
         {
             throw new ArgumentException(ErrorMessages.Family.UserAlreadyInOtherFamily);
         }
 
-        return await GetFamilyResponse(familyId);
+        return await GetFamilyResponse(familyId, cancellationToken);
     }
 
     /// <summary>
     /// 通过邀请码申请加入家庭（改为申请模式，需子女审批）
     /// </summary>
-    public async Task<JoinFamilyResponse> JoinFamilyByCodeAsync(Guid userId, JoinFamilyRequest request)
+    public async Task<JoinFamilyResponse> JoinFamilyByCodeAsync(Guid userId, JoinFamilyRequest request, CancellationToken cancellationToken = default)
     {
         // 检查用户是否已在某个家庭中（含待审批记录）
-        if (await _context.FamilyMembers.AnyAsync(fm => fm.UserId == userId))
+        if (await _context.FamilyMembers.AnyAsync(fm => fm.UserId == userId, cancellationToken))
             throw new ArgumentException(ErrorMessages.Family.AlreadyAppliedOrJoined);
 
-        var user = await _context.Users.FindAsync(userId)
+        var user = await _context.Users.FindAsync([userId], cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
         // 根据邀请码查找家庭
         var family = await _context.Families
-            .FirstOrDefaultAsync(f => f.InviteCode == request.InviteCode)
+            .FirstOrDefaultAsync(f => f.InviteCode == request.InviteCode, cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.Family.InvalidInviteCode);
 
         // 验证邀请码是否过期
@@ -171,7 +171,7 @@ public class FamilyService : IFamilyService
 
         try
         {
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
         catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex))
         {
@@ -182,7 +182,7 @@ public class FamilyService : IFamilyService
         var childMembers = await _context.FamilyMembers
             .Where(fm => fm.FamilyId == family.Id && fm.Role == UserRole.Child && fm.Status == FamilyMemberStatus.Approved)
             .Select(fm => fm.UserId)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         if (childMembers.Any())
         {
@@ -216,9 +216,9 @@ public class FamilyService : IFamilyService
     /// <summary>
     /// 获取待审批成员列表（仅子女可查看）
     /// </summary>
-    public async Task<List<FamilyMemberResponse>> GetPendingMembersAsync(Guid familyId, Guid operatorId)
+    public async Task<List<FamilyMemberResponse>> GetPendingMembersAsync(Guid familyId, Guid operatorId, CancellationToken cancellationToken = default)
     {
-        await EnsureMemberAsync(familyId, operatorId);
+        await EnsureMemberAsync(familyId, operatorId, cancellationToken);
 
         return await _context.FamilyMembers
             .Include(fm => fm.User)
@@ -232,21 +232,21 @@ public class FamilyService : IFamilyService
                 AvatarUrl = fm.User != null ? fm.User.AvatarUrl : null,
                 Status = fm.Status
             })
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
     /// <summary>
     /// 审批通过成员加入（仅子女可操作）
     /// </summary>
-    public async Task ApproveMemberAsync(Guid familyId, Guid memberId, Guid operatorId)
+    public async Task ApproveMemberAsync(Guid familyId, Guid memberId, Guid operatorId, CancellationToken cancellationToken = default)
     {
-        await EnsureMemberAsync(familyId, operatorId);
+        await EnsureMemberAsync(familyId, operatorId, cancellationToken);
 
         // 验证操作者是子女角色，Include User 避免额外查询
         var operatorMember = await _context.FamilyMembers
             .Include(fm => fm.User)
             .Include(fm => fm.Family)
-            .FirstOrDefaultAsync(fm => fm.FamilyId == familyId && fm.UserId == operatorId)
+            .FirstOrDefaultAsync(fm => fm.FamilyId == familyId && fm.UserId == operatorId, cancellationToken)
             ?? throw new UnauthorizedAccessException(ErrorMessages.Family.NotFamilyMember);
 
         if (operatorMember.Role != UserRole.Child)
@@ -255,11 +255,11 @@ public class FamilyService : IFamilyService
         var member = await _context.FamilyMembers
             .AsTracking()
             .Include(fm => fm.User)
-            .FirstOrDefaultAsync(fm => fm.FamilyId == familyId && fm.UserId == memberId && fm.Status == FamilyMemberStatus.Pending)
+            .FirstOrDefaultAsync(fm => fm.FamilyId == familyId && fm.UserId == memberId && fm.Status == FamilyMemberStatus.Pending, cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.Family.PendingMemberNotFound);
 
         member.Status = FamilyMemberStatus.Approved;
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         // 通知申请人审批已通过（使用已加载的导航属性，无需额外查询）
         await _notificationService.SendToUserAsync(memberId, AppConstants.NotificationTypes.FamilyJoinApproved, new
@@ -276,14 +276,14 @@ public class FamilyService : IFamilyService
     /// <summary>
     /// 拒绝成员加入申请（仅子女可操作）
     /// </summary>
-    public async Task RejectMemberAsync(Guid familyId, Guid memberId, Guid operatorId)
+    public async Task RejectMemberAsync(Guid familyId, Guid memberId, Guid operatorId, CancellationToken cancellationToken = default)
     {
-        await EnsureMemberAsync(familyId, operatorId);
+        await EnsureMemberAsync(familyId, operatorId, cancellationToken);
 
         // 验证操作者是子女角色，Include Family 避免额外查询
         var operatorMember = await _context.FamilyMembers
             .Include(fm => fm.Family)
-            .FirstOrDefaultAsync(fm => fm.FamilyId == familyId && fm.UserId == operatorId)
+            .FirstOrDefaultAsync(fm => fm.FamilyId == familyId && fm.UserId == operatorId, cancellationToken)
             ?? throw new UnauthorizedAccessException(ErrorMessages.Family.NotFamilyMember);
 
         if (operatorMember.Role != UserRole.Child)
@@ -291,12 +291,12 @@ public class FamilyService : IFamilyService
 
         var member = await _context.FamilyMembers
             .Include(fm => fm.User)
-            .FirstOrDefaultAsync(fm => fm.FamilyId == familyId && fm.UserId == memberId && fm.Status == FamilyMemberStatus.Pending)
+            .FirstOrDefaultAsync(fm => fm.FamilyId == familyId && fm.UserId == memberId && fm.Status == FamilyMemberStatus.Pending, cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.Family.PendingMemberNotFound);
 
         // 删除申请记录（而非保留 Rejected 状态，避免唯一约束冲突导致无法再次申请）
         _context.FamilyMembers.Remove(member);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         // 通知申请人被拒绝（使用已加载的导航属性）
         await _notificationService.SendToUserAsync(memberId, AppConstants.NotificationTypes.FamilyJoinRejected, new
@@ -311,11 +311,11 @@ public class FamilyService : IFamilyService
     /// <summary>
     /// 刷新邀请码（仅家庭创建者可操作，唯一约束冲突时自动重试）
     /// </summary>
-    public async Task<FamilyResponse> RefreshInviteCodeAsync(Guid familyId, Guid operatorId)
+    public async Task<FamilyResponse> RefreshInviteCodeAsync(Guid familyId, Guid operatorId, CancellationToken cancellationToken = default)
     {
-        await EnsureMemberAsync(familyId, operatorId);
+        await EnsureMemberAsync(familyId, operatorId, cancellationToken);
 
-        var family = await _context.Families.AsTracking().FirstOrDefaultAsync(f => f.Id == familyId)
+        var family = await _context.Families.AsTracking().FirstOrDefaultAsync(f => f.Id == familyId, cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.Family.FamilyNotFound);
 
         if (family.CreatorId != operatorId)
@@ -329,7 +329,7 @@ public class FamilyService : IFamilyService
         {
             try
             {
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
                 break;
             }
             catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex) && attempt < 2)
@@ -338,13 +338,13 @@ public class FamilyService : IFamilyService
             }
         }
 
-        return await GetFamilyResponse(familyId);
+        return await GetFamilyResponse(familyId, cancellationToken);
     }
 
     /// <summary>
     /// 获取家庭成员列表（仅返回已通过审批的成员）
     /// </summary>
-    public async Task<List<FamilyMemberResponse>> GetMembersAsync(Guid familyId)
+    public async Task<List<FamilyMemberResponse>> GetMembersAsync(Guid familyId, CancellationToken cancellationToken = default)
     {
         // 只返回已通过审批的成员
         return await _context.FamilyMembers
@@ -359,16 +359,16 @@ public class FamilyService : IFamilyService
                 AvatarUrl = fm.User != null ? fm.User.AvatarUrl : null,
                 Status = fm.Status
             })
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
     /// <summary>
     /// 移除家庭成员（仅家庭创建者可操作，不可移除自己）
     /// </summary>
-    public async Task RemoveMemberAsync(Guid familyId, Guid userId, Guid operatorId)
+    public async Task RemoveMemberAsync(Guid familyId, Guid userId, Guid operatorId, CancellationToken cancellationToken = default)
     {
         // 验证操作者是家庭创建者
-        var family = await _context.Families.FindAsync(familyId)
+        var family = await _context.Families.FindAsync([familyId], cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.Family.FamilyNotFound);
 
         if (family.CreatorId != operatorId)
@@ -379,21 +379,21 @@ public class FamilyService : IFamilyService
             throw new ArgumentException(ErrorMessages.Family.CannotRemoveCreator);
 
         var member = await _context.FamilyMembers
-            .FirstOrDefaultAsync(fm => fm.FamilyId == familyId && fm.UserId == userId)
+            .FirstOrDefaultAsync(fm => fm.FamilyId == familyId && fm.UserId == userId, cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.Family.UserNotInFamily);
 
         _context.FamilyMembers.Remove(member);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    private async Task EnsureMemberAsync(Guid familyId, Guid userId)
+    private async Task EnsureMemberAsync(Guid familyId, Guid userId, CancellationToken cancellationToken = default)
     {
-        if (!await _context.FamilyMembers.AnyAsync(fm => fm.FamilyId == familyId && fm.UserId == userId && fm.Status == FamilyMemberStatus.Approved))
+        if (!await _context.FamilyMembers.AnyAsync(fm => fm.FamilyId == familyId && fm.UserId == userId && fm.Status == FamilyMemberStatus.Approved, cancellationToken))
             throw new UnauthorizedAccessException(ErrorMessages.Family.NotFamilyMember);
     }
 
     /// <inheritdoc />
-    public async Task EnsureFamilyMemberAsync(Guid elderId, Guid operatorId)
+    public async Task EnsureFamilyMemberAsync(Guid elderId, Guid operatorId, CancellationToken cancellationToken = default)
     {
         // 老人本人可以操作
         if (elderId == operatorId) return;
@@ -402,23 +402,23 @@ public class FamilyService : IFamilyService
         var operatorFamilyId = await _context.FamilyMembers
             .Where(fm => fm.UserId == operatorId && fm.Status == FamilyMemberStatus.Approved)
             .Select(fm => fm.FamilyId)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(cancellationToken);
 
         if (operatorFamilyId == Guid.Empty)
             throw new UnauthorizedAccessException(ErrorMessages.Family.NotElderFamilyMember);
 
         var isInSameFamily = await _context.FamilyMembers
-            .AnyAsync(fm => fm.UserId == elderId && fm.FamilyId == operatorFamilyId && fm.Status == FamilyMemberStatus.Approved);
+            .AnyAsync(fm => fm.UserId == elderId && fm.FamilyId == operatorFamilyId && fm.Status == FamilyMemberStatus.Approved, cancellationToken);
 
         if (!isInSameFamily)
             throw new UnauthorizedAccessException(ErrorMessages.Family.NotElderFamilyMember);
     }
 
-    private async Task<FamilyResponse> GetFamilyResponse(Guid familyId)
+    private async Task<FamilyResponse> GetFamilyResponse(Guid familyId, CancellationToken cancellationToken = default)
     {
         var family = await _context.Families
             .Include(f => f.Members).ThenInclude(fm => fm.User)
-            .FirstAsync(f => f.Id == familyId);
+            .FirstAsync(f => f.Id == familyId, cancellationToken);
 
         // 只返回已通过审批的成员（内存过滤，兼容 InMemory 测试提供程序）
         return new FamilyResponse

@@ -51,8 +51,8 @@ public class GeoFenceController : ControllerBase
     {
         // 验证请求的子女与目标老人属于同一家庭
         var userId = this.GetUserId();
-        var userFamilyId = await _familyService.GetMyFamilyAsync(userId);
-        var elderFamilyId = await _familyService.GetMyFamilyAsync(elderId);
+        var userFamilyId = await _familyService.GetMyFamilyAsync(userId, cancellationToken);
+        var elderFamilyId = await _familyService.GetMyFamilyAsync(elderId, cancellationToken);
         if (userFamilyId == null || elderFamilyId == null || userFamilyId.Id != elderFamilyId.Id)
             return ApiResponse<GeoFenceResponse?>.Fail(ErrorMessages.GeoFence.NoPermissionToView);
 

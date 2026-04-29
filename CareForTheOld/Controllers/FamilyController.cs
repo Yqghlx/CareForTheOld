@@ -36,7 +36,7 @@ public class FamilyController : ControllerBase
     public async Task<ApiResponse<FamilyResponse?>> GetMyFamily(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _familyService.GetMyFamilyAsync(userId);
+        var result = await _familyService.GetMyFamilyAsync(userId, cancellationToken);
         return ApiResponse<FamilyResponse?>.Ok(result);
     }
 
@@ -48,7 +48,7 @@ public class FamilyController : ControllerBase
     public async Task<ApiResponse<FamilyResponse>> Create([FromBody] CreateFamilyRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _familyService.CreateFamilyAsync(userId, request);
+        var result = await _familyService.CreateFamilyAsync(userId, request, cancellationToken);
         return ApiResponse<FamilyResponse>.Ok(result, SuccessMessages.Family.CreateSuccess);
     }
 
@@ -60,7 +60,7 @@ public class FamilyController : ControllerBase
     public async Task<ApiResponse<FamilyResponse>> AddMember(Guid id, [FromBody] AddFamilyMemberRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _familyService.AddMemberAsync(id, userId, request);
+        var result = await _familyService.AddMemberAsync(id, userId, request, cancellationToken);
         return ApiResponse<FamilyResponse>.Ok(result, SuccessMessages.Family.InviteSuccess);
     }
 
@@ -72,7 +72,7 @@ public class FamilyController : ControllerBase
     public async Task<ApiResponse<JoinFamilyResponse>> JoinFamily([FromBody] JoinFamilyRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _familyService.JoinFamilyByCodeAsync(userId, request);
+        var result = await _familyService.JoinFamilyByCodeAsync(userId, request, cancellationToken);
         return ApiResponse<JoinFamilyResponse>.Ok(result, SuccessMessages.Family.ApplySubmitted);
     }
 
@@ -84,7 +84,7 @@ public class FamilyController : ControllerBase
     public async Task<ApiResponse<FamilyResponse>> RefreshInviteCode(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _familyService.RefreshInviteCodeAsync(id, userId);
+        var result = await _familyService.RefreshInviteCodeAsync(id, userId, cancellationToken);
         return ApiResponse<FamilyResponse>.Ok(result, SuccessMessages.Family.InviteCodeRefreshed);
     }
 
@@ -97,7 +97,7 @@ public class FamilyController : ControllerBase
     {
         // 验证请求者是该家庭成员，防止越权查看
         var userId = this.GetUserId();
-        var members = await _familyService.GetMembersAsync(id);
+        var members = await _familyService.GetMembersAsync(id, cancellationToken);
         if (!members.Any(m => m.UserId == userId))
             return ApiResponse<List<FamilyMemberResponse>>.Fail(ErrorMessages.Family.NotFamilyMember);
         return ApiResponse<List<FamilyMemberResponse>>.Ok(members);
@@ -111,7 +111,7 @@ public class FamilyController : ControllerBase
     public async Task<ApiResponse<List<FamilyMemberResponse>>> GetPendingMembers(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _familyService.GetPendingMembersAsync(id, userId);
+        var result = await _familyService.GetPendingMembersAsync(id, userId, cancellationToken);
         return ApiResponse<List<FamilyMemberResponse>>.Ok(result);
     }
 
@@ -123,7 +123,7 @@ public class FamilyController : ControllerBase
     public async Task<ApiResponse<object>> ApproveMember(Guid id, Guid memberId, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        await _familyService.ApproveMemberAsync(id, memberId, userId);
+        await _familyService.ApproveMemberAsync(id, memberId, userId, cancellationToken);
         return ApiResponse<object>.Ok(null!, SuccessMessages.Family.ApproveSuccess);
     }
 
@@ -135,7 +135,7 @@ public class FamilyController : ControllerBase
     public async Task<ApiResponse<object>> RejectMember(Guid id, Guid memberId, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        await _familyService.RejectMemberAsync(id, memberId, userId);
+        await _familyService.RejectMemberAsync(id, memberId, userId, cancellationToken);
         return ApiResponse<object>.Ok(null!, SuccessMessages.Family.RejectSuccess);
     }
 
@@ -144,7 +144,7 @@ public class FamilyController : ControllerBase
     public async Task<ApiResponse<object>> RemoveMember(Guid id, Guid userId, CancellationToken cancellationToken = default)
     {
         var currentUserId = this.GetUserId();
-        await _familyService.RemoveMemberAsync(id, userId, currentUserId);
+        await _familyService.RemoveMemberAsync(id, userId, currentUserId, cancellationToken);
         return ApiResponse<object>.Ok(null!, SuccessMessages.Family.RemoveSuccess);
     }
 }
