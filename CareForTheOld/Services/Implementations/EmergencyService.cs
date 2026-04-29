@@ -445,16 +445,18 @@ public class EmergencyService : IEmergencyService
 
         // 原子更新：只有 Status 仍为 Pending 时才更新，防止多子女并发覆盖
         var now = DateTime.UtcNow;
-        var updated = await _context.EmergencyCalls
-            .Where(c => c.Id == callId && c.Status == EmergencyStatus.Pending)
-            .ExecuteUpdateAsync(setters => setters
-                .SetProperty(c => c.Status, EmergencyStatus.Responded)
-                .SetProperty(c => c.RespondedBy, userId)
-                .SetProperty(c => c.RespondedByRealName, user.RealName)
-                .SetProperty(c => c.RespondedAt, now), cancellationToken);
+        var callToUpdate = await _context.EmergencyCalls
+            .AsTracking()
+            .FirstOrDefaultAsync(c => c.Id == callId && c.Status == EmergencyStatus.Pending, cancellationToken);
 
-        if (updated == 0)
+        if (callToUpdate == null)
             throw new InvalidOperationException(ErrorMessages.Emergency.CallAlreadyResponded);
+
+        callToUpdate.Status = EmergencyStatus.Responded;
+        callToUpdate.RespondedBy = userId;
+        callToUpdate.RespondedByRealName = user.RealName;
+        callToUpdate.RespondedAt = now;
+        await _context.SaveChangesAsync(cancellationToken);
 
         // 重新查询完整记录返回响应
         var respondedCall = await _context.EmergencyCalls

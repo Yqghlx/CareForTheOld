@@ -195,21 +195,27 @@ public class NeighborHelpService : INeighborHelpService
 
         // 原子更新：只有 Status 仍为 Pending 时才更新，防止多邻居并发接受
         var now = DateTime.UtcNow;
-        var updated = await _context.NeighborHelpRequests
-            .Where(r => r.Id == requestId && r.Status == HelpRequestStatus.Pending)
-            .ExecuteUpdateAsync(setters => setters
-                .SetProperty(r => r.Status, HelpRequestStatus.Accepted)
-                .SetProperty(r => r.ResponderId, responderId)
-                .SetProperty(r => r.RespondedAt, now), cancellationToken);
+        var requestToUpdate = await _context.NeighborHelpRequests
+            .AsTracking()
+            .FirstOrDefaultAsync(r => r.Id == requestId && r.Status == HelpRequestStatus.Pending, cancellationToken);
 
-        if (updated == 0)
+        if (requestToUpdate == null)
             throw new InvalidOperationException(ErrorMessages.NeighborHelp.InvalidStatus);
 
-        // 原子更新通知日志
-        await _context.HelpNotificationLogs
-            .Where(h => h.HelpRequestId == requestId && h.UserId == responderId)
-            .ExecuteUpdateAsync(setters => setters
-                .SetProperty(h => h.RespondedAt, now), cancellationToken);
+        requestToUpdate.Status = HelpRequestStatus.Accepted;
+        requestToUpdate.ResponderId = responderId;
+        requestToUpdate.RespondedAt = now;
+        await _context.SaveChangesAsync(cancellationToken);
+
+        // 更新通知日志
+        var notifyLog = await _context.HelpNotificationLogs
+            .AsTracking()
+            .FirstOrDefaultAsync(h => h.HelpRequestId == requestId && h.UserId == responderId, cancellationToken);
+        if (notifyLog != null)
+        {
+            notifyLog.RespondedAt = now;
+            await _context.SaveChangesAsync(cancellationToken);
+        }
 
         // 查询响应者信息
         var responder = await _context.Users.FindAsync([responderId], cancellationToken)
