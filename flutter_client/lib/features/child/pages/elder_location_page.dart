@@ -40,11 +40,10 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
 
   @override
   Widget build(BuildContext context) {
-    final familyState = ref.watch(familyProvider);
+    final familyId = ref.watch(familyProvider.select((s) => s.familyId));
+    final elderName = ref.watch(familyProvider
+        .select((s) => s.members.where((m) => m.userId == widget.elderId).firstOrNull?.realName)) ?? AppTheme.labelElder;
     final geoFenceState = ref.watch(elderGeoFenceProvider);
-    final familyId = familyState.familyId;
-    final elder = familyState.members.where((m) => m.userId == widget.elderId).firstOrNull;
-    final elderName = elder?.realName ?? AppTheme.labelElder;
 
     if (familyId == null) {
       return Scaffold(
