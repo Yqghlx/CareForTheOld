@@ -77,11 +77,17 @@ public class DeviceService : IDeviceService
     /// <inheritdoc />
     public async Task<int> DeleteTokensAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        var deleted = await _context.DeviceTokens
+        var tokens = await _context.DeviceTokens
             .Where(dt => dt.UserId == userId)
-            .ExecuteDeleteAsync(cancellationToken);
+            .ToListAsync(cancellationToken);
 
-        _logger.LogInformation("FCM token 已清除: 用户={UserId}, 数量={Count}", userId, deleted);
-        return deleted;
+        if (tokens.Count > 0)
+        {
+            _context.DeviceTokens.RemoveRange(tokens);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        _logger.LogInformation("FCM token 已清除: 用户={UserId}, 数量={Count}", userId, tokens.Count);
+        return tokens.Count;
     }
 }
