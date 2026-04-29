@@ -178,6 +178,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                         contentPadding: AppTheme.paddingAll16,
                       ),
                       keyboardType: TextInputType.phone,
+                      textInputAction: TextInputAction.next,
                       style: AppTheme.textBody18,
                       validator: FormValidators.phone,
                     ),
@@ -215,6 +216,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                         ),
                       ),
                       obscureText: _obscurePassword,
+                      textInputAction: TextInputAction.done,
                       style: AppTheme.textBody18,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
