@@ -30,24 +30,24 @@ public class TrustScoreService : ITrustScoreService
     }
 
     /// <inheritdoc />
-    public async Task<decimal> GetUserScoreAsync(Guid userId, Guid circleId)
+    public async Task<decimal> GetUserScoreAsync(Guid userId, Guid circleId, CancellationToken cancellationToken = default)
     {
         var score = await _context.TrustScores
             .Where(t => t.UserId == userId && t.CircleId == circleId)
             .Select(t => t.Score)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(cancellationToken);
 
         return score;
     }
 
     /// <inheritdoc />
-    public async Task<Dictionary<Guid, decimal>> GetUserScoresAsync(IEnumerable<Guid> userIds, Guid circleId)
+    public async Task<Dictionary<Guid, decimal>> GetUserScoresAsync(IEnumerable<Guid> userIds, Guid circleId, CancellationToken cancellationToken = default)
     {
         var userIdSet = userIds.ToHashSet();
         var scores = await _context.TrustScores
             .Where(t => t.CircleId == circleId && userIdSet.Contains(t.UserId))
             .Select(t => new { t.UserId, t.Score })
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         var result = userIdSet.ToDictionary(uid => uid, _ => 0m);
         foreach (var s in scores)
@@ -58,7 +58,7 @@ public class TrustScoreService : ITrustScoreService
     }
 
     /// <inheritdoc />
-    public async Task<IReadOnlyList<TrustScore>> GetCircleRankingAsync(Guid circleId, int top = AppConstants.Pagination.DefaultHistoryPageSize)
+    public async Task<IReadOnlyList<TrustScore>> GetCircleRankingAsync(Guid circleId, int top = AppConstants.Pagination.DefaultHistoryPageSize, CancellationToken cancellationToken = default)
     {
         return await _context.TrustScores
             .Include(t => t.User)
@@ -66,16 +66,16 @@ public class TrustScoreService : ITrustScoreService
             .OrderByDescending(t => t.Score)
             .ThenByDescending(t => t.TotalHelps)
             .Take(top)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
     /// <inheritdoc />
     [AutomaticRetry(Attempts = 2, DelaysInSeconds = new[] { 60 })]
-    public async Task RecalculateAllScoresAsync()
+    public async Task RecalculateAllScoresAsync(CancellationToken cancellationToken = default)
     {
         var allScores = await _context.TrustScores
             .AsTracking()
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         if (!allScores.Any())
         {
@@ -94,7 +94,7 @@ public class TrustScoreService : ITrustScoreService
                         r.Status == HelpRequestStatus.Accepted)
             .GroupBy(r => new { r.ResponderId, r.CircleId })
             .Select(g => new { g.Key.ResponderId, g.Key.CircleId, Count = g.Count() })
-            .ToDictionaryAsync(x => (x.ResponderId!.Value, x.CircleId), x => x.Count);
+            .ToDictionaryAsync(x => (x.ResponderId!.Value, x.CircleId), x => x.Count, cancellationToken);
 
         // 2. 每用户每圈子的平均评分
         var avgRatings = await _context.NeighborHelpRatings
@@ -106,7 +106,7 @@ public class TrustScoreService : ITrustScoreService
             .Where(x => circleIds.Contains(x.CircleId))
             .GroupBy(x => new { x.RateeId, x.CircleId })
             .Select(g => new { g.Key.RateeId, g.Key.CircleId, Avg = g.Average(x => (decimal?)x.Rating) ?? 0m })
-            .ToDictionaryAsync(x => (x.RateeId, x.CircleId), x => x.Avg);
+            .ToDictionaryAsync(x => (x.RateeId, x.CircleId), x => x.Avg, cancellationToken);
 
         // 3. 每用户每圈子的通知总数和响应数
         var notifiedCounts = await _context.HelpNotificationLogs
@@ -118,7 +118,7 @@ public class TrustScoreService : ITrustScoreService
             .Where(x => circleIds.Contains(x.CircleId))
             .GroupBy(x => new { x.UserId, x.CircleId })
             .Select(g => new { g.Key.UserId, g.Key.CircleId, Count = g.Count() })
-            .ToDictionaryAsync(x => (x.UserId, x.CircleId), x => x.Count);
+            .ToDictionaryAsync(x => (x.UserId, x.CircleId), x => x.Count, cancellationToken);
 
         var respondedCounts = await _context.HelpNotificationLogs
             .Where(h => userIds.Contains(h.UserId) && h.RespondedAt != null)
@@ -129,7 +129,7 @@ public class TrustScoreService : ITrustScoreService
             .Where(x => circleIds.Contains(x.CircleId))
             .GroupBy(x => new { x.UserId, x.CircleId })
             .Select(g => new { g.Key.UserId, g.Key.CircleId, Count = g.Count() })
-            .ToDictionaryAsync(x => (x.UserId, x.CircleId), x => x.Count);
+            .ToDictionaryAsync(x => (x.UserId, x.CircleId), x => x.Count, cancellationToken);
 
         // 内存中计算所有评分（无需额外数据库查询）
         foreach (var score in allScores)
@@ -158,16 +158,16 @@ public class TrustScoreService : ITrustScoreService
             score.UpdatedAt = now;
         }
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
         _logger.LogInformation("已完成 {Count} 条信任评分重算", allScores.Count);
     }
 
     /// <inheritdoc />
-    public async Task OnHelpCompletedAsync(Guid helpRequestId, Guid responderId)
+    public async Task OnHelpCompletedAsync(Guid helpRequestId, Guid responderId, CancellationToken cancellationToken = default)
     {
         // 查找求助请求获取 CircleId
         var helpRequest = await _context.NeighborHelpRequests
-            .FirstOrDefaultAsync(r => r.Id == helpRequestId);
+            .FirstOrDefaultAsync(r => r.Id == helpRequestId, cancellationToken);
 
         if (helpRequest == null)
         {
@@ -178,7 +178,7 @@ public class TrustScoreService : ITrustScoreService
         // Upsert TrustScore
         var score = await _context.TrustScores
             .AsTracking()
-            .FirstOrDefaultAsync(t => t.UserId == responderId && t.CircleId == helpRequest.CircleId);
+            .FirstOrDefaultAsync(t => t.UserId == responderId && t.CircleId == helpRequest.CircleId, cancellationToken);
 
         if (score == null)
         {
@@ -194,8 +194,8 @@ public class TrustScoreService : ITrustScoreService
 
         try
         {
-            await RecalculateSingleScoreAsync(score);
-            await _context.SaveChangesAsync();
+            await RecalculateSingleScoreAsync(score, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
         }
         catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex))
         {
@@ -205,10 +205,10 @@ public class TrustScoreService : ITrustScoreService
 
             score = await _context.TrustScores
                 .AsTracking()
-                .FirstAsync(t => t.UserId == responderId && t.CircleId == helpRequest.CircleId);
+                .FirstAsync(t => t.UserId == responderId && t.CircleId == helpRequest.CircleId, cancellationToken);
 
-            await RecalculateSingleScoreAsync(score);
-            await _context.SaveChangesAsync();
+            await RecalculateSingleScoreAsync(score, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         _logger.LogInformation(
@@ -219,13 +219,13 @@ public class TrustScoreService : ITrustScoreService
     /// <summary>
     /// 重算单个信任评分
     /// </summary>
-    private async Task RecalculateSingleScoreAsync(TrustScore score)
+    private async Task RecalculateSingleScoreAsync(TrustScore score, CancellationToken cancellationToken)
     {
         // 1. 统计完成互助次数
         var totalHelps = await _context.NeighborHelpRequests
             .CountAsync(r => r.ResponderId == score.UserId &&
                              r.CircleId == score.CircleId &&
-                             r.Status == HelpRequestStatus.Accepted);
+                             r.Status == HelpRequestStatus.Accepted, cancellationToken);
 
         // 2. 计算平均评分
         var avgRating = await _context.NeighborHelpRatings
@@ -235,7 +235,7 @@ public class TrustScoreService : ITrustScoreService
                 help => help.Id,
                 (rating, help) => new { rating.Rating, help.CircleId })
             .Where(x => x.CircleId == score.CircleId)
-            .AverageAsync(x => (decimal?)x.Rating) ?? 0m;
+            .AverageAsync(x => (decimal?)x.Rating, cancellationToken) ?? 0m;
 
         // 3. 计算响应率
         var totalNotified = await _context.HelpNotificationLogs
@@ -245,7 +245,7 @@ public class TrustScoreService : ITrustScoreService
                 help => help.Id,
                 (log, help) => help.CircleId)
             .Where(circleId => circleId == score.CircleId)
-            .CountAsync();
+            .CountAsync(cancellationToken);
 
         var totalResponded = await _context.HelpNotificationLogs
             .Where(h => h.UserId == score.UserId && h.RespondedAt != null)
@@ -254,7 +254,7 @@ public class TrustScoreService : ITrustScoreService
                 help => help.Id,
                 (log, help) => help.CircleId)
             .Where(circleId => circleId == score.CircleId)
-            .CountAsync();
+            .CountAsync(cancellationToken);
 
         var responseRate = totalNotified > 0
             ? (decimal)totalResponded / totalNotified

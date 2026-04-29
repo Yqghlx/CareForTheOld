@@ -29,10 +29,8 @@ public class NotificationService : INotificationService
         _logger = logger;
     }
 
-    /// <summary>
-    /// 向单个用户发送通知（Outbox Pattern 写入）
-    /// </summary>
-    public async Task SendToUserAsync(Guid userId, string type, object data)
+    /// <inheritdoc />
+    public async Task SendToUserAsync(Guid userId, string type, object data, CancellationToken cancellationToken = default)
     {
         var (title, content, payload) = ExtractNotificationData(data);
 
@@ -64,13 +62,13 @@ public class NotificationService : INotificationService
         _context.NotificationOutboxes.Add(outbox);
 
         // 同一事务中写入两张表，确保数据一致性
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         _logger.LogDebug("通知已写入：用户 {UserId}，类型 {Type}", userId, type);
     }
 
     /// <inheritdoc />
-    public async Task SendToUsersAsync(IEnumerable<Guid> userIds, string type, object data)
+    public async Task SendToUsersAsync(IEnumerable<Guid> userIds, string type, object data, CancellationToken cancellationToken = default)
     {
         var (title, content, payload) = ExtractNotificationData(data);
         var now = DateTime.UtcNow;
@@ -102,24 +100,20 @@ public class NotificationService : INotificationService
         }
 
         // 所有记录一次写入，避免循环中多次 SaveChanges 的 N+1 问题
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         _logger.LogDebug("批量通知已写入：{Count} 个用户，类型 {Type}", userIds.Count(), type);
     }
 
-    /// <summary>
-    /// 向家庭所有成员发送通知
-    /// </summary>
-    public async Task SendToFamilyAsync(Guid familyId, string type, object data)
+    /// <inheritdoc />
+    public async Task SendToFamilyAsync(Guid familyId, string type, object data, CancellationToken cancellationToken = default)
     {
         await _hubContext.Clients.Group(AppConstants.SignalRGroups.FamilyGroupName(familyId))
-            .SendAsync(AppConstants.SignalRMethods.ReceiveNotification, type, data);
+            .SendAsync(AppConstants.SignalRMethods.ReceiveNotification, type, data, cancellationToken);
     }
 
-    /// <summary>
-    /// 获取用户通知列表（分页）
-    /// </summary>
-    public async Task<List<NotificationResponse>> GetUserNotificationsAsync(Guid userId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize)
+    /// <inheritdoc />
+    public async Task<List<NotificationResponse>> GetUserNotificationsAsync(Guid userId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize, CancellationToken cancellationToken = default)
     {
         limit = Math.Clamp(limit, AppConstants.Pagination.MinPageSize, AppConstants.Pagination.MaxPageSize);
         return await _context.NotificationRecords
@@ -136,50 +130,44 @@ public class NotificationService : INotificationService
                 IsRead = n.IsRead,
                 CreatedAt = n.CreatedAt
             })
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// 获取用户未读通知数量
-    /// </summary>
-    public async Task<int> GetUnreadCountAsync(Guid userId)
+    /// <inheritdoc />
+    public async Task<int> GetUnreadCountAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         return await _context.NotificationRecords
-            .CountAsync(n => n.UserId == userId && !n.IsRead);
+            .CountAsync(n => n.UserId == userId && !n.IsRead, cancellationToken);
     }
 
-    /// <summary>
-    /// 标记单条通知为已读
-    /// </summary>
-    public async Task<bool> MarkAsReadAsync(Guid notificationId, Guid userId)
+    /// <inheritdoc />
+    public async Task<bool> MarkAsReadAsync(Guid notificationId, Guid userId, CancellationToken cancellationToken = default)
     {
         var notification = await _context.NotificationRecords
             .AsTracking()
-            .FirstOrDefaultAsync(n => n.Id == notificationId && n.UserId == userId);
+            .FirstOrDefaultAsync(n => n.Id == notificationId && n.UserId == userId, cancellationToken);
 
         if (notification == null) return false;
 
         notification.IsRead = true;
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
         return true;
     }
 
-    /// <summary>
-    /// 标记用户所有通知为已读
-    /// </summary>
-    public async Task MarkAllAsReadAsync(Guid userId)
+    /// <inheritdoc />
+    public async Task MarkAllAsReadAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         var unreadNotifications = await _context.NotificationRecords
             .AsTracking()
             .Where(n => n.UserId == userId && !n.IsRead)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         foreach (var notification in unreadNotifications)
         {
             notification.IsRead = true;
         }
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
     /// <summary>

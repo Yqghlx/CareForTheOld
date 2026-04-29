@@ -38,7 +38,7 @@ public class GeoFenceController : ControllerBase
     public async Task<ApiResponse<GeoFenceResponse>> CreateFence([FromBody] CreateGeoFenceRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _geoFenceService.CreateFenceAsync(userId, request);
+        var result = await _geoFenceService.CreateFenceAsync(userId, request, cancellationToken);
         return ApiResponse<GeoFenceResponse>.Ok(result, SuccessMessages.GeoFence.CreateSuccess);
     }
 
@@ -56,7 +56,7 @@ public class GeoFenceController : ControllerBase
         if (userFamilyId == null || elderFamilyId == null || userFamilyId.Id != elderFamilyId.Id)
             return ApiResponse<GeoFenceResponse?>.Fail(ErrorMessages.GeoFence.NoPermissionToView);
 
-        var result = await _geoFenceService.GetElderFenceAsync(elderId);
+        var result = await _geoFenceService.GetElderFenceAsync(elderId, cancellationToken);
         return ApiResponse<GeoFenceResponse?>.Ok(result);
     }
 
@@ -67,7 +67,7 @@ public class GeoFenceController : ControllerBase
     public async Task<ApiResponse<GeoFenceResponse>> UpdateFence(Guid id, [FromBody] CreateGeoFenceRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _geoFenceService.UpdateFenceAsync(id, userId, request);
+        var result = await _geoFenceService.UpdateFenceAsync(id, userId, request, cancellationToken);
         return ApiResponse<GeoFenceResponse>.Ok(result, SuccessMessages.GeoFence.UpdateSuccess);
     }
 
@@ -78,7 +78,7 @@ public class GeoFenceController : ControllerBase
     public async Task<ApiResponse<object>> DeleteFence(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        await _geoFenceService.DeleteFenceAsync(id, userId);
+        await _geoFenceService.DeleteFenceAsync(id, userId, cancellationToken);
         return ApiResponse<object>.Ok(null!, SuccessMessages.GeoFence.DeleteSuccess);
     }
 }

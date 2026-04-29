@@ -9,17 +9,17 @@ namespace CareForTheOld.Services.Interfaces;
 public interface ITrustScoreService
 {
     /// <summary>获取用户在指定圈的信任评分</summary>
-    Task<decimal> GetUserScoreAsync(Guid userId, Guid circleId);
+    Task<decimal> GetUserScoreAsync(Guid userId, Guid circleId, CancellationToken cancellationToken = default);
 
     /// <summary>批量获取多个用户在指定圈的信任评分</summary>
-    Task<Dictionary<Guid, decimal>> GetUserScoresAsync(IEnumerable<Guid> userIds, Guid circleId);
+    Task<Dictionary<Guid, decimal>> GetUserScoresAsync(IEnumerable<Guid> userIds, Guid circleId, CancellationToken cancellationToken = default);
 
     /// <summary>获取圈内信任排行榜</summary>
-    Task<IReadOnlyList<TrustScore>> GetCircleRankingAsync(Guid circleId, int top = AppConstants.Pagination.DefaultHistoryPageSize);
+    Task<IReadOnlyList<TrustScore>> GetCircleRankingAsync(Guid circleId, int top = AppConstants.Pagination.DefaultHistoryPageSize, CancellationToken cancellationToken = default);
 
     /// <summary>重新计算所有信任评分（Hangfire 每日定时调用）</summary>
-    Task RecalculateAllScoresAsync();
+    Task RecalculateAllScoresAsync(CancellationToken cancellationToken = default);
 
     /// <summary>互助完成后即时更新评分</summary>
-    Task OnHelpCompletedAsync(Guid helpRequestId, Guid responderId);
+    Task OnHelpCompletedAsync(Guid helpRequestId, Guid responderId, CancellationToken cancellationToken = default);
 }

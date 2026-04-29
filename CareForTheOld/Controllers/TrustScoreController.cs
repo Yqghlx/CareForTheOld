@@ -42,9 +42,9 @@ public class TrustScoreController : ControllerBase
     public async Task<ApiResponse<object>> GetRanking(Guid circleId, [FromQuery, Range(1, 100)] int top = AppConstants.Pagination.DefaultHistoryPageSize, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        await _circleService.EnsureCircleMemberAsync(circleId, userId);
+        await _circleService.EnsureCircleMemberAsync(circleId, userId, cancellationToken);
 
-        var rankings = await _trustScoreService.GetCircleRankingAsync(circleId, top);
+        var rankings = await _trustScoreService.GetCircleRankingAsync(circleId, top, cancellationToken);
         var result = rankings.Select((r, index) => new
         {
             Rank = index + 1,
@@ -66,9 +66,9 @@ public class TrustScoreController : ControllerBase
     public async Task<ApiResponse<object>> GetMyScore(Guid circleId, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        await _circleService.EnsureCircleMemberAsync(circleId, userId);
+        await _circleService.EnsureCircleMemberAsync(circleId, userId, cancellationToken);
 
-        var score = await _trustScoreService.GetUserScoreAsync(userId, circleId);
+        var score = await _trustScoreService.GetUserScoreAsync(userId, circleId, cancellationToken);
         return ApiResponse<object>.Ok(new { Score = Math.Round(score, AppConstants.TrustScore.DisplayDecimalPlaces) });
     }
 }

@@ -29,13 +29,13 @@ public class NeighborCircleService : INeighborCircleService
     }
 
     /// <inheritdoc />
-    public async Task<NeighborCircleResponse> CreateCircleAsync(Guid creatorId, CreateNeighborCircleRequest request)
+    public async Task<NeighborCircleResponse> CreateCircleAsync(Guid creatorId, CreateNeighborCircleRequest request, CancellationToken cancellationToken = default)
     {
         // 一个用户同一时间只能加入一个邻里圈
-        if (await _context.NeighborCircleMembers.AnyAsync(m => m.UserId == creatorId))
+        if (await _context.NeighborCircleMembers.AnyAsync(m => m.UserId == creatorId, cancellationToken))
             throw new ArgumentException(ErrorMessages.NeighborCircle.AlreadyInCircleCreate);
 
-        var creator = await _context.Users.FindAsync(creatorId)
+        var creator = await _context.Users.FindAsync([creatorId], cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
         var circle = new NeighborCircle
@@ -67,7 +67,7 @@ public class NeighborCircleService : INeighborCircleService
 
         try
         {
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
         catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex))
         {
@@ -75,40 +75,40 @@ public class NeighborCircleService : INeighborCircleService
         }
 
         _logger.LogInformation("邻里圈已创建：圈子 {CircleId}，圈主 {CreatorId}，名称 {CircleName}", circle.Id, creatorId, request.CircleName);
-        return await BuildCircleResponse(circle.Id);
+        return await BuildCircleResponse(circle.Id, cancellationToken);
     }
 
     /// <inheritdoc />
-    public async Task<NeighborCircleResponse?> GetMyCircleAsync(Guid userId)
+    public async Task<NeighborCircleResponse?> GetMyCircleAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         var membership = await _context.NeighborCircleMembers
-            .FirstOrDefaultAsync(m => m.UserId == userId);
+            .FirstOrDefaultAsync(m => m.UserId == userId, cancellationToken);
 
         if (membership == null)
             return null;
 
-        return await BuildCircleResponse(membership.CircleId);
+        return await BuildCircleResponse(membership.CircleId, cancellationToken);
     }
 
     /// <inheritdoc />
-    public async Task<NeighborCircleResponse> GetCircleAsync(Guid circleId)
+    public async Task<NeighborCircleResponse> GetCircleAsync(Guid circleId, CancellationToken cancellationToken = default)
     {
-        return await BuildCircleResponse(circleId);
+        return await BuildCircleResponse(circleId, cancellationToken);
     }
 
     /// <inheritdoc />
-    public async Task<NeighborCircleResponse> JoinCircleByCodeAsync(Guid userId, JoinNeighborCircleRequest request)
+    public async Task<NeighborCircleResponse> JoinCircleByCodeAsync(Guid userId, JoinNeighborCircleRequest request, CancellationToken cancellationToken = default)
     {
         // 检查用户是否已在某个圈子中
-        if (await _context.NeighborCircleMembers.AnyAsync(m => m.UserId == userId))
+        if (await _context.NeighborCircleMembers.AnyAsync(m => m.UserId == userId, cancellationToken))
             throw new ArgumentException(ErrorMessages.NeighborCircle.AlreadyInCircleJoin);
 
-        var user = await _context.Users.FindAsync(userId)
+        var user = await _context.Users.FindAsync([userId], cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
         // 根据邀请码查找活跃的圈子
         var circle = await _context.NeighborCircles
-            .FirstOrDefaultAsync(c => c.InviteCode == request.InviteCode && c.IsActive)
+            .FirstOrDefaultAsync(c => c.InviteCode == request.InviteCode && c.IsActive, cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.NeighborCircle.InvalidInviteCode);
 
         // 验证邀请码是否过期
@@ -117,7 +117,7 @@ public class NeighborCircleService : INeighborCircleService
 
         // 检查成员上限
         var memberCount = await _context.NeighborCircleMembers
-            .CountAsync(m => m.CircleId == circle.Id);
+            .CountAsync(m => m.CircleId == circle.Id, cancellationToken);
 
         if (memberCount >= circle.MaxMembers)
             throw new ArgumentException(ErrorMessages.NeighborCircle.CircleFull);
@@ -134,7 +134,7 @@ public class NeighborCircleService : INeighborCircleService
 
         try
         {
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
         catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex))
         {
@@ -142,16 +142,16 @@ public class NeighborCircleService : INeighborCircleService
         }
 
         _logger.LogInformation("用户 {UserId} 加入邻里圈：圈子 {CircleId}", userId, circle.Id);
-        return await BuildCircleResponse(circle.Id);
+        return await BuildCircleResponse(circle.Id, cancellationToken);
     }
 
     /// <inheritdoc />
-    public async Task LeaveCircleAsync(Guid circleId, Guid userId)
+    public async Task LeaveCircleAsync(Guid circleId, Guid userId, CancellationToken cancellationToken = default)
     {
         var circle = await _context.NeighborCircles
             .AsTracking()
             .Include(c => c.Members)
-            .FirstOrDefaultAsync(c => c.Id == circleId)
+            .FirstOrDefaultAsync(c => c.Id == circleId, cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.NeighborCircle.CircleNotFound);
 
         var member = circle.Members.FirstOrDefault(m => m.UserId == userId)
@@ -168,12 +168,12 @@ public class NeighborCircleService : INeighborCircleService
             _context.NeighborCircleMembers.Remove(member);
         }
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
         _logger.LogInformation("用户 {UserId} 退出邻里圈：圈子 {CircleId}，是否圈主：{IsCreator}", userId, circleId, circle.CreatorId == userId);
     }
 
     /// <inheritdoc />
-    public async Task<List<NeighborMemberResponse>> GetMembersAsync(Guid circleId)
+    public async Task<List<NeighborMemberResponse>> GetMembersAsync(Guid circleId, CancellationToken cancellationToken = default)
     {
         return await _context.NeighborCircleMembers
             .Include(m => m.User)
@@ -187,25 +187,25 @@ public class NeighborCircleService : INeighborCircleService
                 AvatarUrl = m.User != null ? m.User.AvatarUrl : null,
                 JoinedAt = m.JoinedAt
             })
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
     /// <inheritdoc />
     public async Task<List<NeighborMemberResponse>> GetNearbyMembersAsync(
-        Guid circleId, double latitude, double longitude, double radiusMeters = AppConstants.NeighborCircle.DefaultMemberRadiusMeters)
+        Guid circleId, double latitude, double longitude, double radiusMeters = AppConstants.NeighborCircle.DefaultMemberRadiusMeters, CancellationToken cancellationToken = default)
     {
         // 先获取圈子所有成员，再用最近位置记录计算距离
         var memberIds = await _context.NeighborCircleMembers
             .Where(m => m.CircleId == circleId)
             .Select(m => m.UserId)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         // 获取每个成员最近的位置记录
         var recentLocations = await _context.LocationRecords
             .GroupBy(l => l.UserId)
             .Where(g => memberIds.Contains(g.Key))
             .Select(g => g.OrderByDescending(l => l.RecordedAt).First())
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         // 粗筛 + Haversine 精算
         var nearbyUserIds = new List<Guid>();
@@ -246,7 +246,7 @@ public class NeighborCircleService : INeighborCircleService
                 AvatarUrl = m.User != null ? m.User.AvatarUrl : null,
                 JoinedAt = m.JoinedAt
             })
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         // 附加距离信息
         foreach (var m in members)
@@ -258,7 +258,7 @@ public class NeighborCircleService : INeighborCircleService
 
     /// <inheritdoc />
     public async Task<List<NeighborCircleResponse>> SearchNearbyCirclesAsync(
-        double latitude, double longitude, double radiusMeters = AppConstants.NeighborCircle.SearchRadiusMeters, int maxResults = AppConstants.NeighborCircle.SearchMaxResults)
+        double latitude, double longitude, double radiusMeters = AppConstants.NeighborCircle.SearchRadiusMeters, int maxResults = AppConstants.NeighborCircle.SearchMaxResults, CancellationToken cancellationToken = default)
     {
         // 计算最大搜索范围阈值（取最大圈子半径 + 搜索半径对应的经纬度偏移）
         // 用于在数据库层面粗筛，避免加载所有活跃圈子到内存
@@ -272,7 +272,7 @@ public class NeighborCircleService : INeighborCircleService
                 && c.CenterLatitude <= latitude + latThreshold
                 && c.CenterLongitude >= longitude - lngThreshold
                 && c.CenterLongitude <= longitude + lngThreshold)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         var results = new List<(NeighborCircle Circle, double Distance)>();
 
@@ -300,7 +300,7 @@ public class NeighborCircleService : INeighborCircleService
             .Where(m => circleIds.Contains(m.CircleId))
             .GroupBy(m => m.CircleId)
             .Select(g => new { CircleId = g.Key, Count = g.Count() })
-            .ToDictionaryAsync(x => x.CircleId, x => x.Count);
+            .ToDictionaryAsync(x => x.CircleId, x => x.Count, cancellationToken);
 
         return topResults.Select(r => new NeighborCircleResponse
         {
@@ -320,13 +320,13 @@ public class NeighborCircleService : INeighborCircleService
     }
 
     /// <inheritdoc />
-    public async Task<NeighborCircleResponse> RefreshInviteCodeAsync(Guid circleId, Guid operatorId)
+    public async Task<NeighborCircleResponse> RefreshInviteCodeAsync(Guid circleId, Guid operatorId, CancellationToken cancellationToken = default)
     {
-        await EnsureCircleMemberAsync(circleId, operatorId);
+        await EnsureCircleMemberAsync(circleId, operatorId, cancellationToken);
 
         var circle = await _context.NeighborCircles
             .AsTracking()
-            .FirstOrDefaultAsync(c => c.Id == circleId)
+            .FirstOrDefaultAsync(c => c.Id == circleId, cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.NeighborCircle.CircleNotFound);
 
         if (circle.CreatorId != operatorId)
@@ -340,7 +340,7 @@ public class NeighborCircleService : INeighborCircleService
         {
             try
             {
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
                 break;
             }
             catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex) && attempt < 2)
@@ -349,14 +349,14 @@ public class NeighborCircleService : INeighborCircleService
             }
         }
 
-        return await BuildCircleResponse(circleId);
+        return await BuildCircleResponse(circleId, cancellationToken);
     }
 
     /// <inheritdoc />
-    public async Task EnsureCircleMemberAsync(Guid circleId, Guid userId)
+    public async Task EnsureCircleMemberAsync(Guid circleId, Guid userId, CancellationToken cancellationToken = default)
     {
         if (!await _context.NeighborCircleMembers
-                .AnyAsync(m => m.CircleId == circleId && m.UserId == userId))
+                .AnyAsync(m => m.CircleId == circleId && m.UserId == userId, cancellationToken))
             throw new UnauthorizedAccessException(ErrorMessages.NeighborCircle.NotCircleMember);
     }
 
@@ -368,7 +368,7 @@ public class NeighborCircleService : INeighborCircleService
     /// <summary>
     /// 构建邻里圈响应（含创建者名称和成员数），使用投影减少数据库交互
     /// </summary>
-    private async Task<NeighborCircleResponse> BuildCircleResponse(Guid circleId)
+    private async Task<NeighborCircleResponse> BuildCircleResponse(Guid circleId, CancellationToken cancellationToken = default)
     {
         return await _context.NeighborCircles
             .Where(c => c.Id == circleId)
@@ -387,6 +387,6 @@ public class NeighborCircleService : INeighborCircleService
                 IsActive = c.IsActive,
                 CreatedAt = c.CreatedAt
             })
-            .FirstAsync();
+            .FirstAsync(cancellationToken);
     }
 }

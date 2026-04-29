@@ -37,7 +37,7 @@ public class NeighborCircleController : ControllerBase
     public async Task<ApiResponse<NeighborCircleResponse?>> GetMyCircle(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _circleService.GetMyCircleAsync(userId);
+        var result = await _circleService.GetMyCircleAsync(userId, cancellationToken);
         return ApiResponse<NeighborCircleResponse?>.Ok(result);
     }
 
@@ -48,7 +48,7 @@ public class NeighborCircleController : ControllerBase
     public async Task<ApiResponse<NeighborCircleResponse>> Create([FromBody] CreateNeighborCircleRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _circleService.CreateCircleAsync(userId, request);
+        var result = await _circleService.CreateCircleAsync(userId, request, cancellationToken);
         return ApiResponse<NeighborCircleResponse>.Ok(result, SuccessMessages.NeighborCircle.CreateSuccess);
     }
 
@@ -60,9 +60,9 @@ public class NeighborCircleController : ControllerBase
     public async Task<ApiResponse<NeighborCircleResponse>> GetCircle(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        await _circleService.EnsureCircleMemberAsync(id, userId);
+        await _circleService.EnsureCircleMemberAsync(id, userId, cancellationToken);
 
-        var result = await _circleService.GetCircleAsync(id);
+        var result = await _circleService.GetCircleAsync(id, cancellationToken);
         return ApiResponse<NeighborCircleResponse>.Ok(result);
     }
 
@@ -74,9 +74,9 @@ public class NeighborCircleController : ControllerBase
     public async Task<ApiResponse<List<NeighborMemberResponse>>> GetMembers(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        await _circleService.EnsureCircleMemberAsync(id, userId);
+        await _circleService.EnsureCircleMemberAsync(id, userId, cancellationToken);
 
-        var result = await _circleService.GetMembersAsync(id);
+        var result = await _circleService.GetMembersAsync(id, cancellationToken);
         return ApiResponse<List<NeighborMemberResponse>>.Ok(result);
     }
 
@@ -89,9 +89,9 @@ public class NeighborCircleController : ControllerBase
         Guid id, [FromQuery, Range(-90.0, 90.0)] double latitude, [FromQuery, Range(-180.0, 180.0)] double longitude, [FromQuery] double radius = AppConstants.NeighborCircle.DefaultMemberRadiusMeters, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        await _circleService.EnsureCircleMemberAsync(id, userId);
+        await _circleService.EnsureCircleMemberAsync(id, userId, cancellationToken);
 
-        var result = await _circleService.GetNearbyMembersAsync(id, latitude, longitude, radius);
+        var result = await _circleService.GetNearbyMembersAsync(id, latitude, longitude, radius, cancellationToken);
         return ApiResponse<List<NeighborMemberResponse>>.Ok(result);
     }
 
@@ -103,7 +103,7 @@ public class NeighborCircleController : ControllerBase
     public async Task<ApiResponse<NeighborCircleResponse>> Join([FromBody] JoinNeighborCircleRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _circleService.JoinCircleByCodeAsync(userId, request);
+        var result = await _circleService.JoinCircleByCodeAsync(userId, request, cancellationToken);
         return ApiResponse<NeighborCircleResponse>.Ok(result, SuccessMessages.NeighborCircle.JoinSuccess);
     }
 
@@ -114,7 +114,7 @@ public class NeighborCircleController : ControllerBase
     public async Task<ApiResponse<object>> Leave(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        await _circleService.LeaveCircleAsync(id, userId);
+        await _circleService.LeaveCircleAsync(id, userId, cancellationToken);
         return ApiResponse<object>.Ok(null!, SuccessMessages.NeighborCircle.LeaveSuccess);
     }
 
@@ -125,7 +125,7 @@ public class NeighborCircleController : ControllerBase
     public async Task<ApiResponse<NeighborCircleResponse>> RefreshInviteCode(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _circleService.RefreshInviteCodeAsync(id, userId);
+        var result = await _circleService.RefreshInviteCodeAsync(id, userId, cancellationToken);
         return ApiResponse<NeighborCircleResponse>.Ok(result, SuccessMessages.NeighborCircle.InviteCodeRefreshed);
     }
 
@@ -137,7 +137,7 @@ public class NeighborCircleController : ControllerBase
     public async Task<ApiResponse<List<NeighborCircleResponse>>> SearchNearby(
         [FromQuery, Range(-90.0, 90.0)] double latitude, [FromQuery, Range(-180.0, 180.0)] double longitude, [FromQuery] double radius = AppConstants.NeighborCircle.SearchRadiusMeters, CancellationToken cancellationToken = default)
     {
-        var result = await _circleService.SearchNearbyCirclesAsync(latitude, longitude, radius);
+        var result = await _circleService.SearchNearbyCirclesAsync(latitude, longitude, radius, cancellationToken: cancellationToken);
         return ApiResponse<List<NeighborCircleResponse>>.Ok(result);
     }
 }

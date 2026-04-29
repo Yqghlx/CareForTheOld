@@ -45,15 +45,15 @@ public class GeoFenceService : IGeoFenceService
     /// <summary>
     /// 创建电子围栏（需验证是否为老人的家庭成员）
     /// </summary>
-    public async Task<GeoFenceResponse> CreateFenceAsync(Guid creatorId, CreateGeoFenceRequest request)
+    public async Task<GeoFenceResponse> CreateFenceAsync(Guid creatorId, CreateGeoFenceRequest request, CancellationToken cancellationToken = default)
     {
         // 验证创建者是否是老人的家庭成员
-        await _familyService.EnsureFamilyMemberAsync(request.ElderId, creatorId);
+        await _familyService.EnsureFamilyMemberAsync(request.ElderId, creatorId, cancellationToken);
 
         // 检查老人是否已存在围栏（一个老人只能有一个围栏）
         var existingFence = await _context.GeoFences
             .AsTracking()
-            .FirstOrDefaultAsync(f => f.ElderId == request.ElderId);
+            .FirstOrDefaultAsync(f => f.ElderId == request.ElderId, cancellationToken);
 
         if (existingFence != null)
         {
@@ -64,7 +64,7 @@ public class GeoFenceService : IGeoFenceService
             existingFence.IsEnabled = request.IsEnabled;
             existingFence.CreatedBy = creatorId;
             existingFence.UpdatedAt = DateTime.UtcNow;
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             await InvalidateCacheAsync(request.ElderId);
             _logger.LogInformation("电子围栏已更新：老人 {ElderId}，操作者 {OperatorId}", request.ElderId, creatorId);
             return MapToResponse(existingFence);
@@ -85,7 +85,7 @@ public class GeoFenceService : IGeoFenceService
         };
 
         _context.GeoFences.Add(fence);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
         await InvalidateCacheAsync(request.ElderId);
         _logger.LogInformation("电子围栏已创建：老人 {ElderId}，操作者 {OperatorId}，半径 {Radius}m", request.ElderId, creatorId, request.Radius);
 
@@ -95,11 +95,11 @@ public class GeoFenceService : IGeoFenceService
     /// <summary>
     /// 获取老人的电子围栏
     /// </summary>
-    public async Task<GeoFenceResponse?> GetElderFenceAsync(Guid elderId)
+    public async Task<GeoFenceResponse?> GetElderFenceAsync(Guid elderId, CancellationToken cancellationToken = default)
     {
         var fence = await _context.GeoFences
             .Include(f => f.Elder)
-            .FirstOrDefaultAsync(f => f.ElderId == elderId);
+            .FirstOrDefaultAsync(f => f.ElderId == elderId, cancellationToken);
 
         return fence == null ? null : MapToResponse(fence);
     }
@@ -107,16 +107,16 @@ public class GeoFenceService : IGeoFenceService
     /// <summary>
     /// 更新电子围栏
     /// </summary>
-    public async Task<GeoFenceResponse> UpdateFenceAsync(Guid fenceId, Guid operatorId, CreateGeoFenceRequest request)
+    public async Task<GeoFenceResponse> UpdateFenceAsync(Guid fenceId, Guid operatorId, CreateGeoFenceRequest request, CancellationToken cancellationToken = default)
     {
         var fence = await _context.GeoFences
             .AsTracking()
             .Include(f => f.Elder)
-            .FirstOrDefaultAsync(f => f.Id == fenceId)
+            .FirstOrDefaultAsync(f => f.Id == fenceId, cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.GeoFence.NotFound);
 
         // 验证操作者是否是创建者或家庭成员
-        var isFamilyMember = await IsInSameFamilyAsync(operatorId, fence.ElderId);
+        var isFamilyMember = await IsInSameFamilyAsync(operatorId, fence.ElderId, cancellationToken);
 
         if (fence.CreatedBy != operatorId && !isFamilyMember)
             throw new UnauthorizedAccessException(ErrorMessages.GeoFence.NoPermissionToEdit);
@@ -127,7 +127,7 @@ public class GeoFenceService : IGeoFenceService
         fence.IsEnabled = request.IsEnabled;
         fence.UpdatedAt = DateTime.UtcNow;
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
         await InvalidateCacheAsync(fence.ElderId);
         _logger.LogInformation("电子围栏已更新：围栏 {FenceId}，操作者 {OperatorId}", fenceId, operatorId);
 
@@ -137,21 +137,21 @@ public class GeoFenceService : IGeoFenceService
     /// <summary>
     /// 删除电子围栏
     /// </summary>
-    public async Task DeleteFenceAsync(Guid fenceId, Guid operatorId)
+    public async Task DeleteFenceAsync(Guid fenceId, Guid operatorId, CancellationToken cancellationToken = default)
     {
         var fence = await _context.GeoFences
             .AsTracking()
-            .FirstOrDefaultAsync(f => f.Id == fenceId)
+            .FirstOrDefaultAsync(f => f.Id == fenceId, cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.GeoFence.NotFound);
 
         // 验证操作者是否是创建者或家庭成员
-        var isFamilyMember = await IsInSameFamilyAsync(operatorId, fence.ElderId);
+        var isFamilyMember = await IsInSameFamilyAsync(operatorId, fence.ElderId, cancellationToken);
 
         if (fence.CreatedBy != operatorId && !isFamilyMember)
             throw new UnauthorizedAccessException(ErrorMessages.GeoFence.NoPermissionToDelete);
 
         _context.GeoFences.Remove(fence);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
         await InvalidateCacheAsync(fence.ElderId);
         _logger.LogInformation("电子围栏已删除：围栏 {FenceId}，老人 {ElderId}，操作者 {OperatorId}", fenceId, fence.ElderId, operatorId);
     }
@@ -162,7 +162,7 @@ public class GeoFenceService : IGeoFenceService
     /// 位置上报是高频操作（每 5 分钟一次），围栏数据变更频率极低。
     /// 将围栏数据缓存至 Redis 后，位置校验无需查询数据库，响应时间降低一个数量级。
     /// </summary>
-    public async Task<(GeoFenceResponse? fence, double distance)?> CheckOutsideFenceAsync(Guid userId, double latitude, double longitude)
+    public async Task<(GeoFenceResponse? fence, double distance)?> CheckOutsideFenceAsync(Guid userId, double latitude, double longitude, CancellationToken cancellationToken = default)
     {
         var cacheKey = $"{_cacheKeyPrefix}{userId}";
 
@@ -174,7 +174,7 @@ public class GeoFenceService : IGeoFenceService
                 // 缓存未命中：从数据库加载
                 var fence = await _context.GeoFences
                     .Include(f => f.Elder)
-                    .FirstOrDefaultAsync(f => f.ElderId == userId && f.IsEnabled);
+                    .FirstOrDefaultAsync(f => f.ElderId == userId && f.IsEnabled, cancellationToken);
 
                 if (fence == null) return null;
 
@@ -250,12 +250,12 @@ public class GeoFenceService : IGeoFenceService
     /// <summary>
     /// 检查两个用户是否在同一家庭（使用 JOIN 单次查询）
     /// </summary>
-    private async Task<bool> IsInSameFamilyAsync(Guid userId1, Guid userId2)
+    private async Task<bool> IsInSameFamilyAsync(Guid userId1, Guid userId2, CancellationToken cancellationToken = default)
     {
         return await _context.FamilyMembers
             .Where(fm1 => fm1.UserId == userId1)
             .AnyAsync(fm1 => _context.FamilyMembers
-                .Any(fm2 => fm2.UserId == userId2 && fm2.FamilyId == fm1.FamilyId));
+                .Any(fm2 => fm2.UserId == userId2 && fm2.FamilyId == fm1.FamilyId), cancellationToken);
     }
 
     /// <summary>
