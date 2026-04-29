@@ -8,8 +8,8 @@ public interface IUserService
     /// <summary>获取当前用户信息</summary>
     Task<UserResponse> GetCurrentUserAsync(Guid userId, CancellationToken cancellationToken = default);
 
-    /// <summary>根据 ID 获取用户信息</summary>
-    Task<UserResponse> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken = default);
+    /// <summary>根据 ID 获取用户信息（非本人手机号脱敏）</summary>
+    Task<UserResponse> GetUserByIdAsync(Guid userId, Guid requesterId, CancellationToken cancellationToken = default);
 
     /// <summary>更新用户信息（昵称、头像URL）</summary>
     Task<UserResponse> UpdateUserAsync(Guid userId, UpdateUserRequest request, CancellationToken cancellationToken = default);

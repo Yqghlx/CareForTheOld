@@ -125,7 +125,7 @@ public class UserController : ControllerBase
             // 非本人查询：由服务层校验家庭成员关系
             await _userService.EnsureFamilyMemberAsync(currentUserId, id, cancellationToken);
         }
-        var result = await _userService.GetUserByIdAsync(id, cancellationToken);
+        var result = await _userService.GetUserByIdAsync(id, currentUserId, cancellationToken);
         return ApiResponse<UserResponse>.Ok(result);
     }
 }

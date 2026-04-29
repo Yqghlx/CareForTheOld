@@ -1,4 +1,5 @@
 using CareForTheOld.Common.Constants;
+using CareForTheOld.Common.Extensions;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Requests.Users;
 using CareForTheOld.Models.DTOs.Responses;
@@ -29,10 +30,21 @@ public class UserService : IUserService
         => await MapToResponse(userId, cancellationToken) ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
     /// <summary>
-    /// 根据用户 ID 获取用户信息
+    /// 根据用户 ID 获取用户信息（非本人手机号脱敏）
     /// </summary>
-    public async Task<UserResponse> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken = default)
-        => await MapToResponse(userId, cancellationToken) ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
+    public async Task<UserResponse> GetUserByIdAsync(Guid userId, Guid requesterId, CancellationToken cancellationToken = default)
+    {
+        var response = await MapToResponse(userId, cancellationToken)
+            ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
+
+        // 非本人查看时脱敏手机号
+        if (userId != requesterId)
+        {
+            response.PhoneNumber = response.PhoneNumber.MaskPhoneNumber();
+        }
+
+        return response;
+    }
 
     /// <summary>
     /// 更新用户信息：支持修改昵称和头像 URL

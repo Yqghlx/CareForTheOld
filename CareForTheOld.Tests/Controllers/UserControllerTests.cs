@@ -119,7 +119,7 @@ public class UserControllerTests
         var expected = new UserResponse { Id = _userId, RealName = "本人" };
 
         _mockUserService
-            .Setup(s => s.GetUserByIdAsync(_userId))
+            .Setup(s => s.GetUserByIdAsync(_userId, _userId))
             .ReturnsAsync(expected);
 
         // Act
@@ -144,7 +144,7 @@ public class UserControllerTests
         _mockUserService
             .Setup(s => s.EnsureFamilyMemberAsync(_userId, otherUserId));
         _mockUserService
-            .Setup(s => s.GetUserByIdAsync(otherUserId))
+            .Setup(s => s.GetUserByIdAsync(otherUserId, _userId))
             .ReturnsAsync(expected);
 
         // Act
