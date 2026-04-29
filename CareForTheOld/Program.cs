@@ -343,6 +343,19 @@ builder.Services.AddRateLimiter(options =>
                 QueueLimit = 0
             }));
 
+    // 健康数据写入限流：每用户每分钟，防止恶意刷量
+    options.AddPolicy("HealthWritePolicy", context =>
+        RateLimitPartition.GetSlidingWindowLimiter(
+            partitionKey: context.User?.FindFirst("sub")?.Value ?? context.GetClientIp(),
+            factory: _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = builder.Configuration.GetValue(ConfigurationKeys.RateLimit.HealthWritePermitLimit, 20),
+                Window = TimeSpan.FromSeconds(builder.Configuration.GetValue(ConfigurationKeys.RateLimit.HealthWriteWindow, 60)),
+                SegmentsPerWindow = 2,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0
+            }));
+
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 
     // 限流触发时记录安全事件日志

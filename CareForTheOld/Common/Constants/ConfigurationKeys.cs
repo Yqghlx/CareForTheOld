@@ -116,5 +116,7 @@ public static class ConfigurationKeys
         public const string EmergencyWindow = "RateLimit:EmergencyWindow";
         public const string HealthPermitLimit = "RateLimit:HealthPermitLimit";
         public const string HealthWindow = "RateLimit:HealthWindow";
+        public const string HealthWritePermitLimit = "RateLimit:HealthWritePermitLimit";
+        public const string HealthWriteWindow = "RateLimit:HealthWriteWindow";
     }
 }

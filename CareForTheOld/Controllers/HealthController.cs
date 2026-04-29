@@ -50,6 +50,7 @@ public class HealthController : ControllerBase
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Elder")]
+    [EnableRateLimiting("HealthWritePolicy")]
     public async Task<ApiResponse<HealthRecordResponse>> CreateRecord([FromBody] CreateHealthRecordRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
