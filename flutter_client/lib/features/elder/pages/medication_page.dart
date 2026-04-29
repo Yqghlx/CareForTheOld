@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/models/medication_plan.dart';
@@ -296,6 +297,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
 
   /// 标记已服用
   Future<void> _markTaken(MedicationLog log) async {
+    HapticFeedback.lightImpact();
     final success =
         await ref.read(medicationProvider.notifier).markAsTaken(log);
     if (mounted) {

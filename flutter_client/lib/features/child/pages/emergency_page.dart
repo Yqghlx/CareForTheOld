@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -385,6 +386,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
     );
 
     if (confirmed) {
+      HapticFeedback.mediumImpact();
       final success = await ref.read(emergencyProvider.notifier).respondCall(call.id);
       if (mounted) {
         if (success) {
