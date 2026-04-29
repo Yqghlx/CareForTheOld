@@ -447,6 +447,7 @@ public class NeighborHelpService : INeighborHelpService
     }
 
     /// <inheritdoc />
+    // 重试策略参考 AppConstants.HangfireRetry
     [AutomaticRetry(Attempts = 3, DelaysInSeconds = new[] { 10, 30 })]
     public async Task CleanupExpiredRequestsAsync(CancellationToken cancellationToken = default)
     {

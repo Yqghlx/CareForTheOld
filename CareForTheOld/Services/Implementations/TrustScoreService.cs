@@ -70,6 +70,7 @@ public class TrustScoreService : ITrustScoreService
     }
 
     /// <inheritdoc />
+    // 重试策略参考 AppConstants.HangfireRetry
     [AutomaticRetry(Attempts = 2, DelaysInSeconds = new[] { 60 })]
     public async Task RecalculateAllScoresAsync(CancellationToken cancellationToken = default)
     {

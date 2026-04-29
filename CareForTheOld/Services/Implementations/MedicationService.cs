@@ -233,7 +233,7 @@ public class MedicationService : IMedicationService
         if (date.HasValue)
         {
             var start = ToUtcDate(date.Value);
-            var end = start.AddDays(1);
+            var end = start.AddDays(AppConstants.Medication.DailyQueryEndDaysOffset);
             query = query.Where(l => l.ScheduledAt >= start && l.ScheduledAt < end);
         }
 
@@ -253,7 +253,7 @@ public class MedicationService : IMedicationService
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
         // PostgreSQL timestamp with time zone 要求 DateTime.Kind 必须是 UTC
         var start = ToUtcDate(today);
-        var end = start.AddDays(1);
+        var end = start.AddDays(AppConstants.Medication.DailyQueryEndDaysOffset);
 
         // 获取所有激活的计划
         var activePlans = await _context.MedicationPlans

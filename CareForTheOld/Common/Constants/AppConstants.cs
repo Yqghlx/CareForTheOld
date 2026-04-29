@@ -40,6 +40,9 @@ public static class AppConstants
     {
         /// <summary>二次提醒延迟（分钟）：首次呼叫后未响应，再次提醒子女</summary>
         public const int FollowUpDelayMinutes = 3;
+
+        /// <summary>防重复提交窗口（秒），同一老人在此时间内的重复呼叫视为同一呼叫</summary>
+        public const int DuplicateCallWindowSeconds = 30;
     }
 
     /// <summary>
@@ -118,6 +121,9 @@ public static class AppConstants
 
         /// <summary>提醒检查窗口（分钟），用于判断当前时间是否落在提醒窗口内</summary>
         public const int ReminderWindowMinutes = 1;
+
+        /// <summary>按天查询日志时，结束日期偏移天数（AddDays(1) 表示查询当日全天）</summary>
+        public const int DailyQueryEndDaysOffset = 1;
     }
 
     /// <summary>
@@ -725,5 +731,27 @@ public static class AppConstants
     {
         /// <summary>紧急呼叫通知渠道</summary>
         public const string Emergency = "emergency";
+    }
+
+    /// <summary>
+    /// Hangfire 后台任务重试策略常量
+    /// 集中管理重试次数和间隔，避免各服务硬编码
+    /// </summary>
+    public static class HangfireRetry
+    {
+        /// <summary>默认重试次数</summary>
+        public const int DefaultAttempts = 3;
+
+        /// <summary>默认重试间隔（秒）：短间隔，适用于快速失败快速重试的场景</summary>
+        public static readonly int[] DefaultDelays = { 10, 30 };
+
+        /// <summary>用药提醒重试间隔（秒）：较长间隔，避免频繁推送</summary>
+        public static readonly int[] MedicationDelays = { 30, 60 };
+
+        /// <summary>信任评分重试次数（评分计算不紧急，减少重试）</summary>
+        public const int TrustScoreAttempts = 2;
+
+        /// <summary>信任评分重试间隔（秒）</summary>
+        public static readonly int[] TrustScoreDelays = { 60 };
     }
 }

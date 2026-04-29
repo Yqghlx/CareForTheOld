@@ -33,6 +33,7 @@ public class OutboxDispatchService
     /// <summary>
     /// Hangfire RecurringJob 入口方法
     /// </summary>
+    // 重试策略参考 AppConstants.HangfireRetry
     [AutomaticRetry(Attempts = 3, DelaysInSeconds = new[] { 10, 30 })]
     public async Task DispatchOutboxMessagesAsync()
     {

@@ -49,10 +49,10 @@ public class EmergencyService : IEmergencyService
     /// </summary>
     public async Task<EmergencyCallResponse> CreateCallAsync(Guid elderId, double? latitude = null, double? longitude = null, int? batteryLevel = null, CancellationToken cancellationToken = default)
     {
-        // 防重复提交：同一老人 30 秒内的重复请求视为同一呼叫，返回已有记录
+        // 防重复提交：同一老人在 DuplicateCallWindowSeconds 内的重复请求视为同一呼叫，返回已有记录
         var recentCall = await _context.EmergencyCalls
             .Include(c => c.Elder)
-            .Where(c => c.ElderId == elderId && c.CalledAt > DateTime.UtcNow.AddSeconds(-30))
+            .Where(c => c.ElderId == elderId && c.CalledAt > DateTime.UtcNow.AddSeconds(-AppConstants.Emergency.DuplicateCallWindowSeconds))
             .OrderByDescending(c => c.CalledAt)
             .FirstOrDefaultAsync(cancellationToken);
 
