@@ -17,6 +17,9 @@ public class EmergencyCallConfiguration : IEntityTypeConfiguration<EmergencyCall
         // 按老人查询呼叫记录的索引
         builder.HasIndex(e => e.ElderId);
 
+        // 按家庭查询呼叫记录的索引（子女端查询家庭所有紧急呼叫）
+        builder.HasIndex(e => e.FamilyId);
+
         builder.HasOne(e => e.Elder)
             .WithMany()
             .HasForeignKey(e => e.ElderId)

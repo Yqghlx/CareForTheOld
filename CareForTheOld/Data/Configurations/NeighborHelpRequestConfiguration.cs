@@ -19,6 +19,12 @@ public class NeighborHelpRequestConfiguration : IEntityTypeConfiguration<Neighbo
 
         builder.HasIndex(r => r.RequesterId);
 
+        // 按圈子查询求助请求（查询某圈子所有待处理/历史请求）
+        builder.HasIndex(r => r.CircleId);
+
+        // 按响应者查询（查询某邻居的互助响应记录，信任评分统计）
+        builder.HasIndex(r => r.ResponderId);
+
         builder.HasOne(r => r.EmergencyCall)
             .WithMany()
             .HasForeignKey(r => r.EmergencyCallId)
