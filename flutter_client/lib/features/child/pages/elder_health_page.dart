@@ -637,7 +637,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 } catch (e) {
                   setDialogState(() => isSubmitting = false);
                   if (mounted && context.mounted) {
-                    context.showErrorSnackBar(AppTheme.msgOperationFailed);
+                    context.showErrorSnackBar(errorMessageFrom(e, fallback: AppTheme.msgOperationFailed));
                   }
                 }
               },
@@ -702,7 +702,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       }
     } catch (e) {
       if (mounted) {
-        context.showErrorSnackBar(AppTheme.msgOperationFailed);
+        context.showErrorSnackBar(errorMessageFrom(e, fallback: AppTheme.msgOperationFailed));
       }
     } finally {
       if (mounted) setState(() => _isDeleting = false);

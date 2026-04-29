@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/extensions/api_error_extension.dart';
 import '../../../shared/models/neighbor_help_request.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/router/route_paths.dart';
@@ -130,7 +131,7 @@ class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
       }
     } catch (e) {
       if (mounted) {
-        context.showErrorSnackBar(AppTheme.msgOperationFailed);
+        context.showErrorSnackBar(errorMessageFrom(e, fallback: AppTheme.msgOperationFailed));
       }
     } finally {
       _isAccepting = false;

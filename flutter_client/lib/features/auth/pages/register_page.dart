@@ -86,7 +86,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       }
     } catch (e) {
       if (mounted) {
-        context.showErrorSnackBar(AppTheme.msgOperationFailed);
+        context.showErrorSnackBar(errorMessageFrom(e, fallback: AppTheme.msgOperationFailed));
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
