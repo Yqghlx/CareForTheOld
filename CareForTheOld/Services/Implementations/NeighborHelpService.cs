@@ -413,6 +413,7 @@ public class NeighborHelpService : INeighborHelpService
                         r.ExpiresAt > now &&
                         r.RequesterId != userId)
             .OrderByDescending(r => r.RequestedAt)
+            .Take(50)
             .Select(r => MapToResponse(r))
             .ToListAsync(cancellationToken);
     }
