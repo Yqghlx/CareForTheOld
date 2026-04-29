@@ -47,6 +47,10 @@ public class OssFileStorageService : IFileStorageService
     /// <inheritdoc />
     public async Task<string> UploadAsync(string directory, string fileName, Stream stream, string contentType)
     {
+        // 清理文件名，防止路径遍历和非法字符
+        fileName = SanitizeFileName(fileName);
+        directory = SanitizePathSegment(directory);
+
         // OSS 对象键格式：directory/filename（不含前导斜杠）
         var objectKey = $"{directory}/{fileName}";
 
@@ -74,6 +78,9 @@ public class OssFileStorageService : IFileStorageService
     /// <inheritdoc />
     public async Task<string?> GetUrlAsync(string directory, string fileName)
     {
+        fileName = SanitizeFileName(fileName);
+        directory = SanitizePathSegment(directory);
+
         // OSS 对象键格式
         var objectKey = $"{directory}/{fileName}";
 
@@ -100,13 +107,18 @@ public class OssFileStorageService : IFileStorageService
         if (string.IsNullOrEmpty(fileUrl))
             return;
 
+        // 仅允许删除本服务的 URL，防止 SSRF
+        if (!fileUrl.StartsWith(_baseUrl))
+            return;
+
         // 从 URL 解析 objectKey：https://bucket.endpoint/directory/file → directory/file
         try
         {
-            // 移除 baseUrl 前缀
-            var objectKey = fileUrl.Replace(_baseUrl, "");
-            if (objectKey.StartsWith("/"))
-                objectKey = objectKey.Substring(1);
+            var objectKey = fileUrl[_baseUrl.Length..].TrimStart('/');
+
+            // 验证 objectKey 不包含路径遍历
+            if (objectKey.Contains(".."))
+                return;
 
             await Task.Run(() => _client.DeleteObject(_bucketName, objectKey));
             _logger.LogInformation("文件删除成功：{ObjectKey}", objectKey);
@@ -115,5 +127,40 @@ public class OssFileStorageService : IFileStorageService
         {
             _logger.LogError(ex, "文件删除失败：{FileUrl}", fileUrl);
         }
+    }
+
+    /// <summary>
+    /// 清理文件名：去除路径遍历字符和非法字符，只保留安全字符
+    /// </summary>
+    private static string SanitizeFileName(string fileName)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(fileName, nameof(fileName));
+
+        // 只取文件名部分（去除任何路径前缀）
+        fileName = Path.GetFileName(fileName);
+
+        // 替换空格和潜在危险字符
+        foreach (var c in Path.GetInvalidFileNameChars())
+        {
+            fileName = fileName.Replace(c, '_');
+        }
+
+        // 移除路径遍历尝试
+        fileName = fileName.Replace("..", "").TrimStart('.', '/', '\\');
+
+        return fileName;
+    }
+
+    /// <summary>
+    /// 清理路径段：只允许字母、数字、连字符、下划线
+    /// </summary>
+    private static string SanitizePathSegment(string segment)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(segment, nameof(segment));
+
+        // 移除路径遍历和分隔符
+        segment = segment.Replace("..", "").Replace("/", "").Replace("\\", "").Trim();
+
+        return segment;
     }
 }
