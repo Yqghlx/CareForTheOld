@@ -301,6 +301,9 @@ public static class ErrorMessages
 
         /// <summary>不是该家庭成员，无法处理此呼叫</summary>
         public const string NotFamilyMemberForCall = "您不是该家庭成员，无法处理此呼叫";
+
+        /// <summary>老人用户信息异常</summary>
+        public const string ElderUserInfoInvalid = "老人用户信息异常，请联系管理员";
     }
 
     /// <summary>

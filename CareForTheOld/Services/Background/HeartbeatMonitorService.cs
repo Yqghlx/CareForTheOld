@@ -76,32 +76,55 @@ public class HeartbeatMonitorService
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
 
+        // 筛选出超时且需要告警的用户
+        var timeoutUserIds = new List<(string userIdStr, Guid userId, TimeSpan elapsed)>();
         foreach (var (userIdStr, lastHeartbeat) in heartbeats)
         {
             var elapsed = now - lastHeartbeat;
             if (elapsed <= _heartbeatTimeout) continue;
 
-            // 检查告警冷却
             if (_lastAlertTime.TryGetValue(userIdStr, out var lastAlert) && now - lastAlert < _alertCooldown)
                 continue;
 
             if (!Guid.TryParse(userIdStr, out var userId)) continue;
 
-            // 查询用户信息
-            var user = await context.Users.FindAsync(userId);
-            if (user == null || user.Role != UserRole.Elder) continue;
+            timeoutUserIds.Add((userIdStr, userId, elapsed));
+        }
 
-            // 查询家庭成员（通知子女）
-            var familyMember = await context.FamilyMembers
-                .FirstOrDefaultAsync(fm => fm.UserId == userId);
-            if (familyMember == null) continue;
+        if (!timeoutUserIds.Any()) return;
 
-            var children = await context.FamilyMembers
-                .Include(fm => fm.User)
-                .Where(fm => fm.FamilyId == familyMember.FamilyId && fm.Role == UserRole.Child)
-                .ToListAsync();
+        // 批量预加载用户信息（避免循环内 N+1 查询）
+        var userIds = timeoutUserIds.Select(t => t.userId).ToHashSet();
+        var users = await context.Users
+            .Where(u => userIds.Contains(u.Id) && u.Role == UserRole.Elder)
+            .ToDictionaryAsync(u => u.Id, u => u);
 
-            if (!children.Any()) continue;
+        // 批量预加载家庭成员关系
+        var elderFamilyMembers = await context.FamilyMembers
+            .Where(fm => userIds.Contains(fm.UserId))
+            .ToDictionaryAsync(fm => fm.UserId, fm => fm);
+
+        // 批量预加载子女信息
+        var familyIds = elderFamilyMembers.Values.Select(fm => fm.FamilyId).Distinct().ToHashSet();
+        var childrenByFamily = await context.FamilyMembers
+            .Include(fm => fm.User)
+            .Where(fm => familyIds.Contains(fm.FamilyId) && fm.Role == UserRole.Child)
+            .GroupBy(fm => fm.FamilyId)
+            .ToDictionaryAsync(g => g.Key, g => g.ToList());
+
+        // 批量预加载邻里圈成员关系（自动救援用）
+        var circleMemberships = await context.NeighborCircleMembers
+            .Where(m => userIds.Contains(m.UserId))
+            .ToDictionaryAsync(m => m.UserId, m => m);
+
+        foreach (var (userIdStr, userId, elapsed) in timeoutUserIds)
+        {
+            // 检查用户是否存在且为老人角色
+            if (!users.TryGetValue(userId, out var user)) continue;
+
+            if (!elderFamilyMembers.TryGetValue(userId, out var familyMember)) continue;
+
+            if (!childrenByFamily.TryGetValue(familyMember.FamilyId, out var children) || !children.Any()) continue;
 
             var offlineMinutes = (int)elapsed.TotalMinutes;
 
@@ -118,15 +141,13 @@ public class HeartbeatMonitorService
                     ElderId = userId,
                     ElderName = user.RealName,
                     OfflineMinutes = offlineMinutes,
-                    LastHeartbeat = lastHeartbeat,
+                    LastHeartbeat = now - elapsed,
                     AlertLevel = AppConstants.AlertLevels.Critical
                 }
             );
 
             // 检查老人是否在邻里圈中，若在则启动自动救援计时器
-            var circleMembership = await context.NeighborCircleMembers
-                .FirstOrDefaultAsync(m => m.UserId == userId);
-            if (circleMembership != null)
+            if (circleMemberships.TryGetValue(userId, out var circleMembership))
             {
                 try
                 {

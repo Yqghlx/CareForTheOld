@@ -68,7 +68,7 @@ public class EmergencyService : IEmergencyService
             throw new InvalidOperationException(ErrorMessages.Family.NotInAnyFamily);
 
         if (familyMember.User == null)
-            throw new InvalidOperationException("老人用户信息异常，请联系管理员");
+            throw new InvalidOperationException(ErrorMessages.Emergency.ElderUserInfoInvalid);
 
         // 创建紧急呼叫记录（含位置和电量）
         var call = new EmergencyCall
