@@ -25,6 +25,12 @@ public class FamilyMemberConfiguration : IEntityTypeConfiguration<FamilyMember>
         // 一个用户只能属于一个家庭组（防止并发竞态创建重复关系）
         builder.HasIndex(fm => fm.UserId).IsUnique();
 
+        // 高频查询复合索引：按家庭+角色+状态查询（紧急呼叫通知子女、心跳监控、待审批列表）
+        builder.HasIndex(fm => new { fm.FamilyId, fm.Role, fm.Status });
+
+        // 按家庭+角色查询（获取家庭中的子女/老人成员）
+        builder.HasIndex(fm => new { fm.FamilyId, fm.Role });
+
         builder.HasOne(fm => fm.Family)
             .WithMany(f => f.Members)
             .HasForeignKey(fm => fm.FamilyId)
