@@ -88,6 +88,7 @@ class ElderHealthPage extends ConsumerStatefulWidget {
 class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
   String? _selectedLogDate; // 用药记录日期筛选
   bool _isDeleting = false;
+  bool _isToggling = false;
 
   @override
   Widget build(BuildContext context) {
@@ -436,7 +437,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     Switch(
                       value: plan.isActive,
                       activeThumbColor: AppTheme.successColor,
-                      onChanged: (value) => _togglePlan(plan, value),
+                      onChanged: _isToggling ? null : (value) => _togglePlan(plan, value),
                     ),
                   ],
                 ),
@@ -655,6 +656,8 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
 
   /// 切换用药计划启用/停用状态
   Future<void> _togglePlan(MedicationPlan plan, bool active) async {
+    if (_isToggling) return;
+    setState(() => _isToggling = true);
     try {
       final service = MedicationService(ref.read(apiClientProvider).dio);
       await service.updatePlan(planId: plan.id, isActive: active);
@@ -671,6 +674,8 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       if (mounted) {
         context.showErrorSnackBar(errorMessageFrom(e));
       }
+    } finally {
+      if (mounted) setState(() => _isToggling = false);
     }
   }
 

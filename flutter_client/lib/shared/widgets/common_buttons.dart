@@ -109,7 +109,7 @@ class _PrimaryButtonState extends State<PrimaryButton>
             onTap: widget.isLoading ? null : widget.onPressed,
             child: Center(
               child: widget.isLoading
-                  ? SizedBox(
+                  ? const SizedBox(
                       width: AppTheme.iconSizeLg,
                       height: AppTheme.iconSizeLg,
                       child: CircularProgressIndicator(
@@ -261,7 +261,7 @@ class _PrimaryIconButtonState extends State<PrimaryIconButton>
                 Icon(widget.icon, color: AppTheme.cardColor, size: AppTheme.iconSizeMd),
                 AppTheme.hSpacer8,
                 widget.isLoading
-                    ? SizedBox(
+                    ? const SizedBox(
                         width: AppTheme.iconSizeMd,
                         height: AppTheme.iconSizeMd,
                         child: CircularProgressIndicator(
