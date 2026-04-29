@@ -1073,7 +1073,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
               AppTheme.hSpacer12,
               Expanded(
                 child: Text(
-                  abnormalHint ?? '${type.label}记录已保存',
+                  abnormalHint ?? '${type.label}${AppTheme.msgRecordSaved}',
                   style: AppTheme.textBody16,
                 ),
               ),

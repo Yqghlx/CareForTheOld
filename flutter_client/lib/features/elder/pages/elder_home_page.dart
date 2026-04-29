@@ -128,6 +128,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
 
     return RefreshIndicator(
       onRefresh: () async {
+        ref.invalidate(userProvider);
         ref.read(notificationListProvider.notifier).loadNotifications();
       },
       child: SingleChildScrollView(

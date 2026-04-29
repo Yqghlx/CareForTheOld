@@ -173,7 +173,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       children: [
                         SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
                         AppTheme.hSpacer12,
-                        Text('正在分析健康趋势...', style: AppTheme.textGreyLight),
+                        Text(AppTheme.msgAnomalyAnalyzing, style: AppTheme.textGreyLight),
                       ],
                     ),
                   ),
@@ -184,7 +184,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     color: AppTheme.errorColor.withValues(alpha: 0.1),
                     borderRadius: AppTheme.radiusS,
                   ),
-                  child: const Text('异常检测加载失败，请重试',
+                  child: const Text(AppTheme.msgAnomalyLoadFailed,
                       style: AppTheme.textError),
                 ),
               ),

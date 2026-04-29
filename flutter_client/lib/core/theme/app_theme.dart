@@ -294,6 +294,9 @@ class AppTheme {
   static const String msgOcrNoValue = '未能识别到有效数值，请手动输入';
   static const String msgOcrFailed = '文字识别失败，请重新拍照';
   static const String msgInvalidValue = '请输入有效的数值';
+  static const String msgRecordSaved = '记录已保存';
+  static const String msgAnomalyAnalyzing = '正在分析健康趋势...';
+  static const String msgAnomalyLoadFailed = '异常检测加载失败，请重试';
 
   // 个人设置消息
   static const String msgNameUpdated = '姓名修改成功';
