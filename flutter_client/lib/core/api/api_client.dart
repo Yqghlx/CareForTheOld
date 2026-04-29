@@ -1,12 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import '../../main.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../config/app_config.dart';
 import '../constants/api_endpoints.dart';
 import '../services/app_logger.dart';
+import '../services/connectivity_service.dart';
 import '../theme/app_theme.dart';
 
 /// API 客户端配置
@@ -38,20 +38,26 @@ class ApiClient {
   /// 刷新期间排队等待的请求列表
   final List<_RetryRequest> _pendingRequests = [];
 
+  /// 网络状态服务引用，用于快速判断离线状态
+  final ConnectivityService? _connectivityService;
+
   ApiClient({
     String? Function()? tokenGetter,
     String? Function()? refreshTokenGetter,
     Future<void> Function(String newAccessToken, String newRefreshToken)?
         onTokenRefreshed,
     void Function()? onUnauthorized,
+    ConnectivityService? connectivityService,
   })  : _tokenGetter = tokenGetter,
         _refreshTokenGetter = refreshTokenGetter,
         _onTokenRefreshed = onTokenRefreshed,
-        _onUnauthorized = onUnauthorized {
+        _onUnauthorized = onUnauthorized,
+        _connectivityService = connectivityService {
     _dio = Dio(BaseOptions(
       baseUrl: baseUrl,
       connectTimeout: AppTheme.duration10s,
       receiveTimeout: AppTheme.duration30s,
+      sendTimeout: AppTheme.duration30s,
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -62,7 +68,7 @@ class ApiClient {
     _refreshDio = Dio(BaseOptions(
       baseUrl: baseUrl,
       connectTimeout: AppTheme.duration10s,
-      receiveTimeout: AppTheme.duration10s,
+      receiveTimeout: AppTheme.duration15s,
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -72,20 +78,15 @@ class ApiClient {
     // 请求拦截器 - 添加认证令牌和网络检查
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
-        // 网络状态检查：离线时直接拒绝请求，避免等待超时
-        try {
-          final results = await Connectivity().checkConnectivity();
-          final isOnline = results.any((r) => r != ConnectivityResult.none);
-          if (!isOnline) {
-            showGlobalSnackBar(AppTheme.msgNetworkError);
-            return handler.reject(DioException(
-              requestOptions: options,
-              error: AppTheme.msgNetworkError,
-              type: DioExceptionType.connectionError,
-            ));
-          }
-        } catch (_) {
-          // 网络检查失败时不阻断请求，由后续逻辑处理
+        // 网络状态检查：使用缓存的连接状态，避免每次请求都 async 查询
+        final conn = _connectivityService;
+        if (conn != null && !conn.isOnline) {
+          showGlobalSnackBar(AppTheme.msgNetworkError);
+          return handler.reject(DioException(
+            requestOptions: options,
+            error: AppTheme.msgNetworkError,
+            type: DioExceptionType.connectionError,
+          ));
         }
 
         final token = _tokenGetter?.call();
@@ -295,5 +296,6 @@ final apiClientProvider = Provider<ApiClient>((ref) {
       showGlobalSnackBar(AppTheme.msgSessionExpired);
       ref.read(authProvider.notifier).logout();
     },
+    connectivityService: ref.watch(connectivityServiceProvider),
   );
 });
