@@ -7,6 +7,7 @@ using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using System.Security.Claims;
 
 namespace CareForTheOld.Controllers;
 
@@ -54,5 +55,22 @@ public class AuthController : ControllerBase
     {
         var result = await _authService.RefreshTokenAsync(request.RefreshToken, cancellationToken);
         return ApiResponse<AuthResponse>.Ok(result, SuccessMessages.Auth.RefreshSuccess);
+    }
+
+    /// <summary>用户登出：吊销当前令牌</summary>
+    [HttpPost("logout")]
+    [Microsoft.AspNetCore.Authorization.Authorize]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    public async Task<ApiResponse<object>> Logout([FromBody] LogoutRequest? request, CancellationToken cancellationToken = default)
+    {
+        // 从 Authorization Header 提取 AccessToken
+        var accessToken = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "").Trim();
+
+        if (!string.IsNullOrEmpty(accessToken))
+        {
+            await _authService.LogoutAsync(accessToken, request?.RefreshToken, cancellationToken);
+        }
+
+        return ApiResponse<object>.Ok(SuccessMessages.Auth.LogoutSuccess);
     }
 }

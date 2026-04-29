@@ -4,6 +4,7 @@ using CareForTheOld.Models.DTOs.Requests.Auth;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Implementations;
+using CareForTheOld.Services.Interfaces;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -37,7 +38,10 @@ public class AuthServiceTests
         _mockConfig.Setup(c => c["Jwt:AccessTokenExpirationMinutes"]).Returns("60");
         _mockConfig.Setup(c => c["Jwt:RefreshTokenExpirationDays"]).Returns("30");
 
-        _service = new AuthService(_context, _mockConfig.Object);
+        // Mock ICacheService（登出功能所需，测试中不需要实际缓存行为）
+        var mockCache = new Mock<ICacheService>();
+
+        _service = new AuthService(_context, _mockConfig.Object, mockCache.Object);
     }
 
     [Fact]

@@ -4,9 +4,12 @@ using CareForTheOld.Models.DTOs.Requests.Users;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Implementations;
+using CareForTheOld.Services.Interfaces;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
+using Moq;
 using Xunit;
 
 namespace CareForTheOld.Tests.Services;
@@ -25,7 +28,18 @@ public class UserServiceTests
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
         _context = new AppDbContext(options);
-        _service = new UserService(_context, NullLogger<UserService>.Instance);
+
+        // Mock IAuthService（密码修改后吊销令牌所需）
+        var mockConfig = new Mock<IConfiguration>();
+        mockConfig.Setup(c => c["Jwt:Key"]).Returns("CareForTheOld_DefaultSecretKey_2026_MustBe32Chars!");
+        mockConfig.Setup(c => c["Jwt:Issuer"]).Returns("CareForTheOld");
+        mockConfig.Setup(c => c["Jwt:Audience"]).Returns("CareForTheOld");
+        mockConfig.Setup(c => c["Jwt:AccessTokenExpirationMinutes"]).Returns("60");
+        mockConfig.Setup(c => c["Jwt:RefreshTokenExpirationDays"]).Returns("30");
+        var mockCache = new Mock<ICacheService>();
+        var authService = new AuthService(_context, mockConfig.Object, mockCache.Object);
+
+        _service = new UserService(_context, NullLogger<UserService>.Instance, authService);
     }
 
     private async Task<Guid> CreateTestUserAsync()

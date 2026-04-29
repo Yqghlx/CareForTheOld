@@ -8,7 +8,9 @@ import '../models/user.dart';
 import '../../features/shared/services/signalr_service.dart';
 import '../../core/services/fcm_service.dart';
 import '../../core/constants/pref_keys.dart';
+import '../../core/constants/api_endpoints.dart';
 import '../../core/services/app_logger.dart';
+import '../../core/api/api_client.dart';
 
 /// 认证状态
 class AuthState {
@@ -115,8 +117,19 @@ class AuthNotifier extends StateNotifier<AuthState> {
     });
   }
 
-  /// 登出
+  /// 登出：先通知后端吊销令牌，再清理本地状态
   Future<void> logout() async {
+    // 通知后端吊销令牌（即使失败也继续清理本地状态）
+    try {
+      final apiClient = _ref.read(apiClientProvider);
+      await apiClient.dio.post(
+        ApiEndpoints.authLogout,
+        data: {'refreshToken': state.refreshToken},
+      );
+    } catch (e) {
+      AppLogger.warning('后端登出请求失败（忽略）: $e');
+    }
+
     // 登出时断开 SignalR
     await _disconnectSignalR();
 

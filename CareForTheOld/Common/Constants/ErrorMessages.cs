@@ -67,6 +67,9 @@ public static class ErrorMessages
 
         /// <summary>刷新令牌已过期或已撤销</summary>
         public const string RefreshTokenExpired = "刷新令牌已过期或已撤销";
+
+        /// <summary>Token 已被吊销，需重新登录</summary>
+        public const string TokenRevoked = "登录已失效，请重新登录";
     }
 
     /// <summary>
@@ -433,6 +436,7 @@ public static class SuccessMessages
         public const string RegisterSuccess = "注册成功";
         public const string LoginSuccess = "登录成功";
         public const string RefreshSuccess = "刷新成功";
+        public const string LogoutSuccess = "登出成功";
     }
 
     /// <summary>家庭组相关成功消息</summary>

@@ -45,7 +45,8 @@ public class ConcurrencyTests
         mockConfig.Setup(c => c["Jwt:Audience"]).Returns("CareForTheOld");
         mockConfig.Setup(c => c["Jwt:AccessTokenExpirationMinutes"]).Returns("60");
         mockConfig.Setup(c => c["Jwt:RefreshTokenExpirationDays"]).Returns("30");
-        return new AuthService(context, mockConfig.Object);
+        var mockCache = new Mock<ICacheService>();
+        return new AuthService(context, mockConfig.Object, mockCache.Object);
     }
 
     /// <summary>

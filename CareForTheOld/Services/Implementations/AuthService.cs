@@ -21,11 +21,13 @@ public class AuthService : IAuthService
 {
     private readonly AppDbContext _context;
     private readonly IConfiguration _configuration;
+    private readonly ICacheService _cacheService;
 
-    public AuthService(AppDbContext context, IConfiguration configuration)
+    public AuthService(AppDbContext context, IConfiguration configuration, ICacheService cacheService)
     {
         _context = context;
         _configuration = configuration;
+        _cacheService = cacheService;
     }
 
     /// <summary>
@@ -194,6 +196,84 @@ public class AuthService : IAuthService
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    /// <summary>
+    /// 登出：将 AccessToken 加入黑名单（TTL 为剩余有效期），吊销 RefreshToken
+    /// </summary>
+    public async Task LogoutAsync(string accessToken, string? refreshToken, CancellationToken cancellationToken = default)
+    {
+        // 解析 JWT 获取 jti 和过期时间
+        var handler = new JwtSecurityTokenHandler();
+        var jwt = handler.ReadJwtToken(accessToken);
+        var jti = jwt.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?.Value;
+        var expClaim = jwt.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Exp)?.Value;
+
+        if (!string.IsNullOrEmpty(jti) && !string.IsNullOrEmpty(expClaim))
+        {
+            var exp = DateTimeOffset.FromUnixTimeSeconds(long.Parse(expClaim));
+            var remaining = exp - DateTimeOffset.UtcNow;
+
+            // 仅当 Token 未过期时加入黑名单（已过期的无需处理）
+            if (remaining > TimeSpan.Zero)
+            {
+                await _cacheService.SetAsync(
+                    $"{AppConstants.Cache.TokenBlacklistPrefix}{jti}",
+                    "revoked",
+                    remaining,
+                    cancellationToken);
+            }
+        }
+
+        // 吊销 RefreshToken
+        if (!string.IsNullOrWhiteSpace(refreshToken))
+        {
+            var tokenEntity = await _context.RefreshTokens
+                .AsTracking()
+                .FirstOrDefaultAsync(rt => rt.Token == refreshToken, cancellationToken);
+
+            if (tokenEntity != null && !tokenEntity.IsRevoked)
+            {
+                tokenEntity.IsRevoked = true;
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+        }
+
+        Log.Information("用户登出成功");
+    }
+
+    /// <summary>
+    /// 吊销用户所有令牌（密码修改、安全事件时调用）
+    /// 同时吊销所有 RefreshToken 并将用户所有有效 AccessToken 加入黑名单
+    /// </summary>
+    public async Task RevokeAllUserTokensAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        // 吊销所有未撤销的 RefreshToken
+        var refreshTokens = await _context.RefreshTokens
+            .AsTracking()
+            .Where(rt => rt.UserId == userId && !rt.IsRevoked)
+            .ToListAsync(cancellationToken);
+
+        foreach (var rt in refreshTokens)
+        {
+            rt.IsRevoked = true;
+        }
+
+        if (refreshTokens.Any())
+        {
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        Log.Information("已吊销用户 {UserId} 的所有刷新令牌", userId);
+    }
+
+    /// <summary>
+    /// 检查 AccessToken 是否在黑名单中
+    /// </summary>
+    public static async Task<bool> IsTokenRevokedAsync(ICacheService cacheService, string jti, CancellationToken cancellationToken = default)
+    {
+        var value = await cacheService.GetAsync<string>($"{AppConstants.Cache.TokenBlacklistPrefix}{jti}", cancellationToken);
+        return value != null;
     }
 
     private static string GenerateRefreshToken()

@@ -10,6 +10,7 @@ class ApiEndpoints {
   static const authLogin = '/auth/login';
   static const authRegister = '/auth/register';
   static const authRefresh = '/auth/refresh';
+  static const authLogout = '/auth/logout';
 
   // ==================== 用户 ====================
   static const userMe = '/user/me';

@@ -37,7 +37,8 @@ public class InputValidationFuzzTests
         mockConfig.Setup(c => c["Jwt:AccessTokenExpirationMinutes"]).Returns("60");
         mockConfig.Setup(c => c["Jwt:RefreshTokenExpirationDays"]).Returns("30");
 
-        _authService = new AuthService(_context, mockConfig.Object);
+        var mockCache = new Mock<ICacheService>();
+        _authService = new AuthService(_context, mockConfig.Object, mockCache.Object);
         _healthService = new HealthService(_context, new Mock<IHealthAlertService>().Object, new Mock<ILogger<HealthService>>().Object);
     }
 

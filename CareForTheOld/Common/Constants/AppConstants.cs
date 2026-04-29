@@ -160,6 +160,9 @@ public static class AppConstants
 
         /// <summary>HTTP 响应缓存时间（秒）：较少变化数据（健康统计、异常检测、报告）</summary>
         public const int HttpCacheLongSeconds = 300;
+
+        /// <summary>Token 黑名单缓存键前缀，完整键格式：token_blacklist:{jti}</summary>
+        public const string TokenBlacklistPrefix = "token_blacklist:";
     }
 
     /// <summary>

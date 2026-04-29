@@ -16,11 +16,13 @@ public class UserService : IUserService
 {
     private readonly AppDbContext _context;
     private readonly ILogger<UserService> _logger;
+    private readonly IAuthService _authService;
 
-    public UserService(AppDbContext context, ILogger<UserService> logger)
+    public UserService(AppDbContext context, ILogger<UserService> logger, IAuthService authService)
     {
         _context = context;
         _logger = logger;
+        _authService = authService;
     }
 
     /// <summary>
@@ -97,7 +99,11 @@ public class UserService : IUserService
         _context.DeviceTokens.RemoveRange(tokensToRemove);
 
         await _context.SaveChangesAsync(cancellationToken);
-        _logger.LogInformation("用户 {UserId} 修改密码成功，已清除 {Count} 个设备令牌", userId, tokensToRemove.Count);
+
+        // 密码修改后吊销所有刷新令牌，强制重新登录
+        await _authService.RevokeAllUserTokensAsync(userId, cancellationToken);
+
+        _logger.LogInformation("用户 {UserId} 修改密码成功，已清除 {Count} 个设备令牌并吊销所有刷新令牌", userId, tokensToRemove.Count);
         return true;
     }
 

@@ -117,6 +117,7 @@ public static class ServiceCollectionExtensions
             };
 
             // 支持 SignalR 通过查询字符串传递 JWT Token（WebSocket 不支持 Header）
+            // 登出时检查 Token 黑名单
             options.Events = new JwtBearerEvents
             {
                 OnMessageReceived = context =>
@@ -128,6 +129,20 @@ public static class ServiceCollectionExtensions
                         context.Token = accessToken;
                     }
                     return Task.CompletedTask;
+                },
+                OnTokenValidated = async context =>
+                {
+                    // 检查 Token 是否已被吊销（黑名单）
+                    var jti = context.Principal?.FindFirst(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Jti)?.Value;
+                    if (!string.IsNullOrEmpty(jti))
+                    {
+                        var cacheService = context.HttpContext.RequestServices.GetRequiredService<ICacheService>();
+                        var isRevoked = await AuthService.IsTokenRevokedAsync(cacheService, jti, context.HttpContext.RequestAborted);
+                        if (isRevoked)
+                        {
+                            context.Fail(ErrorMessages.Auth.TokenRevoked);
+                        }
+                    }
                 }
             };
         });
