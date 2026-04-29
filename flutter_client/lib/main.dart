@@ -10,6 +10,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'core/router/app_router.dart';
 import 'core/services/app_logger.dart';
+import 'core/services/connectivity_service.dart';
 import 'core/services/fcm_service.dart';
 import 'core/services/offline_queue_service.dart';
 import 'core/theme/app_theme.dart';
@@ -165,9 +166,48 @@ class _CareForTheOldAppState extends ConsumerState<CareForTheOldApp> {
           data: MediaQuery.of(context).copyWith(
             textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.5),
           ),
-          child: child!,
+          child: _OfflineBannerWrapper(child: child!),
         );
       },
+    );
+  }
+}
+
+/// 全局离线状态 Banner — 持续提示用户当前无网络连接
+class _OfflineBannerWrapper extends ConsumerWidget {
+  final Widget child;
+  const _OfflineBannerWrapper({required this.child});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isOnline = ref.watch(isOnlineProvider).valueOrNull ?? true;
+
+    if (isOnline) return child;
+
+    return Column(
+      children: [
+        Material(
+          color: AppTheme.warningColor,
+          child: SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.cloud_off, color: AppTheme.cardColor, size: 16),
+                  const SizedBox(width: 8),
+                  Text(
+                    AppTheme.msgOffline,
+                    style: const TextStyle(color: AppTheme.cardColor, fontSize: 13, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Expanded(child: child),
+      ],
     );
   }
 }

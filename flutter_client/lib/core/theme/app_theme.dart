@@ -244,6 +244,7 @@ class AppTheme {
   static const String msgLoadFailed = '加载失败，请重试';
   static const String msgOperationFailed = '操作失败，请稍后重试';
   static const String msgNetworkError = '网络连接失败，请检查网络设置';
+  static const String msgOffline = '网络已断开，部分功能不可用';
   static const String msgSaveSuccess = '保存成功';
   static const String msgDeleteSuccess = '删除成功';
 
