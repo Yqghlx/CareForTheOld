@@ -66,7 +66,13 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
           ),
         ],
       ),
-      body: Padding(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          ref.invalidate(elderFilteredRecordsProvider(
+            (elderId: widget.elderId, type: _selectedType),
+          ));
+        },
+        child: Padding(
         padding: AppTheme.paddingAll20,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,6 +155,7 @@ class _ElderHealthTrendPageState extends ConsumerState<ElderHealthTrendPage> {
             ),
           ],
         ),
+      ),
       ),
     );
   }
