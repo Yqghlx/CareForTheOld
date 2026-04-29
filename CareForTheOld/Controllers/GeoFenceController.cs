@@ -38,6 +38,8 @@ public class GeoFenceController : ControllerBase
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<GeoFenceResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<GeoFenceResponse>> CreateFence([FromBody] CreateGeoFenceRequest request, CancellationToken cancellationToken = default)
     {
@@ -52,6 +54,8 @@ public class GeoFenceController : ControllerBase
     [HttpGet("elder/{elderId}")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [ProducesResponseType(typeof(ApiResponse<GeoFenceResponse?>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ApiResponse<GeoFenceResponse?>> GetElderFence(Guid elderId, CancellationToken cancellationToken = default)
     {
         // 验证请求的子女与目标老人属于同一家庭
@@ -71,6 +75,8 @@ public class GeoFenceController : ControllerBase
     [HttpPut("{id}")]
     [ProducesResponseType(typeof(ApiResponse<GeoFenceResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<GeoFenceResponse>> UpdateFence(Guid id, [FromBody] CreateGeoFenceRequest request, CancellationToken cancellationToken = default)
     {
@@ -84,6 +90,8 @@ public class GeoFenceController : ControllerBase
     /// </summary>
     [HttpDelete("{id}")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<object>> DeleteFence(Guid id, CancellationToken cancellationToken = default)
     {

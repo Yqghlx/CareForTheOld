@@ -36,6 +36,7 @@ public class NeighborHelpController : ControllerBase
     [HttpGet("pending")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
     [ProducesResponseType(typeof(ApiResponse<List<NeighborHelpRequestResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<List<NeighborHelpRequestResponse>>> GetPending(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -49,6 +50,7 @@ public class NeighborHelpController : ControllerBase
     [HttpGet("history")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [ProducesResponseType(typeof(ApiResponse<List<NeighborHelpRequestResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<List<NeighborHelpRequestResponse>>> GetHistory(
         [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultHistoryPageSize, CancellationToken cancellationToken = default)
     {
@@ -64,6 +66,7 @@ public class NeighborHelpController : ControllerBase
     [HttpGet("{id:guid}")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [ProducesResponseType(typeof(ApiResponse<NeighborHelpRequestResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<NeighborHelpRequestResponse>> GetRequest(Guid id, CancellationToken cancellationToken = default)
     {
         var result = await _helpService.GetRequestAsync(id, cancellationToken);
@@ -75,6 +78,7 @@ public class NeighborHelpController : ControllerBase
     /// </summary>
     [HttpPut("{id:guid}/accept")]
     [ProducesResponseType(typeof(ApiResponse<NeighborHelpRequestResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<NeighborHelpRequestResponse>> Accept(Guid id, CancellationToken cancellationToken = default)
     {
@@ -88,6 +92,7 @@ public class NeighborHelpController : ControllerBase
     /// </summary>
     [HttpPut("{id:guid}/cancel")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<object>> Cancel(Guid id, CancellationToken cancellationToken = default)
     {
@@ -102,6 +107,7 @@ public class NeighborHelpController : ControllerBase
     [HttpPost("{id:guid}/rate")]
     [ProducesResponseType(typeof(ApiResponse<NeighborHelpRatingResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [EnableRateLimiting("HelpRatePolicy")]
     public async Task<ApiResponse<NeighborHelpRatingResponse>> Rate(
         Guid id, [FromBody] RateHelpRequest request, CancellationToken cancellationToken = default)

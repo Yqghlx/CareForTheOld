@@ -36,6 +36,7 @@ public class NeighborCircleController : ControllerBase
     [HttpGet("me")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [ProducesResponseType(typeof(ApiResponse<NeighborCircleResponse?>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<NeighborCircleResponse?>> GetMyCircle(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -49,6 +50,7 @@ public class NeighborCircleController : ControllerBase
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<NeighborCircleResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<NeighborCircleResponse>> Create([FromBody] CreateNeighborCircleRequest request, CancellationToken cancellationToken = default)
     {
@@ -63,6 +65,7 @@ public class NeighborCircleController : ControllerBase
     [HttpGet("{id:guid}")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [ProducesResponseType(typeof(ApiResponse<NeighborCircleResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<NeighborCircleResponse>> GetCircle(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -78,6 +81,7 @@ public class NeighborCircleController : ControllerBase
     [HttpGet("{id:guid}/members")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [ProducesResponseType(typeof(ApiResponse<List<NeighborMemberResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<List<NeighborMemberResponse>>> GetMembers(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -93,6 +97,7 @@ public class NeighborCircleController : ControllerBase
     [HttpGet("{id:guid}/nearby-members")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [ProducesResponseType(typeof(ApiResponse<List<NeighborMemberResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<List<NeighborMemberResponse>>> GetNearbyMembers(
         Guid id, [FromQuery, Range(-90.0, 90.0)] double latitude, [FromQuery, Range(-180.0, 180.0)] double longitude, [FromQuery] double radius = AppConstants.NeighborCircle.DefaultMemberRadiusMeters, CancellationToken cancellationToken = default)
     {
@@ -110,6 +115,7 @@ public class NeighborCircleController : ControllerBase
     [EnableRateLimiting("JoinCirclePolicy")]
     [ProducesResponseType(typeof(ApiResponse<NeighborCircleResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<NeighborCircleResponse>> Join([FromBody] JoinNeighborCircleRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -122,6 +128,7 @@ public class NeighborCircleController : ControllerBase
     /// </summary>
     [HttpPost("{id:guid}/leave")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<object>> Leave(Guid id, CancellationToken cancellationToken = default)
     {
@@ -135,6 +142,7 @@ public class NeighborCircleController : ControllerBase
     /// </summary>
     [HttpPost("{id:guid}/refresh-code")]
     [ProducesResponseType(typeof(ApiResponse<NeighborCircleResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<NeighborCircleResponse>> RefreshInviteCode(Guid id, CancellationToken cancellationToken = default)
     {
@@ -149,6 +157,7 @@ public class NeighborCircleController : ControllerBase
     [HttpGet("nearby")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [ProducesResponseType(typeof(ApiResponse<List<NeighborCircleResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<List<NeighborCircleResponse>>> SearchNearby(
         [FromQuery, Range(-90.0, 90.0)] double latitude, [FromQuery, Range(-180.0, 180.0)] double longitude, [FromQuery, Range(100.0, 10000.0)] double radius = AppConstants.NeighborCircle.SearchRadiusMeters, CancellationToken cancellationToken = default)
     {

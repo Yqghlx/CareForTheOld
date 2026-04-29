@@ -61,6 +61,7 @@ public class AuthController : ControllerBase
     [HttpPost("logout")]
     [Microsoft.AspNetCore.Authorization.Authorize]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<object>> Logout([FromBody] LogoutRequest? request, CancellationToken cancellationToken = default)
     {
         // 从 Authorization Header 提取 AccessToken

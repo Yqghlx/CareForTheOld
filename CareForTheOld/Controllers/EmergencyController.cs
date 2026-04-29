@@ -39,6 +39,8 @@ public class EmergencyController : ControllerBase
     [EnableRateLimiting("EmergencyPolicy")]
     [ProducesResponseType(typeof(ApiResponse<EmergencyCallResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ApiResponse<EmergencyCallResponse>> CreateCall([FromBody] CreateEmergencyCallRequest? request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -58,6 +60,8 @@ public class EmergencyController : ControllerBase
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<List<EmergencyCallResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ApiResponse<List<EmergencyCallResponse>>> GetUnreadCalls(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -71,6 +75,7 @@ public class EmergencyController : ControllerBase
     [HttpGet("history")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [ProducesResponseType(typeof(ApiResponse<List<EmergencyCallResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<List<EmergencyCallResponse>>> GetHistory([FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultHistoryPageSize, CancellationToken cancellationToken = default)
     {
         limit = this.ClampLimit(limit);
@@ -85,6 +90,8 @@ public class EmergencyController : ControllerBase
     [HttpPut("{id}/respond")]
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<EmergencyCallResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<EmergencyCallResponse>> RespondCall(Guid id, CancellationToken cancellationToken = default)
     {

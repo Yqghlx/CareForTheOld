@@ -38,6 +38,7 @@ public class NotificationController : ControllerBase
     [HttpGet("me")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<NotificationResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<PagedResult<NotificationResponse>>> GetMyNotifications(
         [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip,
         [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize, CancellationToken cancellationToken = default)
@@ -53,6 +54,7 @@ public class NotificationController : ControllerBase
     [HttpGet("me/unread-count")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<object>> GetUnreadCount(CancellationToken cancellationToken = default)
     {
         var count = await _notificationService.GetUnreadCountAsync(this.GetUserId(), cancellationToken);
@@ -64,6 +66,7 @@ public class NotificationController : ControllerBase
     /// </summary>
     [HttpPut("{id:guid}/read")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<object>> MarkAsRead(Guid id, CancellationToken cancellationToken = default)
     {
         var success = await _notificationService.MarkAsReadAsync(id, this.GetUserId(), cancellationToken);
@@ -79,6 +82,7 @@ public class NotificationController : ControllerBase
     /// </summary>
     [HttpPut("me/read-all")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<object>> MarkAllAsRead(CancellationToken cancellationToken = default)
     {
         await _notificationService.MarkAllAsReadAsync(this.GetUserId(), cancellationToken);

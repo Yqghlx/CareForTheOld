@@ -40,6 +40,8 @@ public class LocationController : ControllerBase
     [Authorize(Roles = "Elder")]
     [ProducesResponseType(typeof(ApiResponse<LocationRecordResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<LocationRecordResponse>> ReportLocation([FromBody] ReportLocationRequest request, CancellationToken cancellationToken = default)
     {
@@ -54,6 +56,7 @@ public class LocationController : ControllerBase
     [HttpGet("me/latest")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
     [ProducesResponseType(typeof(ApiResponse<LocationRecordResponse?>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<LocationRecordResponse?>> GetMyLatestLocation(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -67,6 +70,7 @@ public class LocationController : ControllerBase
     [HttpGet("me/history")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [ProducesResponseType(typeof(ApiResponse<List<LocationRecordResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<List<LocationRecordResponse>>> GetMyHistory([FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize, CancellationToken cancellationToken = default)
     {
         limit = this.ClampLimit(limit);
@@ -82,6 +86,8 @@ public class LocationController : ControllerBase
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<LocationRecordResponse?>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ApiResponse<LocationRecordResponse?>> GetFamilyMemberLatestLocation(Guid familyId, Guid memberId, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -102,6 +108,8 @@ public class LocationController : ControllerBase
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<List<LocationRecordResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ApiResponse<List<LocationRecordResponse>>> GetFamilyMemberHistory(
         Guid familyId, Guid memberId, [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize, CancellationToken cancellationToken = default)
     {

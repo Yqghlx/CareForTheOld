@@ -39,6 +39,7 @@ public class UserController : ControllerBase
     [HttpGet("me")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [ProducesResponseType(typeof(ApiResponse<UserResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<UserResponse>> GetCurrentUser(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -52,6 +53,7 @@ public class UserController : ControllerBase
     [HttpPut("me")]
     [ProducesResponseType(typeof(ApiResponse<UserResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<UserResponse>> UpdateUser([FromBody] UpdateUserRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -65,6 +67,7 @@ public class UserController : ControllerBase
     [HttpPost("me/password")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [EnableRateLimiting("PasswordChangePolicy")]
     public async Task<ApiResponse<object>> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken = default)
     {
@@ -83,6 +86,7 @@ public class UserController : ControllerBase
     [HttpPost("me/avatar")]
     [RequestSizeLimit(AppConstants.FileUpload.MaxAvatarSizeBytes)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<object>> UploadAvatar(IFormFile file, CancellationToken cancellationToken = default)
     {
@@ -126,6 +130,7 @@ public class UserController : ControllerBase
     [HttpGet("{id:guid}")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [ProducesResponseType(typeof(ApiResponse<UserResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<UserResponse>> GetUserById(Guid id, CancellationToken cancellationToken = default)
     {
         // 仅允许查看本人或同一家庭成员的信息，防止越权访问

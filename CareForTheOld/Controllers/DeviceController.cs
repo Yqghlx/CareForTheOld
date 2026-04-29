@@ -40,6 +40,7 @@ public class DeviceController : ControllerBase
     [HttpPost("token")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<object>> RegisterToken([FromBody] RegisterTokenRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -52,6 +53,7 @@ public class DeviceController : ControllerBase
     /// </summary>
     [HttpDelete("token")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<object>> DeleteToken(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();

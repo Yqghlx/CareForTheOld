@@ -35,6 +35,7 @@ public class FamilyController : ControllerBase
     [HttpGet("me")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [ProducesResponseType(typeof(ApiResponse<FamilyResponse?>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<FamilyResponse?>> GetMyFamily(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -49,6 +50,8 @@ public class FamilyController : ControllerBase
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<FamilyResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<FamilyResponse>> Create([FromBody] CreateFamilyRequest request, CancellationToken cancellationToken = default)
     {
@@ -64,6 +67,8 @@ public class FamilyController : ControllerBase
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<FamilyResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<FamilyResponse>> AddMember(Guid id, [FromBody] AddFamilyMemberRequest request, CancellationToken cancellationToken = default)
     {
@@ -79,6 +84,7 @@ public class FamilyController : ControllerBase
     [EnableRateLimiting("JoinFamilyPolicy")]
     [ProducesResponseType(typeof(ApiResponse<JoinFamilyResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<JoinFamilyResponse>> JoinFamily([FromBody] JoinFamilyRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -92,6 +98,8 @@ public class FamilyController : ControllerBase
     [HttpPost("{id:guid}/refresh-code")]
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<FamilyResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<FamilyResponse>> RefreshInviteCode(Guid id, CancellationToken cancellationToken = default)
     {
@@ -106,6 +114,7 @@ public class FamilyController : ControllerBase
     [HttpGet("{id:guid}/members")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [ProducesResponseType(typeof(ApiResponse<List<FamilyMemberResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ApiResponse<List<FamilyMemberResponse>>> GetMembers(Guid id, CancellationToken cancellationToken = default)
     {
         // 验证请求者是该家庭成员，防止越权查看
@@ -123,6 +132,8 @@ public class FamilyController : ControllerBase
     [Authorize(Roles = "Child")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
     [ProducesResponseType(typeof(ApiResponse<List<FamilyMemberResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ApiResponse<List<FamilyMemberResponse>>> GetPendingMembers(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -136,6 +147,8 @@ public class FamilyController : ControllerBase
     [HttpPost("{id:guid}/members/{memberId:guid}/approve")]
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<object>> ApproveMember(Guid id, Guid memberId, CancellationToken cancellationToken = default)
     {
@@ -150,6 +163,8 @@ public class FamilyController : ControllerBase
     [HttpPost("{id:guid}/members/{memberId:guid}/reject")]
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<object>> RejectMember(Guid id, Guid memberId, CancellationToken cancellationToken = default)
     {
@@ -161,6 +176,8 @@ public class FamilyController : ControllerBase
     [HttpDelete("{id:guid}/members/{userId:guid}")]
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<object>> RemoveMember(Guid id, Guid userId, CancellationToken cancellationToken = default)
     {

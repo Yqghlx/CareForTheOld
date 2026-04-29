@@ -38,6 +38,8 @@ public class MedicationController : ControllerBase
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<MedicationPlanResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<MedicationPlanResponse>> CreatePlan([FromBody] CreateMedicationPlanRequest request, CancellationToken cancellationToken = default)
     {
@@ -53,6 +55,8 @@ public class MedicationController : ControllerBase
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<List<MedicationPlanResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ApiResponse<List<MedicationPlanResponse>>> GetPlansByElder(Guid elderId, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -67,6 +71,8 @@ public class MedicationController : ControllerBase
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [Authorize(Roles = "Elder")]
     [ProducesResponseType(typeof(ApiResponse<List<MedicationPlanResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ApiResponse<List<MedicationPlanResponse>>> GetMyPlans(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -81,6 +87,8 @@ public class MedicationController : ControllerBase
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<MedicationPlanResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<MedicationPlanResponse>> UpdatePlan(Guid id, [FromBody] UpdateMedicationPlanRequest request, CancellationToken cancellationToken = default)
     {
@@ -95,6 +103,8 @@ public class MedicationController : ControllerBase
     [HttpDelete("plans/{id:guid}")]
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<object>> DeletePlan(Guid id, CancellationToken cancellationToken = default)
     {
@@ -110,6 +120,8 @@ public class MedicationController : ControllerBase
     [Authorize(Roles = "Elder")]
     [ProducesResponseType(typeof(ApiResponse<MedicationLogResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<MedicationLogResponse>> RecordLog([FromBody] RecordMedicationLogRequest request, CancellationToken cancellationToken = default)
     {
@@ -125,6 +137,8 @@ public class MedicationController : ControllerBase
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<List<MedicationLogResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ApiResponse<List<MedicationLogResponse>>> GetLogs(
         Guid elderId,
         [FromQuery] DateOnly? date,
@@ -145,6 +159,8 @@ public class MedicationController : ControllerBase
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [Authorize(Roles = "Elder")]
     [ProducesResponseType(typeof(ApiResponse<List<MedicationLogResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ApiResponse<List<MedicationLogResponse>>> GetMyLogs(
         [FromQuery] DateOnly? date,
         [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip,
@@ -164,6 +180,8 @@ public class MedicationController : ControllerBase
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
     [Authorize(Roles = "Elder")]
     [ProducesResponseType(typeof(ApiResponse<List<MedicationLogResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ApiResponse<List<MedicationLogResponse>>> GetTodayPending(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
