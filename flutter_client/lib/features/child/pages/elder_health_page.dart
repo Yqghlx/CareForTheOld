@@ -766,7 +766,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
         padding: AppTheme.paddingAll24,
         decoration: AppTheme.decorationCardLight,
         child: const Center(
-          child: Text('暂无用药记录', style: AppTheme.textGreyLight),
+          child: Text(AppTheme.msgNoMedicationLog, style: AppTheme.textGreyLight),
         ),
       );
     }

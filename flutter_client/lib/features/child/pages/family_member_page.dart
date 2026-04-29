@@ -464,7 +464,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
       return const Center(
         child: Padding(
           padding: EdgeInsets.all(32),
-          child: Text('暂无家庭成员', style: AppTheme.textSecondary16),
+          child: Text(AppTheme.msgNoFamilyMember, style: AppTheme.textSecondary16),
         ),
       );
     }

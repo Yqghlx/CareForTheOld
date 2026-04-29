@@ -418,6 +418,9 @@ class AppTheme {
   static const String msgNoMemberInfo = '暂无成员信息';
   static const String msgNoLocationData = '暂无位置数据，请等待老人上报位置';
   static const String msgNoLocationRecord = '暂无位置记录';
+  static const String msgNoFamilyMember = '暂无家庭成员';
+  static const String msgNoElderConcern = '暂无关注的老人';
+  static const String msgNoMedicationLog = '暂无用药记录';
   static const String msgNoPendingEmergency = '暂无待处理的紧急呼叫';
   static const String msgNoCallRecord = '暂无呼叫记录';
 

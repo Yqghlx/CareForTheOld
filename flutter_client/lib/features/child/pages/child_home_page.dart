@@ -236,7 +236,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
     if (elders.isEmpty) {
       return EmptyStateWidget(
         icon: Icons.people_outline,
-        title: '暂无关注的老人',
+        title: AppTheme.msgNoElderConcern,
         action: PrimaryButton(
           text: '添加家庭成员',
           onPressed: () => context.push(RoutePaths.childFamily),

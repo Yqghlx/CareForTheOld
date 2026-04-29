@@ -510,7 +510,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
         padding: AppTheme.paddingAll24,
         decoration: AppTheme.decorationCardLight,
         child: const Center(
-          child: Text('暂无历史记录', style: AppTheme.textGrey),
+          child: Text(AppTheme.msgNoHistoryRecord, style: AppTheme.textGrey),
         ),
       );
     }
