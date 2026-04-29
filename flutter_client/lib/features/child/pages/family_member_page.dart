@@ -492,6 +492,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
+      cacheExtent: 800,
       itemCount: members.length,
       itemBuilder: (context, index) => _buildMemberCard(members[index], isElder),
     );

@@ -155,7 +155,8 @@ class _SkeletonLoaderState extends State<SkeletonLoader>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
+    return RepaintBoundary(
+      child: AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
         return ShaderMask(
@@ -174,6 +175,7 @@ class _SkeletonLoaderState extends State<SkeletonLoader>
         );
       },
       child: widget.child,
+    ),
     );
   }
 }

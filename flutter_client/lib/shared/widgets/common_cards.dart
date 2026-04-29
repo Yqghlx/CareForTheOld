@@ -290,9 +290,10 @@ class _AnimatedQuickCardState extends State<AnimatedQuickCard>
       onTapUp: _onTapUp,
       onTapCancel: _onTapCancel,
       onTap: widget.onTap,
-      child: ScaleTransition(
-        scale: _scaleAnimation,
-        child: Card(
+      child: RepaintBoundary(
+        child: ScaleTransition(
+          scale: _scaleAnimation,
+          child: Card(
           elevation: AppTheme.cardElevation,
           shape: RoundedRectangleBorder(
             borderRadius: AppTheme.radiusL,
@@ -332,6 +333,7 @@ class _AnimatedQuickCardState extends State<AnimatedQuickCard>
               ],
             ),
           ),
+        ),
         ),
       ),
       ),

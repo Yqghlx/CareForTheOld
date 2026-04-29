@@ -41,9 +41,11 @@ mixin ButtonScaleAnimation {
       onTapUp: _onTapUp,
       onTapCancel: _onTapCancel,
       onTap: onTap,
-      child: ScaleTransition(
-        scale: _scaleAnimation,
-        child: child,
+      child: RepaintBoundary(
+        child: ScaleTransition(
+          scale: _scaleAnimation,
+          child: child,
+        ),
       ),
     );
   }

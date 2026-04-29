@@ -120,23 +120,23 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
           // 成员列表
           Text('圈内成员', style: AppTheme.textHeading),
           AppTheme.spacer8,
-          ...state.members.map((m) => ListTile(
-                key: ValueKey(m.userId),
-                leading: CircleAvatar(
-                  child: Text(m.realName[0]),
-                ),
-                title: Text(m.realName, maxLines: 1, overflow: TextOverflow.ellipsis),
-                subtitle: Text(m.nickname ?? '', maxLines: 1, overflow: TextOverflow.ellipsis),
-                trailing: m.distanceMeters != null
-                    ? Text('${m.distanceMeters!.toInt()} 米')
-                    : null,
-              )),
-
           if (state.members.isEmpty)
             const Padding(
               padding: AppTheme.paddingAll16,
               child: Text(AppTheme.msgNoMemberInfo),
-            ),
+            )
+          else
+            ...state.members.map((m) => ListTile(
+                  key: ValueKey(m.userId),
+                  leading: CircleAvatar(
+                    child: Text(m.realName[0]),
+                  ),
+                  title: Text(m.realName, maxLines: 1, overflow: TextOverflow.ellipsis),
+                  subtitle: Text(m.nickname ?? '', maxLines: 1, overflow: TextOverflow.ellipsis),
+                  trailing: m.distanceMeters != null
+                      ? Text('${m.distanceMeters!.toInt()} 米')
+                      : null,
+                )),
 
           AppTheme.spacer16,
 

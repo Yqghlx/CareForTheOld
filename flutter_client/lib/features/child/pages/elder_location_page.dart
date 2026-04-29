@@ -526,6 +526,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
+      cacheExtent: 800,
       itemCount: history.length,
       itemBuilder: (context, index) => _buildHistoryItem(history[index]),
     );
