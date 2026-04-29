@@ -57,7 +57,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
       ASPNETCORE_URLS: http://+:5000
-      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=${POSTGRES_DB:-carefortheold};Username=${POSTGRES_USER:-carefortheold};Password=${POSTGRES_PASSWORD:?请在 .env 中设置 POSTGRES_PASSWORD};Pooling=true;Minimum Pool Size=10;Maximum Pool Size=200;Connection Lifetime=300;"
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=${POSTGRES_DB:-carefortheold};Username=${POSTGRES_USER:-carefortheold};Password=${POSTGRES_PASSWORD:?请在 .env 中设置 POSTGRES_PASSWORD};Pooling=true;Minimum Pool Size=10;Maximum Pool Size=200;Connection Lifetime=300;Keepalive=30;Tcp KeepaliveTime=30;Tcp KeepaliveInterval=10;Command Timeout=30;"
       ConnectionStrings__Redis: "redis:6379"
       Jwt__Key: ${JWT_SECRET_KEY:?请在 .env 中设置 JWT_SECRET_KEY}
       Jwt__Issuer: "CareForTheOld"
