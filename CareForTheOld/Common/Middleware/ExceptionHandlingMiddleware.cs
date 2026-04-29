@@ -52,6 +52,11 @@ public class ExceptionHandlingMiddleware
             UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, ErrorMessages.Middleware.Unauthorized),
             ArgumentException => (StatusCodes.Status400BadRequest,
                 isDev ? exception.Message : ErrorMessages.Middleware.BadRequest),
+            // 临时性故障：超时、取消、网络问题 → 503 Service Unavailable（前端可重试）
+            TimeoutException or OperationCanceledException or TaskCanceledException
+                => (StatusCodes.Status503ServiceUnavailable, ErrorMessages.Middleware.ServiceUnavailable),
+            System.Net.Sockets.SocketException or IOException
+                => (StatusCodes.Status503ServiceUnavailable, ErrorMessages.Middleware.ServiceUnavailable),
             _ => (StatusCodes.Status500InternalServerError,
                 isDev ? exception.Message : ErrorMessages.Middleware.InternalError)
         };

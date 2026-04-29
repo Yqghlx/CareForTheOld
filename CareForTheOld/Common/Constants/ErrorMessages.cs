@@ -397,6 +397,9 @@ public static class ErrorMessages
 
         /// <summary>服务器内部错误</summary>
         public const string InternalError = "服务器内部错误";
+
+        /// <summary>服务暂时不可用（超时、网络故障等临时性问题）</summary>
+        public const string ServiceUnavailable = "服务暂时不可用，请稍后重试";
     }
 
     /// <summary>
