@@ -439,8 +439,11 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
 
   /// 用药提醒卡片：显示今日待服用药物
   Widget _buildMedicationReminder() {
-    final medState = ref.watch(medicationProvider);
-    final pendingList = medState.todayPending.where((l) => l.isPending).toList()
+    final todayPending = ref.watch(medicationProvider.select((s) => s.todayPending));
+    final isLoading = ref.watch(medicationProvider.select((s) => s.isLoading));
+    final pendingCount = ref.watch(medicationProvider.select((s) => s.pendingCount));
+    final takenCount = ref.watch(medicationProvider.select((s) => s.takenCount));
+    final pendingList = todayPending.where((l) => l.isPending).toList()
       ..sort((a, b) => a.scheduledAt.compareTo(b.scheduledAt));
 
     return Column(
@@ -450,7 +453,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text('今日用药', style: AppTheme.textSectionTitle),
-            if (medState.pendingCount > 0)
+            if (pendingCount > 0)
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
@@ -458,19 +461,19 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                   borderRadius: AppTheme.radiusS,
                 ),
                 child: Text(
-                  '${medState.pendingCount} 项待服',
+                  '$pendingCount 项待服',
                   style: const TextStyle(fontSize: 14, color: AppTheme.warningColor, fontWeight: FontWeight.w600),
                 ),
               ),
           ],
         ),
         AppTheme.spacer12,
-        if (medState.isLoading)
+        if (isLoading)
           const Center(child: Padding(
             padding: AppTheme.paddingAll24,
             child: CircularProgressIndicator(),
           ))
-        else if (medState.todayPending.isEmpty)
+        else if (todayPending.isEmpty)
           StandardCard(
             child: Center(
               child: Padding(
@@ -496,7 +499,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                     const Icon(Icons.check_circle, color: AppTheme.successColor, size: 24),
                     AppTheme.hSpacer8,
                     Text(
-                      '今日 ${medState.takenCount} 项已全部完成',
+                      '今日 $takenCount 项已全部完成',
                       style: const TextStyle(fontSize: 16, color: AppTheme.successColor),
                     ),
                   ],
