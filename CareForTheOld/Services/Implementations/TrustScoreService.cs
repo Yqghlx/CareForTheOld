@@ -208,7 +208,16 @@ public class TrustScoreService : ITrustScoreService
                 .FirstAsync(t => t.UserId == responderId && t.CircleId == helpRequest.CircleId, cancellationToken);
 
             await RecalculateSingleScoreAsync(score, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            try
+            {
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException retryEx)
+            {
+                _logger.LogError(retryEx, "信任评分并发重试保存失败: 用户={UserId}, 圈子={CircleId}",
+                    responderId, helpRequest.CircleId);
+                throw;
+            }
         }
 
         _logger.LogInformation(

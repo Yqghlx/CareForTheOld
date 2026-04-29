@@ -193,7 +193,15 @@ public class MedicationService : IMedicationService
             concurrentLog.Status = request.Status;
             concurrentLog.TakenAt = request.TakenAt ?? DateTime.UtcNow;
             concurrentLog.Note = request.Note;
-            await _context.SaveChangesAsync(cancellationToken);
+            try
+            {
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException retryEx)
+            {
+                _logger.LogError(retryEx, "用药日志并发重试保存失败：计划 {PlanId}", request.PlanId);
+                throw;
+            }
 
             _logger.LogInformation("用药日志并发更新：计划 {PlanId}，时间 {ScheduledAt}", request.PlanId, request.ScheduledAt);
 
