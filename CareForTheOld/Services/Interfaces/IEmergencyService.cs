@@ -15,20 +15,20 @@ public interface IEmergencyService
     /// <param name="latitude">纬度（可选）</param>
     /// <param name="longitude">经度（可选）</param>
     /// <param name="batteryLevel">电池电量百分比（可选）</param>
-    Task<EmergencyCallResponse> CreateCallAsync(Guid elderId, double? latitude = null, double? longitude = null, int? batteryLevel = null);
+    Task<EmergencyCallResponse> CreateCallAsync(Guid elderId, double? latitude = null, double? longitude = null, int? batteryLevel = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 获取未处理的紧急呼叫（子女端）
     /// </summary>
-    Task<List<EmergencyCallResponse>> GetUnreadCallsAsync(Guid userId);
+    Task<List<EmergencyCallResponse>> GetUnreadCallsAsync(Guid userId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 获取历史呼叫记录
     /// </summary>
-    Task<List<EmergencyCallResponse>> GetHistoryAsync(Guid userId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultHistoryPageSize);
+    Task<List<EmergencyCallResponse>> GetHistoryAsync(Guid userId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultHistoryPageSize, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 子女标记已处理
     /// </summary>
-    Task<EmergencyCallResponse> RespondCallAsync(Guid callId, Guid userId);
+    Task<EmergencyCallResponse> RespondCallAsync(Guid callId, Guid userId, CancellationToken cancellationToken = default);
 }

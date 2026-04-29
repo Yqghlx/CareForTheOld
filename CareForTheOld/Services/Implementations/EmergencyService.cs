@@ -47,14 +47,14 @@ public class EmergencyService : IEmergencyService
     /// <summary>
     /// 老人发起紧急呼叫
     /// </summary>
-    public async Task<EmergencyCallResponse> CreateCallAsync(Guid elderId, double? latitude = null, double? longitude = null, int? batteryLevel = null)
+    public async Task<EmergencyCallResponse> CreateCallAsync(Guid elderId, double? latitude = null, double? longitude = null, int? batteryLevel = null, CancellationToken cancellationToken = default)
     {
         // 防重复提交：同一老人 30 秒内的重复请求视为同一呼叫，返回已有记录
         var recentCall = await _context.EmergencyCalls
             .Include(c => c.Elder)
             .Where(c => c.ElderId == elderId && c.CalledAt > DateTime.UtcNow.AddSeconds(-30))
             .OrderByDescending(c => c.CalledAt)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(cancellationToken);
 
         if (recentCall != null)
             return MapToResponse(recentCall);
@@ -62,7 +62,7 @@ public class EmergencyService : IEmergencyService
         // 获取老人的家庭信息
         var familyMember = await _context.FamilyMembers
             .Include(fm => fm.User)
-            .FirstOrDefaultAsync(fm => fm.UserId == elderId);
+            .FirstOrDefaultAsync(fm => fm.UserId == elderId, cancellationToken);
 
         if (familyMember == null)
             throw new InvalidOperationException(ErrorMessages.Family.NotInAnyFamily);
@@ -84,7 +84,7 @@ public class EmergencyService : IEmergencyService
         };
 
         _context.EmergencyCalls.Add(call);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         _logger.LogWarning("紧急呼叫已创建：老人 {ElderId}，呼叫 {CallId}，电量 {BatteryLevel}", elderId, call.Id, batteryLevel);
 
@@ -354,11 +354,11 @@ public class EmergencyService : IEmergencyService
     /// <summary>
     /// 获取未处理的紧急呼叫（子女端）
     /// </summary>
-    public async Task<List<EmergencyCallResponse>> GetUnreadCallsAsync(Guid userId)
+    public async Task<List<EmergencyCallResponse>> GetUnreadCallsAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         // 获取子女的家庭信息
         var familyMember = await _context.FamilyMembers
-            .FirstOrDefaultAsync(fm => fm.UserId == userId);
+            .FirstOrDefaultAsync(fm => fm.UserId == userId, cancellationToken);
 
         if (familyMember == null)
             return [];
@@ -368,7 +368,7 @@ public class EmergencyService : IEmergencyService
             .Include(c => c.Elder)
             .Where(c => c.FamilyId == familyMember.FamilyId && c.Status == EmergencyStatus.Pending)
             .OrderByDescending(c => c.CalledAt)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return calls.Select(MapToResponse).ToList();
     }
@@ -376,11 +376,11 @@ public class EmergencyService : IEmergencyService
     /// <summary>
     /// 获取历史呼叫记录
     /// </summary>
-    public async Task<List<EmergencyCallResponse>> GetHistoryAsync(Guid userId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultHistoryPageSize)
+    public async Task<List<EmergencyCallResponse>> GetHistoryAsync(Guid userId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultHistoryPageSize, CancellationToken cancellationToken = default)
     {
         // 获取用户的家庭信息
         var familyMember = await _context.FamilyMembers
-            .FirstOrDefaultAsync(fm => fm.UserId == userId);
+            .FirstOrDefaultAsync(fm => fm.UserId == userId, cancellationToken);
 
         if (familyMember == null)
             return [];
@@ -392,7 +392,7 @@ public class EmergencyService : IEmergencyService
             .OrderByDescending(c => c.CalledAt)
             .Skip(skip)
             .Take(limit)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return calls.Select(MapToResponse).ToList();
     }
@@ -400,15 +400,15 @@ public class EmergencyService : IEmergencyService
     /// <summary>
     /// 子女标记已处理（原子更新防止多子女并发响应覆盖）
     /// </summary>
-    public async Task<EmergencyCallResponse> RespondCallAsync(Guid callId, Guid userId)
+    public async Task<EmergencyCallResponse> RespondCallAsync(Guid callId, Guid userId, CancellationToken cancellationToken = default)
     {
         // 获取用户信息
-        var user = await _context.Users.FindAsync(userId)
+        var user = await _context.Users.FindAsync([userId], cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
         // 获取呼叫记录（无需 AsTracking，使用原子更新）
         var call = await _context.EmergencyCalls
-            .FirstOrDefaultAsync(c => c.Id == callId);
+            .FirstOrDefaultAsync(c => c.Id == callId, cancellationToken);
 
         if (call == null)
             throw new KeyNotFoundException(ErrorMessages.Emergency.CallNotFound);
@@ -418,7 +418,7 @@ public class EmergencyService : IEmergencyService
 
         // 验证用户是否是该家庭成员
         var isMember = await _context.FamilyMembers
-            .AnyAsync(fm => fm.UserId == userId && fm.FamilyId == call.FamilyId);
+            .AnyAsync(fm => fm.UserId == userId && fm.FamilyId == call.FamilyId, cancellationToken);
 
         if (!isMember)
             throw new UnauthorizedAccessException(ErrorMessages.Emergency.NotFamilyMemberForCall);
@@ -431,7 +431,7 @@ public class EmergencyService : IEmergencyService
                 .SetProperty(c => c.Status, EmergencyStatus.Responded)
                 .SetProperty(c => c.RespondedBy, userId)
                 .SetProperty(c => c.RespondedByRealName, user.RealName)
-                .SetProperty(c => c.RespondedAt, now));
+                .SetProperty(c => c.RespondedAt, now), cancellationToken);
 
         if (updated == 0)
             throw new InvalidOperationException(ErrorMessages.Emergency.CallAlreadyResponded);
@@ -439,7 +439,7 @@ public class EmergencyService : IEmergencyService
         // 重新查询完整记录返回响应
         var respondedCall = await _context.EmergencyCalls
             .Include(c => c.Elder)
-            .FirstAsync(c => c.Id == callId);
+            .FirstAsync(c => c.Id == callId, cancellationToken);
 
         return MapToResponse(respondedCall);
     }

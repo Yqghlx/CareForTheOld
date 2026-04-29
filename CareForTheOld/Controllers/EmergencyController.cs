@@ -43,7 +43,8 @@ public class EmergencyController : ControllerBase
             userId,
             request?.Latitude,
             request?.Longitude,
-            request?.BatteryLevel);
+            request?.BatteryLevel,
+            cancellationToken);
         return ApiResponse<EmergencyCallResponse>.Ok(call, SuccessMessages.Emergency.CallSent);
     }
 
@@ -56,7 +57,7 @@ public class EmergencyController : ControllerBase
     public async Task<ApiResponse<List<EmergencyCallResponse>>> GetUnreadCalls(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var calls = await _emergencyService.GetUnreadCallsAsync(userId);
+        var calls = await _emergencyService.GetUnreadCallsAsync(userId, cancellationToken);
         return ApiResponse<List<EmergencyCallResponse>>.Ok(calls);
     }
 
@@ -69,7 +70,7 @@ public class EmergencyController : ControllerBase
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
-        var calls = await _emergencyService.GetHistoryAsync(userId, skip, limit);
+        var calls = await _emergencyService.GetHistoryAsync(userId, skip, limit, cancellationToken);
         return ApiResponse<List<EmergencyCallResponse>>.Ok(calls);
     }
 
@@ -81,7 +82,7 @@ public class EmergencyController : ControllerBase
     public async Task<ApiResponse<EmergencyCallResponse>> RespondCall(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var call = await _emergencyService.RespondCallAsync(id, userId);
+        var call = await _emergencyService.RespondCallAsync(id, userId, cancellationToken);
         return ApiResponse<EmergencyCallResponse>.Ok(call, SuccessMessages.Emergency.MarkHandled);
     }
 }
