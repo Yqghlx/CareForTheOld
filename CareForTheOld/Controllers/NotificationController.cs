@@ -32,13 +32,16 @@ public class NotificationController : ControllerBase
     }
 
     /// <summary>
-    /// 获取我的通知列表
+    /// 获取我的通知列表（分页）
     /// </summary>
     [HttpGet("me")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
-    public async Task<ApiResponse<List<NotificationResponse>>> GetMyNotifications([FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize)
+    public async Task<ApiResponse<List<NotificationResponse>>> GetMyNotifications(
+        [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip,
+        [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize)
     {
-        var notifications = await _notificationService.GetUserNotificationsAsync(this.GetUserId(), limit);
+        limit = this.ClampLimit(limit);
+        var notifications = await _notificationService.GetUserNotificationsAsync(this.GetUserId(), skip, limit);
         return ApiResponse<List<NotificationResponse>>.Ok(notifications);
     }
 

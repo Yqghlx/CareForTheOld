@@ -119,12 +119,13 @@ public class NotificationService : INotificationService
     /// <summary>
     /// 获取用户通知列表（分页）
     /// </summary>
-    public async Task<List<NotificationResponse>> GetUserNotificationsAsync(Guid userId, int limit = AppConstants.Pagination.DefaultPageSize)
+    public async Task<List<NotificationResponse>> GetUserNotificationsAsync(Guid userId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize)
     {
         limit = Math.Clamp(limit, AppConstants.Pagination.MinPageSize, AppConstants.Pagination.MaxPageSize);
         return await _context.NotificationRecords
             .Where(n => n.UserId == userId)
             .OrderByDescending(n => n.CreatedAt)
+            .Skip(skip)
             .Take(limit)
             .Select(n => new NotificationResponse
             {

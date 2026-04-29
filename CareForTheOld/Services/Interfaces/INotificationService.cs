@@ -24,9 +24,9 @@ public interface INotificationService
     Task SendToFamilyAsync(Guid familyId, string type, object data);
 
     /// <summary>
-    /// 获取用户通知列表
+    /// 获取用户通知列表（分页）
     /// </summary>
-    Task<List<NotificationResponse>> GetUserNotificationsAsync(Guid userId, int limit = AppConstants.Pagination.DefaultPageSize);
+    Task<List<NotificationResponse>> GetUserNotificationsAsync(Guid userId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize);
 
     /// <summary>
     /// 获取未读通知数量
