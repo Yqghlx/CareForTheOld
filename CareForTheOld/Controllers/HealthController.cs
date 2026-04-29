@@ -50,7 +50,7 @@ public class HealthController : ControllerBase
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Elder")]
-    public async Task<ApiResponse<HealthRecordResponse>> CreateRecord([FromBody] CreateHealthRecordRequest request)
+    public async Task<ApiResponse<HealthRecordResponse>> CreateRecord([FromBody] CreateHealthRecordRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _healthService.CreateRecordAsync(userId, request);
@@ -65,7 +65,8 @@ public class HealthController : ControllerBase
     public async Task<ApiResponse<List<HealthRecordResponse>>> GetMyRecords(
         [FromQuery] HealthType? type,
         [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip,
-        [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize)
+        [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize,
+        CancellationToken cancellationToken = default)
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
@@ -84,7 +85,8 @@ public class HealthController : ControllerBase
         Guid memberId,
         [FromQuery] HealthType? type,
         [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip,
-        [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize)
+        [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize,
+        CancellationToken cancellationToken = default)
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
@@ -101,7 +103,7 @@ public class HealthController : ControllerBase
     /// </summary>
     [HttpGet("me/stats")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheLongSeconds)]
-    public async Task<ApiResponse<List<HealthStatsResponse>>> GetMyStats()
+    public async Task<ApiResponse<List<HealthStatsResponse>>> GetMyStats(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _healthQueryService.GetUserStatsAsync(userId);
@@ -116,7 +118,8 @@ public class HealthController : ControllerBase
     [Authorize(Roles = "Child")]
     public async Task<ApiResponse<List<HealthStatsResponse>>> GetFamilyMemberStats(
         Guid familyId,
-        Guid memberId)
+        Guid memberId,
+        CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
 
@@ -132,7 +135,7 @@ public class HealthController : ControllerBase
     /// </summary>
     [HttpDelete("{id:guid}")]
     [Authorize(Roles = "Elder")]
-    public async Task<ApiResponse<object>> DeleteRecord(Guid id)
+    public async Task<ApiResponse<object>> DeleteRecord(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         await _healthService.DeleteRecordAsync(userId, id);
@@ -144,7 +147,7 @@ public class HealthController : ControllerBase
     /// </summary>
     [HttpGet("me/report")]
     [Authorize(Roles = "Elder")]
-    public async Task<IActionResult> ExportMyReport([FromQuery][Range(1, 365)] int days = 7)
+    public async Task<IActionResult> ExportMyReport([FromQuery][Range(1, 365)] int days = 7, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var pdfBytes = await _reportService.GeneratePdfReportAsync(userId, days);
@@ -159,7 +162,8 @@ public class HealthController : ControllerBase
     public async Task<IActionResult> ExportFamilyMemberReport(
         Guid familyId,
         Guid memberId,
-        [FromQuery][Range(1, 365)] int days = 7)
+        [FromQuery][Range(1, 365)] int days = 7,
+        CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
 
@@ -177,7 +181,8 @@ public class HealthController : ControllerBase
     [Authorize(Roles = "Elder")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheLongSeconds)]
     public async Task<ApiResponse<TrendAnomalyDetectionResponse>> GetMyAnomalyDetection(
-        [FromQuery] HealthType? type)
+        [FromQuery] HealthType? type,
+        CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
 
@@ -217,7 +222,8 @@ public class HealthController : ControllerBase
     public async Task<ApiResponse<TrendAnomalyDetectionResponse>> GetFamilyMemberAnomalyDetection(
         Guid familyId,
         Guid memberId,
-        [FromQuery] HealthType? type)
+        [FromQuery] HealthType? type,
+        CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
 

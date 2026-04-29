@@ -33,7 +33,7 @@ public class FamilyController : ControllerBase
     /// </summary>
     [HttpGet("me")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
-    public async Task<ApiResponse<FamilyResponse?>> GetMyFamily()
+    public async Task<ApiResponse<FamilyResponse?>> GetMyFamily(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _familyService.GetMyFamilyAsync(userId);
@@ -45,7 +45,7 @@ public class FamilyController : ControllerBase
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Child")]
-    public async Task<ApiResponse<FamilyResponse>> Create([FromBody] CreateFamilyRequest request)
+    public async Task<ApiResponse<FamilyResponse>> Create([FromBody] CreateFamilyRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _familyService.CreateFamilyAsync(userId, request);
@@ -57,7 +57,7 @@ public class FamilyController : ControllerBase
     /// </summary>
     [HttpPost("{id:guid}/members")]
     [Authorize(Roles = "Child")]
-    public async Task<ApiResponse<FamilyResponse>> AddMember(Guid id, [FromBody] AddFamilyMemberRequest request)
+    public async Task<ApiResponse<FamilyResponse>> AddMember(Guid id, [FromBody] AddFamilyMemberRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _familyService.AddMemberAsync(id, userId, request);
@@ -69,7 +69,7 @@ public class FamilyController : ControllerBase
     /// </summary>
     [HttpPost("join")]
     [EnableRateLimiting("JoinFamilyPolicy")]
-    public async Task<ApiResponse<JoinFamilyResponse>> JoinFamily([FromBody] JoinFamilyRequest request)
+    public async Task<ApiResponse<JoinFamilyResponse>> JoinFamily([FromBody] JoinFamilyRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _familyService.JoinFamilyByCodeAsync(userId, request);
@@ -81,7 +81,7 @@ public class FamilyController : ControllerBase
     /// </summary>
     [HttpPost("{id:guid}/refresh-code")]
     [Authorize(Roles = "Child")]
-    public async Task<ApiResponse<FamilyResponse>> RefreshInviteCode(Guid id)
+    public async Task<ApiResponse<FamilyResponse>> RefreshInviteCode(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _familyService.RefreshInviteCodeAsync(id, userId);
@@ -93,7 +93,7 @@ public class FamilyController : ControllerBase
     /// </summary>
     [HttpGet("{id:guid}/members")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
-    public async Task<ApiResponse<List<FamilyMemberResponse>>> GetMembers(Guid id)
+    public async Task<ApiResponse<List<FamilyMemberResponse>>> GetMembers(Guid id, CancellationToken cancellationToken = default)
     {
         // 验证请求者是该家庭成员，防止越权查看
         var userId = this.GetUserId();
@@ -108,7 +108,7 @@ public class FamilyController : ControllerBase
     /// </summary>
     [HttpGet("{id:guid}/pending-members")]
     [Authorize(Roles = "Child")]
-    public async Task<ApiResponse<List<FamilyMemberResponse>>> GetPendingMembers(Guid id)
+    public async Task<ApiResponse<List<FamilyMemberResponse>>> GetPendingMembers(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _familyService.GetPendingMembersAsync(id, userId);
@@ -120,7 +120,7 @@ public class FamilyController : ControllerBase
     /// </summary>
     [HttpPost("{id:guid}/members/{memberId:guid}/approve")]
     [Authorize(Roles = "Child")]
-    public async Task<ApiResponse<object>> ApproveMember(Guid id, Guid memberId)
+    public async Task<ApiResponse<object>> ApproveMember(Guid id, Guid memberId, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         await _familyService.ApproveMemberAsync(id, memberId, userId);
@@ -132,7 +132,7 @@ public class FamilyController : ControllerBase
     /// </summary>
     [HttpPost("{id:guid}/members/{memberId:guid}/reject")]
     [Authorize(Roles = "Child")]
-    public async Task<ApiResponse<object>> RejectMember(Guid id, Guid memberId)
+    public async Task<ApiResponse<object>> RejectMember(Guid id, Guid memberId, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         await _familyService.RejectMemberAsync(id, memberId, userId);
@@ -141,7 +141,7 @@ public class FamilyController : ControllerBase
 
     [HttpDelete("{id:guid}/members/{userId:guid}")]
     [Authorize(Roles = "Child")]
-    public async Task<ApiResponse<object>> RemoveMember(Guid id, Guid userId)
+    public async Task<ApiResponse<object>> RemoveMember(Guid id, Guid userId, CancellationToken cancellationToken = default)
     {
         var currentUserId = this.GetUserId();
         await _familyService.RemoveMemberAsync(id, userId, currentUserId);

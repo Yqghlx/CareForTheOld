@@ -34,7 +34,7 @@ public class NeighborHelpController : ControllerBase
     /// </summary>
     [HttpGet("pending")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
-    public async Task<ApiResponse<List<NeighborHelpRequestResponse>>> GetPending()
+    public async Task<ApiResponse<List<NeighborHelpRequestResponse>>> GetPending(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _helpService.GetPendingRequestsAsync(userId);
@@ -47,7 +47,7 @@ public class NeighborHelpController : ControllerBase
     [HttpGet("history")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     public async Task<ApiResponse<List<NeighborHelpRequestResponse>>> GetHistory(
-        [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultHistoryPageSize)
+        [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultHistoryPageSize, CancellationToken cancellationToken = default)
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
@@ -60,7 +60,7 @@ public class NeighborHelpController : ControllerBase
     /// </summary>
     [HttpGet("{id:guid}")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
-    public async Task<ApiResponse<NeighborHelpRequestResponse>> GetRequest(Guid id)
+    public async Task<ApiResponse<NeighborHelpRequestResponse>> GetRequest(Guid id, CancellationToken cancellationToken = default)
     {
         var result = await _helpService.GetRequestAsync(id);
         return ApiResponse<NeighborHelpRequestResponse>.Ok(result);
@@ -70,7 +70,7 @@ public class NeighborHelpController : ControllerBase
     /// 接受求助请求（第一个接受者生效）
     /// </summary>
     [HttpPut("{id:guid}/accept")]
-    public async Task<ApiResponse<NeighborHelpRequestResponse>> Accept(Guid id)
+    public async Task<ApiResponse<NeighborHelpRequestResponse>> Accept(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _helpService.AcceptHelpRequestAsync(id, userId);
@@ -81,7 +81,7 @@ public class NeighborHelpController : ControllerBase
     /// 取消求助请求（仅求助者或其子女）
     /// </summary>
     [HttpPut("{id:guid}/cancel")]
-    public async Task<ApiResponse<object>> Cancel(Guid id)
+    public async Task<ApiResponse<object>> Cancel(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         await _helpService.CancelHelpRequestAsync(id, userId);
@@ -93,7 +93,7 @@ public class NeighborHelpController : ControllerBase
     /// </summary>
     [HttpPost("{id:guid}/rate")]
     public async Task<ApiResponse<NeighborHelpRatingResponse>> Rate(
-        Guid id, [FromBody] RateHelpRequest request)
+        Guid id, [FromBody] RateHelpRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _helpService.RateHelpRequestAsync(id, userId, request);

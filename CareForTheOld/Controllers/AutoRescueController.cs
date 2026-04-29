@@ -41,7 +41,7 @@ public class AutoRescueController : ControllerBase
     /// 子女主动响应自动救援告警
     /// </summary>
     [HttpPost("{recordId:guid}/respond")]
-    public async Task<ApiResponse<object>> ChildRespond(Guid recordId)
+    public async Task<ApiResponse<object>> ChildRespond(Guid recordId, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         await _autoRescueService.ChildRespondAsync(recordId, userId);
@@ -53,7 +53,7 @@ public class AutoRescueController : ControllerBase
     /// </summary>
     [HttpGet("history")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
-    public async Task<ApiResponse<object>> GetHistory([FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultHistoryPageSize)
+    public async Task<ApiResponse<object>> GetHistory([FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultHistoryPageSize, CancellationToken cancellationToken = default)
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();

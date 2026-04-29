@@ -35,7 +35,7 @@ public class GeoFenceController : ControllerBase
     /// 创建电子围栏
     /// </summary>
     [HttpPost]
-    public async Task<ApiResponse<GeoFenceResponse>> CreateFence([FromBody] CreateGeoFenceRequest request)
+    public async Task<ApiResponse<GeoFenceResponse>> CreateFence([FromBody] CreateGeoFenceRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _geoFenceService.CreateFenceAsync(userId, request);
@@ -47,7 +47,7 @@ public class GeoFenceController : ControllerBase
     /// </summary>
     [HttpGet("elder/{elderId}")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
-    public async Task<ApiResponse<GeoFenceResponse?>> GetElderFence(Guid elderId)
+    public async Task<ApiResponse<GeoFenceResponse?>> GetElderFence(Guid elderId, CancellationToken cancellationToken = default)
     {
         // 验证请求的子女与目标老人属于同一家庭
         var userId = this.GetUserId();
@@ -64,7 +64,7 @@ public class GeoFenceController : ControllerBase
     /// 更新电子围栏
     /// </summary>
     [HttpPut("{id}")]
-    public async Task<ApiResponse<GeoFenceResponse>> UpdateFence(Guid id, [FromBody] CreateGeoFenceRequest request)
+    public async Task<ApiResponse<GeoFenceResponse>> UpdateFence(Guid id, [FromBody] CreateGeoFenceRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _geoFenceService.UpdateFenceAsync(id, userId, request);
@@ -75,7 +75,7 @@ public class GeoFenceController : ControllerBase
     /// 删除电子围栏
     /// </summary>
     [HttpDelete("{id}")]
-    public async Task<ApiResponse<object>> DeleteFence(Guid id)
+    public async Task<ApiResponse<object>> DeleteFence(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         await _geoFenceService.DeleteFenceAsync(id, userId);

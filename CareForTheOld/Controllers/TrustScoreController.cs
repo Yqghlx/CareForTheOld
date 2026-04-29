@@ -39,7 +39,7 @@ public class TrustScoreController : ControllerBase
     /// </summary>
     [HttpGet("ranking")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
-    public async Task<ApiResponse<object>> GetRanking(Guid circleId, [FromQuery, Range(1, 100)] int top = AppConstants.Pagination.DefaultHistoryPageSize)
+    public async Task<ApiResponse<object>> GetRanking(Guid circleId, [FromQuery, Range(1, 100)] int top = AppConstants.Pagination.DefaultHistoryPageSize, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         await _circleService.EnsureCircleMemberAsync(circleId, userId);
@@ -63,7 +63,7 @@ public class TrustScoreController : ControllerBase
     /// </summary>
     [HttpGet("me")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
-    public async Task<ApiResponse<object>> GetMyScore(Guid circleId)
+    public async Task<ApiResponse<object>> GetMyScore(Guid circleId, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         await _circleService.EnsureCircleMemberAsync(circleId, userId);

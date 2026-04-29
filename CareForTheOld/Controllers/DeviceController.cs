@@ -41,7 +41,7 @@ public class DeviceController : ControllerBase
     /// 若 token 已存在（同一设备换用户登录），则更新关联用户和活跃时间。
     /// </summary>
     [HttpPost("token")]
-    public async Task<ApiResponse<object>> RegisterToken([FromBody] RegisterTokenRequest request)
+    public async Task<ApiResponse<object>> RegisterToken([FromBody] RegisterTokenRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var now = DateTime.UtcNow;
@@ -82,7 +82,7 @@ public class DeviceController : ControllerBase
     /// 清除当前用户的所有设备令牌（登出时调用）
     /// </summary>
     [HttpDelete("token")]
-    public async Task<ApiResponse<object>> DeleteToken()
+    public async Task<ApiResponse<object>> DeleteToken(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
 

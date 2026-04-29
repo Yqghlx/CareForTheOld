@@ -35,7 +35,7 @@ public class MedicationController : ControllerBase
     /// </summary>
     [HttpPost("plans")]
     [Authorize(Roles = "Child")]
-    public async Task<ApiResponse<MedicationPlanResponse>> CreatePlan([FromBody] CreateMedicationPlanRequest request)
+    public async Task<ApiResponse<MedicationPlanResponse>> CreatePlan([FromBody] CreateMedicationPlanRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _medicationService.CreatePlanAsync(userId, request);
@@ -48,7 +48,7 @@ public class MedicationController : ControllerBase
     [HttpGet("plans/elder/{elderId:guid}")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [Authorize(Roles = "Child")]
-    public async Task<ApiResponse<List<MedicationPlanResponse>>> GetPlansByElder(Guid elderId)
+    public async Task<ApiResponse<List<MedicationPlanResponse>>> GetPlansByElder(Guid elderId, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _medicationService.GetPlansByElderAsync(elderId, userId);
@@ -61,7 +61,7 @@ public class MedicationController : ControllerBase
     [HttpGet("plans/me")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [Authorize(Roles = "Elder")]
-    public async Task<ApiResponse<List<MedicationPlanResponse>>> GetMyPlans()
+    public async Task<ApiResponse<List<MedicationPlanResponse>>> GetMyPlans(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _medicationService.GetPlansByElderAsync(userId);
@@ -73,7 +73,7 @@ public class MedicationController : ControllerBase
     /// </summary>
     [HttpPut("plans/{id:guid}")]
     [Authorize(Roles = "Child")]
-    public async Task<ApiResponse<MedicationPlanResponse>> UpdatePlan(Guid id, [FromBody] UpdateMedicationPlanRequest request)
+    public async Task<ApiResponse<MedicationPlanResponse>> UpdatePlan(Guid id, [FromBody] UpdateMedicationPlanRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _medicationService.UpdatePlanAsync(id, userId, request);
@@ -85,7 +85,7 @@ public class MedicationController : ControllerBase
     /// </summary>
     [HttpDelete("plans/{id:guid}")]
     [Authorize(Roles = "Child")]
-    public async Task<ApiResponse<object>> DeletePlan(Guid id)
+    public async Task<ApiResponse<object>> DeletePlan(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         await _medicationService.DeletePlanAsync(id, userId);
@@ -97,7 +97,7 @@ public class MedicationController : ControllerBase
     /// </summary>
     [HttpPost("logs")]
     [Authorize(Roles = "Elder")]
-    public async Task<ApiResponse<MedicationLogResponse>> RecordLog([FromBody] RecordMedicationLogRequest request)
+    public async Task<ApiResponse<MedicationLogResponse>> RecordLog([FromBody] RecordMedicationLogRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _medicationService.RecordLogAsync(userId, request);
@@ -114,7 +114,8 @@ public class MedicationController : ControllerBase
         Guid elderId,
         [FromQuery] DateOnly? date,
         [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip,
-        [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize)
+        [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize,
+        CancellationToken cancellationToken = default)
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
@@ -131,7 +132,8 @@ public class MedicationController : ControllerBase
     public async Task<ApiResponse<List<MedicationLogResponse>>> GetMyLogs(
         [FromQuery] DateOnly? date,
         [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip,
-        [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize)
+        [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize,
+        CancellationToken cancellationToken = default)
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
@@ -145,7 +147,7 @@ public class MedicationController : ControllerBase
     [HttpGet("today-pending")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
     [Authorize(Roles = "Elder")]
-    public async Task<ApiResponse<List<MedicationLogResponse>>> GetTodayPending()
+    public async Task<ApiResponse<List<MedicationLogResponse>>> GetTodayPending(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _medicationService.GetTodayPendingAsync(userId);

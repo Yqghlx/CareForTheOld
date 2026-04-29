@@ -37,7 +37,7 @@ public class UserController : ControllerBase
     /// </summary>
     [HttpGet("me")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
-    public async Task<ApiResponse<UserResponse>> GetCurrentUser()
+    public async Task<ApiResponse<UserResponse>> GetCurrentUser(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _userService.GetCurrentUserAsync(userId);
@@ -48,7 +48,7 @@ public class UserController : ControllerBase
     /// 更新当前用户信息（昵称、头像URL）
     /// </summary>
     [HttpPut("me")]
-    public async Task<ApiResponse<UserResponse>> UpdateUser([FromBody] UpdateUserRequest request)
+    public async Task<ApiResponse<UserResponse>> UpdateUser([FromBody] UpdateUserRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _userService.UpdateUserAsync(userId, request);
@@ -59,7 +59,7 @@ public class UserController : ControllerBase
     /// 修改当前用户密码
     /// </summary>
     [HttpPost("me/password")]
-    public async Task<ApiResponse<object>> ChangePassword([FromBody] ChangePasswordRequest request)
+    public async Task<ApiResponse<object>> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         await _userService.ChangePasswordAsync(userId, request);
@@ -75,7 +75,7 @@ public class UserController : ControllerBase
     /// </remarks>
     [HttpPost("me/avatar")]
     [RequestSizeLimit(AppConstants.FileUpload.MaxAvatarSizeBytes)]
-    public async Task<ApiResponse<object>> UploadAvatar(IFormFile file)
+    public async Task<ApiResponse<object>> UploadAvatar(IFormFile file, CancellationToken cancellationToken = default)
     {
         if (file == null || file.Length == 0)
         {
@@ -116,7 +116,7 @@ public class UserController : ControllerBase
 
     [HttpGet("{id:guid}")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
-    public async Task<ApiResponse<UserResponse>> GetUserById(Guid id)
+    public async Task<ApiResponse<UserResponse>> GetUserById(Guid id, CancellationToken cancellationToken = default)
     {
         // 仅允许查看本人或同一家庭成员的信息，防止越权访问
         var currentUserId = this.GetUserId();

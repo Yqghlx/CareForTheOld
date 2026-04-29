@@ -36,7 +36,7 @@ public class EmergencyController : ControllerBase
     [HttpPost]
     [Authorize(Roles = "Elder")]
     [EnableRateLimiting("EmergencyPolicy")]
-    public async Task<ApiResponse<EmergencyCallResponse>> CreateCall([FromBody] CreateEmergencyCallRequest? request)
+    public async Task<ApiResponse<EmergencyCallResponse>> CreateCall([FromBody] CreateEmergencyCallRequest? request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var call = await _emergencyService.CreateCallAsync(
@@ -53,7 +53,7 @@ public class EmergencyController : ControllerBase
     [HttpGet("unread")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
     [Authorize(Roles = "Child")]
-    public async Task<ApiResponse<List<EmergencyCallResponse>>> GetUnreadCalls()
+    public async Task<ApiResponse<List<EmergencyCallResponse>>> GetUnreadCalls(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var calls = await _emergencyService.GetUnreadCallsAsync(userId);
@@ -65,7 +65,7 @@ public class EmergencyController : ControllerBase
     /// </summary>
     [HttpGet("history")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
-    public async Task<ApiResponse<List<EmergencyCallResponse>>> GetHistory([FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultHistoryPageSize)
+    public async Task<ApiResponse<List<EmergencyCallResponse>>> GetHistory([FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultHistoryPageSize, CancellationToken cancellationToken = default)
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
@@ -78,7 +78,7 @@ public class EmergencyController : ControllerBase
     /// </summary>
     [HttpPut("{id}/respond")]
     [Authorize(Roles = "Child")]
-    public async Task<ApiResponse<EmergencyCallResponse>> RespondCall(Guid id)
+    public async Task<ApiResponse<EmergencyCallResponse>> RespondCall(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var call = await _emergencyService.RespondCallAsync(id, userId);

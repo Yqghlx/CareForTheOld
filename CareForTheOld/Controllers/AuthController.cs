@@ -27,7 +27,7 @@ public class AuthController : ControllerBase
 
     /// <summary>用户注册</summary>
     [HttpPost("register")]
-    public async Task<ApiResponse<AuthResponse>> Register([FromBody] RegisterRequest request)
+    public async Task<ApiResponse<AuthResponse>> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken = default)
     {
         var result = await _authService.RegisterAsync(request);
         return ApiResponse<AuthResponse>.Ok(result, SuccessMessages.Auth.RegisterSuccess);
@@ -35,7 +35,7 @@ public class AuthController : ControllerBase
 
     /// <summary>用户登录</summary>
     [HttpPost("login")]
-    public async Task<ApiResponse<AuthResponse>> Login([FromBody] LoginRequest request)
+    public async Task<ApiResponse<AuthResponse>> Login([FromBody] LoginRequest request, CancellationToken cancellationToken = default)
     {
         var result = await _authService.LoginAsync(request);
         return ApiResponse<AuthResponse>.Ok(result, SuccessMessages.Auth.LoginSuccess);
@@ -43,7 +43,7 @@ public class AuthController : ControllerBase
 
     /// <summary>刷新令牌</summary>
     [HttpPost("refresh")]
-    public async Task<ApiResponse<AuthResponse>> Refresh([FromBody] RefreshTokenRequest request)
+    public async Task<ApiResponse<AuthResponse>> Refresh([FromBody] RefreshTokenRequest request, CancellationToken cancellationToken = default)
     {
         var result = await _authService.RefreshTokenAsync(request.RefreshToken);
         return ApiResponse<AuthResponse>.Ok(result, SuccessMessages.Auth.RefreshSuccess);

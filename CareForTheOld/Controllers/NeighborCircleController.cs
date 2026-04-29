@@ -34,7 +34,7 @@ public class NeighborCircleController : ControllerBase
     /// </summary>
     [HttpGet("me")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
-    public async Task<ApiResponse<NeighborCircleResponse?>> GetMyCircle()
+    public async Task<ApiResponse<NeighborCircleResponse?>> GetMyCircle(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _circleService.GetMyCircleAsync(userId);
@@ -45,7 +45,7 @@ public class NeighborCircleController : ControllerBase
     /// 创建邻里圈
     /// </summary>
     [HttpPost]
-    public async Task<ApiResponse<NeighborCircleResponse>> Create([FromBody] CreateNeighborCircleRequest request)
+    public async Task<ApiResponse<NeighborCircleResponse>> Create([FromBody] CreateNeighborCircleRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _circleService.CreateCircleAsync(userId, request);
@@ -57,7 +57,7 @@ public class NeighborCircleController : ControllerBase
     /// </summary>
     [HttpGet("{id:guid}")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
-    public async Task<ApiResponse<NeighborCircleResponse>> GetCircle(Guid id)
+    public async Task<ApiResponse<NeighborCircleResponse>> GetCircle(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         await _circleService.EnsureCircleMemberAsync(id, userId);
@@ -71,7 +71,7 @@ public class NeighborCircleController : ControllerBase
     /// </summary>
     [HttpGet("{id:guid}/members")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
-    public async Task<ApiResponse<List<NeighborMemberResponse>>> GetMembers(Guid id)
+    public async Task<ApiResponse<List<NeighborMemberResponse>>> GetMembers(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         await _circleService.EnsureCircleMemberAsync(id, userId);
@@ -86,7 +86,7 @@ public class NeighborCircleController : ControllerBase
     [HttpGet("{id:guid}/nearby-members")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     public async Task<ApiResponse<List<NeighborMemberResponse>>> GetNearbyMembers(
-        Guid id, [FromQuery, Range(-90.0, 90.0)] double latitude, [FromQuery, Range(-180.0, 180.0)] double longitude, [FromQuery] double radius = AppConstants.NeighborCircle.DefaultMemberRadiusMeters)
+        Guid id, [FromQuery, Range(-90.0, 90.0)] double latitude, [FromQuery, Range(-180.0, 180.0)] double longitude, [FromQuery] double radius = AppConstants.NeighborCircle.DefaultMemberRadiusMeters, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         await _circleService.EnsureCircleMemberAsync(id, userId);
@@ -100,7 +100,7 @@ public class NeighborCircleController : ControllerBase
     /// </summary>
     [HttpPost("join")]
     [EnableRateLimiting("JoinCirclePolicy")]
-    public async Task<ApiResponse<NeighborCircleResponse>> Join([FromBody] JoinNeighborCircleRequest request)
+    public async Task<ApiResponse<NeighborCircleResponse>> Join([FromBody] JoinNeighborCircleRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _circleService.JoinCircleByCodeAsync(userId, request);
@@ -111,7 +111,7 @@ public class NeighborCircleController : ControllerBase
     /// 退出邻里圈（创建者退出则解散）
     /// </summary>
     [HttpPost("{id:guid}/leave")]
-    public async Task<ApiResponse<object>> Leave(Guid id)
+    public async Task<ApiResponse<object>> Leave(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         await _circleService.LeaveCircleAsync(id, userId);
@@ -122,7 +122,7 @@ public class NeighborCircleController : ControllerBase
     /// 刷新邀请码（仅圈主可操作）
     /// </summary>
     [HttpPost("{id:guid}/refresh-code")]
-    public async Task<ApiResponse<NeighborCircleResponse>> RefreshInviteCode(Guid id)
+    public async Task<ApiResponse<NeighborCircleResponse>> RefreshInviteCode(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         var result = await _circleService.RefreshInviteCodeAsync(id, userId);
@@ -135,7 +135,7 @@ public class NeighborCircleController : ControllerBase
     [HttpGet("nearby")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     public async Task<ApiResponse<List<NeighborCircleResponse>>> SearchNearby(
-        [FromQuery, Range(-90.0, 90.0)] double latitude, [FromQuery, Range(-180.0, 180.0)] double longitude, [FromQuery] double radius = AppConstants.NeighborCircle.SearchRadiusMeters)
+        [FromQuery, Range(-90.0, 90.0)] double latitude, [FromQuery, Range(-180.0, 180.0)] double longitude, [FromQuery] double radius = AppConstants.NeighborCircle.SearchRadiusMeters, CancellationToken cancellationToken = default)
     {
         var result = await _circleService.SearchNearbyCirclesAsync(latitude, longitude, radius);
         return ApiResponse<List<NeighborCircleResponse>>.Ok(result);

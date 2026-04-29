@@ -38,7 +38,7 @@ public class NotificationController : ControllerBase
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
     public async Task<ApiResponse<List<NotificationResponse>>> GetMyNotifications(
         [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip,
-        [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize)
+        [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize, CancellationToken cancellationToken = default)
     {
         limit = this.ClampLimit(limit);
         var notifications = await _notificationService.GetUserNotificationsAsync(this.GetUserId(), skip, limit);
@@ -50,7 +50,7 @@ public class NotificationController : ControllerBase
     /// </summary>
     [HttpGet("me/unread-count")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
-    public async Task<ApiResponse<object>> GetUnreadCount()
+    public async Task<ApiResponse<object>> GetUnreadCount(CancellationToken cancellationToken = default)
     {
         var count = await _notificationService.GetUnreadCountAsync(this.GetUserId());
         return ApiResponse<object>.Ok(new { count });
@@ -60,7 +60,7 @@ public class NotificationController : ControllerBase
     /// 标记单条通知已读
     /// </summary>
     [HttpPut("{id:guid}/read")]
-    public async Task<ApiResponse<object>> MarkAsRead(Guid id)
+    public async Task<ApiResponse<object>> MarkAsRead(Guid id, CancellationToken cancellationToken = default)
     {
         var success = await _notificationService.MarkAsReadAsync(id, this.GetUserId());
 
@@ -74,7 +74,7 @@ public class NotificationController : ControllerBase
     /// 全部标记已读
     /// </summary>
     [HttpPut("me/read-all")]
-    public async Task<ApiResponse<object>> MarkAllAsRead()
+    public async Task<ApiResponse<object>> MarkAllAsRead(CancellationToken cancellationToken = default)
     {
         await _notificationService.MarkAllAsReadAsync(this.GetUserId());
         return ApiResponse<object>.Ok(new { success = true }, SuccessMessages.Notification.AllMarkedRead);
