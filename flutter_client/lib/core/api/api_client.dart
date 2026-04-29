@@ -99,6 +99,22 @@ class ApiClient {
       onError: (error, handler) async {
         final statusCode = error.response?.statusCode;
 
+        // 可重试的瞬时错误：仅对幂等的 GET 请求自动重试，最多 1 次
+        final isRetryable = _isRetryableError(error);
+        final retryCount = error.requestOptions.extra['retryCount'] as int? ?? 0;
+        if (isRetryable && retryCount < 1 && error.requestOptions.method == 'GET') {
+          AppLogger.info('瞬时错误自动重试 ($error.type/$statusCode): ${error.requestOptions.path}');
+          error.requestOptions.extra['retryCount'] = retryCount + 1;
+          // 短暂延迟后重试
+          await Future.delayed(const Duration(milliseconds: 500));
+          try {
+            final response = await _dio.fetch(error.requestOptions);
+            return handler.resolve(response);
+          } catch (_) {
+            // 重试仍失败，继续正常错误处理
+          }
+        }
+
         // 通用 HTTP 错误码提示（不影响调用方的错误处理逻辑）
         if (statusCode == 403) {
           showGlobalSnackBar(AppTheme.msgForbidden);
@@ -244,6 +260,16 @@ class ApiClient {
   }
 
   Dio get dio => _dio;
+
+  /// 判断是否为可重试的瞬时错误（5xx、408、连接/接收超时）
+  static bool _isRetryableError(DioException error) {
+    final statusCode = error.response?.statusCode;
+    if (statusCode == 408) return true; // Request Timeout
+    if (statusCode != null && statusCode >= 500 && statusCode < 600) return true; // Server Error
+    return error.type == DioExceptionType.connectionTimeout ||
+        error.type == DioExceptionType.receiveTimeout ||
+        error.type == DioExceptionType.connectionError;
+  }
 }
 
 /// 等待重试的请求封装
