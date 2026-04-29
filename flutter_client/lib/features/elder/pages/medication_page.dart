@@ -85,9 +85,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
               ),
               AppTheme.spacer16,
 
-              Expanded(
-                child: _buildContent(medState),
-              ),
+              _buildContent(medState),
             ],
           ),
         ),
@@ -179,6 +177,8 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
     }
 
     return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       cacheExtent: 800,
       itemCount: state.todayPending.length,
       itemBuilder: (context, index) {
