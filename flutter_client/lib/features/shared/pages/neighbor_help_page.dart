@@ -177,7 +177,7 @@ class _HelpRequestCard extends StatelessWidget {
                           style: AppTheme.textBold,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1),
-                      Text(timeAgo, style: TextStyle(color: AppTheme.grey600, fontSize: 12),
+                      Text(timeAgo, style: AppTheme.textCaptionDark,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1),
                     ],

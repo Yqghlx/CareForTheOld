@@ -60,7 +60,16 @@ public class UserService : IUserService
 
         await _context.SaveChangesAsync(cancellationToken);
         _logger.LogInformation("用户 {UserId} 更新个人信息成功", userId);
-        return await MapToResponse(userId, cancellationToken) ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
+
+        return new UserResponse
+        {
+            Id = user.Id,
+            PhoneNumber = user.PhoneNumber,
+            RealName = user.RealName,
+            BirthDate = user.BirthDate,
+            Role = user.Role,
+            AvatarUrl = user.AvatarUrl,
+        };
     }
 
     /// <summary>
