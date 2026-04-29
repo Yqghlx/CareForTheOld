@@ -149,10 +149,23 @@ public class EmergencyService : IEmergencyService
 
     /// <summary>
     /// Hangfire 后台任务：发送紧急呼叫通知给子女（SignalR + FCM + SMS）
+    /// 幂等保护：呼叫已响应时跳过通知，避免 Hangfire 重试导致骚扰
     /// </summary>
     public async Task SendEmergencyNotificationJobAsync(Guid elderId, string elderName, Guid callId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(elderName, nameof(elderName));
+
+        // 幂等检查：呼叫已响应则跳过通知
+        var callStatus = await _context.EmergencyCalls
+            .Where(c => c.Id == callId)
+            .Select(c => (EmergencyStatus?)c.Status)
+            .FirstOrDefaultAsync();
+
+        if (callStatus == null || callStatus == EmergencyStatus.Responded)
+        {
+            _logger.LogInformation("紧急呼叫 {CallId} 已响应或不存在，跳过通知发送", callId);
+            return;
+        }
 
         try
         {
@@ -329,7 +342,7 @@ public class EmergencyService : IEmergencyService
 
     /// <summary>
     /// Hangfire 后台任务：发送 SMS 多通道告警
-    /// 通过 callId 重新获取子女信息，避免序列化复杂对象
+    /// 幂等保护：呼叫已响应时跳过 SMS，避免重复发送浪费短信配额
     /// </summary>
     public async Task SendSmsAlertJobAsync(Guid callId, bool isReminder)
     {
@@ -340,6 +353,13 @@ public class EmergencyService : IEmergencyService
                 .FirstOrDefaultAsync(c => c.Id == callId);
 
             if (call == null) return;
+
+            // 幂等检查：呼叫已响应则跳过 SMS（二次提醒除外）
+            if (!isReminder && call.Status == EmergencyStatus.Responded)
+            {
+                _logger.LogInformation("紧急呼叫 {CallId} 已响应，跳过 SMS 发送", callId);
+                return;
+            }
 
             var children = await GetChildrenAsync(call.ElderId);
 
