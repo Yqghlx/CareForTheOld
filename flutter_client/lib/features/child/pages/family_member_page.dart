@@ -32,8 +32,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
   @override
   Widget build(BuildContext context) {
     final familyState = ref.watch(familyProvider);
-    final authState = ref.watch(authProvider);
-    final isElder = authState.role?.isElder ?? authState.user?.role.isElder ?? false;
+    final isElder = ref.watch(authProvider.select((s) => s.role?.isElder ?? s.user?.role.isElder ?? false));
 
     return Scaffold(
       appBar: AppBar(title: const Text(AppTheme.titleFamilyMember)),

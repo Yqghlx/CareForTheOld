@@ -45,7 +45,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
     final familyState = ref.watch(familyProvider);
-    final emergencyState = ref.watch(emergencyProvider);
+    final emergencyInfo = ref.watch(emergencyProvider.select((s) => (s.hasUnreadCalls, s.unreadCount)));
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -61,7 +61,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                 onPressed: () => context.push(RoutePaths.childEmergency),
                 tooltip: AppTheme.tooltipEmergencyCall,
               ),
-              if (emergencyState.hasUnreadCalls)
+              if (emergencyInfo.$1)
                 Positioned(
                   right: 8,
                   top: 8,
@@ -91,10 +91,10 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 紧急呼叫提示（如果有未处理呼叫）- 循环脉冲动画
-            if (emergencyState.hasUnreadCalls)
+            if (emergencyInfo.$1)
               _EmergencyPulseBanner(
                 onTap: () => context.push(RoutePaths.childEmergency),
-                unreadCount: emergencyState.unreadCount,
+                unreadCount: emergencyInfo.$2,
               ),
 
             // 用户信息 - 渐变卡片
