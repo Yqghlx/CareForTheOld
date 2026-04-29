@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../shared/models/location_record.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../shared/widgets/common_states.dart';
+import '../../../shared/widgets/confirm_dialog.dart';
 import '../../../shared/widgets/elder_location_map.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 import '../../../core/theme/app_theme.dart';
@@ -341,6 +342,13 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                 if (existingFence != null)
                   TextButton(
                     onPressed: () async {
+                      final confirmed = await showConfirmDialog(
+                        context,
+                        title: '删除安全围栏',
+                        message: '确定删除安全围栏吗？删除后将不再收到越界提醒。',
+                        confirmText: AppTheme.msgDelete,
+                      );
+                      if (!confirmed) return;
                       final success = await ref.read(elderGeoFenceProvider.notifier).deleteFence();
                       if (success && ctx.mounted) {
                         Navigator.pop(ctx);
