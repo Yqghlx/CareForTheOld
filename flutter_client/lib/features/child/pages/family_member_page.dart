@@ -588,12 +588,14 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
             const Text('创建家庭组'),
           ],
         ),
-        content: TextField(
-          controller: nameController,
-          decoration: InputDecoration(
-            labelText: '家庭组名称',
-            hintText: '如：张家',
-            border: OutlineInputBorder(borderRadius: AppTheme.radiusS),
+        content: SingleChildScrollView(
+          child: TextField(
+            controller: nameController,
+            decoration: InputDecoration(
+              labelText: '家庭组名称',
+              hintText: '如：张家',
+              border: OutlineInputBorder(borderRadius: AppTheme.radiusS),
+            ),
           ),
         ),
         actions: [
@@ -653,7 +655,8 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                   const Text('加入家庭'),
                 ],
               ),
-              content: Column(
+              content: SingleChildScrollView(
+                child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextField(
@@ -687,6 +690,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     onChanged: (v) => setDialogState(() => selectedRelation = v),
                   ),
                 ],
+              ),
               ),
               actions: [
                 TextButton(
@@ -780,7 +784,8 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                   const Text(AppTheme.labelAddMember),
                 ],
               ),
-              content: Column(
+              content: SingleChildScrollView(
+                child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextField(
@@ -822,6 +827,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     onChanged: (v) => setDialogState(() => selectedRelation = v),
                   ),
                 ],
+              )
               ),
               actions: [
                 TextButton(

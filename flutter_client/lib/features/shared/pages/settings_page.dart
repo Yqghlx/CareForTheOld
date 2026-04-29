@@ -443,16 +443,18 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             const Text(AppTheme.titleChangeName),
           ],
         ),
-        content: TextField(
-          controller: nameController,
-          decoration: InputDecoration(
-            labelText: AppTheme.labelRealName,
-            border: OutlineInputBorder(
-              borderRadius: AppTheme.radiusS,
+        content: SingleChildScrollView(
+          child: TextField(
+            controller: nameController,
+            decoration: InputDecoration(
+              labelText: AppTheme.labelRealName,
+              border: OutlineInputBorder(
+                borderRadius: AppTheme.radiusS,
+              ),
+              counterText: '',
             ),
-            counterText: '',
+            maxLength: 50,
           ),
-          maxLength: 50,
         ),
         actions: [
           TextButton(
@@ -547,7 +549,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   const Text(AppTheme.titleChangePassword),
                 ],
               ),
-              content: Column(
+              content: SingleChildScrollView(
+                child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextField(
@@ -594,7 +597,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   ),
                 ],
               ),
-        actions: [
+              ),
+          actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
             child: const Text(AppTheme.msgCancel),
