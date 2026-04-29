@@ -24,6 +24,9 @@ public class NotificationRecordConfiguration : IEntityTypeConfiguration<Notifica
         // 按用户+已读状态索引，查询未读通知数量
         builder.HasIndex(n => new { n.UserId, n.IsRead });
 
+        // 按用户+创建时间复合索引，优化分页查询性能
+        builder.HasIndex(n => new { n.UserId, n.CreatedAt });
+
         builder.HasOne(n => n.User)
             .WithMany()
             .HasForeignKey(n => n.UserId)

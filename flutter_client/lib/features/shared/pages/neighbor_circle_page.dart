@@ -124,8 +124,8 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                 leading: CircleAvatar(
                   child: Text(m.realName[0]),
                 ),
-                title: Text(m.realName),
-                subtitle: Text(m.nickname ?? ''),
+                title: Text(m.realName, maxLines: 1, overflow: TextOverflow.ellipsis),
+                subtitle: Text(m.nickname ?? '', maxLines: 1, overflow: TextOverflow.ellipsis),
                 trailing: m.distanceMeters != null
                     ? Text('${m.distanceMeters!.toInt()} 米')
                     : null,

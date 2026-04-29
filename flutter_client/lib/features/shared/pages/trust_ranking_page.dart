@@ -90,7 +90,7 @@ class _TrustRankingPageState extends ConsumerState<TrustRankingPage> {
             CircleAvatar(child: Text(item.userName[0])),
           ],
         ),
-        title: Text(item.userName),
+        title: Text(item.userName, maxLines: 1, overflow: TextOverflow.ellipsis),
         subtitle: Text(
           '互助 ${item.totalHelps} 次 | 评分 ${item.avgRating.toStringAsFixed(1)} | 响应率 ${item.responseRate.toStringAsFixed(0)}%',
         ),
