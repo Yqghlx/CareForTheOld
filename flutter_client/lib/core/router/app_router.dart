@@ -71,11 +71,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       // 认证路由
       GoRoute(
         path: RoutePaths.login,
-        builder: (context, state) => const LoginPage(),
+        pageBuilder: (context, state) => FadePageTransition(child: const LoginPage()),
       ),
       GoRoute(
         path: RoutePaths.register,
-        builder: (context, state) => const RegisterPage(),
+        pageBuilder: (context, state) => SlidePageTransition(child: const RegisterPage()),
       ),
 
       // 老人端路由
@@ -85,7 +85,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: RoutePaths.elderHealth,
-        builder: (context, state) => const HealthRecordPage(),
+        pageBuilder: (context, state) => SlidePageTransition(child: const HealthRecordPage()),
       ),
       GoRoute(
         path: RoutePaths.elderHealthTrend,
@@ -93,7 +93,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: RoutePaths.elderMedication,
-        builder: (context, state) => const MedicationPage(),
+        pageBuilder: (context, state) => SlidePageTransition(child: const MedicationPage()),
       ),
       GoRoute(
         path: RoutePaths.elderFamily,
