@@ -29,7 +29,7 @@ public class HealthService : IHealthService
     /// <summary>
     /// 创建健康记录：包含数据验证和异常预警通知，异常时通过 Hangfire 异步推送
     /// </summary>
-    public async Task<HealthRecordResponse> CreateRecordAsync(Guid userId, CreateHealthRecordRequest request)
+    public async Task<HealthRecordResponse> CreateRecordAsync(Guid userId, CreateHealthRecordRequest request, CancellationToken cancellationToken = default)
     {
         // 验证必填字段
         ValidateHealthData(request);
@@ -50,7 +50,7 @@ public class HealthService : IHealthService
         };
 
         _context.HealthRecords.Add(record);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("健康记录已创建：用户 {UserId}，类型 {Type}，记录 {RecordId}", userId, request.Type, record.Id);
 
@@ -64,7 +64,7 @@ public class HealthService : IHealthService
                 "健康预警", _logger, userId);
         }
 
-        return await MapToResponse(record.Id) ?? throw new KeyNotFoundException(ErrorMessages.Health.RecordNotFound);
+        return await MapToResponse(record.Id, cancellationToken) ?? throw new KeyNotFoundException(ErrorMessages.Health.RecordNotFound);
     }
 
     /// <summary>
@@ -75,7 +75,7 @@ public class HealthService : IHealthService
     {
         try
         {
-            var record = await _context.HealthRecords.FindAsync(recordId);
+            var record = await _context.HealthRecords.FindAsync([recordId], CancellationToken.None);
             if (record == null)
             {
                 _logger.LogWarning("健康预警任务：记录 {RecordId} 不存在，跳过通知", recordId);
@@ -93,7 +93,7 @@ public class HealthService : IHealthService
     /// <summary>
     /// 获取用户健康记录列表：支持按类型筛选和分页
     /// </summary>
-    public async Task<List<HealthRecordResponse>> GetUserRecordsAsync(Guid userId, HealthType? type, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize)
+    public async Task<List<HealthRecordResponse>> GetUserRecordsAsync(Guid userId, HealthType? type, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize, CancellationToken cancellationToken = default)
     {
         var query = _context.HealthRecords
             .Include(r => r.User)
@@ -107,28 +107,28 @@ public class HealthService : IHealthService
             .Skip(skip)
             .Take(limit)
             .Select(r => MapToResponseProjection(r))
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
     /// <summary>
     /// 获取家庭成员的健康记录：需验证目标用户是否属于该家庭
     /// </summary>
-    public async Task<List<HealthRecordResponse>> GetFamilyMemberRecordsAsync(Guid familyId, Guid memberId, HealthType? type, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize)
+    public async Task<List<HealthRecordResponse>> GetFamilyMemberRecordsAsync(Guid familyId, Guid memberId, HealthType? type, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize, CancellationToken cancellationToken = default)
     {
         // 验证 memberId 是否属于该家庭
         var isMember = await _context.FamilyMembers
-            .AnyAsync(fm => fm.FamilyId == familyId && fm.UserId == memberId);
+            .AnyAsync(fm => fm.FamilyId == familyId && fm.UserId == memberId, cancellationToken);
 
         if (!isMember)
             throw new UnauthorizedAccessException(ErrorMessages.Health.NotFamilyMember);
 
-        return await GetUserRecordsAsync(memberId, type, skip, limit);
+        return await GetUserRecordsAsync(memberId, type, skip, limit, cancellationToken);
     }
 
     /// <summary>
     /// 获取用户健康统计数据：包括每种类型的最新值、7天和30天均值
     /// </summary>
-    public async Task<List<HealthStatsResponse>> GetUserStatsAsync(Guid userId)
+    public async Task<List<HealthStatsResponse>> GetUserStatsAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         var now = DateTime.UtcNow;
         var sevenDaysAgo = now.AddDays(-AppConstants.HealthStatsDays.RecentDays);
@@ -139,7 +139,7 @@ public class HealthService : IHealthService
             .Where(r => r.UserId == userId && !r.IsDeleted)
             .GroupBy(r => r.Type)
             .Select(g => new { Type = g.Key, Record = g.OrderByDescending(r => r.RecordedAt).FirstOrDefault() })
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         // 第二步：按类型分组聚合统计值（均值等）
         var typeGroups = await _context.HealthRecords
@@ -159,7 +159,7 @@ public class HealthService : IHealthService
                 Avg7Temperature = g.Where(r => r.RecordedAt >= sevenDaysAgo).Select(r => (decimal?)r.Temperature).Average(),
                 Avg30Temperature = g.Where(r => r.RecordedAt >= thirtyDaysAgo).Select(r => (decimal?)r.Temperature).Average(),
             })
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         // 合并最新记录和统计数据
         var latestByType = latestRecords.ToDictionary(l => l.Type, l => l.Record);
@@ -211,17 +211,17 @@ public class HealthService : IHealthService
     /// <summary>
     /// 软删除健康记录：标记为已删除并保留原始数据
     /// </summary>
-    public async Task DeleteRecordAsync(Guid userId, Guid recordId)
+    public async Task DeleteRecordAsync(Guid userId, Guid recordId, CancellationToken cancellationToken = default)
     {
         var record = await _context.HealthRecords
             .AsTracking()
-            .FirstOrDefaultAsync(r => r.Id == recordId && r.UserId == userId)
+            .FirstOrDefaultAsync(r => r.Id == recordId && r.UserId == userId, cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.Health.RecordNotFoundOrNoPermission);
 
         // 软删除：标记为已删除，保留数据
         record.IsDeleted = true;
         record.DeletedAt = DateTime.UtcNow;
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("健康记录已删除：用户 {UserId}，记录 {RecordId}", userId, recordId);
     }
@@ -267,13 +267,13 @@ public class HealthService : IHealthService
         }
     }
 
-    private async Task<HealthRecordResponse?> MapToResponse(Guid recordId)
+    private async Task<HealthRecordResponse?> MapToResponse(Guid recordId, CancellationToken cancellationToken = default)
     {
         return await _context.HealthRecords
             .Include(r => r.User)
             .Where(r => r.Id == recordId)
             .Select(r => MapToResponseProjection(r))
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(cancellationToken);
     }
 
     private static HealthRecordResponse MapToResponseProjection(HealthRecord r)

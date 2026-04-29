@@ -53,7 +53,7 @@ public class HealthController : ControllerBase
     public async Task<ApiResponse<HealthRecordResponse>> CreateRecord([FromBody] CreateHealthRecordRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _healthService.CreateRecordAsync(userId, request);
+        var result = await _healthService.CreateRecordAsync(userId, request, cancellationToken);
         return ApiResponse<HealthRecordResponse>.Ok(result, SuccessMessages.Health.RecordSuccess);
     }
 
@@ -70,7 +70,7 @@ public class HealthController : ControllerBase
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
-        var result = await _healthService.GetUserRecordsAsync(userId, type, skip, limit);
+        var result = await _healthService.GetUserRecordsAsync(userId, type, skip, limit, cancellationToken);
         return ApiResponse<List<HealthRecordResponse>>.Ok(result);
     }
 
@@ -94,7 +94,7 @@ public class HealthController : ControllerBase
         if (!await this.IsFamilyMemberAsync(_familyService, familyId, userId))
             return ApiResponse<List<HealthRecordResponse>>.Fail(ErrorMessages.Family.NotFamilyMember);
 
-        var result = await _healthService.GetFamilyMemberRecordsAsync(familyId, memberId, type, skip, limit);
+        var result = await _healthService.GetFamilyMemberRecordsAsync(familyId, memberId, type, skip, limit, cancellationToken);
         return ApiResponse<List<HealthRecordResponse>>.Ok(result);
     }
 
@@ -138,7 +138,7 @@ public class HealthController : ControllerBase
     public async Task<ApiResponse<object>> DeleteRecord(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        await _healthService.DeleteRecordAsync(userId, id);
+        await _healthService.DeleteRecordAsync(userId, id, cancellationToken);
         return ApiResponse<object>.Ok(null!, SuccessMessages.Health.DeleteSuccess);
     }
 
@@ -190,7 +190,7 @@ public class HealthController : ControllerBase
         var healthType = type ?? HealthType.BloodPressure;
 
         // 获取最近60天的健康记录用于异常检测
-        var records = await _healthService.GetUserRecordsAsync(userId, healthType, 0, AppConstants.AnomalyEvaluation.MaxQueryRecords);
+        var records = await _healthService.GetUserRecordsAsync(userId, healthType, 0, AppConstants.AnomalyEvaluation.MaxQueryRecords, cancellationToken);
 
         if (records.Count < AppConstants.AnomalyEvaluation.MinimumRecords)
         {
@@ -231,7 +231,7 @@ public class HealthController : ControllerBase
             return ApiResponse<TrendAnomalyDetectionResponse>.Fail(ErrorMessages.Family.NotFamilyMember);
 
         var healthType = type ?? HealthType.BloodPressure;
-        var records = await _healthService.GetFamilyMemberRecordsAsync(familyId, memberId, healthType, 0, AppConstants.AnomalyEvaluation.MaxQueryRecords);
+        var records = await _healthService.GetFamilyMemberRecordsAsync(familyId, memberId, healthType, 0, AppConstants.AnomalyEvaluation.MaxQueryRecords, cancellationToken);
 
         if (records.Count < AppConstants.AnomalyEvaluation.MinimumRecords)
         {
