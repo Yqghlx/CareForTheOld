@@ -143,6 +143,7 @@ builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IGeoFenceService, GeoFenceService>();
 builder.Services.AddScoped<IHealthReportService, HealthReportService>();
 builder.Services.AddScoped<ICacheService, CacheService>();
+builder.Services.AddScoped<IDeviceService, DeviceService>();
 builder.Services.AddScoped<HealthAnomalyDetector>();
 builder.Services.Configure<AnomalyDetectionOptions>(
     builder.Configuration.GetSection("AnomalyDetection"));

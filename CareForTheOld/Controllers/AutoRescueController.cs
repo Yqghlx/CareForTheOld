@@ -3,14 +3,12 @@ using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
 using CareForTheOld.Common.Filters;
 using CareForTheOld.Common.Helpers;
-using CareForTheOld.Data;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using CareForTheOld.Models.Enums;
-using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace CareForTheOld.Controllers;
@@ -28,14 +26,14 @@ namespace CareForTheOld.Controllers;
 public class AutoRescueController : ControllerBase
 {
     private readonly IAutoRescueService _autoRescueService;
-    private readonly AppDbContext _context;
+    private readonly IFamilyService _familyService;
 
     public AutoRescueController(
         IAutoRescueService autoRescueService,
-        AppDbContext context)
+        IFamilyService familyService)
     {
         _autoRescueService = autoRescueService;
-        _context = context;
+        _familyService = familyService;
     }
 
     /// <summary>
@@ -61,12 +59,12 @@ public class AutoRescueController : ControllerBase
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
-        var familyMember = await _context.FamilyMembers
-            .FirstOrDefaultAsync(fm => fm.UserId == userId, cancellationToken);
-        if (familyMember == null)
+
+        var family = await _familyService.GetMyFamilyAsync(userId, cancellationToken);
+        if (family == null)
             return ApiResponse<object>.Fail(ErrorMessages.Family.NotJoinedFamily);
 
-        var records = await _autoRescueService.GetHistoryAsync(familyMember.FamilyId, skip, limit, cancellationToken);
+        var records = await _autoRescueService.GetHistoryAsync(family.Id, skip, limit, cancellationToken);
         var result = records.Select(r => new
         {
             r.Id,

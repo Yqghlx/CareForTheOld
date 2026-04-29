@@ -2,14 +2,12 @@ using System.ComponentModel.DataAnnotations;
 using Asp.Versioning;
 using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
-using CareForTheOld.Data;
 using CareForTheOld.Common.Helpers;
-using CareForTheOld.Models.Entities;
+using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.EntityFrameworkCore;
 
 namespace CareForTheOld.Controllers;
 
@@ -26,13 +24,11 @@ namespace CareForTheOld.Controllers;
 [EnableRateLimiting("GeneralPolicy")]
 public class DeviceController : ControllerBase
 {
-    private readonly AppDbContext _context;
-    private readonly ILogger<DeviceController> _logger;
+    private readonly IDeviceService _deviceService;
 
-    public DeviceController(AppDbContext context, ILogger<DeviceController> logger)
+    public DeviceController(IDeviceService deviceService)
     {
-        _context = context;
-        _logger = logger;
+        _deviceService = deviceService;
     }
 
     /// <summary>
@@ -47,55 +43,7 @@ public class DeviceController : ControllerBase
     public async Task<ApiResponse<object>> RegisterToken([FromBody] RegisterTokenRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var now = DateTime.UtcNow;
-
-        // 查找是否已有相同 token 的记录（同一设备可能换了用户）
-        var existingToken = await _context.DeviceTokens
-            .AsTracking()
-            .FirstOrDefaultAsync(dt => dt.Token == request.Token, cancellationToken);
-
-        if (existingToken != null)
-        {
-            // 更新关联用户和活跃时间
-            existingToken.UserId = userId;
-            existingToken.Platform = request.Platform;
-            existingToken.LastActiveAt = now;
-        }
-        else
-        {
-            // 新设备，创建 token 记录
-            _context.DeviceTokens.Add(new DeviceToken
-            {
-                Id = Guid.NewGuid(),
-                UserId = userId,
-                Token = request.Token,
-                Platform = request.Platform,
-                CreatedAt = now,
-                LastActiveAt = now,
-            });
-        }
-
-        try
-        {
-            await _context.SaveChangesAsync(cancellationToken);
-        }
-        catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex))
-        {
-            // 并发注册同一 token 的唯一约束冲突，回查并更新关联用户
-            _logger.LogWarning("设备 token 并发注册冲突，用户 {UserId}，回查更新", userId);
-            var conflict = await _context.DeviceTokens
-                .AsTracking()
-                .FirstOrDefaultAsync(dt => dt.Token == request.Token, cancellationToken);
-            if (conflict != null)
-            {
-                conflict.UserId = userId;
-                conflict.Platform = request.Platform;
-                conflict.LastActiveAt = now;
-                await _context.SaveChangesAsync(cancellationToken);
-            }
-        }
-
-        _logger.LogInformation("FCM token 已注册: 用户={UserId}, 平台={Platform}", userId, request.Platform);
+        await _deviceService.RegisterTokenAsync(userId, request.Token, request.Platform, cancellationToken);
         return ApiResponse<object>.Ok(null!, SuccessMessages.Device.TokenRegistered);
     }
 
@@ -107,12 +55,7 @@ public class DeviceController : ControllerBase
     public async Task<ApiResponse<object>> DeleteToken(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-
-        var deleted = await _context.DeviceTokens
-            .Where(dt => dt.UserId == userId)
-            .ExecuteDeleteAsync();
-
-        _logger.LogInformation("FCM token 已清除: 用户={UserId}, 数量={Count}", userId, deleted);
+        await _deviceService.DeleteTokensAsync(userId, cancellationToken);
         return ApiResponse<object>.Ok(null!, SuccessMessages.Device.TokenCleared);
     }
 }
