@@ -1,6 +1,7 @@
 using System.Text.Json;
 using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Helpers;
+using CareForTheOld.Common.Middleware;
 
 namespace CareForTheOld.Common.Middleware;
 
@@ -32,8 +33,8 @@ public class ExceptionHandlingMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "未处理的异常: {Message}，路径: {Path}",
-                ex.Message, context.Request.Path);
+            _logger.LogError(ex, "未处理的异常 | 请求: {RequestId} | 路径: {Path}",
+                context.Items[nameof(CorrelationIdMiddleware)], context.Request.Path);
             await HandleExceptionAsync(context, ex);
         }
     }
@@ -58,6 +59,7 @@ public class ExceptionHandlingMiddleware
         context.Response.StatusCode = statusCode;
 
         var response = ApiResponse<object>.Fail(message);
+        response.RequestId = context.Items[nameof(CorrelationIdMiddleware)]?.ToString();
         var json = JsonSerializer.Serialize(response, new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase

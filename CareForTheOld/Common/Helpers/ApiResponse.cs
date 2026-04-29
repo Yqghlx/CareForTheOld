@@ -12,6 +12,9 @@ public class ApiResponse<T>
     public string Message { get; set; } = string.Empty;
     public List<string>? Errors { get; set; }
 
+    /// <summary>请求追踪 ID，便于前后端日志关联</summary>
+    public string? RequestId { get; set; }
+
     public static ApiResponse<T> Ok(T data, string message = SuccessMessages.Operation.Success)
         => new() { Success = true, Data = data, Message = message };
 
