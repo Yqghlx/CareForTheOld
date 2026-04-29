@@ -385,7 +385,7 @@ public class EmergencyService : IEmergencyService
     }
 
     /// <summary>
-    /// 子女标记已处理
+    /// 子女标记已处理（原子更新防止多子女并发响应覆盖）
     /// </summary>
     public async Task<EmergencyCallResponse> RespondCallAsync(Guid callId, Guid userId)
     {
@@ -393,10 +393,8 @@ public class EmergencyService : IEmergencyService
         var user = await _context.Users.FindAsync(userId)
             ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
-        // 获取呼叫记录
+        // 获取呼叫记录（无需 AsTracking，使用原子更新）
         var call = await _context.EmergencyCalls
-            .AsTracking()
-            .Include(c => c.Elder)
             .FirstOrDefaultAsync(c => c.Id == callId);
 
         if (call == null)
@@ -412,15 +410,25 @@ public class EmergencyService : IEmergencyService
         if (!isMember)
             throw new UnauthorizedAccessException(ErrorMessages.Emergency.NotFamilyMemberForCall);
 
-        // 更新呼叫状态
-        call.Status = EmergencyStatus.Responded;
-        call.RespondedBy = userId;
-        call.RespondedByRealName = user.RealName;
-        call.RespondedAt = DateTime.UtcNow;
+        // 原子更新：只有 Status 仍为 Pending 时才更新，防止多子女并发覆盖
+        var now = DateTime.UtcNow;
+        var updated = await _context.EmergencyCalls
+            .Where(c => c.Id == callId && c.Status == EmergencyStatus.Pending)
+            .ExecuteUpdateAsync(setters => setters
+                .SetProperty(c => c.Status, EmergencyStatus.Responded)
+                .SetProperty(c => c.RespondedBy, userId)
+                .SetProperty(c => c.RespondedByRealName, user.RealName)
+                .SetProperty(c => c.RespondedAt, now));
 
-        await _context.SaveChangesAsync();
+        if (updated == 0)
+            throw new InvalidOperationException(ErrorMessages.Emergency.CallAlreadyResponded);
 
-        return MapToResponse(call);
+        // 重新查询完整记录返回响应
+        var respondedCall = await _context.EmergencyCalls
+            .Include(c => c.Elder)
+            .FirstAsync(c => c.Id == callId);
+
+        return MapToResponse(respondedCall);
     }
 
     /// <summary>

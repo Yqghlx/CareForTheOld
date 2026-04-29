@@ -179,7 +179,6 @@ public class NeighborHelpService : INeighborHelpService
     public async Task<NeighborHelpRequestResponse> AcceptHelpRequestAsync(Guid requestId, Guid responderId)
     {
         var request = await _context.NeighborHelpRequests
-            .AsTracking()
             .Include(r => r.Requester)
             .FirstOrDefaultAsync(r => r.Id == requestId)
             ?? throw new KeyNotFoundException(ErrorMessages.NeighborHelp.RequestNotFound);
@@ -193,21 +192,23 @@ public class NeighborHelpService : INeighborHelpService
         if (request.RequesterId == responderId)
             throw new ArgumentException(ErrorMessages.NeighborHelp.CannotAcceptOwn);
 
-        // 原子锁定：更新状态和响应者
-        request.Status = HelpRequestStatus.Accepted;
-        request.ResponderId = responderId;
-        request.RespondedAt = DateTime.UtcNow;
+        // 原子更新：只有 Status 仍为 Pending 时才更新，防止多邻居并发接受
+        var now = DateTime.UtcNow;
+        var updated = await _context.NeighborHelpRequests
+            .Where(r => r.Id == requestId && r.Status == HelpRequestStatus.Pending)
+            .ExecuteUpdateAsync(setters => setters
+                .SetProperty(r => r.Status, HelpRequestStatus.Accepted)
+                .SetProperty(r => r.ResponderId, responderId)
+                .SetProperty(r => r.RespondedAt, now));
 
-        // 更新通知日志：标记该邻居已响应
-        var notificationLog = await _context.HelpNotificationLogs
-            .AsTracking()
-            .FirstOrDefaultAsync(h => h.HelpRequestId == requestId && h.UserId == responderId);
-        if (notificationLog != null)
-        {
-            notificationLog.RespondedAt = DateTime.UtcNow;
-        }
+        if (updated == 0)
+            throw new InvalidOperationException(ErrorMessages.NeighborHelp.InvalidStatus);
 
-        await _context.SaveChangesAsync();
+        // 原子更新通知日志
+        await _context.HelpNotificationLogs
+            .Where(h => h.HelpRequestId == requestId && h.UserId == responderId)
+            .ExecuteUpdateAsync(setters => setters
+                .SetProperty(h => h.RespondedAt, now));
 
         // 查询响应者信息
         var responder = await _context.Users.FindAsync(responderId)

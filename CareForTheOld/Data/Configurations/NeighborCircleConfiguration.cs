@@ -20,8 +20,11 @@ public class NeighborCircleConfiguration : IEntityTypeConfiguration<NeighborCirc
         // 活跃状态索引（SearchNearbyCirclesAsync 按 IsActive 筛选）
         builder.HasIndex(c => c.IsActive);
 
-        // 邀请码 + 活跃状态复合索引（JoinCircleByCodeAsync 按邀请码查找活跃圈子）
-        builder.HasIndex(c => new { c.InviteCode, c.IsActive });
+        // 邀请码唯一约束：防止不同圈子生成相同邀请码导致用户加入错误圈子
+        builder.HasIndex(c => c.InviteCode).IsUnique();
+
+        // 活跃状态索引（SearchNearbyCirclesAsync 按 IsActive 筛选）
+        builder.HasIndex(c => c.IsActive);
 
         builder.HasOne(c => c.Creator)
             .WithMany()

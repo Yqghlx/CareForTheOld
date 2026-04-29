@@ -309,7 +309,7 @@ public class FamilyService : IFamilyService
     }
 
     /// <summary>
-    /// 刷新邀请码（仅家庭创建者可操作）
+    /// 刷新邀请码（仅家庭创建者可操作，唯一约束冲突时自动重试）
     /// </summary>
     public async Task<FamilyResponse> RefreshInviteCodeAsync(Guid familyId, Guid operatorId)
     {
@@ -323,7 +323,20 @@ public class FamilyService : IFamilyService
 
         family.InviteCode = GenerateInviteCode();
         family.InviteCodeExpiresAt = DateTime.UtcNow.Add(_inviteCodeExpiration);
-        await _context.SaveChangesAsync();
+
+        // 唯一约束冲突时自动重试生成新邀请码（6位数字碰撞概率极低，最多重试3次）
+        for (var attempt = 0; attempt < 3; attempt++)
+        {
+            try
+            {
+                await _context.SaveChangesAsync();
+                break;
+            }
+            catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex) && attempt < 2)
+            {
+                family.InviteCode = GenerateInviteCode();
+            }
+        }
 
         return await GetFamilyResponse(familyId);
     }

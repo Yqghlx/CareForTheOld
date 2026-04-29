@@ -13,6 +13,9 @@ public class FamilyConfiguration : IEntityTypeConfiguration<Family>
 
         builder.Property(f => f.FamilyName).HasMaxLength(100).IsRequired();
 
+        // 邀请码唯一约束：防止不同家庭生成相同邀请码导致用户加入错误家庭
+        builder.HasIndex(f => f.InviteCode).IsUnique();
+
         builder.HasOne(f => f.Creator)
             .WithMany()
             .HasForeignKey(f => f.CreatorId)

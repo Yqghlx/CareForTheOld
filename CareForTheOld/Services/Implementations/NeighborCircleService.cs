@@ -334,7 +334,20 @@ public class NeighborCircleService : INeighborCircleService
 
         circle.InviteCode = GenerateInviteCode();
         circle.InviteCodeExpiresAt = DateTime.UtcNow.Add(_inviteCodeExpiration);
-        await _context.SaveChangesAsync();
+
+        // 唯一约束冲突时自动重试生成新邀请码（6位数字碰撞概率极低，最多重试3次）
+        for (var attempt = 0; attempt < 3; attempt++)
+        {
+            try
+            {
+                await _context.SaveChangesAsync();
+                break;
+            }
+            catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex) && attempt < 2)
+            {
+                circle.InviteCode = GenerateInviteCode();
+            }
+        }
 
         return await BuildCircleResponse(circleId);
     }
