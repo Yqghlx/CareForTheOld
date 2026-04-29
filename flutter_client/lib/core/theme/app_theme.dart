@@ -532,6 +532,7 @@ class AppTheme {
   static const String labelElder = '老人';
   static const String labelChild = '子女';
   static const String labelRelationOther = '其他';
+  static const String labelSelectRole = '请选择您的身份:';
 
   // 亲属称谓
   static const String labelGrandpaP = '爷爷';

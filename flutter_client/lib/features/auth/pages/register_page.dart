@@ -193,7 +193,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 AppTheme.spacer24,
 
                 // 角色选择
-                const Text('请选择您的身份:', style: AppTheme.textBody16),
+                const Text(AppTheme.labelSelectRole, style: AppTheme.textBody16),
                 AppTheme.spacer12,
                 Row(
                   children: [
