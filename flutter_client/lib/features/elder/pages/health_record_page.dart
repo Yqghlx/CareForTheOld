@@ -1100,7 +1100,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
       ref.invalidate(healthStatsProvider);
     } else if (mounted && dialogContext.mounted) {
       // 提交失败，保持对话框打开，让用户可以重试
-      dialogContext.showErrorSnackBar(AppTheme.msgOperationFailed);
+      dialogContext.showErrorSnackBar(ref.read(healthRecordsProvider).error ?? AppTheme.msgOperationFailed);
     }
   }
 }

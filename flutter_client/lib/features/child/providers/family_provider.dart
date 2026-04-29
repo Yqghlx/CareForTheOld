@@ -106,7 +106,10 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
     required String relation,
   }) async {
     final familyId = state.familyId;
-    if (familyId == null) return false;
+    if (familyId == null) {
+      state = state.copyWith(error: '未加入家庭');
+      return false;
+    }
     try {
       final updatedFamily = await _service.addMember(
         familyId: familyId,
@@ -127,7 +130,10 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
   /// 移除家庭成员
   Future<bool> removeMember(String userId) async {
     final familyId = state.familyId;
-    if (familyId == null) return false;
+    if (familyId == null) {
+      state = state.copyWith(error: '未加入家庭');
+      return false;
+    }
     try {
       await _service.removeMember(familyId: familyId, userId: userId);
       if (!mounted) return false;
@@ -171,7 +177,10 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
   /// 刷新邀请码
   Future<bool> refreshInviteCode() async {
     final familyId = state.familyId;
-    if (familyId == null) return false;
+    if (familyId == null) {
+      state = state.copyWith(error: '未加入家庭');
+      return false;
+    }
     try {
       final family = await _service.refreshInviteCode(familyId);
       if (!mounted) return false;
@@ -200,7 +209,10 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
   /// 审批通过成员加入
   Future<bool> approveMember(String memberId) async {
     final familyId = state.familyId;
-    if (familyId == null) return false;
+    if (familyId == null) {
+      state = state.copyWith(error: '未加入家庭');
+      return false;
+    }
     try {
       await _service.approveMember(familyId: familyId, memberId: memberId);
       if (!mounted) return false;
@@ -218,7 +230,10 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
   /// 拒绝成员加入申请
   Future<bool> rejectMember(String memberId) async {
     final familyId = state.familyId;
-    if (familyId == null) return false;
+    if (familyId == null) {
+      state = state.copyWith(error: '未加入家庭');
+      return false;
+    }
     try {
       await _service.rejectMember(familyId: familyId, memberId: memberId);
       if (!mounted) return false;

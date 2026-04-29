@@ -111,7 +111,10 @@ class NeighborCircleNotifier extends StateNotifier<NeighborCircleState> {
   /// 退出邻里圈
   Future<bool> leaveCircle() async {
     final circleId = state.circle?.id;
-    if (circleId == null) return false;
+    if (circleId == null) {
+      state = state.copyWith(error: '未加入邻里圈');
+      return false;
+    }
     state = state.copyWith(clearError: true);
     try {
       await _service.leaveCircle(circleId);
@@ -128,7 +131,10 @@ class NeighborCircleNotifier extends StateNotifier<NeighborCircleState> {
   /// 加载成员列表
   Future<void> loadMembers() async {
     final circleId = state.circle?.id;
-    if (circleId == null) return;
+    if (circleId == null) {
+      state = state.copyWith(error: '未加入邻里圈');
+      return;
+    }
     try {
       final members = await _service.getMembers(circleId);
       if (!mounted) return;
@@ -163,7 +169,10 @@ class NeighborCircleNotifier extends StateNotifier<NeighborCircleState> {
   /// 刷新邀请码
   Future<bool> refreshInviteCode() async {
     final circleId = state.circle?.id;
-    if (circleId == null) return false;
+    if (circleId == null) {
+      state = state.copyWith(error: '未加入邻里圈');
+      return false;
+    }
     try {
       final circle = await _service.refreshInviteCode(circleId);
       if (!mounted) return false;

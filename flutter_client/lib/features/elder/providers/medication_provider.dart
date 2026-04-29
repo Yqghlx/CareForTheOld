@@ -115,7 +115,10 @@ class MedicationNotifier extends StateNotifier<MedicationState> {
   Future<bool> _updateMedicationStatus(MedicationLog log, MedicationStatus status) async {
     final key = logKey(log);
     // 防重复提交：已在提交中的记录直接返回
-    if (state.isSubmitting(key)) return false;
+    if (state.isSubmitting(key)) {
+      state = state.copyWith(error: '操作进行中，请勿重复提交');
+      return false;
+    }
     state = state.copyWith(submittingKeys: {...state.submittingKeys, key});
 
     // 构建用药日志数据，taken 时附加实际服用时间

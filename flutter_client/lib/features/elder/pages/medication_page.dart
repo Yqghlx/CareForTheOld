@@ -307,7 +307,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
       if (success) {
           context.showSuccessSnackBar(AppTheme.msgMedicationTaken);
         } else {
-          context.showErrorSnackBar(AppTheme.msgOperationFailed);
+          context.showErrorSnackBar(ref.read(medicationProvider).error ?? AppTheme.msgOperationFailed);
         }
     }
   }
@@ -325,7 +325,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
     final success =
         await ref.read(medicationProvider.notifier).markAsSkipped(log);
     if (mounted) {
-      context.showSnackBar(success ? AppTheme.msgMedicationSkipped : AppTheme.msgOperationFailed);
+      context.showSnackBar(success ? AppTheme.msgMedicationSkipped : ref.read(medicationProvider).error ?? AppTheme.msgOperationFailed);
     }
   }
 

@@ -215,7 +215,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
         if (success) {
           context.showSuccessSnackBar('${AppTheme.msgFamilyApproved} ${member.realName} 的加入申请');
         } else {
-          context.showErrorSnackBar(AppTheme.msgOperationFailed);
+          context.showErrorSnackBar(ref.read(familyProvider).error ?? AppTheme.msgOperationFailed);
         }
       }
     } finally {
@@ -241,7 +241,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
         if (success) {
           context.showSuccessSnackBar(AppTheme.msgFamilyRejected);
         } else {
-          context.showErrorSnackBar(AppTheme.msgOperationFailed);
+          context.showErrorSnackBar(ref.read(familyProvider).error ?? AppTheme.msgOperationFailed);
         }
       }
     } finally {
@@ -383,7 +383,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                       if (success) {
                         context.showSuccessSnackBar(AppTheme.msgInviteRefreshed);
                       } else {
-                        context.showErrorSnackBar(AppTheme.msgOperationFailed);
+                        context.showErrorSnackBar(ref.read(familyProvider).error ?? AppTheme.msgOperationFailed);
                       }
                     }
                   } finally {

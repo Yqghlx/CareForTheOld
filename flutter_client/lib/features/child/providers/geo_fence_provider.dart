@@ -114,7 +114,10 @@ class GeoFenceNotifier extends StateNotifier<GeoFenceState> {
     required double centerLongitude,
     required int radius,
   }) async {
-    if (state.fence == null) return false;
+    if (state.fence == null) {
+      state = state.copyWith(error: '围栏不存在');
+      return false;
+    }
 
     final newEnabled = !state.fence!.isEnabled;
     return saveFence(

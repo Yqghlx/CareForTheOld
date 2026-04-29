@@ -396,7 +396,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
           if (success) {
             context.showSuccessSnackBar(AppTheme.msgMarkHandled);
           } else {
-            context.showErrorSnackBar(AppTheme.msgOperationFailed);
+            context.showErrorSnackBar(ref.read(emergencyProvider).error ?? AppTheme.msgOperationFailed);
           }
           if (success) {
             ref.read(emergencyProvider.notifier).loadAll();
