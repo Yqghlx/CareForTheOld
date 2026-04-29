@@ -631,9 +631,9 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
       final picker = ImagePicker();
       final image = await picker.pickImage(
         source: source,
-        maxWidth: 512,
-        maxHeight: 512,
-        imageQuality: 80,
+        maxWidth: AppTheme.avatarMaxSize,
+        maxHeight: AppTheme.avatarMaxSize,
+        imageQuality: AppTheme.avatarImageQuality,
       );
 
       if (image == null) return;

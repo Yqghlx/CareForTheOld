@@ -512,6 +512,12 @@ class AppTheme {
   /// 邻里圈搜索默认半径（米）
   static const double defaultNeighborSearchRadius = 2000.0;
 
+  /// 图片配置
+  static const double ocrImageMaxSize = 1024.0;
+  static const int ocrImageQuality = 85;
+  static const double avatarMaxSize = 512.0;
+  static const int avatarImageQuality = 80;
+
   /// 老人端特殊配置 - 大字体、大按钮、更大圆角
   static ThemeData get elderTheme => ThemeData(
     useMaterial3: true,

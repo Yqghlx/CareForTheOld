@@ -683,9 +683,9 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                                     try {
                                     final image = await imagePicker.pickImage(
                                       source: ImageSource.camera,
-                                      maxWidth: 1024,
-                                      maxHeight: 1024,
-                                      imageQuality: 85,
+                                      maxWidth: AppTheme.ocrImageMaxSize,
+                                      maxHeight: AppTheme.ocrImageMaxSize,
+                                      imageQuality: AppTheme.ocrImageQuality,
                                     );
                                     if (image == null) return;
 
