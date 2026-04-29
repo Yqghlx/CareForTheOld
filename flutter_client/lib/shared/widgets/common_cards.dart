@@ -282,7 +282,10 @@ class _AnimatedQuickCardState extends State<AnimatedQuickCard>
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Semantics(
+      button: true,
+      label: '${widget.title}，${widget.subtitle}',
+      child: GestureDetector(
       onTapDown: _onTapDown,
       onTapUp: _onTapUp,
       onTapCancel: _onTapCancel,
@@ -330,6 +333,7 @@ class _AnimatedQuickCardState extends State<AnimatedQuickCard>
             ),
           ),
         ),
+      ),
       ),
     );
   }
