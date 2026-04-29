@@ -545,7 +545,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
               ],
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 16),
+              padding: AppTheme.paddingTop16,
               child: Row(
                 children: [
                   Expanded(

@@ -803,7 +803,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
 
         return Card(
           elevation: AppTheme.cardElevation,
-          margin: const EdgeInsets.only(bottom: 10),
+          margin: AppTheme.marginBottom10,
           shape: RoundedRectangleBorder(
             borderRadius: AppTheme.radiusM,
           ),

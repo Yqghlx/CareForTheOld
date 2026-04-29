@@ -483,7 +483,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
     if (members.isEmpty) {
       return const Center(
         child: Padding(
-          padding: EdgeInsets.all(32),
+          padding: AppTheme.paddingAll32,
           child: Text(AppTheme.msgNoFamilyMember, style: AppTheme.textSecondary16),
         ),
       );

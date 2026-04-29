@@ -167,7 +167,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                 }
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 12),
+                padding: AppTheme.paddingV12,
                 decoration: BoxDecoration(
                   color: isSelected ? type.color : AppTheme.transparentColor,
                   borderRadius: isSelected ? AppTheme.radiusL : AppTheme.radiusZero,
@@ -234,7 +234,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
           }
         },
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10),
+          padding: AppTheme.paddingV10,
           decoration: BoxDecoration(
             color: isSelected ? AppTheme.primaryColor : AppTheme.grey200,
             borderRadius: AppTheme.radiusS,

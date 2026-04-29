@@ -218,7 +218,18 @@ class AppTheme {
   static const EdgeInsets paddingAll14 = EdgeInsets.all(14);
   static const EdgeInsets marginBottom16 = EdgeInsets.only(bottom: 16);
   static const EdgeInsets marginBottom4 = EdgeInsets.only(bottom: 4);
+  static const EdgeInsets marginBottom10 = EdgeInsets.only(bottom: 10);
   static const EdgeInsets marginTop4 = EdgeInsets.only(top: 4);
+  static const EdgeInsets marginTop16 = EdgeInsets.only(top: 16);
+  static const EdgeInsets paddingTop16 = EdgeInsets.only(top: 16);
+  static const EdgeInsets paddingAll10 = EdgeInsets.all(10);
+  static const EdgeInsets paddingAll32 = EdgeInsets.all(32);
+  static const EdgeInsets paddingV8 = EdgeInsets.symmetric(vertical: 8);
+  static const EdgeInsets paddingV10 = EdgeInsets.symmetric(vertical: 10);
+  static const EdgeInsets paddingV12 = EdgeInsets.symmetric(vertical: 12);
+  static const EdgeInsets paddingV16 = EdgeInsets.symmetric(vertical: 16);
+  static const EdgeInsets paddingH8 = EdgeInsets.symmetric(horizontal: 8);
+  static const EdgeInsets paddingH24V12 = EdgeInsets.symmetric(horizontal: 24, vertical: 12);
 
   /// 常用垂直间距组件
   static const SizedBox spacer24 = SizedBox(height: 24);
