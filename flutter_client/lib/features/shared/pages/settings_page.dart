@@ -766,6 +766,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   void _showLogoutDialog() {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(
           borderRadius: AppTheme.radiusXL,
