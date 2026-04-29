@@ -189,10 +189,17 @@ class _HelpRequestCard extends StatelessWidget {
               AppTheme.spacer8,
               Align(
                 alignment: Alignment.centerRight,
-                child: TextButton.icon(
-                  icon: const Icon(Icons.star, size: 16),
-                  label: const Text('评价'),
-                  onPressed: onRate,
+                child: Tooltip(
+                  message: '评价此次互助',
+                  child: Semantics(
+                    label: '评价此次互助',
+                    button: true,
+                    child: TextButton.icon(
+                      icon: const Icon(Icons.star, size: 16),
+                      label: const Text('评价'),
+                      onPressed: onRate,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -200,10 +207,17 @@ class _HelpRequestCard extends StatelessWidget {
               AppTheme.spacer8,
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.volunteer_activism),
-                  label: const Text('我来帮忙'),
-                  onPressed: onAccept,
+                child: Tooltip(
+                  message: '接受求助，前往帮忙',
+                  child: Semantics(
+                    label: '接受求助，前往帮忙',
+                    button: true,
+                    child: ElevatedButton.icon(
+                      icon: const Icon(Icons.volunteer_activism),
+                      label: const Text('我来帮忙'),
+                      onPressed: onAccept,
+                    ),
+                  ),
                 ),
               ),
             ],
