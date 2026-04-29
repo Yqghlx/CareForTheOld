@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../shared/models/health_record.dart';
 import '../../../shared/models/health_stats.dart';
+import '../../../core/services/app_logger.dart';
 import '../providers/health_provider.dart';
 import '../services/health_service.dart';
 import '../services/voice_input_service.dart';
@@ -1033,7 +1034,8 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
     } on FormatException catch (e) {
       if (mounted) context.showErrorSnackBar(e.message);
       return;
-    } catch (_) {
+    } catch (e) {
+      AppLogger.warning('健康数据解析失败: $e');
       if (mounted) context.showErrorSnackBar(AppTheme.msgInvalidValue);
       return;
     }

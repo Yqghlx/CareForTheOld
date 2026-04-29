@@ -1,5 +1,6 @@
 import 'package:speech_to_text/speech_to_text.dart';
 
+import '../../../core/services/app_logger.dart';
 import '../../../shared/models/health_record.dart';
 
 /// 语音输入服务，封装语音识别的初始化、开始、停止
@@ -48,7 +49,8 @@ class VoiceInputService {
       // listen() 返回后不代表识别结束，通过 statusListener 跟踪状态
       // _isListening 在 stopListening() 或识别自然结束时重置
       return true;
-    } catch (_) {
+    } catch (e) {
+      AppLogger.warning('语音识别启动失败: $e');
       _isListening = false;
       return false;
     }

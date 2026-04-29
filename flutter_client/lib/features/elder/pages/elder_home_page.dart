@@ -3,6 +3,7 @@ import '../../../core/router/route_paths.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../../core/services/app_logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../shared/widgets/notification_badge.dart';
 import 'package:geolocator/geolocator.dart';
@@ -527,7 +528,8 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
         desiredAccuracy: LocationAccuracy.medium,
         timeLimit: AppTheme.duration5s,
       );
-    } catch (_) {
+    } catch (e) {
+      AppLogger.warning('获取GPS位置失败: $e');
       return null;
     }
   }
@@ -538,7 +540,8 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
       final battery = Battery();
       final level = await battery.batteryLevel;
       return level;
-    } catch (_) {
+    } catch (e) {
+      AppLogger.warning('获取电池电量失败: $e');
       return null;
     }
   }
