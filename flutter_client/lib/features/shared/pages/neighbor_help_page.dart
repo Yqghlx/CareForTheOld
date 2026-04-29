@@ -9,6 +9,7 @@ import '../providers/neighbor_help_provider.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 import '../../../core/extensions/date_format_extension.dart';
 import '../../../shared/widgets/confirm_dialog.dart';
+import '../../../shared/widgets/common_states.dart';
 
 /// 邻里互助页面（待响应求助 + 历史列表）
 class NeighborHelpPage extends ConsumerStatefulWidget {
@@ -47,7 +48,7 @@ class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
           ),
         ),
         body: state.isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? Column(children: List.generate(3, (_) => const SkeletonCard()))
             : TabBarView(
                 children: [
                   _buildPendingList(context, state.pendingRequests),

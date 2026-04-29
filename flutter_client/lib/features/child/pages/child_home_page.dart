@@ -13,6 +13,7 @@ import '../../../core/api/api_client.dart';
 import '../providers/family_provider.dart';
 import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
+import '../../../shared/widgets/common_states.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 import '../../../core/extensions/date_format_extension.dart';
 import '../../../core/theme/app_theme.dart';
@@ -219,7 +220,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
   /// 老人列表
   Widget _buildElderList(FamilyState familyState) {
     if (familyState.isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return Column(children: List.generate(2, (_) => const SkeletonCard()));
     }
 
     final elders = familyState.elders;

@@ -9,6 +9,7 @@ import '../../../shared/providers/auth_provider.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/common_states.dart';
 import '../providers/family_provider.dart';
 
 /// 家庭成员管理页面（子女端可管理，老人端只可查看）
@@ -271,7 +272,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
 
     final family = state.family;
     if (family == null) {
-      return const Center(child: CircularProgressIndicator());
+      return Column(children: List.generate(3, (_) => const SkeletonCard()));
     }
 
     return Column(
