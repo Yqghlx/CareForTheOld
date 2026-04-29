@@ -340,10 +340,10 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('今日健康', style: AppTheme.textSectionTitle),
+            const Text(AppTheme.titleTodayHealth, style: AppTheme.textSectionTitle),
             TextButton(
               onPressed: () => setState(() => _selectedIndex = 1),
-              child: const Text('查看详情', style: TextStyle(fontSize: 16)),
+              child: const Text(AppTheme.labelViewDetails, style: TextStyle(fontSize: 16)),
             ),
           ],
         ),
@@ -359,10 +359,10 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                       children: [
                         const Icon(Icons.favorite_border, size: 40, color: AppTheme.grey400),
                         AppTheme.spacer8,
-                        const Text('暂无健康记录', style: AppTheme.textSecondary16),
+                        const Text(AppTheme.msgNoHealthRecord, style: AppTheme.textSecondary16),
                         AppTheme.spacer8,
                         PrimaryButton(
-                          text: '去记录',
+                          text: AppTheme.labelGoRecord,
                           onPressed: () => setState(() => _selectedIndex = 1),
                           gradient: const LinearGradient(
                             colors: [AppTheme.errorColor, AppTheme.errorAccent],
@@ -452,7 +452,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('今日用药', style: AppTheme.textSectionTitle),
+            const Text(AppTheme.titleTodayMedication, style: AppTheme.textSectionTitle),
             if (pendingCount > 0)
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -461,7 +461,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                   borderRadius: AppTheme.radiusS,
                 ),
                 child: Text(
-                  '$pendingCount 项待服',
+                  '$pendingCount ${AppTheme.labelPendingCount}',
                   style: const TextStyle(fontSize: 14, color: AppTheme.warningColor, fontWeight: FontWeight.w600),
                 ),
               ),
@@ -482,7 +482,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                   children: [
                     const Icon(Icons.medication_outlined, size: 40, color: AppTheme.grey400),
                     AppTheme.spacer8,
-                    const Text('今日暂无用药计划', style: AppTheme.textSecondary16),
+                    const Text(AppTheme.msgNoMedicationPlanToday, style: AppTheme.textSecondary16),
                   ],
                 ),
               ),
@@ -829,14 +829,14 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
               child: const Icon(Icons.check_circle, color: AppTheme.successColor, size: AppTheme.iconSizeXl),
             ),
             AppTheme.hSpacer16,
-            const Text('呼叫已发送'),
+            const Text(AppTheme.titleCallSent),
           ],
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text(
-              '您的紧急呼叫已成功发送，已通知家人和附近邻居。',
+              AppTheme.msgCallSentDetail,
               style: AppTheme.textBody16,
             ),
             AppTheme.spacer12,

@@ -445,6 +445,16 @@ class AppTheme {
   static const String msgNoPendingEmergency = '暂无待处理的紧急呼叫';
   static const String msgNoCallRecord = '暂无呼叫记录';
 
+  // 首页区块标题
+  static const String titleTodayHealth = '今日健康';
+  static const String titleTodayMedication = '今日用药';
+  static const String labelViewDetails = '查看详情';
+  static const String labelGoRecord = '去记录';
+  static const String msgNoMedicationPlanToday = '今日暂无用药计划';
+  static const String titleCallSent = '呼叫已发送';
+  static const String msgCallSentDetail = '您的紧急呼叫已成功发送，已通知家人和附近邻居。';
+  static const String labelPendingCount = '项待服';
+
   // 设置页面标题
   static const String titleChangeName = '修改姓名';
   static const String titleChangePassword = '修改密码';
