@@ -61,6 +61,7 @@ public class MedicationReminderService : BackgroundService
     /// <summary>
     /// Hangfire RecurringJob 入口方法（供 Hangfire 调度调用）
     /// </summary>
+    [AutomaticRetry(Attempts = 3, DelaysInSeconds = new[] { 30, 60 })]
     public async Task ExecuteHangfireJobAsync()
     {
         _logger.LogDebug("Hangfire 用药提醒任务执行");

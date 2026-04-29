@@ -1,6 +1,7 @@
 using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Data;
+using Hangfire;
 using CareForTheOld.Models.DTOs.Requests.Neighbor;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Models.Entities;
@@ -439,6 +440,7 @@ public class NeighborHelpService : INeighborHelpService
     }
 
     /// <inheritdoc />
+    [AutomaticRetry(Attempts = 3, DelaysInSeconds = new[] { 10, 30 })]
     public async Task CleanupExpiredRequestsAsync()
     {
         var now = DateTime.UtcNow;

@@ -66,6 +66,7 @@ class HealthRecordsNotifier extends StateNotifier<HealthRecordsState> {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
       final records = await _healthService.getMyRecords(type: type);
+      if (!mounted) return;
       // 网络成功：更新缓存
       if (type == null) {
         await _cacheService.cacheMyRecords(records);
@@ -77,6 +78,7 @@ class HealthRecordsNotifier extends StateNotifier<HealthRecordsState> {
         isFromCache: false,
       );
     } on DioException catch (e) {
+      if (!mounted) return;
       // 网络失败：降级读取缓存
       final cached = type != null
           ? _cacheService.getCachedRecordsByType(type)
@@ -92,6 +94,7 @@ class HealthRecordsNotifier extends StateNotifier<HealthRecordsState> {
         state = state.copyWith(isLoading: false, error: e.toDisplayMessage());
       }
     } catch (e) {
+      if (!mounted) return;
       final cached = type != null
           ? _cacheService.getCachedRecordsByType(type)
           : _cacheService.getCachedMyRecords();
@@ -128,12 +131,14 @@ class HealthRecordsNotifier extends StateNotifier<HealthRecordsState> {
         temperature: temperature,
         note: note,
       );
+      if (!mounted) return false;
       // 将新记录插入列表头部
       state = state.copyWith(records: [newRecord, ...state.records]);
       // 更新缓存
       await _cacheService.cacheMyRecords(state.records);
       return true;
     } catch (e) {
+      if (!mounted) return false;
       state = state.copyWith(error: errorMessageFrom(e));
       return false;
     }
@@ -143,12 +148,14 @@ class HealthRecordsNotifier extends StateNotifier<HealthRecordsState> {
   Future<bool> deleteRecord(String id) async {
     try {
       await _healthService.deleteRecord(id);
+      if (!mounted) return false;
       state = state.copyWith(
         records: state.records.where((r) => r.id != id).toList(),
       );
       await _cacheService.cacheMyRecords(state.records);
       return true;
     } catch (e) {
+      if (!mounted) return false;
       state = state.copyWith(error: errorMessageFrom(e));
       return false;
     }

@@ -1,6 +1,7 @@
 using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Data;
+using Hangfire;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Interfaces;
@@ -69,6 +70,7 @@ public class TrustScoreService : ITrustScoreService
     }
 
     /// <inheritdoc />
+    [AutomaticRetry(Attempts = 2, DelaysInSeconds = new[] { 60 })]
     public async Task RecalculateAllScoresAsync()
     {
         var allScores = await _context.TrustScores

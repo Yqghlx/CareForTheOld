@@ -1,5 +1,6 @@
 using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
+using Hangfire;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Services.Hubs;
 using Microsoft.AspNetCore.SignalR;
@@ -32,6 +33,7 @@ public class OutboxDispatchService
     /// <summary>
     /// Hangfire RecurringJob 入口方法
     /// </summary>
+    [AutomaticRetry(Attempts = 3, DelaysInSeconds = new[] { 10, 30 })]
     public async Task DispatchOutboxMessagesAsync()
     {
         using var scope = _scopeFactory.CreateScope();

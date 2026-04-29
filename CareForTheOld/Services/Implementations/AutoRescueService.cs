@@ -1,5 +1,6 @@
 using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
+using Hangfire;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Interfaces;
@@ -106,6 +107,7 @@ public class AutoRescueService : IAutoRescueService
     }
 
     /// <inheritdoc />
+    [AutomaticRetry(Attempts = 3, DelaysInSeconds = new[] { 10, 30 })]
     public async Task CheckPendingRescuesAsync()
     {
         if (!_enabled) return;
