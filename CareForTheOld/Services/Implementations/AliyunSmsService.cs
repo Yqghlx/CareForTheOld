@@ -40,7 +40,7 @@ public class AliyunSmsService : ISmsService
 
         if (string.IsNullOrEmpty(accessKeyId) || string.IsNullOrEmpty(accessKeySecret))
         {
-            _logger.LogWarning("[阿里云短信] 配置缺失，AccessKeyId 或 AccessKeySecret 未设置");
+            _logger.LogError("[阿里云短信] 配置缺失，AccessKeyId 或 AccessKeySecret 未设置");
             return (false, ErrorMessages.Sms.ConfigMissing);
         }
 

@@ -39,7 +39,7 @@ public class TwilioSmsService : ISmsService
 
         if (string.IsNullOrEmpty(accountSid) || string.IsNullOrEmpty(authToken) || string.IsNullOrEmpty(fromNumber))
         {
-            _logger.LogWarning("[Twilio短信] 配置缺失，AccountSid、AuthToken 或 FromNumber 未设置");
+            _logger.LogError("[Twilio短信] 配置缺失，AccountSid、AuthToken 或 FromNumber 未设置");
             return (false, ErrorMessages.Sms.ConfigMissing);
         }
 

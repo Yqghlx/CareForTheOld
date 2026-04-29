@@ -165,10 +165,6 @@ public class AutoRescueService : IAutoRescueService
             record.Status = AutoRescueStatus.NeighborBroadcast;
             record.BroadcastAt = DateTime.UtcNow;
 
-            // 创建紧急呼叫以触发邻里广播
-            var emergencyService = scope.ServiceProvider.GetRequiredService<IEmergencyService>();
-            var helpService = scope.ServiceProvider.GetRequiredService<INeighborHelpService>();
-
             var elderName = record.Elder?.RealName ?? AppConstants.HealthTypeLabels.DefaultElderName;
             _logger.LogWarning(
                 "自动救援：老人 {ElderId} 的子女 {_Delay} 分钟内未响应，触发邻里圈广播",
