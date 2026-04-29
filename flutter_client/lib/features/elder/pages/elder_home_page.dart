@@ -169,6 +169,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                                     fit: BoxFit.cover,
                                     width: 64,
                                     height: 64,
+                                    fadeInDuration: const Duration(milliseconds: 200),
                                     memCacheWidth: 256,
                                     memCacheHeight: 256,
                                     maxWidthDiskCache: 512,
