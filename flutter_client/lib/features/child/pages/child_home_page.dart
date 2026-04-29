@@ -123,7 +123,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                             ? CachedNetworkImage(
                                 imageUrl: user.avatarUrl!,
                                 fit: BoxFit.cover,
-                                fadeInDuration: const Duration(milliseconds: 200),
+                                fadeInDuration: AppTheme.duration200ms,
                                 memCacheWidth: 256,
                                 memCacheHeight: 256,
                                 maxWidthDiskCache: 512,
@@ -279,7 +279,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                               ? CachedNetworkImage(
                                   imageUrl: elder.avatarUrl!,
                                   fit: BoxFit.cover,
-                                  fadeInDuration: const Duration(milliseconds: 200),
+                                  fadeInDuration: AppTheme.duration200ms,
                                   memCacheWidth: 256,
                                   memCacheHeight: 256,
                                   maxWidthDiskCache: 512,

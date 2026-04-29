@@ -56,7 +56,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       return CachedNetworkImage(
         imageUrl: avatarUrl,
         fit: BoxFit.cover,
-        fadeInDuration: const Duration(milliseconds: 200),
+        fadeInDuration: AppTheme.duration200ms,
         memCacheWidth: 256,
         memCacheHeight: 256,
         maxWidthDiskCache: 512,

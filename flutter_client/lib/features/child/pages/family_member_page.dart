@@ -501,7 +501,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     ? CachedNetworkImage(
                         imageUrl: member.avatarUrl!,
                         fit: BoxFit.cover,
-                        fadeInDuration: const Duration(milliseconds: 200),
+                        fadeInDuration: AppTheme.duration200ms,
                         memCacheWidth: 256,
                         memCacheHeight: 256,
                         maxWidthDiskCache: 512,

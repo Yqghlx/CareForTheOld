@@ -276,6 +276,8 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
                           ? AppTheme.successDark
                           : null,
                     ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                   AppTheme.spacer4,
                   Text(
@@ -528,6 +530,8 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
                       Text(
                         log.medicineName,
                         style: AppTheme.textLargeTitle,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
                       AppTheme.spacer4,
                       Text(

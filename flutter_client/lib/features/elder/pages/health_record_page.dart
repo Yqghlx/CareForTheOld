@@ -376,10 +376,13 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                 children: [
                   Row(
                     children: [
-                      Text(
-                        '${record.type.label}: ${record.displayValue} ${record.type.unit}',
-                        style: AppTheme.textTitle.copyWith(
-                          color: abnormal ? AppTheme.warningDark : null,
+                      Flexible(
+                        child: Text(
+                          '${record.type.label}: ${record.displayValue} ${record.type.unit}',
+                          style: AppTheme.textTitle.copyWith(
+                            color: abnormal ? AppTheme.warningDark : null,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       if (abnormal) ...[
