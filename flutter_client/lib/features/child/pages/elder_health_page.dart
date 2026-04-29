@@ -972,19 +972,27 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       ),
     );
 
-    final service = ref.read(healthReportServiceProvider);
-    final success = await service.downloadAndShareReport(
-      days: days,
-      elderId: widget.elderId,
-      familyId: familyId,
-    );
+    try {
+      final service = ref.read(healthReportServiceProvider);
+      final success = await service.downloadAndShareReport(
+        days: days,
+        elderId: widget.elderId,
+        familyId: familyId,
+      );
 
-    // 关闭加载对话框
-    if (mounted && context.mounted) {
-      Navigator.pop(context);
-      if (success) {
-        context.showSuccessSnackBar(AppTheme.msgReportGenerated);
-      } else {
+      // 关闭加载对话框
+      if (mounted && context.mounted) {
+        Navigator.pop(context);
+        if (success) {
+          context.showSuccessSnackBar(AppTheme.msgReportGenerated);
+        } else {
+          context.showErrorSnackBar(AppTheme.msgOperationFailed);
+        }
+      }
+    } catch (e) {
+      // 异常时也要关闭加载对话框
+      if (mounted && context.mounted) {
+        Navigator.pop(context);
         context.showErrorSnackBar(AppTheme.msgOperationFailed);
       }
     }

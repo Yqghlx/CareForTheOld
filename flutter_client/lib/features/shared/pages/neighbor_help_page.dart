@@ -25,7 +25,7 @@ class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(neighborHelpProvider.notifier).loadPendingRequests();
       ref.read(neighborHelpProvider.notifier).loadHistory();
     });

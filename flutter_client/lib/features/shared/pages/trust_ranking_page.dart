@@ -20,7 +20,7 @@ class _TrustRankingPageState extends ConsumerState<TrustRankingPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(trustScoreProvider.notifier).loadRanking(widget.circleId);
       ref.read(trustScoreProvider.notifier).loadMyScore(widget.circleId);
     });

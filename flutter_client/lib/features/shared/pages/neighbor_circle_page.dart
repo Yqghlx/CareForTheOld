@@ -31,7 +31,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
   void initState() {
     super.initState();
     // 页面加载时获取我的邻里圈
-    Future.microtask(() => ref.read(neighborCircleProvider.notifier).loadMyCircle());
+    WidgetsBinding.instance.addPostFrameCallback((_) => ref.read(neighborCircleProvider.notifier).loadMyCircle());
   }
 
   @override

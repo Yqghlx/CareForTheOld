@@ -320,13 +320,19 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
 
   /// 导出报告
   Future<void> _exportReport(BuildContext context, int days) async {
-    final service = ref.read(healthReportServiceProvider);
-    final success = await service.downloadAndShareReport(days: days);
+    try {
+      final service = ref.read(healthReportServiceProvider);
+      final success = await service.downloadAndShareReport(days: days);
 
-    if (mounted && context.mounted) {
-      if (success) {
-        context.showSuccessSnackBar(AppTheme.msgReportGenerated);
-      } else {
+      if (mounted && context.mounted) {
+        if (success) {
+          context.showSuccessSnackBar(AppTheme.msgReportGenerated);
+        } else {
+          context.showErrorSnackBar(AppTheme.msgOperationFailed);
+        }
+      }
+    } catch (e) {
+      if (mounted && context.mounted) {
         context.showErrorSnackBar(AppTheme.msgOperationFailed);
       }
     }
