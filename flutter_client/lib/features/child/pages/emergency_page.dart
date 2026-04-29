@@ -22,6 +22,8 @@ class EmergencyPage extends ConsumerStatefulWidget {
 }
 
 class _EmergencyPageState extends ConsumerState<EmergencyPage> {
+  bool _isResponding = false;
+
   @override
   void initState() {
     super.initState();
@@ -277,7 +279,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                       child: PrimaryIconButton(
                         text: '已处理',
                         icon: Icons.check,
-                        onPressed: () => _respondCall(call),
+                        onPressed: _isResponding ? null : () => _respondCall(call),
                         gradient: const LinearGradient(
                           colors: [AppTheme.successColor, AppTheme.successLight],
                         ),
@@ -378,6 +380,8 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
   }
 
   Future<void> _respondCall(EmergencyCall call) async {
+    if (_isResponding) return;
+
     final confirmed = await showConfirmDialog(
       context,
       title: AppTheme.titleConfirmHandle,
@@ -386,18 +390,22 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
     );
 
     if (confirmed) {
-      HapticFeedback.mediumImpact();
-      final success = await ref.read(emergencyProvider.notifier).respondCall(call.id);
-      if (mounted) {
-        if (success) {
-          context.showSuccessSnackBar(AppTheme.msgMarkHandled);
-        } else {
-          context.showErrorSnackBar(AppTheme.msgOperationFailed);
+      setState(() => _isResponding = true);
+      try {
+        HapticFeedback.mediumImpact();
+        final success = await ref.read(emergencyProvider.notifier).respondCall(call.id);
+        if (mounted) {
+          if (success) {
+            context.showSuccessSnackBar(AppTheme.msgMarkHandled);
+          } else {
+            context.showErrorSnackBar(AppTheme.msgOperationFailed);
+          }
+          if (success) {
+            ref.read(emergencyProvider.notifier).loadAll();
+          }
         }
-        // 处理后自动刷新列表，保持数据最新
-        if (success) {
-          ref.read(emergencyProvider.notifier).loadAll();
-        }
+      } finally {
+        if (mounted) setState(() => _isResponding = false);
       }
     }
   }

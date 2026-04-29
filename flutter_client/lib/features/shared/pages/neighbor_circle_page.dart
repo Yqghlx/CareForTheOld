@@ -26,6 +26,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
   final _circleNameController = TextEditingController();
   bool _isSearching = false;
   bool _isGettingLocation = false;
+  bool _isSubmitting = false;
 
   @override
   void initState() {
@@ -104,7 +105,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                           IconButton(
                             icon: const Icon(Icons.refresh, size: AppTheme.iconSizeMd),
                             tooltip: AppTheme.tooltipRefreshCode,
-                            onPressed: () => _refreshInviteCode(),
+                            onPressed: _isSubmitting ? null : () => _refreshInviteCode(),
                           ),
                         ],
                       ),
@@ -156,7 +157,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                   icon: const Icon(Icons.exit_to_app),
                   label: const Text('退出圈子'),
                   style: OutlinedButton.styleFrom(foregroundColor: AppTheme.errorColor),
-                  onPressed: () => _leaveCircle(),
+                  onPressed: _isSubmitting ? null : () => _leaveCircle(),
                 ),
               ),
             ],
@@ -299,6 +300,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
   }
 
   Future<void> _leaveCircle() async {
+    if (_isSubmitting) return;
     final confirmed = await showConfirmDialog(
       context,
       title: '确认退出',
@@ -306,18 +308,29 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
       confirmText: '退出',
     );
     if (!confirmed) return;
-    final success =
-        await ref.read(neighborCircleProvider.notifier).leaveCircle();
-    if (mounted) {
-      _showSnackBar(success ? AppTheme.msgLeftCircle : ref.read(neighborCircleProvider).error ?? AppTheme.msgOperationFailed);
+    setState(() => _isSubmitting = true);
+    try {
+      final success =
+          await ref.read(neighborCircleProvider.notifier).leaveCircle();
+      if (mounted) {
+        _showSnackBar(success ? AppTheme.msgLeftCircle : ref.read(neighborCircleProvider).error ?? AppTheme.msgOperationFailed);
+      }
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
     }
   }
 
   Future<void> _refreshInviteCode() async {
-    final success =
-        await ref.read(neighborCircleProvider.notifier).refreshInviteCode();
-    if (mounted) {
-      _showSnackBar(success ? AppTheme.msgInviteRefreshed : ref.read(neighborCircleProvider).error ?? AppTheme.msgOperationFailed);
+    if (_isSubmitting) return;
+    setState(() => _isSubmitting = true);
+    try {
+      final success =
+          await ref.read(neighborCircleProvider.notifier).refreshInviteCode();
+      if (mounted) {
+        _showSnackBar(success ? AppTheme.msgInviteRefreshed : ref.read(neighborCircleProvider).error ?? AppTheme.msgOperationFailed);
+      }
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
     }
   }
 

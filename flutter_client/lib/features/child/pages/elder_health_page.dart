@@ -87,6 +87,7 @@ class ElderHealthPage extends ConsumerStatefulWidget {
 
 class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
   String? _selectedLogDate; // 用药记录日期筛选
+  bool _isDeleting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -482,7 +483,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       ),
                       if (!plan.isActive) ...[
                         TextButton.icon(
-                          onPressed: () => _deletePlan(plan),
+                          onPressed: _isDeleting ? null : () => _deletePlan(plan),
                           icon: const Icon(Icons.delete_outline, size: AppTheme.iconSizeSm, color: AppTheme.errorColor),
                           label: Text(AppTheme.msgDelete, style: AppTheme.textError),
                           style: TextButton.styleFrom(
@@ -499,7 +500,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: TextButton.icon(
-                        onPressed: () => _deletePlan(plan),
+                        onPressed: _isDeleting ? null : () => _deletePlan(plan),
                         icon: const Icon(Icons.delete_outline, size: AppTheme.iconSizeSm, color: AppTheme.errorColor),
                         label: Text('${AppTheme.msgDelete}计划', style: AppTheme.textError),
                         style: TextButton.styleFrom(
@@ -675,6 +676,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
 
   /// 删除用药计划
   Future<void> _deletePlan(MedicationPlan plan) async {
+    if (_isDeleting) return;
     final confirmed = await showConfirmDialog(
       context,
       title: AppTheme.msgConfirmDelete,
@@ -683,6 +685,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     );
     if (confirmed != true) return;
 
+    setState(() => _isDeleting = true);
     try {
       final service = MedicationService(ref.read(apiClientProvider).dio);
       await service.deletePlan(plan.id);
@@ -694,6 +697,8 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       if (mounted) {
         context.showErrorSnackBar(AppTheme.msgOperationFailed);
       }
+    } finally {
+      if (mounted) setState(() => _isDeleting = false);
     }
   }
 

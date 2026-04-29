@@ -22,6 +22,8 @@ class FamilyMemberPage extends ConsumerStatefulWidget {
 }
 
 class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
+  bool _isProcessing = false;
+
   @override
   void initState() {
     super.initState();
@@ -179,12 +181,12 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.check_circle, color: AppTheme.successColor),
-                  onPressed: () => _approveMember(member),
+                  onPressed: _isProcessing ? null : () => _approveMember(member),
                   tooltip: AppTheme.labelApprove,
                 ),
                 IconButton(
                   icon: const Icon(Icons.cancel, color: AppTheme.errorMedium),
-                  onPressed: () => _rejectMember(member),
+                  onPressed: _isProcessing ? null : () => _rejectMember(member),
                   tooltip: AppTheme.labelReject,
                 ),
               ],
@@ -197,6 +199,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
 
   /// 审批通过
   Future<void> _approveMember(FamilyMember member) async {
+    if (_isProcessing) return;
     final confirmed = await showConfirmDialog(
       context,
       title: AppTheme.titleApproveConfirm,
@@ -205,18 +208,24 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
     );
     if (!confirmed) return;
 
-    final success = await ref.read(familyProvider.notifier).approveMember(member.userId);
-    if (mounted) {
-      if (success) {
-        context.showSuccessSnackBar('${AppTheme.msgFamilyApproved} ${member.realName} 的加入申请');
-      } else {
-        context.showErrorSnackBar(AppTheme.msgOperationFailed);
+    setState(() => _isProcessing = true);
+    try {
+      final success = await ref.read(familyProvider.notifier).approveMember(member.userId);
+      if (mounted) {
+        if (success) {
+          context.showSuccessSnackBar('${AppTheme.msgFamilyApproved} ${member.realName} 的加入申请');
+        } else {
+          context.showErrorSnackBar(AppTheme.msgOperationFailed);
+        }
       }
+    } finally {
+      if (mounted) setState(() => _isProcessing = false);
     }
   }
 
   /// 拒绝申请
   Future<void> _rejectMember(FamilyMember member) async {
+    if (_isProcessing) return;
     final confirmed = await showConfirmDialog(
       context,
       title: AppTheme.titleRejectApply,
@@ -225,13 +234,18 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
     );
     if (!confirmed) return;
 
-    final success = await ref.read(familyProvider.notifier).rejectMember(member.userId);
-    if (mounted) {
-      if (success) {
-        context.showSuccessSnackBar(AppTheme.msgFamilyRejected);
-      } else {
-        context.showErrorSnackBar(AppTheme.msgOperationFailed);
+    setState(() => _isProcessing = true);
+    try {
+      final success = await ref.read(familyProvider.notifier).rejectMember(member.userId);
+      if (mounted) {
+        if (success) {
+          context.showSuccessSnackBar(AppTheme.msgFamilyRejected);
+        } else {
+          context.showErrorSnackBar(AppTheme.msgOperationFailed);
+        }
       }
+    } finally {
+      if (mounted) setState(() => _isProcessing = false);
     }
   }
 
@@ -353,7 +367,8 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               // 刷新按钮
               IconButton(
                 icon: const Icon(Icons.refresh, color: AppTheme.cardColor),
-                onPressed: () async {
+                onPressed: _isProcessing ? null : () async {
+                  if (_isProcessing) return;
                   final confirmed = await showConfirmDialog(
                     context,
                     title: AppTheme.titleRefreshInviteCode,
@@ -361,13 +376,18 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     confirmText: AppTheme.msgConfirm,
                   );
                   if (!confirmed) return;
-                  final success = await ref.read(familyProvider.notifier).refreshInviteCode();
-                  if (mounted) {
-                    if (success) {
-                      context.showSuccessSnackBar(AppTheme.msgInviteRefreshed);
-                    } else {
-                      context.showErrorSnackBar(AppTheme.msgOperationFailed);
+                  setState(() => _isProcessing = true);
+                  try {
+                    final success = await ref.read(familyProvider.notifier).refreshInviteCode();
+                    if (mounted) {
+                      if (success) {
+                        context.showSuccessSnackBar(AppTheme.msgInviteRefreshed);
+                      } else {
+                        context.showErrorSnackBar(AppTheme.msgOperationFailed);
+                      }
                     }
+                  } finally {
+                    if (mounted) setState(() => _isProcessing = false);
                   }
                 },
                 tooltip: AppTheme.tooltipRefreshCode,
@@ -560,7 +580,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
             if (!isElder)
               IconButton(
                 icon: const Icon(Icons.remove_circle_outline, color: AppTheme.errorMedium),
-                onPressed: () => _confirmRemove(member),
+                onPressed: _isProcessing ? null : () => _confirmRemove(member),
                 tooltip: '移除成员',
               ),
           ],
@@ -877,6 +897,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
 
   /// 确认移除成员
   Future<void> _confirmRemove(FamilyMember member) async {
+    if (_isProcessing) return;
     final confirmed = await showConfirmDialog(
       context,
       title: AppTheme.titleRemoveMember,
@@ -885,13 +906,18 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
     );
     if (!confirmed) return;
 
-    final success = await ref.read(familyProvider.notifier).removeMember(member.userId);
-    if (mounted) {
-      if (success) {
-        context.showSuccessSnackBar(AppTheme.msgMemberRemoved);
-      } else {
-        context.showErrorSnackBar(AppTheme.msgMemberRemoveFailed);
+    setState(() => _isProcessing = true);
+    try {
+      final success = await ref.read(familyProvider.notifier).removeMember(member.userId);
+      if (mounted) {
+        if (success) {
+          context.showSuccessSnackBar(AppTheme.msgMemberRemoved);
+        } else {
+          context.showErrorSnackBar(AppTheme.msgMemberRemoveFailed);
+        }
       }
+    } finally {
+      if (mounted) setState(() => _isProcessing = false);
     }
   }
 }

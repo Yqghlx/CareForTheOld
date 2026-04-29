@@ -32,6 +32,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   bool _locationEnabled = true;
   bool _isLoadingLocation = true;
   String _appVersion = '';
+  bool _isSubmitting = false;
 
   // 通知偏好
   bool _notifyHealth = true;
@@ -463,30 +464,35 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           ),
           PrimaryButton(
             text: AppTheme.msgSave,
-            onPressed: () async {
+            onPressed: _isSubmitting ? null : () async {
+              if (_isSubmitting) return;
               final newName = nameController.text.trim();
               if (newName.isEmpty) return;
 
+              setState(() => _isSubmitting = true);
               Navigator.pop(ctx);
-              final success = await ref.read(userProvider.notifier).updateUser(
-                realName: newName,
-              );
+              try {
+                final success = await ref.read(userProvider.notifier).updateUser(
+                  realName: newName,
+                );
 
-              if (mounted) {
-                if (success) {
-                  // 更新 authProvider 中的用户信息
-                  final updatedUser = ref.read(userProvider).user;
-                  if (updatedUser != null) {
-                    ref.read(authProvider.notifier).login(
-                      user: updatedUser,
-                      accessToken: authState.accessToken!,
-                      refreshToken: authState.refreshToken!,
-                    );
+                if (mounted) {
+                  if (success) {
+                    final updatedUser = ref.read(userProvider).user;
+                    if (updatedUser != null) {
+                      ref.read(authProvider.notifier).login(
+                        user: updatedUser,
+                        accessToken: authState.accessToken!,
+                        refreshToken: authState.refreshToken!,
+                      );
+                    }
+                    context.showSuccessSnackBar(AppTheme.msgNameUpdated);
+                  } else {
+                    context.showErrorSnackBar(AppTheme.msgModifyFailed(ref.read(userProvider).error ?? ''));
                   }
-                  context.showSuccessSnackBar(AppTheme.msgNameUpdated);
-                } else {
-                  context.showErrorSnackBar(AppTheme.msgModifyFailed(ref.read(userProvider).error ?? ''));
                 }
+              } finally {
+                if (mounted) setState(() => _isSubmitting = false);
               }
             },
           ),
@@ -605,7 +611,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           ),
           PrimaryButton(
             text: '修改',
-            onPressed: () async {
+            onPressed: _isSubmitting ? null : () async {
+              if (_isSubmitting) return;
               final oldPassword = oldPasswordController.text.trim();
               final newPassword = newPasswordController.text.trim();
               final confirmPassword = confirmPasswordController.text.trim();
@@ -627,34 +634,39 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 return;
               }
 
+              setState(() => _isSubmitting = true);
               Navigator.pop(ctx);
-              final success = await ref.read(userProvider.notifier).changePassword(
-                oldPassword: oldPassword,
-                newPassword: newPassword,
-              );
+              try {
+                final success = await ref.read(userProvider.notifier).changePassword(
+                  oldPassword: oldPassword,
+                  newPassword: newPassword,
+                );
 
-              if (mounted) {
-                if (success) {
-                  // 密码修改成功后强制重新登录，确保旧 JWT token 失效
-                  context.showSuccessSnackBar(AppTheme.msgPasswordChanged);
-                  // 清除业务状态
-                  ref.invalidate(healthRecordsProvider);
-                  ref.invalidate(healthStatsProvider);
-                  ref.invalidate(medicationProvider);
-                  ref.invalidate(emergencyProvider);
-                  ref.invalidate(userProvider);
-                  ref.invalidate(notificationListProvider);
-                  // 登出并跳转登录页
-                  ref.read(authProvider.notifier).logout();
-                  if (!mounted) return;
-                  context.go(RoutePaths.login);
-                } else {
-                  context.showErrorSnackBar(
-                    ref.read(userProvider).error?.isNotEmpty == true
-                      ? '${AppTheme.msgPasswordChangeFailed}：${ref.read(userProvider).error}'
-                      : AppTheme.msgOldPasswordIncorrect,
-                  );
+                if (mounted) {
+                  if (success) {
+                    // 密码修改成功后强制重新登录，确保旧 JWT token 失效
+                    context.showSuccessSnackBar(AppTheme.msgPasswordChanged);
+                    // 清除业务状态
+                    ref.invalidate(healthRecordsProvider);
+                    ref.invalidate(healthStatsProvider);
+                    ref.invalidate(medicationProvider);
+                    ref.invalidate(emergencyProvider);
+                    ref.invalidate(userProvider);
+                    ref.invalidate(notificationListProvider);
+                    // 登出并跳转登录页
+                    ref.read(authProvider.notifier).logout();
+                    if (!mounted) return;
+                    context.go(RoutePaths.login);
+                  } else {
+                    context.showErrorSnackBar(
+                      ref.read(userProvider).error?.isNotEmpty == true
+                        ? '${AppTheme.msgPasswordChangeFailed}：${ref.read(userProvider).error}'
+                        : AppTheme.msgOldPasswordIncorrect,
+                    );
+                  }
                 }
+              } finally {
+                if (mounted) setState(() => _isSubmitting = false);
               }
             },
           ),
