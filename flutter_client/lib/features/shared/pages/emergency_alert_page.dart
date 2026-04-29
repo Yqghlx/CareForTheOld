@@ -140,7 +140,10 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
 
   /// "立即响应"按钮
   Widget _buildRespondButton(BuildContext context) {
-    return SizedBox(
+    return Semantics(
+      button: true,
+      label: _isResponding ? '正在处理紧急呼叫' : '立即响应紧急呼叫',
+      child: SizedBox(
       width: 240,
       height: 64,
       child: ElevatedButton.icon(
@@ -166,6 +169,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
             borderRadius: AppTheme.radius3XL,
           ),
         ),
+      ),
       ),
     );
   }

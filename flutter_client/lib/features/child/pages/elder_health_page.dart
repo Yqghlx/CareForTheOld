@@ -774,12 +774,10 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
   /// 用药记录列表
   Widget _buildMedicationList(List<MedicationLog> logs) {
     if (logs.isEmpty) {
-      return Container(
-        padding: AppTheme.paddingAll24,
-        decoration: AppTheme.decorationCardLight,
-        child: const Center(
-          child: Text(AppTheme.msgNoMedicationLog, style: AppTheme.textGreyLight),
-        ),
+      return EmptyStateWidget(
+        icon: Icons.medication_outlined,
+        title: '暂无用药记录',
+        subtitle: '请为老人添加用药计划，以便跟踪用药情况',
       );
     }
 
