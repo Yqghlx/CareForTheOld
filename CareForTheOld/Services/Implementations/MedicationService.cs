@@ -33,7 +33,8 @@ public class MedicationService : IMedicationService
     public async Task<MedicationPlanResponse> CreatePlanAsync(Guid operatorId, CreateMedicationPlanRequest request, CancellationToken cancellationToken = default)
     {
         // 验证老人是否存在
-        var elder = await _context.Users.FindAsync([request.ElderId], cancellationToken)
+        var elder = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == request.ElderId, cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.Medication.ElderNotFound);
 
         // 验证操作者权限（必须是老人的家庭成员）

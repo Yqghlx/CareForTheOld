@@ -127,6 +127,10 @@ class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
       if (mounted) {
         context.showSnackBar(success ? AppTheme.msgHelpAccepted : AppTheme.msgHelpAlreadyTaken);
       }
+    } catch (e) {
+      if (mounted) {
+        context.showErrorSnackBar(AppTheme.msgOperationFailed);
+      }
     } finally {
       _isAccepting = false;
     }

@@ -6,6 +6,7 @@ import '../providers/health_provider.dart';
 import '../../../shared/widgets/health_trend_chart.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/extensions/snackbar_extension.dart';
+import '../../../shared/widgets/common_states.dart';
 import '../../shared/services/health_report_service.dart';
 
 /// 按类型过滤的健康记录 Provider（用于趋势页面）
@@ -121,7 +122,13 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                       ),
                     );
                   },
-                  loading: () => const Center(child: CircularProgressIndicator()),
+                  loading: () => Column(
+                    children: [
+                      _buildTypeSelectorSkeleton(),
+                      AppTheme.spacer20,
+                      const Expanded(child: SkeletonCard()),
+                    ],
+                  ),
                   error: (e, _) => Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -323,5 +330,19 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
         context.showErrorSnackBar(AppTheme.msgOperationFailed);
       }
     }
+  }
+
+  /// 类型选择器骨架屏
+  Widget _buildTypeSelectorSkeleton() {
+    return const SkeletonLoader(
+      child: Row(
+        children: [
+          Expanded(child: SizedBox(height: 56, child: DecoratedBox(decoration: BoxDecoration(color: AppTheme.grey300, borderRadius: AppTheme.radiusL)))),
+          Expanded(child: SizedBox(height: 56, child: DecoratedBox(decoration: BoxDecoration(color: AppTheme.grey300, borderRadius: AppTheme.radiusL)))),
+          Expanded(child: SizedBox(height: 56, child: DecoratedBox(decoration: BoxDecoration(color: AppTheme.grey300, borderRadius: AppTheme.radiusL)))),
+          Expanded(child: SizedBox(height: 56, child: DecoratedBox(decoration: BoxDecoration(color: AppTheme.grey300, borderRadius: AppTheme.radiusL)))),
+        ],
+      ),
+    );
   }
 }
