@@ -108,6 +108,7 @@ public class FamilyController : ControllerBase
     /// </summary>
     [HttpGet("{id:guid}/pending-members")]
     [Authorize(Roles = "Child")]
+    [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
     public async Task<ApiResponse<List<FamilyMemberResponse>>> GetPendingMembers(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
