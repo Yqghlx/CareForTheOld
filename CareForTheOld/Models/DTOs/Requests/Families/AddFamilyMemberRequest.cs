@@ -7,6 +7,7 @@ namespace CareForTheOld.Models.DTOs.Requests.Families;
 public class AddFamilyMemberRequest
 {
     [Required(ErrorMessage = ValidationMessages.Family.PhoneRequired)]
+    [RegularExpression(@"^1[3-9]\d{9}$", ErrorMessage = ValidationMessages.Family.PhoneInvalid)]
     public string PhoneNumber { get; set; } = string.Empty;
 
     [Required(ErrorMessage = ValidationMessages.Family.RoleRequired)]

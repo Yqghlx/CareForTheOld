@@ -11,6 +11,7 @@ public static class ValidationMessages
         public const string PhoneRequired = "手机号不能为空";
         public const string PhoneInvalid = "手机号格式不正确";
         public const string PasswordRequired = "密码不能为空";
+        public const string PasswordTooLong = "密码长度不能超过100";
         public const string PasswordFormatInvalid = "密码长度至少8位，且必须包含数字和字母";
         public const string NameRequired = "姓名不能为空";
         public const string NameTooLong = "姓名长度不能超过50";
@@ -18,6 +19,7 @@ public static class ValidationMessages
         public const string RoleRequired = "角色不能为空";
         public const string RoleInvalid = "角色值无效";
         public const string RefreshTokenRequired = "刷新令牌不能为空";
+        public const string RefreshTokenTooLong = "刷新令牌长度不能超过500";
     }
 
     public static class User
@@ -41,8 +43,10 @@ public static class ValidationMessages
     {
         public const string NameRequired = "家庭组名称不能为空";
         public const string PhoneRequired = "手机号不能为空";
+        public const string PhoneInvalid = "手机号格式不正确";
         public const string InviteCodeRequired = "邀请码不能为空";
         public const string InviteCodeInvalid = "邀请码为6位";
+        public const string InviteCodeFormat = "邀请码必须为6位数字";
         public const string RoleRequired = "角色不能为空";
         public const string RelationshipRequired = "关系不能为空";
         public const string RelationshipTooLong = "关系描述长度不能超过20";
@@ -52,5 +56,6 @@ public static class ValidationMessages
     {
         public const string NameRequired = "圈子名称不能为空";
         public const string NameTooLong = "名称长度不能超过100";
+        public const string InviteCodeFormat = "邀请码必须为6位数字";
     }
 }

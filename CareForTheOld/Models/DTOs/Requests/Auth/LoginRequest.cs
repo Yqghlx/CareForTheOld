@@ -9,8 +9,10 @@ namespace CareForTheOld.Models.DTOs.Requests.Auth;
 public class LoginRequest
 {
     [Required(ErrorMessage = ValidationMessages.Auth.PhoneRequired)]
+    [StringLength(11, MinimumLength = 11, ErrorMessage = ValidationMessages.Auth.PhoneInvalid)]
     public string PhoneNumber { get; set; } = string.Empty;
 
     [Required(ErrorMessage = ValidationMessages.Auth.PasswordRequired)]
+    [StringLength(100, ErrorMessage = ValidationMessages.Auth.PasswordTooLong)]
     public string Password { get; set; } = string.Empty;
 }

@@ -13,6 +13,7 @@ public class JoinFamilyRequest
     /// </summary>
     [Required(ErrorMessage = ValidationMessages.Family.InviteCodeRequired)]
     [StringLength(6, MinimumLength = 6, ErrorMessage = ValidationMessages.Family.InviteCodeInvalid)]
+    [RegularExpression(@"^\d{6}$", ErrorMessage = ValidationMessages.Family.InviteCodeFormat)]
     public string InviteCode { get; set; } = string.Empty;
 
     /// <summary>

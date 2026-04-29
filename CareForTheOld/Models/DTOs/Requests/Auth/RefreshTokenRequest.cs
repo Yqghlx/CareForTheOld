@@ -9,5 +9,6 @@ namespace CareForTheOld.Models.DTOs.Requests.Auth;
 public class RefreshTokenRequest
 {
     [Required(ErrorMessage = ValidationMessages.Auth.RefreshTokenRequired)]
+    [StringLength(500, ErrorMessage = ValidationMessages.Auth.RefreshTokenTooLong)]
     public string RefreshToken { get; set; } = string.Empty;
 }

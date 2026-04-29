@@ -1,3 +1,4 @@
+using CareForTheOld.Common.Constants;
 using System.ComponentModel.DataAnnotations;
 
 namespace CareForTheOld.Models.DTOs.Requests.Neighbor;
@@ -8,6 +9,8 @@ namespace CareForTheOld.Models.DTOs.Requests.Neighbor;
 public class JoinNeighborCircleRequest
 {
     /// <summary>6 位数字邀请码</summary>
-    [Required, StringLength(6, MinimumLength = 6)]
+    [Required]
+    [StringLength(6, MinimumLength = 6)]
+    [RegularExpression(@"^\d{6}$", ErrorMessage = ValidationMessages.NeighborCircle.InviteCodeFormat)]
     public string InviteCode { get; set; } = string.Empty;
 }
