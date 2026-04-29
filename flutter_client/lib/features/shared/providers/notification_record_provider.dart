@@ -100,8 +100,9 @@ class NotificationListNotifier extends StateNotifier<NotificationListState> {
         hasMore: result.hasMore,
         skip: all.length,
       );
-    } catch (_) {
+    } catch (e) {
       if (!mounted) return;
+      AppLogger.error('加载更多通知失败: $e');
       state = state.copyWith(isLoadingMore: false);
     }
   }
