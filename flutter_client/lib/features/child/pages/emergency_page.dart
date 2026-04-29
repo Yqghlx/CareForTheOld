@@ -295,6 +295,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
   /// 历史记录卡片
   Widget _buildHistoryCard(EmergencyCall call) {
     return Card(
+      key: ValueKey(call.id),
       elevation: AppTheme.cardElevationLow,
       margin: AppTheme.marginBottom8,
       shape: RoundedRectangleBorder(

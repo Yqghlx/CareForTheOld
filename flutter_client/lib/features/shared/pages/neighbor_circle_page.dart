@@ -120,6 +120,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
           Text('圈内成员', style: AppTheme.textHeading),
           AppTheme.spacer8,
           ...state.members.map((m) => ListTile(
+                key: ValueKey(m.userId),
                 leading: CircleAvatar(
                   child: Text(m.realName[0]),
                 ),

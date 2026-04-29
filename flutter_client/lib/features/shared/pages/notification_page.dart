@@ -97,6 +97,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
 
   Widget _buildNotificationCard(NotificationRecord notification) {
     return Card(
+      key: ValueKey(notification.id),
       elevation: notification.isRead ? AppTheme.cardElevationLow : AppTheme.cardElevation,
       margin: AppTheme.marginBottom12,
       shape: RoundedRectangleBorder(

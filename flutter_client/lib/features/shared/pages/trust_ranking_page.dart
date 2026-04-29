@@ -70,6 +70,7 @@ class _TrustRankingPageState extends ConsumerState<TrustRankingPage> {
     final medalIcons = [null, Icons.emoji_events, Icons.emoji_events, Icons.emoji_events];
 
     return Card(
+      key: ValueKey(item.userId),
       margin: AppTheme.marginBottom8,
       child: ListTile(
         leading: Row(

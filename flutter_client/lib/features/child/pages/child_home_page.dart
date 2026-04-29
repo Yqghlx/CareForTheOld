@@ -263,6 +263,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
       itemBuilder: (context, index) {
         final elder = elders[index];
         return Card(
+          key: ValueKey(elder.userId),
           elevation: AppTheme.cardElevation,
           margin: AppTheme.marginBottom12,
           shape: RoundedRectangleBorder(

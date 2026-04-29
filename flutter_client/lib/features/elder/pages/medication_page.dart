@@ -187,6 +187,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
           // 限制脉冲动画卡片数量，超过3个时不再动画以节省性能
           final animate = index < 3;
           return _PendingMedicationCard(
+            key: ValueKey(log.id),
             log: log,
             isSubmitting: isSubmitting,
             enableAnimation: animate,
@@ -405,6 +406,7 @@ class _PendingMedicationCard extends StatefulWidget {
   final VoidCallback onSkipped;
 
   const _PendingMedicationCard({
+    super.key,
     required this.log,
     required this.isSubmitting,
     this.enableAnimation = true,

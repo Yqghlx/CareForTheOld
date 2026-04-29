@@ -74,6 +74,7 @@ class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
         itemBuilder: (context, index) {
           final request = requests[index];
           return _HelpRequestCard(
+            key: ValueKey(request.id),
             request: request,
             onAccept: () => _acceptRequest(request.id),
           );
@@ -97,6 +98,7 @@ class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
         itemBuilder: (context, index) {
           final request = requests[index];
           return _HelpRequestCard(
+            key: ValueKey(request.id),
             request: request,
             isHistory: true,
             onRate: request.status == HelpRequestStatus.accepted
@@ -139,6 +141,7 @@ class _HelpRequestCard extends StatelessWidget {
   final bool isHistory;
 
   const _HelpRequestCard({
+    super.key,
     required this.request,
     this.onAccept,
     this.onRate,
