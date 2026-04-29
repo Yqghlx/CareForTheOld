@@ -632,6 +632,24 @@ class AppTheme {
   static const Duration duration60s = Duration(seconds: 60);
   static const Duration duration5min = Duration(minutes: 5);
 
+  /// 无边框 InputDecoration（配合 decorationInput 容器使用）
+  /// 适用于内嵌在灰色背景容器中的纯文本/下拉输入框
+  static InputDecoration inputDecorationPlain(String? labelText, {String? hintText}) =>
+      InputDecoration(
+        labelText: labelText,
+        hintText: hintText,
+        border: InputBorder.none,
+        contentPadding: paddingH16V12,
+      );
+
+  /// 无边框 InputDecoration — 下拉框专用（较小垂直内边距）
+  static InputDecoration inputDecorationDropdown(String? labelText) =>
+      InputDecoration(
+        labelText: labelText,
+        border: InputBorder.none,
+        contentPadding: paddingH16V8,
+      );
+
   /// 预设 BoxDecoration — 表单输入区域背景（grey50 + radiusS）
   static const BoxDecoration decorationInput = BoxDecoration(
     color: grey50,

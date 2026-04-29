@@ -436,11 +436,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                       child: DropdownButtonFormField<String>(
                         // ignore: deprecated_member_use - StatefulBuilder 中动态更新需要 value
                         value: selectedElderId,
-                        decoration: const InputDecoration(
-                          labelText: '选择老人',
-                          border: InputBorder.none,
-                          contentPadding: AppTheme.paddingH16V8,
-                        ),
+                        decoration: AppTheme.inputDecorationDropdown('选择老人'),
                         items: elders
                             .map((e) => DropdownMenuItem(
                                   value: e.userId,
@@ -455,11 +451,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                       decoration: AppTheme.decorationInput,
                       child: TextField(
                         controller: nameCtl,
-                        decoration: const InputDecoration(
-                          labelText: AppTheme.labelMedicineName,
-                          border: InputBorder.none,
-                          contentPadding: AppTheme.paddingH16V12,
-                        ),
+                        decoration: AppTheme.inputDecorationPlain(AppTheme.labelMedicineName),
                         style: AppTheme.textBody16,
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9\s一-龥·]')),
@@ -472,11 +464,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                       decoration: AppTheme.decorationInput,
                       child: TextField(
                         controller: dosageCtl,
-                        decoration: const InputDecoration(
-                          labelText: '剂量（如：100mg）',
-                          border: InputBorder.none,
-                          contentPadding: AppTheme.paddingH16V12,
-                        ),
+                        decoration: AppTheme.inputDecorationPlain('剂量（如：100mg）'),
                         style: AppTheme.textBody16,
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9\s一-龥.]')),
@@ -490,11 +478,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                       child: DropdownButtonFormField<int>(
                         // ignore: deprecated_member_use - StatefulBuilder 中动态更新需要 value
                         value: selectedFrequency,
-                        decoration: const InputDecoration(
-                          labelText: AppTheme.labelFrequency,
-                          border: InputBorder.none,
-                          contentPadding: AppTheme.paddingH16V8,
-                        ),
+                        decoration: AppTheme.inputDecorationDropdown(AppTheme.labelFrequency),
                         items: Frequency.values
                             .map((f) => DropdownMenuItem(
                                   value: f.value,
