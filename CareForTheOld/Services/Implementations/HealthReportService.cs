@@ -34,12 +34,18 @@ public class HealthReportService : IHealthReportService
         var user = await _context.Users.FindAsync([userId], cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
-        // 获取指定时间范围内的健康记录
+        // 获取指定时间范围内的健康记录（限制上限，防止大数据量内存溢出）
         var startDate = DateTime.UtcNow.AddDays(-daysRange);
         var records = await _context.HealthRecords
             .Where(r => r.UserId == userId && !r.IsDeleted && r.RecordedAt >= startDate)
             .OrderByDescending(r => r.RecordedAt)
+            .Take(2000)
             .ToListAsync(cancellationToken);
+
+        if (records.Count >= 2000)
+        {
+            _logger.LogWarning("用户 {UserId} 报告数据量已达上限，建议缩短时间范围", userId);
+        }
 
         // 生成 PDF
         QuestPDF.Settings.License = LicenseType.Community;
@@ -110,11 +116,11 @@ public class HealthReportService : IHealthReportService
             // 统计摘要
             column.Item().Element(element => CreateSummary(element, records));
 
-            // 各类型详细数据
+            // 各类型详细数据（使用 GroupBy 避免重复遍历）
+            var recordsByType = records.GroupBy(r => r.Type).ToDictionary(g => g.Key, g => g.ToList());
             foreach (var type in AllHealthTypes)
             {
-                var typeRecords = records.Where(r => r.Type == type).ToList();
-                if (typeRecords.Any())
+                if (recordsByType.TryGetValue(type, out var typeRecords) && typeRecords.Count > 0)
                 {
                     column.Item().Element(element => CreateTypeSection(element, type, typeRecords));
                 }
