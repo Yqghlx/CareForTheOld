@@ -58,6 +58,8 @@ public class LocationService : ILocationService
         _context.LocationRecords.Add(record);
         await _context.SaveChangesAsync(cancellationToken);
 
+        _logger.LogDebug("用户 {UserId} 位置已记录: ({Lat:F4}, {Lng:F4})", userId, latitude, longitude);
+
         // GPS 精度过滤：精度超过阈值时跳过围栏检查，防止室内飘移误报
         var shouldCheckFence = accuracy == null || accuracy.Value <= _accuracyThreshold;
 

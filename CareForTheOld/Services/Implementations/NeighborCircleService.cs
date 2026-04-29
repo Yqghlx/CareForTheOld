@@ -350,6 +350,8 @@ public class NeighborCircleService : INeighborCircleService
             }
         }
 
+        _logger.LogInformation("用户 {OperatorId} 刷新邻里圈 {CircleId} 邀请码", operatorId, circleId);
+
         return await BuildCircleResponse(circleId, cancellationToken);
     }
 
