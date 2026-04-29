@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:hive/hive.dart';
+import 'package:logging/logging.dart';
 import '../../shared/models/health_record.dart';
 import '../../shared/models/medication_plan.dart';
 import '../constants/pref_keys.dart';
@@ -12,6 +13,8 @@ class HealthCacheService {
   static const _healthKey = 'my_records';
   static const _medicationKey = 'my_plans';
   static const _maxCacheRecords = 100;
+
+  static final _log = Logger('HealthCacheService');
 
   Box<String>? _hBox;
   Box<String>? _mBox;
@@ -43,7 +46,9 @@ class HealthCacheService {
     try {
       final List<dynamic> jsonList = jsonDecode(raw);
       return jsonList.map((j) => HealthRecord.fromJson(j as Map<String, dynamic>)).toList();
-    } catch (_) {
+    } catch (e) {
+      _log.warning('健康记录缓存解析失败，已清除损坏数据: $e');
+      _hBox!.delete(_healthKey);
       return [];
     }
   }
@@ -70,7 +75,9 @@ class HealthCacheService {
     try {
       final List<dynamic> jsonList = jsonDecode(raw);
       return jsonList.map((j) => MedicationPlan.fromJson(j as Map<String, dynamic>)).toList();
-    } catch (_) {
+    } catch (e) {
+      _log.warning('用药计划缓存解析失败，已清除损坏数据: $e');
+      _mBox!.delete(_medicationKey);
       return [];
     }
   }

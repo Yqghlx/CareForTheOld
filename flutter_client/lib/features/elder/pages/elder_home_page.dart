@@ -481,7 +481,8 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
         _getBatteryLevel(),
       ]);
 
-      if (results[0] != null) {
+      final locationOk = results[0] != null;
+      if (locationOk) {
         latitude = (results[0] as Position).latitude;
         longitude = (results[0] as Position).longitude;
       }
@@ -495,6 +496,10 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
       );
 
       if (mounted) {
+        // 位置获取失败时额外提示用户
+        if (!locationOk) {
+          context.showWarningSnackBar(AppTheme.msgEmergencyLocationFailed);
+        }
         context.showSuccessSnackBar(AppTheme.msgEmergencySent);
         _showCallSuccessDialog(call);
       }

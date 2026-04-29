@@ -286,6 +286,7 @@ class AppTheme {
   static const String msgEmergencyCancelled = '已取消，请长按 2 秒发起呼叫';
   static const String msgEmergencySent = '紧急呼叫已发送，已通知家人和附近邻居';
   static const String msgEmergencyFailed = '呼叫失败，请直接拨打电话联系家人';
+  static const String msgEmergencyLocationFailed = '紧急呼叫已发送，但无法获取定位，家人可能无法确定您的位置';
 
   // 健康录入消息
   static const String msgReportGenerated = '报告已生成，请选择分享方式';
