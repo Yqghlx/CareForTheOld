@@ -469,8 +469,11 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
       );
     }
 
-    return Column(
-      children: members.map((member) => _buildMemberCard(member, isElder)).toList(),
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: members.length,
+      itemBuilder: (context, index) => _buildMemberCard(members[index], isElder),
     );
   }
 

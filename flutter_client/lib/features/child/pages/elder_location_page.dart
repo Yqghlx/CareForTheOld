@@ -515,8 +515,11 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
       );
     }
 
-    return Column(
-      children: history.map((record) => _buildHistoryItem(record)).toList(),
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: history.length,
+      itemBuilder: (context, index) => _buildHistoryItem(history[index]),
     );
   }
 
