@@ -356,6 +356,45 @@ builder.Services.AddRateLimiter(options =>
                 QueueLimit = 0
             }));
 
+    // 互助评价限流：每用户每小时，防止刷好评/恶意差评破坏信任评分
+    options.AddPolicy("HelpRatePolicy", context =>
+        RateLimitPartition.GetSlidingWindowLimiter(
+            partitionKey: context.User?.FindFirst("sub")?.Value ?? context.GetClientIp(),
+            factory: _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = builder.Configuration.GetValue(ConfigurationKeys.RateLimit.HelpRatePermitLimit, 10),
+                Window = TimeSpan.FromSeconds(builder.Configuration.GetValue(ConfigurationKeys.RateLimit.HelpRateWindow, 3600)),
+                SegmentsPerWindow = 2,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0
+            }));
+
+    // 修改密码限流：每用户每小时，防止暴力修改密码
+    options.AddPolicy("PasswordChangePolicy", context =>
+        RateLimitPartition.GetSlidingWindowLimiter(
+            partitionKey: context.User?.FindFirst("sub")?.Value ?? context.GetClientIp(),
+            factory: _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = builder.Configuration.GetValue(ConfigurationKeys.RateLimit.PasswordChangePermitLimit, 3),
+                Window = TimeSpan.FromSeconds(builder.Configuration.GetValue(ConfigurationKeys.RateLimit.PasswordChangeWindow, 3600)),
+                SegmentsPerWindow = 2,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0
+            }));
+
+    // 通用写入限流：每用户每分钟，覆盖围栏/用药/位置/家庭等写入操作
+    options.AddPolicy("WritePolicy", context =>
+        RateLimitPartition.GetSlidingWindowLimiter(
+            partitionKey: context.User?.FindFirst("sub")?.Value ?? context.GetClientIp(),
+            factory: _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = builder.Configuration.GetValue(ConfigurationKeys.RateLimit.WritePermitLimit, 20),
+                Window = TimeSpan.FromSeconds(builder.Configuration.GetValue(ConfigurationKeys.RateLimit.WriteWindow, 60)),
+                SegmentsPerWindow = 2,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0
+            }));
+
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 
     // 限流触发时记录安全事件日志

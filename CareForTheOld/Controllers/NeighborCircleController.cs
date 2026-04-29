@@ -49,6 +49,7 @@ public class NeighborCircleController : ControllerBase
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<NeighborCircleResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<NeighborCircleResponse>> Create([FromBody] CreateNeighborCircleRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -121,6 +122,7 @@ public class NeighborCircleController : ControllerBase
     /// </summary>
     [HttpPost("{id:guid}/leave")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<object>> Leave(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -133,6 +135,7 @@ public class NeighborCircleController : ControllerBase
     /// </summary>
     [HttpPost("{id:guid}/refresh-code")]
     [ProducesResponseType(typeof(ApiResponse<NeighborCircleResponse>), StatusCodes.Status200OK)]
+    [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<NeighborCircleResponse>> RefreshInviteCode(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();

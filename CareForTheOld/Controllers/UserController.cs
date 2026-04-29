@@ -65,6 +65,7 @@ public class UserController : ControllerBase
     [HttpPost("me/password")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [EnableRateLimiting("PasswordChangePolicy")]
     public async Task<ApiResponse<object>> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -82,6 +83,7 @@ public class UserController : ControllerBase
     [HttpPost("me/avatar")]
     [RequestSizeLimit(AppConstants.FileUpload.MaxAvatarSizeBytes)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<object>> UploadAvatar(IFormFile file, CancellationToken cancellationToken = default)
     {
         if (file == null || file.Length == 0)

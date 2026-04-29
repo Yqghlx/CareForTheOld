@@ -43,6 +43,7 @@ public class AutoRescueController : ControllerBase
     /// </summary>
     [HttpPost("{recordId:guid}/respond")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<object>> ChildRespond(Guid recordId, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();

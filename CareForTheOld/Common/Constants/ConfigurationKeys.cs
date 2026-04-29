@@ -118,5 +118,11 @@ public static class ConfigurationKeys
         public const string HealthWindow = "RateLimit:HealthWindow";
         public const string HealthWritePermitLimit = "RateLimit:HealthWritePermitLimit";
         public const string HealthWriteWindow = "RateLimit:HealthWriteWindow";
+        public const string HelpRatePermitLimit = "RateLimit:HelpRatePermitLimit";
+        public const string HelpRateWindow = "RateLimit:HelpRateWindow";
+        public const string PasswordChangePermitLimit = "RateLimit:PasswordChangePermitLimit";
+        public const string PasswordChangeWindow = "RateLimit:PasswordChangeWindow";
+        public const string WritePermitLimit = "RateLimit:WritePermitLimit";
+        public const string WriteWindow = "RateLimit:WriteWindow";
     }
 }

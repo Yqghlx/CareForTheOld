@@ -40,6 +40,7 @@ public class LocationController : ControllerBase
     [Authorize(Roles = "Elder")]
     [ProducesResponseType(typeof(ApiResponse<LocationRecordResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<LocationRecordResponse>> ReportLocation([FromBody] ReportLocationRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();

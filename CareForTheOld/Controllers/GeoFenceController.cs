@@ -38,6 +38,7 @@ public class GeoFenceController : ControllerBase
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<GeoFenceResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<GeoFenceResponse>> CreateFence([FromBody] CreateGeoFenceRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -70,6 +71,7 @@ public class GeoFenceController : ControllerBase
     [HttpPut("{id}")]
     [ProducesResponseType(typeof(ApiResponse<GeoFenceResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<GeoFenceResponse>> UpdateFence(Guid id, [FromBody] CreateGeoFenceRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -82,6 +84,7 @@ public class GeoFenceController : ControllerBase
     /// </summary>
     [HttpDelete("{id}")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<object>> DeleteFence(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();

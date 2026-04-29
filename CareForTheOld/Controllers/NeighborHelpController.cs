@@ -75,6 +75,7 @@ public class NeighborHelpController : ControllerBase
     /// </summary>
     [HttpPut("{id:guid}/accept")]
     [ProducesResponseType(typeof(ApiResponse<NeighborHelpRequestResponse>), StatusCodes.Status200OK)]
+    [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<NeighborHelpRequestResponse>> Accept(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -87,6 +88,7 @@ public class NeighborHelpController : ControllerBase
     /// </summary>
     [HttpPut("{id:guid}/cancel")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<object>> Cancel(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -100,6 +102,7 @@ public class NeighborHelpController : ControllerBase
     [HttpPost("{id:guid}/rate")]
     [ProducesResponseType(typeof(ApiResponse<NeighborHelpRatingResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [EnableRateLimiting("HelpRatePolicy")]
     public async Task<ApiResponse<NeighborHelpRatingResponse>> Rate(
         Guid id, [FromBody] RateHelpRequest request, CancellationToken cancellationToken = default)
     {

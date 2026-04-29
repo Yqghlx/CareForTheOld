@@ -144,6 +144,7 @@ public class HealthController : ControllerBase
     [HttpDelete("{id:guid}")]
     [Authorize(Roles = "Elder")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<object>> DeleteRecord(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();

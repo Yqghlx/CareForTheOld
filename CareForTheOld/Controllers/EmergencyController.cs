@@ -85,6 +85,7 @@ public class EmergencyController : ControllerBase
     [HttpPut("{id}/respond")]
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<EmergencyCallResponse>), StatusCodes.Status200OK)]
+    [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<EmergencyCallResponse>> RespondCall(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();

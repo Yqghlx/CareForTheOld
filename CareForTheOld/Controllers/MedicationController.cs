@@ -38,6 +38,7 @@ public class MedicationController : ControllerBase
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<MedicationPlanResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<MedicationPlanResponse>> CreatePlan([FromBody] CreateMedicationPlanRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -80,6 +81,7 @@ public class MedicationController : ControllerBase
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<MedicationPlanResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<MedicationPlanResponse>> UpdatePlan(Guid id, [FromBody] UpdateMedicationPlanRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -93,6 +95,7 @@ public class MedicationController : ControllerBase
     [HttpDelete("plans/{id:guid}")]
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<object>> DeletePlan(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -107,6 +110,7 @@ public class MedicationController : ControllerBase
     [Authorize(Roles = "Elder")]
     [ProducesResponseType(typeof(ApiResponse<MedicationLogResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<MedicationLogResponse>> RecordLog([FromBody] RecordMedicationLogRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();

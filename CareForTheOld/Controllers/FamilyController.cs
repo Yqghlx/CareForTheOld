@@ -49,6 +49,7 @@ public class FamilyController : ControllerBase
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<FamilyResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<FamilyResponse>> Create([FromBody] CreateFamilyRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -63,6 +64,7 @@ public class FamilyController : ControllerBase
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<FamilyResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<FamilyResponse>> AddMember(Guid id, [FromBody] AddFamilyMemberRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -90,6 +92,7 @@ public class FamilyController : ControllerBase
     [HttpPost("{id:guid}/refresh-code")]
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<FamilyResponse>), StatusCodes.Status200OK)]
+    [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<FamilyResponse>> RefreshInviteCode(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -133,6 +136,7 @@ public class FamilyController : ControllerBase
     [HttpPost("{id:guid}/members/{memberId:guid}/approve")]
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<object>> ApproveMember(Guid id, Guid memberId, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -146,6 +150,7 @@ public class FamilyController : ControllerBase
     [HttpPost("{id:guid}/members/{memberId:guid}/reject")]
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<object>> RejectMember(Guid id, Guid memberId, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -156,6 +161,7 @@ public class FamilyController : ControllerBase
     [HttpDelete("{id:guid}/members/{userId:guid}")]
     [Authorize(Roles = "Child")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [EnableRateLimiting("WritePolicy")]
     public async Task<ApiResponse<object>> RemoveMember(Guid id, Guid userId, CancellationToken cancellationToken = default)
     {
         var currentUserId = this.GetUserId();
