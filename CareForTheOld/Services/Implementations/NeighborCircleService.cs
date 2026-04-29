@@ -265,13 +265,14 @@ public class NeighborCircleService : INeighborCircleService
         var maxExtendedRadius = radiusMeters + AppConstants.NeighborCircle.MaxCircleRadiusMeters;
         var (latThreshold, lngThreshold) = GeoHelper.CalculateDegreeThresholds(maxExtendedRadius, latitude);
 
-        // 数据库层粗筛：只查经纬度在矩形范围内的活跃圈子
+        // 数据库层粗筛：只查经纬度在矩形范围内的活跃圈子，限制加载数量
         var circles = await _context.NeighborCircles
             .Where(c => c.IsActive
                 && c.CenterLatitude >= latitude - latThreshold
                 && c.CenterLatitude <= latitude + latThreshold
                 && c.CenterLongitude >= longitude - lngThreshold
                 && c.CenterLongitude <= longitude + lngThreshold)
+            .Take(maxResults * 3)
             .ToListAsync(cancellationToken);
 
         var results = new List<(NeighborCircle Circle, double Distance)>();
