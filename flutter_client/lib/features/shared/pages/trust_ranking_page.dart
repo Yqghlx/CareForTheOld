@@ -53,6 +53,7 @@ class _TrustRankingPageState extends ConsumerState<TrustRankingPage> {
                       child: ListView.builder(
                         padding: AppTheme.paddingAll16,
                         itemCount: state.rankings.length,
+                        cacheExtent: 800,
                         itemBuilder: (context, index) {
                           final item = state.rankings[index];
                           return _buildRankingCard(context, item, state.myScore);

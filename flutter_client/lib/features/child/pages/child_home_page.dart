@@ -337,25 +337,39 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                 Row(
                   children: [
                     Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () => context.push(RoutePaths.childElderLocation(elder.userId)),
-                        icon: const Icon(Icons.location_on, size: AppTheme.iconSizeSm),
-                        label: const Text('查看位置'),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: AppTheme.successColor,
-                          side: const BorderSide(color: AppTheme.successColor),
+                      child: Tooltip(
+                        message: '查看老人实时位置',
+                        child: Semantics(
+                          label: '查看老人实时位置',
+                          button: true,
+                          child: OutlinedButton.icon(
+                            onPressed: () => context.push(RoutePaths.childElderLocation(elder.userId)),
+                            icon: const Icon(Icons.location_on, size: AppTheme.iconSizeSm),
+                            label: const Text('查看位置'),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: AppTheme.successColor,
+                              side: const BorderSide(color: AppTheme.successColor),
+                            ),
+                          ),
                         ),
                       ),
                     ),
                     AppTheme.hSpacer12,
                     Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () => context.push(RoutePaths.childElderHealth(elder.userId)),
-                        icon: const Icon(Icons.favorite, size: AppTheme.iconSizeSm),
-                        label: const Text('查看健康'),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: AppTheme.errorColor,
-                          side: const BorderSide(color: AppTheme.errorColor),
+                      child: Tooltip(
+                        message: '查看老人健康数据',
+                        child: Semantics(
+                          label: '查看老人健康数据',
+                          button: true,
+                          child: OutlinedButton.icon(
+                            onPressed: () => context.push(RoutePaths.childElderHealth(elder.userId)),
+                            icon: const Icon(Icons.favorite, size: AppTheme.iconSizeSm),
+                            label: const Text('查看健康'),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: AppTheme.errorColor,
+                              side: const BorderSide(color: AppTheme.errorColor),
+                            ),
+                          ),
                         ),
                       ),
                     ),

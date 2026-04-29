@@ -54,6 +54,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
             ? ListView.builder(
                 padding: AppTheme.paddingAll16,
                 itemCount: 3,
+                cacheExtent: 800,
                 itemBuilder: (_, __) => const SkeletonListTile(),
               )
             : _buildContent(emergencyState),
@@ -245,27 +246,41 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                 // 拨打电话按钮
                 if (call.elderPhoneNumber != null && call.elderPhoneNumber!.isNotEmpty)
                   Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () => _callElder(call.elderPhoneNumber!),
-                      icon: const Icon(Icons.phone, size: AppTheme.iconSizeMd),
-                      label: const Text('拨打电话'),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: AppTheme.infoBlue,
-                        side: const BorderSide(color: AppTheme.infoBlue),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusS),
+                    child: Tooltip(
+                      message: '拨打老人电话',
+                      child: Semantics(
+                        label: '拨打老人电话',
+                        button: true,
+                        child: OutlinedButton.icon(
+                          onPressed: () => _callElder(call.elderPhoneNumber!),
+                          icon: const Icon(Icons.phone, size: AppTheme.iconSizeMd),
+                          label: const Text('拨打电话'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppTheme.infoBlue,
+                            side: const BorderSide(color: AppTheme.infoBlue),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusS),
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 if (call.elderPhoneNumber != null && call.elderPhoneNumber!.isNotEmpty)
                   AppTheme.hSpacer12,
                 Expanded(
-                  child: PrimaryIconButton(
-                    text: '已处理',
-                    icon: Icons.check,
-                    onPressed: () => _respondCall(call),
-                    gradient: const LinearGradient(
-                      colors: [AppTheme.successColor, AppTheme.successLight],
+                  child: Tooltip(
+                    message: '标记紧急呼叫已处理',
+                    child: Semantics(
+                      label: '标记紧急呼叫已处理',
+                      button: true,
+                      child: PrimaryIconButton(
+                        text: '已处理',
+                        icon: Icons.check,
+                        onPressed: () => _respondCall(call),
+                        gradient: const LinearGradient(
+                          colors: [AppTheme.successColor, AppTheme.successLight],
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -402,6 +417,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
               ? const Center(child: Text(AppTheme.msgNoHistoryRecord))
               : ListView.builder(
                   itemCount: historyCalls.length,
+                  cacheExtent: 800,
                   itemBuilder: (context, index) {
                     final call = historyCalls[index];
                     return _buildHistoryCard(call);

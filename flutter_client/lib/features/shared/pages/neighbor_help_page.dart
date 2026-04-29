@@ -70,6 +70,7 @@ class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
       child: ListView.builder(
         padding: AppTheme.paddingAll12,
         itemCount: requests.length,
+        cacheExtent: 800,
         itemBuilder: (context, index) {
           final request = requests[index];
           return _HelpRequestCard(
@@ -92,6 +93,7 @@ class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
       child: ListView.builder(
         padding: AppTheme.paddingAll12,
         itemCount: requests.length,
+        cacheExtent: 800,
         itemBuilder: (context, index) {
           final request = requests[index];
           return _HelpRequestCard(

@@ -538,20 +538,34 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
               child: Row(
                 children: [
                   Expanded(
-                    child: PrimaryIconButton(
-                      text: AppTheme.labelMedTaken,
-                      icon: Icons.check,
-                      onPressed: widget.isSubmitting ? null : widget.onTaken,
-                      isLoading: widget.isSubmitting,
-                      gradient: const LinearGradient(colors: [AppTheme.successColor, AppTheme.successLight]),
+                    child: Tooltip(
+                      message: '确认已服用此药物',
+                      child: Semantics(
+                        label: '确认已服用此药物',
+                        button: true,
+                        child: PrimaryIconButton(
+                          text: AppTheme.labelMedTaken,
+                          icon: Icons.check,
+                          onPressed: widget.isSubmitting ? null : widget.onTaken,
+                          isLoading: widget.isSubmitting,
+                          gradient: const LinearGradient(colors: [AppTheme.successColor, AppTheme.successLight]),
+                        ),
+                      ),
                     ),
                   ),
                   AppTheme.hSpacer12,
                   SizedBox(
                     width: 100,
-                    child: SecondaryButton(
-                      text: '跳过',
-                      onPressed: widget.isSubmitting ? null : widget.onSkipped,
+                    child: Tooltip(
+                      message: '跳过此次用药',
+                      child: Semantics(
+                        label: '跳过此次用药',
+                        button: true,
+                        child: SecondaryButton(
+                          text: '跳过',
+                          onPressed: widget.isSubmitting ? null : widget.onSkipped,
+                        ),
+                      ),
                     ),
                   ),
                 ],
