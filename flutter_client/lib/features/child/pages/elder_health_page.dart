@@ -708,6 +708,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     }
 
     return ListView.builder(
+      cacheExtent: 800,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: records.length,
