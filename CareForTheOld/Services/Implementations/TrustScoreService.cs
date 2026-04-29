@@ -81,9 +81,79 @@ public class TrustScoreService : ITrustScoreService
             return;
         }
 
+        // 批量预加载所有评分所需的统计数据，避免循环内 N+1 查询
+        var userIds = allScores.Select(s => s.UserId).ToHashSet();
+        var circleIds = allScores.Select(s => s.CircleId).ToHashSet();
+
+        // 1. 每用户每圈子的完成互助次数
+        var helpsCounts = await _context.NeighborHelpRequests
+            .Where(r => userIds.Contains(r.ResponderId!.Value) &&
+                        circleIds.Contains(r.CircleId) &&
+                        r.Status == HelpRequestStatus.Accepted)
+            .GroupBy(r => new { r.ResponderId, r.CircleId })
+            .Select(g => new { g.Key.ResponderId, g.Key.CircleId, Count = g.Count() })
+            .ToDictionaryAsync(x => (x.ResponderId!.Value, x.CircleId), x => x.Count);
+
+        // 2. 每用户每圈子的平均评分
+        var avgRatings = await _context.NeighborHelpRatings
+            .Where(r => userIds.Contains(r.RateeId))
+            .Join(_context.NeighborHelpRequests,
+                rating => rating.HelpRequestId,
+                help => help.Id,
+                (rating, help) => new { rating.RateeId, help.CircleId, rating.Rating })
+            .Where(x => circleIds.Contains(x.CircleId))
+            .GroupBy(x => new { x.RateeId, x.CircleId })
+            .Select(g => new { g.Key.RateeId, g.Key.CircleId, Avg = g.Average(x => (decimal?)x.Rating) ?? 0m })
+            .ToDictionaryAsync(x => (x.RateeId, x.CircleId), x => x.Avg);
+
+        // 3. 每用户每圈子的通知总数和响应数
+        var notifiedCounts = await _context.HelpNotificationLogs
+            .Where(h => userIds.Contains(h.UserId))
+            .Join(_context.NeighborHelpRequests,
+                log => log.HelpRequestId,
+                help => help.Id,
+                (log, help) => new { log.UserId, help.CircleId })
+            .Where(x => circleIds.Contains(x.CircleId))
+            .GroupBy(x => new { x.UserId, x.CircleId })
+            .Select(g => new { g.Key.UserId, g.Key.CircleId, Count = g.Count() })
+            .ToDictionaryAsync(x => (x.UserId, x.CircleId), x => x.Count);
+
+        var respondedCounts = await _context.HelpNotificationLogs
+            .Where(h => userIds.Contains(h.UserId) && h.RespondedAt != null)
+            .Join(_context.NeighborHelpRequests,
+                log => log.HelpRequestId,
+                help => help.Id,
+                (log, help) => new { log.UserId, help.CircleId })
+            .Where(x => circleIds.Contains(x.CircleId))
+            .GroupBy(x => new { x.UserId, x.CircleId })
+            .Select(g => new { g.Key.UserId, g.Key.CircleId, Count = g.Count() })
+            .ToDictionaryAsync(x => (x.UserId, x.CircleId), x => x.Count);
+
+        // 内存中计算所有评分（无需额外数据库查询）
         foreach (var score in allScores)
         {
-            await RecalculateSingleScoreAsync(score);
+            var key = (score.UserId, score.CircleId);
+            var totalHelps = helpsCounts.GetValueOrDefault(key);
+            var avgRating = avgRatings.GetValueOrDefault(key);
+            var totalNotified = notifiedCounts.GetValueOrDefault(key);
+            var totalResponded = respondedCounts.GetValueOrDefault(key);
+
+            var responseRate = totalNotified > 0
+                ? (decimal)totalResponded / totalNotified
+                : 0m;
+
+            var ratingPart = avgRating * AppConstants.TrustScore.RatingMultiplier * AppConstants.TrustScore.RatingWeight;
+            var helpsPart = Math.Min((decimal)totalHelps / MaxHelpsCap, 1m) * 100m * AppConstants.TrustScore.HelpsWeight;
+            var responsePart = responseRate * 100m * AppConstants.TrustScore.ResponseWeight;
+            var finalScore = Math.Round(ratingPart + helpsPart + responsePart, 2);
+
+            score.TotalHelps = totalHelps;
+            score.AvgRating = Math.Round(avgRating, 2);
+            score.ResponseRate = Math.Round(responseRate, 4);
+            score.Score = finalScore;
+            var now = DateTime.UtcNow;
+            score.LastCalculatedAt = now;
+            score.UpdatedAt = now;
         }
 
         await _context.SaveChangesAsync();
