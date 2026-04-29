@@ -5,6 +5,7 @@ import '../../../shared/models/health_record.dart';
 import '../providers/health_provider.dart';
 import '../../../shared/widgets/health_trend_chart.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/extensions/api_error_extension.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 import '../../../shared/widgets/common_states.dart';
 import '../../shared/services/health_report_service.dart';
@@ -331,7 +332,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
       }
     } catch (e) {
       if (mounted && context.mounted) {
-        context.showErrorSnackBar(AppTheme.msgOperationFailed);
+        context.showErrorSnackBar(errorMessageFrom(e, fallback: AppTheme.msgOperationFailed));
       }
     }
   }

@@ -1006,7 +1006,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       // 异常时也要关闭加载对话框
       if (mounted && context.mounted) {
         Navigator.pop(context);
-        context.showErrorSnackBar(AppTheme.msgOperationFailed);
+        context.showErrorSnackBar(errorMessageFrom(e, fallback: AppTheme.msgOperationFailed));
       }
     }
   }
