@@ -42,6 +42,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
   double _longPressProgress = 0.0;
   static const double _longPressDurationSeconds = 2.0;
   bool _longPressCancelled = false; // 用于 dispose 时取消异步操作
+  bool _isCalling = false; // 紧急呼叫防重复提交
 
   @override
   void initState() {
@@ -460,8 +461,10 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
     }
   }
 
-  /// 执行紧急呼叫（长按 2 秒后直接触发）
+  /// 执行紧急呼叫（长按 2 秒后直接触发，防重复提交）
   Future<void> _performEmergencyCall() async {
+    if (_isCalling) return;
+    _isCalling = true;
     HapticFeedback.heavyImpact();
     try {
       // 并行获取 GPS 位置和电池电量（不阻塞呼叫，获取失败也不影响）
@@ -495,6 +498,8 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
       if (mounted) {
         context.showErrorSnackBar(errorMessageFrom(e, fallback: AppTheme.msgEmergencyFailed));
       }
+    } finally {
+      _isCalling = false;
     }
   }
 

@@ -19,6 +19,8 @@ class NeighborHelpPage extends ConsumerStatefulWidget {
 }
 
 class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
+  bool _isAccepting = false; // 接受求助防重复提交
+
   @override
   void initState() {
     super.initState();
@@ -104,6 +106,7 @@ class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
   }
 
   Future<void> _acceptRequest(String requestId) async {
+    if (_isAccepting) return;
     final confirmed = await showConfirmDialog(
       context,
       title: '确认响应',
@@ -112,10 +115,15 @@ class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
     );
     if (!confirmed) return;
 
-    final success =
-        await ref.read(neighborHelpProvider.notifier).acceptRequest(requestId);
-    if (mounted) {
-      context.showSnackBar(success ? AppTheme.msgHelpAccepted : AppTheme.msgHelpAlreadyTaken);
+    _isAccepting = true;
+    try {
+      final success =
+          await ref.read(neighborHelpProvider.notifier).acceptRequest(requestId);
+      if (mounted) {
+        context.showSnackBar(success ? AppTheme.msgHelpAccepted : AppTheme.msgHelpAlreadyTaken);
+      }
+    } finally {
+      _isAccepting = false;
     }
   }
 }
