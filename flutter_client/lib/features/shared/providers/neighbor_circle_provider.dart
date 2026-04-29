@@ -60,8 +60,10 @@ class NeighborCircleNotifier extends StateNotifier<NeighborCircleState> {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
       final circle = await _service.getMyCircle();
+      if (!mounted) return;
       state = state.copyWith(circle: circle, isLoading: false);
     } catch (e) {
+      if (!mounted) return;
       state = state.copyWith(isLoading: false, error: errorMessageFrom(e));
     }
   }
@@ -81,9 +83,11 @@ class NeighborCircleNotifier extends StateNotifier<NeighborCircleState> {
         centerLongitude: longitude,
         radiusMeters: radiusMeters,
       );
+      if (!mounted) return false;
       state = state.copyWith(circle: circle);
       return true;
     } catch (e) {
+      if (!mounted) return false;
       state = state.copyWith(error: errorMessageFrom(e));
       return false;
     }
@@ -94,9 +98,11 @@ class NeighborCircleNotifier extends StateNotifier<NeighborCircleState> {
     state = state.copyWith(clearError: true);
     try {
       final circle = await _service.joinCircle(inviteCode);
+      if (!mounted) return false;
       state = state.copyWith(circle: circle);
       return true;
     } catch (e) {
+      if (!mounted) return false;
       state = state.copyWith(error: errorMessageFrom(e));
       return false;
     }
@@ -109,9 +115,11 @@ class NeighborCircleNotifier extends StateNotifier<NeighborCircleState> {
     state = state.copyWith(clearError: true);
     try {
       await _service.leaveCircle(circleId);
+      if (!mounted) return false;
       state = state.copyWith(clearCircle: true, members: []);
       return true;
     } catch (e) {
+      if (!mounted) return false;
       state = state.copyWith(error: errorMessageFrom(e));
       return false;
     }
@@ -123,8 +131,10 @@ class NeighborCircleNotifier extends StateNotifier<NeighborCircleState> {
     if (circleId == null) return;
     try {
       final members = await _service.getMembers(circleId);
+      if (!mounted) return;
       state = state.copyWith(members: members);
     } catch (e) {
+      if (!mounted) return;
       state = state.copyWith(error: errorMessageFrom(e));
     }
   }
@@ -142,8 +152,10 @@ class NeighborCircleNotifier extends StateNotifier<NeighborCircleState> {
         longitude: longitude,
         radius: radius,
       );
+      if (!mounted) return;
       state = state.copyWith(nearbyCircles: circles, isLoading: false);
     } catch (e) {
+      if (!mounted) return;
       state = state.copyWith(isLoading: false, error: errorMessageFrom(e));
     }
   }
@@ -154,9 +166,11 @@ class NeighborCircleNotifier extends StateNotifier<NeighborCircleState> {
     if (circleId == null) return false;
     try {
       final circle = await _service.refreshInviteCode(circleId);
+      if (!mounted) return false;
       state = state.copyWith(circle: circle);
       return true;
     } catch (e) {
+      if (!mounted) return false;
       state = state.copyWith(error: errorMessageFrom(e));
       return false;
     }

@@ -80,12 +80,14 @@ class MedicationNotifier extends StateNotifier<MedicationState> {
         _service.getMyPlans(),
         _service.getTodayPending(),
       ]);
+      if (!mounted) return;
       state = state.copyWith(
         plans: results[0] as List<MedicationPlan>,
         todayPending: results[1] as List<MedicationLog>,
         isLoading: false,
       );
     } catch (e) {
+      if (!mounted) return;
       state = state.copyWith(isLoading: false, error: errorMessageFrom(e));
     }
   }
@@ -129,6 +131,7 @@ class MedicationNotifier extends StateNotifier<MedicationState> {
     // 离线时直接入队，乐观更新 UI
     if (!_connectivity.isOnline) {
       await _offlineQueue.enqueue('medication', medicationData);
+      if (!mounted) return false;
       final updated = log.copyWith(status: status);
       final newList = _replaceByPlanAndTime(state.todayPending, updated);
       state = state.copyWith(
@@ -144,6 +147,7 @@ class MedicationNotifier extends StateNotifier<MedicationState> {
         status: status,
         scheduledAt: log.scheduledAt,
       );
+      if (!mounted) return false;
       final newList = _replaceByPlanAndTime(state.todayPending, updated);
       state = state.copyWith(
         todayPending: newList,
@@ -153,6 +157,7 @@ class MedicationNotifier extends StateNotifier<MedicationState> {
     } catch (e) {
       // 网络请求失败，入队离线队列，乐观更新 UI
       await _offlineQueue.enqueue('medication', medicationData);
+      if (!mounted) return false;
       final updated = log.copyWith(status: status);
       final newList = _replaceByPlanAndTime(state.todayPending, updated);
       state = state.copyWith(

@@ -50,8 +50,10 @@ class TrustScoreNotifier extends StateNotifier<TrustScoreState> {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
       final rankings = await _service.getRanking(circleId, top: top);
+      if (!mounted) return;
       state = state.copyWith(rankings: rankings, isLoading: false);
     } catch (e) {
+      if (!mounted) return;
       state = state.copyWith(isLoading: false, error: errorMessageFrom(e));
     }
   }
@@ -60,8 +62,10 @@ class TrustScoreNotifier extends StateNotifier<TrustScoreState> {
   Future<void> loadMyScore(String circleId) async {
     try {
       final score = await _service.getMyScore(circleId);
+      if (!mounted) return;
       state = state.copyWith(myScore: score);
     } catch (e) {
+      if (!mounted) return;
       state = state.copyWith(error: errorMessageFrom(e));
     }
   }

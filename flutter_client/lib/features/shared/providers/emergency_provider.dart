@@ -60,8 +60,10 @@ class EmergencyNotifier extends StateNotifier<EmergencyState> {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
       final calls = await _service.getUnreadCalls();
+      if (!mounted) return;
       state = state.copyWith(unreadCalls: calls, isLoading: false);
     } catch (e) {
+      if (!mounted) return;
       state = state.copyWith(isLoading: false, error: errorMessageFrom(e));
     }
   }
@@ -71,8 +73,10 @@ class EmergencyNotifier extends StateNotifier<EmergencyState> {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
       final calls = await _service.getHistory(limit: limit);
+      if (!mounted) return;
       state = state.copyWith(historyCalls: calls, isLoading: false);
     } catch (e) {
+      if (!mounted) return;
       state = state.copyWith(isLoading: false, error: errorMessageFrom(e));
     }
   }
@@ -82,13 +86,16 @@ class EmergencyNotifier extends StateNotifier<EmergencyState> {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
       final unreadCalls = await _service.getUnreadCalls();
+      if (!mounted) return;
       final historyCalls = await _service.getHistory();
+      if (!mounted) return;
       state = state.copyWith(
         unreadCalls: unreadCalls,
         historyCalls: historyCalls,
         isLoading: false,
       );
     } catch (e) {
+      if (!mounted) return;
       state = state.copyWith(isLoading: false, error: errorMessageFrom(e));
     }
   }
@@ -109,6 +116,7 @@ class EmergencyNotifier extends StateNotifier<EmergencyState> {
       );
       return call;
     } catch (e) {
+      if (!mounted) return null;
       state = state.copyWith(error: errorMessageFrom(e));
       return null;
     } finally {
@@ -120,6 +128,7 @@ class EmergencyNotifier extends StateNotifier<EmergencyState> {
   Future<bool> respondCall(String callId) async {
     try {
       final updatedCall = await _service.respondCall(callId);
+      if (!mounted) return false;
       // 从未处理列表中移除，更新历史列表
       final newUnreadCalls = state.unreadCalls.where((c) => c.id != callId).toList();
       final newHistoryCalls = state.historyCalls.map((c) {

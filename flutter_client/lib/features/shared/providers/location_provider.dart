@@ -51,9 +51,11 @@ class LocationNotifier extends StateNotifier<LocationState> {
   Future<LocationRecord?> reportLocation(double latitude, double longitude) async {
     try {
       final record = await _service.reportLocation(latitude, longitude);
+      if (!mounted) return null;
       state = state.copyWith(latestLocation: record);
       return record;
     } catch (e) {
+      if (!mounted) return null;
       state = state.copyWith(error: errorMessageFrom(e));
       return null;
     }
@@ -64,8 +66,10 @@ class LocationNotifier extends StateNotifier<LocationState> {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
       final location = await _service.getMyLatestLocation();
+      if (!mounted) return;
       state = state.copyWith(latestLocation: location, isLoading: false);
     } catch (e) {
+      if (!mounted) return;
       state = state.copyWith(isLoading: false, error: errorMessageFrom(e));
     }
   }
@@ -75,8 +79,10 @@ class LocationNotifier extends StateNotifier<LocationState> {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
       final history = await _service.getMyHistory(limit: limit);
+      if (!mounted) return;
       state = state.copyWith(history: history, isLoading: false);
     } catch (e) {
+      if (!mounted) return;
       state = state.copyWith(isLoading: false, error: errorMessageFrom(e));
     }
   }
@@ -86,13 +92,16 @@ class LocationNotifier extends StateNotifier<LocationState> {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
       final location = await _service.getMyLatestLocation();
+      if (!mounted) return;
       final history = await _service.getMyHistory(limit: limit);
+      if (!mounted) return;
       state = state.copyWith(
         latestLocation: location,
         history: history,
         isLoading: false,
       );
     } catch (e) {
+      if (!mounted) return;
       state = state.copyWith(isLoading: false, error: errorMessageFrom(e));
     }
   }

@@ -40,8 +40,10 @@ class GeoFenceNotifier extends StateNotifier<GeoFenceState> {
     state = state.copyWith(isLoading: true, error: null);
     try {
       final fence = await _service.getElderFence(elderId);
+      if (!mounted) return;
       state = state.copyWith(fence: fence, isLoading: false);
     } catch (e) {
+      if (!mounted) return;
       state = state.copyWith(isLoading: false, error: errorMessageFrom(e));
     }
   }
@@ -66,6 +68,7 @@ class GeoFenceNotifier extends StateNotifier<GeoFenceState> {
           radius: radius,
           isEnabled: isEnabled,
         );
+        if (!mounted) return false;
         state = state.copyWith(fence: fence, isLoading: false);
       } else {
         // 创建新围栏
@@ -76,10 +79,12 @@ class GeoFenceNotifier extends StateNotifier<GeoFenceState> {
           radius: radius,
           isEnabled: isEnabled,
         );
+        if (!mounted) return false;
         state = state.copyWith(fence: fence, isLoading: false);
       }
       return true;
     } catch (e) {
+      if (!mounted) return false;
       state = state.copyWith(isLoading: false, error: errorMessageFrom(e));
       return false;
     }
@@ -92,9 +97,11 @@ class GeoFenceNotifier extends StateNotifier<GeoFenceState> {
     state = state.copyWith(isLoading: true, error: null);
     try {
       await _service.deleteFence(state.fence!.id);
+      if (!mounted) return false;
       state = state.copyWith(fence: null, isLoading: false);
       return true;
     } catch (e) {
+      if (!mounted) return false;
       state = state.copyWith(isLoading: false, error: errorMessageFrom(e));
       return false;
     }

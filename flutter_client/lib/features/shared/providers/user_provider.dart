@@ -42,8 +42,10 @@ class UserNotifier extends StateNotifier<UserState> {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
       final user = await _service.getCurrentUser();
+      if (!mounted) return;
       state = state.copyWith(user: user, isLoading: false);
     } catch (e) {
+      if (!mounted) return;
       state = state.copyWith(isLoading: false, error: errorMessageFrom(e));
     }
   }
@@ -56,9 +58,11 @@ class UserNotifier extends StateNotifier<UserState> {
         realName: realName,
         avatarUrl: avatarUrl,
       );
+      if (!mounted) return false;
       state = state.copyWith(user: user, isLoading: false);
       return true;
     } catch (e) {
+      if (!mounted) return false;
       state = state.copyWith(isLoading: false, error: errorMessageFrom(e));
       return false;
     }
@@ -75,9 +79,11 @@ class UserNotifier extends StateNotifier<UserState> {
         oldPassword: oldPassword,
         newPassword: newPassword,
       );
+      if (!mounted) return false;
       state = state.copyWith(isLoading: false);
       return success;
     } catch (e) {
+      if (!mounted) return false;
       state = state.copyWith(isLoading: false, error: errorMessageFrom(e));
       return false;
     }
@@ -95,10 +101,12 @@ class UserNotifier extends StateNotifier<UserState> {
   Future<String?> uploadAvatar(String filePath) async {
     try {
       final avatarUrl = await _service.uploadAvatar(filePath);
+      if (!mounted) return null;
       // 重新加载用户信息以获取最新的 avatarUrl
       await loadUser();
       return avatarUrl;
     } catch (e) {
+      if (!mounted) return null;
       state = state.copyWith(error: errorMessageFrom(e));
       return null;
     }

@@ -66,6 +66,7 @@ class NotificationListNotifier extends StateNotifier<NotificationListState> {
         skip: 0,
         limit: NotificationListState._pageSize,
       );
+      if (!mounted) return;
       final unreadCount = notifications.where((n) => !n.isRead).length;
       state = state.copyWith(
         notifications: notifications,
@@ -75,6 +76,7 @@ class NotificationListNotifier extends StateNotifier<NotificationListState> {
         skip: notifications.length,
       );
     } catch (e) {
+      if (!mounted) return;
       state = state.copyWith(isLoading: false, error: errorMessageFrom(e));
     }
   }
@@ -88,6 +90,7 @@ class NotificationListNotifier extends StateNotifier<NotificationListState> {
         skip: state.skip,
         limit: state.pageSize,
       );
+      if (!mounted) return;
       final all = [...state.notifications, ...more];
       final unreadCount = all.where((n) => !n.isRead).length;
       state = state.copyWith(
@@ -98,6 +101,7 @@ class NotificationListNotifier extends StateNotifier<NotificationListState> {
         skip: all.length,
       );
     } catch (_) {
+      if (!mounted) return;
       state = state.copyWith(isLoadingMore: false);
     }
   }
@@ -106,6 +110,7 @@ class NotificationListNotifier extends StateNotifier<NotificationListState> {
   Future<void> loadUnreadCount() async {
     try {
       final count = await _service.getUnreadCount();
+      if (!mounted) return;
       state = state.copyWith(unreadCount: count);
     } catch (e) {
       AppLogger.error('加载未读数量失败: $e');
@@ -116,6 +121,7 @@ class NotificationListNotifier extends StateNotifier<NotificationListState> {
   Future<void> markAsRead(String notificationId) async {
     try {
       await _service.markAsRead(notificationId);
+      if (!mounted) return;
       final updatedNotifications = state.notifications.map((n) {
         if (n.id == notificationId) {
           return NotificationRecord(
@@ -136,6 +142,7 @@ class NotificationListNotifier extends StateNotifier<NotificationListState> {
   Future<void> markAllAsRead() async {
     try {
       await _service.markAllAsRead();
+      if (!mounted) return;
       final updatedNotifications = state.notifications.map((n) {
         return NotificationRecord(
           id: n.id, type: n.type, title: n.title,

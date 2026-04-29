@@ -66,6 +66,7 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
       final family = await _service.getMyFamily();
+      if (!mounted) return;
       if (family != null) {
         // 保存家庭信息到本地（用于子女端缓存）
         final prefs = await SharedPreferences.getInstance();
@@ -74,6 +75,7 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
       }
       state = state.copyWith(family: family, isLoading: false);
     } catch (e) {
+      if (!mounted) return;
       state = state.copyWith(isLoading: false, error: errorMessageFrom(e));
     }
   }
@@ -83,6 +85,7 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
     state = state.copyWith(clearError: true);
     try {
       final family = await _service.createFamily(familyName);
+      if (!mounted) return false;
       // 保存家庭信息到本地
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(PrefKeys.familyId, family.id);
@@ -90,6 +93,7 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
       state = state.copyWith(family: family);
       return true;
     } catch (e) {
+      if (!mounted) return false;
       state = state.copyWith(error: errorMessageFrom(e));
       return false;
     }
@@ -110,9 +114,11 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
         role: role,
         relation: relation,
       );
+      if (!mounted) return false;
       state = state.copyWith(family: updatedFamily);
       return true;
     } catch (e) {
+      if (!mounted) return false;
       state = state.copyWith(error: errorMessageFrom(e));
       return false;
     }
@@ -124,6 +130,7 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
     if (familyId == null) return false;
     try {
       await _service.removeMember(familyId: familyId, userId: userId);
+      if (!mounted) return false;
       // 从本地列表中移除
       final updatedMembers =
           state.family!.members.where((m) => m.userId != userId).toList();
@@ -137,6 +144,7 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
       );
       return true;
     } catch (e) {
+      if (!mounted) return false;
       state = state.copyWith(error: errorMessageFrom(e));
       return false;
     }
@@ -154,6 +162,7 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
       );
       return result;
     } catch (e) {
+      if (!mounted) return null;
       state = state.copyWith(error: errorMessageFrom(e));
       return null;
     }
@@ -165,9 +174,11 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
     if (familyId == null) return false;
     try {
       final family = await _service.refreshInviteCode(familyId);
+      if (!mounted) return false;
       state = state.copyWith(family: family);
       return true;
     } catch (e) {
+      if (!mounted) return false;
       state = state.copyWith(error: errorMessageFrom(e));
       return false;
     }
@@ -179,6 +190,7 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
     if (familyId == null) return;
     try {
       final pending = await _service.getPendingMembers(familyId);
+      if (!mounted) return;
       state = state.copyWith(pendingMembers: pending);
     } catch (_) {
       // 静默失败，不影响主流程
@@ -191,11 +203,13 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
     if (familyId == null) return false;
     try {
       await _service.approveMember(familyId: familyId, memberId: memberId);
+      if (!mounted) return false;
       // 刷新待审批列表和家庭信息
       await loadPendingMembers();
       await loadFamily();
       return true;
     } catch (e) {
+      if (!mounted) return false;
       state = state.copyWith(error: errorMessageFrom(e));
       return false;
     }
@@ -207,10 +221,12 @@ class FamilyNotifier extends StateNotifier<FamilyState> {
     if (familyId == null) return false;
     try {
       await _service.rejectMember(familyId: familyId, memberId: memberId);
+      if (!mounted) return false;
       // 刷新待审批列表
       await loadPendingMembers();
       return true;
     } catch (e) {
+      if (!mounted) return false;
       state = state.copyWith(error: errorMessageFrom(e));
       return false;
     }

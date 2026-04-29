@@ -54,8 +54,10 @@ class NeighborHelpNotifier extends StateNotifier<NeighborHelpState> {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
       final requests = await _service.getPendingRequests();
+      if (!mounted) return;
       state = state.copyWith(pendingRequests: requests, isLoading: false);
     } catch (e) {
+      if (!mounted) return;
       state = state.copyWith(isLoading: false, error: errorMessageFrom(e));
     }
   }
@@ -64,8 +66,10 @@ class NeighborHelpNotifier extends StateNotifier<NeighborHelpState> {
   Future<void> loadHistory({int skip = 0, int limit = 20}) async {
     try {
       final history = await _service.getHistory(skip: skip, limit: limit);
+      if (!mounted) return;
       state = state.copyWith(history: history);
     } catch (e) {
+      if (!mounted) return;
       state = state.copyWith(error: errorMessageFrom(e));
     }
   }
@@ -75,6 +79,7 @@ class NeighborHelpNotifier extends StateNotifier<NeighborHelpState> {
     state = state.copyWith(clearError: true);
     try {
       await _service.acceptRequest(requestId);
+      if (!mounted) return false;
       // 从待响应列表中移除
       final updated = state.pendingRequests
           .where((r) => r.id != requestId)
@@ -82,6 +87,7 @@ class NeighborHelpNotifier extends StateNotifier<NeighborHelpState> {
       state = state.copyWith(pendingRequests: updated);
       return true;
     } catch (e) {
+      if (!mounted) return false;
       state = state.copyWith(error: errorMessageFrom(e));
       return false;
     }
@@ -94,6 +100,7 @@ class NeighborHelpNotifier extends StateNotifier<NeighborHelpState> {
       await _service.cancelRequest(requestId);
       return true;
     } catch (e) {
+      if (!mounted) return false;
       state = state.copyWith(error: errorMessageFrom(e));
       return false;
     }
@@ -114,6 +121,7 @@ class NeighborHelpNotifier extends StateNotifier<NeighborHelpState> {
       );
       return true;
     } catch (e) {
+      if (!mounted) return false;
       state = state.copyWith(error: errorMessageFrom(e));
       return false;
     }
