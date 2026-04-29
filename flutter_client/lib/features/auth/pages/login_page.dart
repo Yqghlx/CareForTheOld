@@ -184,6 +184,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                       ),
                       keyboardType: TextInputType.phone,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      maxLength: 11,
                       textInputAction: TextInputAction.next,
                       style: AppTheme.textBody18,
                       validator: FormValidators.phone,

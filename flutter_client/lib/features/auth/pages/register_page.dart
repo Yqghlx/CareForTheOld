@@ -114,6 +114,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                   ),
                   keyboardType: TextInputType.phone,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  maxLength: 11,
                   textInputAction: TextInputAction.next,
                   validator: FormValidators.phone,
                 ),
@@ -149,7 +150,9 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                   decoration: const InputDecoration(
                     labelText: AppTheme.labelRealName,
                     prefixIcon: Icon(Icons.person),
+                    counterText: '',
                   ),
+                  maxLength: 20,
                   textInputAction: TextInputAction.done,
                   validator: FormValidators.name,
                 ),

@@ -234,7 +234,9 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                       labelText: '圈子名称',
                       hintText: '例如：阳光小区互助群',
                       border: OutlineInputBorder(),
+                      counterText: '',
                     ),
+                    maxLength: 20,
                   ),
                   AppTheme.spacer8,
                   ElevatedButton(

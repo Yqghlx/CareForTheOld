@@ -139,6 +139,8 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                       children: [
                         Text(
                           user?.realName ?? AppTheme.labelChild,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
                           style: AppTheme.textLargeTitle.copyWith(
                             color: AppTheme.cardColor,
                           ),
@@ -296,6 +298,8 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                           children: [
                             Text(
                               elder.realName,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
                               style: AppTheme.textTitle,
                             ),
                             AppTheme.spacer4,

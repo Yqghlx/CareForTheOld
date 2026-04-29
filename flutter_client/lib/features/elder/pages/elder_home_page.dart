@@ -229,6 +229,8 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                     children: [
                       Text(
                         user?.realName ?? '用户',
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                         style: const TextStyle(
                           fontSize: 26,
                           fontWeight: FontWeight.bold,
