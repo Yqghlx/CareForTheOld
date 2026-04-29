@@ -281,7 +281,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     if (stats.isEmpty) {
       return const EmptyStateWidget(
         icon: Icons.analytics_outlined,
-        title: '暂无健康统计数据',
+        title: AppTheme.msgNoStats,
         subtitle: '老人记录健康数据后，这里会显示统计概览',
       );
     }
@@ -374,7 +374,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     if (plans.isEmpty) {
       return const EmptyStateWidget(
         icon: Icons.medication_outlined,
-        title: '暂无用药计划',
+        title: AppTheme.msgNoHealthRecord,
         subtitle: '点击下方按钮为老人创建用药计划',
       );
     }
@@ -702,7 +702,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     if (records.isEmpty) {
       return const EmptyStateWidget(
         icon: Icons.note_add_outlined,
-        title: '暂无健康记录',
+        title: AppTheme.msgNoHealthRecord,
         subtitle: '老人录入健康数据后，这里会显示记录列表',
       );
     }
