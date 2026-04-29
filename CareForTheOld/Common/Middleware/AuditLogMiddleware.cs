@@ -36,6 +36,7 @@ public class AuditLogMiddleware
         var timestamp = DateTime.UtcNow;
         var clientIp = context.GetClientIp() ?? "未知";
         var userAgent = context.Request.Headers.UserAgent.ToString();
+        var requestId = context.Items[nameof(CorrelationIdMiddleware)]?.ToString() ?? "无";
 
         // 先执行请求，再记录结果
         await _next(context);
@@ -46,14 +47,14 @@ public class AuditLogMiddleware
         if (statusCode == StatusCodes.Status403Forbidden)
         {
             _logger.LogWarning(
-                "权限校验失败 | 时间: {Timestamp:O} | 方法: {Method} | 路径: {Path} | 用户: {UserId} | 角色: {UserRole} | IP: {ClientIp} | UA: {UserAgent}",
-                timestamp, method, path, userId ?? "匿名", userRole ?? "无", clientIp, userAgent);
+                "权限校验失败 | 请求: {RequestId} | 时间: {Timestamp:O} | 方法: {Method} | 路径: {Path} | 用户: {UserId} | 角色: {UserRole} | IP: {ClientIp} | UA: {UserAgent}",
+                requestId, timestamp, method, path, userId ?? "匿名", userRole ?? "无", clientIp, userAgent);
         }
 
         var logLevel = statusCode >= 400 ? LogLevel.Warning : LogLevel.Information;
 
         _logger.Log(logLevel,
-            "审计日志 | 时间: {Timestamp:O} | 方法: {Method} | 路径: {Path} | 用户: {UserId} | 状态码: {StatusCode} | IP: {ClientIp} | UA: {UserAgent}",
-            timestamp, method, path, userId ?? "匿名", statusCode, clientIp, userAgent);
+            "审计日志 | 请求: {RequestId} | 时间: {Timestamp:O} | 方法: {Method} | 路径: {Path} | 用户: {UserId} | 状态码: {StatusCode} | IP: {ClientIp} | UA: {UserAgent}",
+            requestId, timestamp, method, path, userId ?? "匿名", statusCode, clientIp, userAgent);
     }
 }
