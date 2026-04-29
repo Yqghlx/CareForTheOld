@@ -7,6 +7,7 @@ import '../../shared/providers/emergency_provider.dart';
 import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../shared/widgets/common_states.dart';
+import '../../../shared/widgets/confirm_dialog.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 import '../../../core/extensions/date_format_extension.dart';
 import '../../../core/theme/app_theme.dart';
@@ -360,28 +361,14 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
   }
 
   Future<void> _respondCall(EmergencyCall call) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: AppTheme.radiusL,
-        ),
-        title: const Text(AppTheme.titleConfirmHandle),
-        content: Text('确定要标记 ${call.elderName} 的紧急呼叫为已处理吗？'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text(AppTheme.msgCancel),
-          ),
-          PrimaryButton(
-            text: '确认',
-            onPressed: () => Navigator.pop(ctx, true),
-          ),
-        ],
-      ),
+    final confirmed = await showConfirmDialog(
+      context,
+      title: AppTheme.titleConfirmHandle,
+      message: '确定要标记 ${call.elderName} 的紧急呼叫为已处理吗？',
+      confirmText: '确认',
     );
 
-    if (confirmed == true) {
+    if (confirmed) {
       final success = await ref.read(emergencyProvider.notifier).respondCall(call.id);
       if (mounted) {
         if (success) {

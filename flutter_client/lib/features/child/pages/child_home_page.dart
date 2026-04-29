@@ -85,7 +85,13 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
           ),
         ],
       ),
-      body: Padding(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          ref.read(familyProvider.notifier).loadFamily();
+          ref.read(emergencyProvider.notifier).loadUnreadCalls();
+          ref.read(notificationListProvider.notifier).loadNotifications();
+        },
+        child: Padding(
         padding: AppTheme.paddingAll20,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,6 +218,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
               ],
             ),
           ],
+        ),
         ),
       ),
     );

@@ -8,6 +8,7 @@ import '../services/voice_input_service.dart';
 import '../../../shared/widgets/common_cards.dart';
 import '../../../shared/widgets/common_buttons.dart';
 import '../../../shared/widgets/common_states.dart';
+import '../../../shared/widgets/confirm_dialog.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 import '../../../core/extensions/date_format_extension.dart';
@@ -307,23 +308,13 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
 
   /// 标记跳过（带二次确认）
   Future<void> _markSkipped(MedicationLog log) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
-        title: const Text(AppTheme.msgConfirmSkip),
-        content: Text(AppTheme.msgConfirmSkipWithName(log.medicineName)),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppTheme.msgCancel)),
-          PrimaryButton(
-            text: '确认跳过',
-            onPressed: () => Navigator.pop(ctx, true),
-            gradient: const LinearGradient(colors: [AppTheme.grey500, AppTheme.grey600]),
-          ),
-        ],
-      ),
+    final confirmed = await showConfirmDialog(
+      context,
+      title: AppTheme.msgConfirmSkip,
+      message: AppTheme.msgConfirmSkipWithName(log.medicineName),
+      confirmText: '确认跳过',
     );
-    if (confirmed != true) return;
+    if (!confirmed) return;
 
     final success =
         await ref.read(medicationProvider.notifier).markAsSkipped(log);

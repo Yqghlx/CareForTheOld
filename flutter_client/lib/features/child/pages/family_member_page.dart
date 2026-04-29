@@ -7,6 +7,7 @@ import '../../../shared/models/family.dart';
 import '../../../shared/models/user_role.dart';
 import '../../../shared/providers/auth_provider.dart';
 import '../../../shared/widgets/common_buttons.dart';
+import '../../../shared/widgets/confirm_dialog.dart';
 import '../../../core/extensions/snackbar_extension.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/common_states.dart';
@@ -196,25 +197,13 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
 
   /// 审批通过
   Future<void> _approveMember(FamilyMember member) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
-        title: const Text(AppTheme.titleApproveConfirm),
-        content: Text('确定通过 ${member.realName} 的加入申请吗？'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text(AppTheme.msgCancel),
-          ),
-          PrimaryButton(
-            text: AppTheme.labelApprove,
-            onPressed: () => Navigator.pop(ctx, true),
-          ),
-        ],
-      ),
+    final confirmed = await showConfirmDialog(
+      context,
+      title: AppTheme.titleApproveConfirm,
+      message: '确定通过 ${member.realName} 的加入申请吗？',
+      confirmText: AppTheme.labelApprove,
     );
-    if (confirmed != true) return;
+    if (!confirmed) return;
 
     final success = await ref.read(familyProvider.notifier).approveMember(member.userId);
     if (mounted) {
@@ -228,26 +217,13 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
 
   /// 拒绝申请
   Future<void> _rejectMember(FamilyMember member) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
-        title: const Text(AppTheme.titleRejectApply),
-        content: Text('确定拒绝 ${member.realName} 的加入申请吗？'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text(AppTheme.msgCancel),
-          ),
-          PrimaryButton(
-            text: AppTheme.labelReject,
-            gradient: const LinearGradient(colors: [AppTheme.errorColor, AppTheme.errorAccent]),
-            onPressed: () => Navigator.pop(ctx, true),
-          ),
-        ],
-      ),
+    final confirmed = await showConfirmDialog(
+      context,
+      title: AppTheme.titleRejectApply,
+      message: '确定拒绝 ${member.realName} 的加入申请吗？',
+      confirmText: AppTheme.labelReject,
     );
-    if (confirmed != true) return;
+    if (!confirmed) return;
 
     final success = await ref.read(familyProvider.notifier).rejectMember(member.userId);
     if (mounted) {
@@ -378,25 +354,13 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               IconButton(
                 icon: const Icon(Icons.refresh, color: AppTheme.cardColor),
                 onPressed: () async {
-                  final confirmed = await showDialog<bool>(
-                    context: context,
-                    builder: (ctx) => AlertDialog(
-                      shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
-                      title: const Text(AppTheme.titleRefreshInviteCode),
-                      content: const Text('刷新后旧邀请码将失效，确定要刷新吗？'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(ctx, false),
-                          child: const Text(AppTheme.msgCancel),
-                        ),
-                        PrimaryButton(
-                          text: AppTheme.msgConfirm,
-                          onPressed: () => Navigator.pop(ctx, true),
-                        ),
-                      ],
-                    ),
+                  final confirmed = await showConfirmDialog(
+                    context,
+                    title: AppTheme.titleRefreshInviteCode,
+                    message: '刷新后旧邀请码将失效，确定要刷新吗？',
+                    confirmText: AppTheme.msgConfirm,
                   );
-                  if (confirmed != true) return;
+                  if (!confirmed) return;
                   final success = await ref.read(familyProvider.notifier).refreshInviteCode();
                   if (mounted) {
                     if (success) {
@@ -901,35 +865,22 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
   }
 
   /// 确认移除成员
-  void _confirmRemove(FamilyMember member) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusXL),
-        title: const Text(AppTheme.titleRemoveMember),
-        content: Text('确定要将 ${member.realName} 移出家庭组吗？'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text(AppTheme.msgCancel),
-          ),
-          PrimaryButton(
-            text: '移除',
-            gradient: const LinearGradient(colors: [AppTheme.errorColor, AppTheme.errorAccent]),
-            onPressed: () async {
-              Navigator.pop(ctx);
-              final success = await ref.read(familyProvider.notifier).removeMember(member.userId);
-              if (mounted) {
-                if (success) {
-                  context.showSuccessSnackBar(AppTheme.msgMemberRemoved);
-                } else {
-                  context.showErrorSnackBar(AppTheme.msgMemberRemoveFailed);
-                }
-              }
-            },
-          ),
-        ],
-      ),
+  Future<void> _confirmRemove(FamilyMember member) async {
+    final confirmed = await showConfirmDialog(
+      context,
+      title: AppTheme.titleRemoveMember,
+      message: '确定要将 ${member.realName} 移出家庭组吗？',
+      confirmText: '移除',
     );
+    if (!confirmed) return;
+
+    final success = await ref.read(familyProvider.notifier).removeMember(member.userId);
+    if (mounted) {
+      if (success) {
+        context.showSuccessSnackBar(AppTheme.msgMemberRemoved);
+      } else {
+        context.showErrorSnackBar(AppTheme.msgMemberRemoveFailed);
+      }
+    }
   }
 }
