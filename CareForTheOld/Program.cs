@@ -505,7 +505,7 @@ app.MapHealthChecks("/health/detail", new HealthCheckOptions
     }
 });
 
-// SignalR 连接状态端点（供运维监控使用）
+// SignalR 连接状态端点（需认证，供运维监控使用）
 app.MapGet("/health/signalr", (HttpContext _) =>
 {
     return Results.Ok(new
@@ -514,7 +514,7 @@ app.MapGet("/health/signalr", (HttpContext _) =>
         totalConnections = NotificationHub.TotalConnectionCount,
         timestamp = DateTime.UtcNow
     });
-});
+}).RequireAuthorization();
 
 app.MapControllers();
 app.MapHub<NotificationHub>("/hubs/notification");
