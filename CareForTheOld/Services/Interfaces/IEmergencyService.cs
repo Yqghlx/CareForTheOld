@@ -15,6 +15,7 @@ public interface IEmergencyService
     /// <param name="latitude">纬度（可选）</param>
     /// <param name="longitude">经度（可选）</param>
     /// <param name="batteryLevel">电池电量百分比（可选）</param>
+    /// <param name="cancellationToken">取消令牌</param>
     Task<EmergencyCallResponse> CreateCallAsync(Guid elderId, double? latitude = null, double? longitude = null, int? batteryLevel = null, CancellationToken cancellationToken = default);
 
     /// <summary>
