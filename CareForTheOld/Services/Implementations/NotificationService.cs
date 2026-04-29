@@ -1,4 +1,5 @@
 using CareForTheOld.Common.Constants;
+using CareForTheOld.Common.Helpers;
 using CareForTheOld.Data;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Models.Entities;
@@ -113,10 +114,14 @@ public class NotificationService : INotificationService
     }
 
     /// <inheritdoc />
-    public async Task<List<NotificationResponse>> GetUserNotificationsAsync(Guid userId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize, CancellationToken cancellationToken = default)
+    public async Task<PagedResult<NotificationResponse>> GetUserNotificationsAsync(Guid userId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize, CancellationToken cancellationToken = default)
     {
         limit = Math.Clamp(limit, AppConstants.Pagination.MinPageSize, AppConstants.Pagination.MaxPageSize);
-        return await _context.NotificationRecords
+
+        var totalCount = await _context.NotificationRecords
+            .CountAsync(n => n.UserId == userId, cancellationToken);
+
+        var items = await _context.NotificationRecords
             .Where(n => n.UserId == userId)
             .OrderByDescending(n => n.CreatedAt)
             .Skip(skip)
@@ -131,6 +136,14 @@ public class NotificationService : INotificationService
                 CreatedAt = n.CreatedAt
             })
             .ToListAsync(cancellationToken);
+
+        return new PagedResult<NotificationResponse>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            Skip = skip,
+            Limit = limit
+        };
     }
 
     /// <inheritdoc />

@@ -10,6 +10,8 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Xunit;
 
+using static CareForTheOld.Common.Constants.AppConstants.Pagination;
+
 namespace CareForTheOld.Tests.Services;
 
 /// <summary>
@@ -136,9 +138,10 @@ public class NotificationServiceTests
 
         var result = await _service.GetUserNotificationsAsync(user.Id, limit: 10);
 
-        result.Should().HaveCount(2);
+        result.Items.Should().HaveCount(2);
         // 验证返回的均为该用户的通知（通过标题区分）
-        result.Should().OnlyContain(r => r.Title == "通知1" || r.Title == "通知2");
+        result.Items.Should().OnlyContain(r => r.Title == "通知1" || r.Title == "通知2");
+        result.TotalCount.Should().Be(2);
     }
 
     [Fact]
@@ -152,7 +155,9 @@ public class NotificationServiceTests
 
         var result = await _service.GetUserNotificationsAsync(user.Id, limit: 3);
 
-        result.Should().HaveCount(3);
+        result.Items.Should().HaveCount(3);
+        result.TotalCount.Should().Be(5);
+        result.HasMore.Should().BeTrue();
     }
 
     [Fact]

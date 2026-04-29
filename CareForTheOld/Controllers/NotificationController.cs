@@ -37,14 +37,14 @@ public class NotificationController : ControllerBase
     /// </summary>
     [HttpGet("me")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
-    [ProducesResponseType(typeof(ApiResponse<List<NotificationResponse>>), StatusCodes.Status200OK)]
-    public async Task<ApiResponse<List<NotificationResponse>>> GetMyNotifications(
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<NotificationResponse>>), StatusCodes.Status200OK)]
+    public async Task<ApiResponse<PagedResult<NotificationResponse>>> GetMyNotifications(
         [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip,
         [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize, CancellationToken cancellationToken = default)
     {
         limit = this.ClampLimit(limit);
-        var notifications = await _notificationService.GetUserNotificationsAsync(this.GetUserId(), skip, limit, cancellationToken);
-        return ApiResponse<List<NotificationResponse>>.Ok(notifications);
+        var result = await _notificationService.GetUserNotificationsAsync(this.GetUserId(), skip, limit, cancellationToken);
+        return ApiResponse<PagedResult<NotificationResponse>>.Ok(result);
     }
 
     /// <summary>

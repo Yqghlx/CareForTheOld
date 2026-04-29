@@ -1,4 +1,5 @@
 using CareForTheOld.Common.Constants;
+using CareForTheOld.Common.Helpers;
 using CareForTheOld.Models.DTOs.Responses;
 
 namespace CareForTheOld.Services.Interfaces;
@@ -26,7 +27,7 @@ public interface INotificationService
     /// <summary>
     /// 获取用户通知列表（分页）
     /// </summary>
-    Task<List<NotificationResponse>> GetUserNotificationsAsync(Guid userId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize, CancellationToken cancellationToken = default);
+    Task<PagedResult<NotificationResponse>> GetUserNotificationsAsync(Guid userId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 获取未读通知数量

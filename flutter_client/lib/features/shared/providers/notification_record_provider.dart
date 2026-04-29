@@ -62,18 +62,18 @@ class NotificationListNotifier extends StateNotifier<NotificationListState> {
   Future<void> loadNotifications() async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
-      final notifications = await _service.getMyNotifications(
+      final result = await _service.getMyNotifications(
         skip: 0,
         limit: NotificationListState._pageSize,
       );
       if (!mounted) return;
-      final unreadCount = notifications.where((n) => !n.isRead).length;
+      final unreadCount = result.items.where((n) => !n.isRead).length;
       state = state.copyWith(
-        notifications: notifications,
+        notifications: result.items,
         unreadCount: unreadCount,
         isLoading: false,
-        hasMore: notifications.length >= NotificationListState._pageSize,
-        skip: notifications.length,
+        hasMore: result.hasMore,
+        skip: result.items.length,
       );
     } catch (e) {
       if (!mounted) return;
@@ -86,18 +86,18 @@ class NotificationListNotifier extends StateNotifier<NotificationListState> {
     if (state.isLoadingMore || !state.hasMore) return;
     state = state.copyWith(isLoadingMore: true);
     try {
-      final more = await _service.getMyNotifications(
+      final result = await _service.getMyNotifications(
         skip: state.skip,
         limit: state.pageSize,
       );
       if (!mounted) return;
-      final all = [...state.notifications, ...more];
+      final all = [...state.notifications, ...result.items];
       final unreadCount = all.where((n) => !n.isRead).length;
       state = state.copyWith(
         notifications: all,
         unreadCount: unreadCount,
         isLoadingMore: false,
-        hasMore: more.length >= state.pageSize,
+        hasMore: result.hasMore,
         skip: all.length,
       );
     } catch (_) {

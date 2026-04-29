@@ -23,12 +23,15 @@ public class ApiResponse<T>
 }
 
 /// <summary>
-/// 分页数据封装
+/// 分页数据封装（skip/limit 模式）
 /// </summary>
 public class PagedResult<T>
 {
     public List<T> Items { get; set; } = [];
     public int TotalCount { get; set; }
-    public int PageIndex { get; set; }
-    public int PageSize { get; set; }
+    public int Skip { get; set; }
+    public int Limit { get; set; }
+
+    /// 是否还有更多数据可加载
+    public bool HasMore => Skip + Items.Count < TotalCount;
 }

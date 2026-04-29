@@ -11,13 +11,20 @@ class NotificationRecordService {
   NotificationRecordService(this._dio);
 
   /// 获取我的通知列表（支持分页）
-  Future<List<NotificationRecord>> getMyNotifications({int skip = 0, int limit = 50}) async {
+  Future<({List<NotificationRecord> items, int totalCount, bool hasMore})> getMyNotifications({int skip = 0, int limit = 50}) async {
     final response = await _dio.get(
       ApiEndpoints.notificationMe,
       queryParameters: {'skip': skip, 'limit': limit},
     );
-    final List<dynamic> dataList = response.data['data'];
-    return dataList.map((json) => NotificationRecord.fromJson(json)).toList();
+    final data = response.data['data'] as Map<String, dynamic>;
+    final List<dynamic> items = data['items'];
+    final totalCount = data['totalCount'] as int? ?? 0;
+    final hasMore = data['hasMore'] as bool? ?? false;
+    return (
+      items: items.map((json) => NotificationRecord.fromJson(json)).toList(),
+      totalCount: totalCount,
+      hasMore: hasMore,
+    );
   }
 
   /// 获取未读数量

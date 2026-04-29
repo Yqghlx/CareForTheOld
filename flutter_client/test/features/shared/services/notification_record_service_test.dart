@@ -39,7 +39,7 @@ void main() {
   group('NotificationRecordService 通知记录服务测试', () {
     group('getMyNotifications 获取通知列表', () {
       test('默认分页参数应使用 skip=0 limit=50', () async {
-        // 模拟返回空列表
+        // 模拟返回空分页结果
         when(() => mockDio.get(
               '/notification/me',
               queryParameters: any(named: 'queryParameters'),
@@ -48,7 +48,7 @@ void main() {
               onReceiveProgress: any(named: 'onReceiveProgress'),
               data: any(named: 'data'),
             )).thenAnswer((_) async => mockResponse({
-              'data': <dynamic>[],
+              'data': {'items': <dynamic>[], 'totalCount': 0, 'hasMore': false},
             }));
 
         await service.getMyNotifications();
@@ -68,7 +68,7 @@ void main() {
               onReceiveProgress: any(named: 'onReceiveProgress'),
               data: any(named: 'data'),
             )).thenAnswer((_) async => mockResponse({
-              'data': <dynamic>[],
+              'data': {'items': <dynamic>[], 'totalCount': 0, 'hasMore': false},
             }));
 
         await service.getMyNotifications(skip: 10, limit: 20);
@@ -105,23 +105,25 @@ void main() {
               onReceiveProgress: any(named: 'onReceiveProgress'),
               data: any(named: 'data'),
             )).thenAnswer((_) async => mockResponse({
-              'data': jsonList,
+              'data': {'items': jsonList, 'totalCount': 2, 'hasMore': false},
             }));
 
         final result = await service.getMyNotifications();
 
-        expect(result.length, 2);
-        expect(result[0].id, 'n1');
-        expect(result[0].type, 'HealthAlert');
-        expect(result[0].title, '健康告警');
-        expect(result[0].content, '血压偏高');
-        expect(result[0].isRead, false);
-        expect(result[1].id, 'n2');
-        expect(result[1].type, 'MedicationReminder');
-        expect(result[1].isRead, true);
+        expect(result.items.length, 2);
+        expect(result.items[0].id, 'n1');
+        expect(result.items[0].type, 'HealthAlert');
+        expect(result.items[0].title, '健康告警');
+        expect(result.items[0].content, '血压偏高');
+        expect(result.items[0].isRead, false);
+        expect(result.items[1].id, 'n2');
+        expect(result.items[1].type, 'MedicationReminder');
+        expect(result.items[1].isRead, true);
+        expect(result.totalCount, 2);
+        expect(result.hasMore, false);
       });
 
-      test('空列表应返回空 List', () async {
+      test('空列表应返回空 items', () async {
         when(() => mockDio.get(
               '/notification/me',
               queryParameters: any(named: 'queryParameters'),
@@ -130,12 +132,12 @@ void main() {
               onReceiveProgress: any(named: 'onReceiveProgress'),
               data: any(named: 'data'),
             )).thenAnswer((_) async => mockResponse({
-              'data': <dynamic>[],
+              'data': {'items': <dynamic>[], 'totalCount': 0, 'hasMore': false},
             }));
 
         final result = await service.getMyNotifications();
 
-        expect(result, isEmpty);
+        expect(result.items, isEmpty);
       });
 
       test('应正确解析单条通知', () async {
@@ -147,13 +149,13 @@ void main() {
               onReceiveProgress: any(named: 'onReceiveProgress'),
               data: any(named: 'data'),
             )).thenAnswer((_) async => mockResponse({
-              'data': [createNotificationJson()],
+              'data': {'items': [createNotificationJson()], 'totalCount': 1, 'hasMore': false},
             }));
 
         final result = await service.getMyNotifications();
 
-        expect(result.length, 1);
-        final record = result.first;
+        expect(result.items.length, 1);
+        final record = result.items.first;
         expect(record.id, 'n1');
         expect(record.type, 'HealthAlert');
         expect(record.title, '健康告警');

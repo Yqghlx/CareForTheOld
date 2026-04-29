@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using CareForTheOld.Common.Constants;
+using CareForTheOld.Common.Helpers;
 using CareForTheOld.Controllers;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Services.Interfaces;
@@ -51,16 +52,24 @@ public class NotificationControllerTests
             new() { Id = Guid.NewGuid(), Title = "用药提醒", IsRead = true }
         };
 
+        var pagedResult = new PagedResult<NotificationResponse>
+        {
+            Items = notifications,
+            TotalCount = 2,
+            Skip = 0,
+            Limit = 50
+        };
+
         _mockService
-            .Setup(s => s.GetUserNotificationsAsync(_userId, 50))
-            .ReturnsAsync(notifications);
+            .Setup(s => s.GetUserNotificationsAsync(_userId, 0, 50, default))
+            .ReturnsAsync(pagedResult);
 
         // Act
-        var result = await _controller.GetMyNotifications(50);
+        var result = await _controller.GetMyNotifications(0, 50);
 
         // Assert
         result.Success.Should().BeTrue();
-        result.Data.Should().HaveCount(2);
+        result.Data!.Items.Should().HaveCount(2);
     }
 
     [Fact]
