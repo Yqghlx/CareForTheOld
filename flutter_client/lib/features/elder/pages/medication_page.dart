@@ -463,29 +463,31 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
       );
     }
 
-    return AnimatedBuilder(
-      animation: _pulseAnimation,
-      builder: (context, child) {
-        final glowAlpha = 0.15 + _pulseAnimation.value * 0.25;
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: AppTheme.radiusL,
-            border: Border.all(
-              color: AppTheme.warningColor.withValues(alpha: glowAlpha),
-              width: 2,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AppTheme.warningColor.withValues(alpha: glowAlpha * 0.5),
-                blurRadius: 12,
-                spreadRadius: 2,
+    return RepaintBoundary(
+      child: AnimatedBuilder(
+        animation: _pulseAnimation,
+        builder: (context, child) {
+          final glowAlpha = 0.15 + _pulseAnimation.value * 0.25;
+          return Container(
+            decoration: BoxDecoration(
+              borderRadius: AppTheme.radiusL,
+              border: Border.all(
+                color: AppTheme.warningColor.withValues(alpha: glowAlpha),
+                width: 2,
               ),
-            ],
-          ),
-          child: child,
-        );
-      },
-      child: _buildCardContent(log, timeStr),
+              boxShadow: [
+                BoxShadow(
+                  color: AppTheme.warningColor.withValues(alpha: glowAlpha * 0.5),
+                  blurRadius: 12,
+                  spreadRadius: 2,
+                ),
+              ],
+            ),
+            child: child,
+          );
+        },
+        child: _buildCardContent(log, timeStr),
+      ),
     );
   }
 

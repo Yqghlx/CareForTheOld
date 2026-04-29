@@ -694,7 +694,8 @@ class _EmergencyPulseBannerState extends State<_EmergencyPulseBanner>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
+    return RepaintBoundary(
+      child: AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
         final alpha = 0.3 + _animation.value * 0.4;
@@ -751,6 +752,7 @@ class _EmergencyPulseBannerState extends State<_EmergencyPulseBanner>
           ),
         ),
       ),
+    ),
     );
   }
 }

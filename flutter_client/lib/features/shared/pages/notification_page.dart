@@ -146,6 +146,8 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
                               fontSize: 16,
                               fontWeight: notification.isRead ? FontWeight.normal : FontWeight.bold,
                             ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         // 未读标记
