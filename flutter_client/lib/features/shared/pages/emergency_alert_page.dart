@@ -54,7 +54,8 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
       canPop: false, // 禁止返回键关闭
       child: Scaffold(
         backgroundColor: AppTheme.errorColor,
-        body: AnimatedBuilder(
+        body: RepaintBoundary(
+          child: AnimatedBuilder(
           animation: _pulseAnimation,
           builder: (context, child) {
             return Container(
@@ -133,6 +134,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
               ),
             );
           },
+          ),
         ),
       ),
     );

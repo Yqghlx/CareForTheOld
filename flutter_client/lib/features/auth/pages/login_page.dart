@@ -119,7 +119,8 @@ class _LoginPageState extends ConsumerState<LoginPage>
                 children: [
                   const SizedBox(height: 60),
                   // Logo 呼吸动画
-                  ScaleTransition(
+                  RepaintBoundary(
+                    child: ScaleTransition(
                     scale: _breathAnimation,
                     child: Container(
                       width: 100,
@@ -141,6 +142,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                         color: AppTheme.cardColor,
                       ),
                     ),
+                  ),
                   ),
                   AppTheme.spacer24,
                   // 标题

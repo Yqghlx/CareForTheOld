@@ -43,7 +43,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authProvider);
+    final user = ref.watch(authProvider.select((s) => s.user));
     final familyState = ref.watch(familyProvider);
     final emergencyInfo = ref.watch(emergencyProvider.select((s) => (s.hasUnreadCalls, s.unreadCount)));
 
@@ -119,9 +119,9 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                       ),
                       child: ClipRRect(
                         borderRadius: AppTheme.radiusM,
-                        child: authState.user?.avatarUrl != null && authState.user!.avatarUrl!.isNotEmpty
+                        child: user?.avatarUrl != null && user!.avatarUrl!.isNotEmpty
                             ? CachedNetworkImage(
-                                imageUrl: authState.user!.avatarUrl!,
+                                imageUrl: user.avatarUrl!,
                                 fit: BoxFit.cover,
                                 memCacheWidth: 256,
                                 memCacheHeight: 256,
@@ -137,7 +137,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          authState.user?.realName ?? AppTheme.labelChild,
+                          user?.realName ?? AppTheme.labelChild,
                           style: AppTheme.textLargeTitle.copyWith(
                             color: AppTheme.cardColor,
                           ),

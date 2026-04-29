@@ -124,7 +124,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
   }
 
   Widget _buildHomeContent() {
-    final authState = ref.watch(authProvider);
+    final user = ref.watch(authProvider.select((s) => s.user));
 
     return RefreshIndicator(
       onRefresh: () async {
@@ -161,11 +161,11 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                             width: 64,
                             height: 64,
                             color: AppTheme.cardColor.withValues(alpha: 0.2),
-                            child: authState.user?.avatarUrl != null
+                            child: user?.avatarUrl != null
                                 ? CachedNetworkImage(
-                                    imageUrl: authState.user!.avatarUrl!.startsWith('http')
-                                        ? authState.user!.avatarUrl!
-                                        : '${AppConfig.current.apiBaseUrl.replaceFirst(ApiEndpoints.apiPathPrefix, '')}${authState.user!.avatarUrl}',
+                                    imageUrl: user!.avatarUrl!.startsWith('http')
+                                        ? user.avatarUrl!
+                                        : '${AppConfig.current.apiBaseUrl.replaceFirst(ApiEndpoints.apiPathPrefix, '')}${user.avatarUrl}',
                                     fit: BoxFit.cover,
                                     width: 64,
                                     height: 64,
@@ -225,7 +225,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        authState.user?.realName ?? '用户',
+                        user?.realName ?? '用户',
                         style: const TextStyle(
                           fontSize: 26,
                           fontWeight: FontWeight.bold,
@@ -331,7 +331,8 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
           context.showSnackBar(AppTheme.msgEmergencyLongPress);
         }
       },
-      child: AnimatedContainer(
+      child: RepaintBoundary(
+        child: AnimatedContainer(
         duration: AppTheme.duration100ms,
         width: double.infinity,
         height: 80,
@@ -407,6 +408,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
             ),
           ],
         ),
+      ),
       ),
       ),
     );
