@@ -31,10 +31,10 @@ public class AuthService : IAuthService
     /// <summary>
     /// 用户注册：检查手机号是否重复，使用 BCrypt 哈希密码后创建用户并返回令牌
     /// </summary>
-    public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
+    public async Task<AuthResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
     {
         // 检查手机号是否已注册
-        if (await _context.Users.AnyAsync(u => u.PhoneNumber == request.PhoneNumber))
+        if (await _context.Users.AnyAsync(u => u.PhoneNumber == request.PhoneNumber, cancellationToken))
             throw new ArgumentException(ErrorMessages.Auth.PhoneAlreadyRegistered);
 
         var user = new User
@@ -49,19 +49,19 @@ public class AuthService : IAuthService
         user.CreatedAt = user.UpdatedAt = DateTime.UtcNow;
 
         _context.Users.Add(user);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         Log.Information("用户注册成功：{MaskedPhone}，角色：{Role}", MaskPhoneNumber(request.PhoneNumber), request.Role);
 
-        return await GenerateAuthResponse(user);
+        return await GenerateAuthResponse(user, cancellationToken);
     }
 
     /// <summary>
     /// 用户登录：验证手机号和密码，成功后返回访问令牌和刷新令牌
     /// </summary>
-    public async Task<AuthResponse> LoginAsync(LoginRequest request)
+    public async Task<AuthResponse> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber, cancellationToken);
 
         if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
         {
@@ -70,20 +70,20 @@ public class AuthService : IAuthService
         }
 
         Log.Information("用户登录成功：{MaskedPhone}，角色：{Role}", MaskPhoneNumber(request.PhoneNumber), user.Role);
-        return await GenerateAuthResponse(user);
+        return await GenerateAuthResponse(user, cancellationToken);
     }
 
     /// <summary>
     /// 刷新令牌：验证刷新令牌有效性，支持 Token 轮换机制并检测重放攻击
     /// </summary>
-    public async Task<AuthResponse> RefreshTokenAsync(string token)
+    public async Task<AuthResponse> RefreshTokenAsync(string token, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(token, nameof(token));
 
         var refreshToken = await _context.RefreshTokens
             .AsTracking()
             .Include(rt => rt.User)
-            .FirstOrDefaultAsync(rt => rt.Token == token);
+            .FirstOrDefaultAsync(rt => rt.Token == token, cancellationToken);
 
         if (refreshToken == null)
         {
@@ -99,12 +99,12 @@ public class AuthService : IAuthService
             var allTokens = await _context.RefreshTokens
                 .AsTracking()
                 .Where(rt => rt.UserId == refreshToken.UserId && !rt.IsRevoked)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
             foreach (var t in allTokens)
             {
                 t.IsRevoked = true;
             }
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             throw new ArgumentException(ErrorMessages.Auth.SecurityAnomaly);
         }
 
@@ -121,18 +121,18 @@ public class AuthService : IAuthService
         // 清理该用户已过期的旧刷新令牌，防止数据库膨胀
         var expiredTokens = await _context.RefreshTokens
             .Where(rt => rt.UserId == refreshToken.UserId && rt.ExpiresAt < DateTime.UtcNow)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
         if (expiredTokens.Any())
         {
             _context.RefreshTokens.RemoveRange(expiredTokens);
         }
 
         Log.Information("令牌刷新成功，用户：{UserId}", refreshToken.UserId);
-        return await GenerateAuthResponse(refreshToken.User);
+        return await GenerateAuthResponse(refreshToken.User, cancellationToken);
     }
 
     /// <summary>生成访问令牌和刷新令牌</summary>
-    private async Task<AuthResponse> GenerateAuthResponse(User user)
+    private async Task<AuthResponse> GenerateAuthResponse(User user, CancellationToken cancellationToken)
     {
         var accessToken = GenerateAccessToken(user);
         var refreshToken = GenerateRefreshToken();
@@ -150,7 +150,7 @@ public class AuthService : IAuthService
             CreatedAt = DateTime.UtcNow
         });
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         return new AuthResponse
         {

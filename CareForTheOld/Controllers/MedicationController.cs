@@ -38,7 +38,7 @@ public class MedicationController : ControllerBase
     public async Task<ApiResponse<MedicationPlanResponse>> CreatePlan([FromBody] CreateMedicationPlanRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _medicationService.CreatePlanAsync(userId, request);
+        var result = await _medicationService.CreatePlanAsync(userId, request, cancellationToken);
         return ApiResponse<MedicationPlanResponse>.Ok(result, SuccessMessages.Medication.CreateSuccess);
     }
 
@@ -51,7 +51,7 @@ public class MedicationController : ControllerBase
     public async Task<ApiResponse<List<MedicationPlanResponse>>> GetPlansByElder(Guid elderId, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _medicationService.GetPlansByElderAsync(elderId, userId);
+        var result = await _medicationService.GetPlansByElderAsync(elderId, userId, cancellationToken);
         return ApiResponse<List<MedicationPlanResponse>>.Ok(result);
     }
 
@@ -64,7 +64,7 @@ public class MedicationController : ControllerBase
     public async Task<ApiResponse<List<MedicationPlanResponse>>> GetMyPlans(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _medicationService.GetPlansByElderAsync(userId);
+        var result = await _medicationService.GetPlansByElderAsync(userId, cancellationToken: cancellationToken);
         return ApiResponse<List<MedicationPlanResponse>>.Ok(result);
     }
 
@@ -76,7 +76,7 @@ public class MedicationController : ControllerBase
     public async Task<ApiResponse<MedicationPlanResponse>> UpdatePlan(Guid id, [FromBody] UpdateMedicationPlanRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _medicationService.UpdatePlanAsync(id, userId, request);
+        var result = await _medicationService.UpdatePlanAsync(id, userId, request, cancellationToken);
         return ApiResponse<MedicationPlanResponse>.Ok(result, SuccessMessages.Medication.UpdateSuccess);
     }
 
@@ -88,7 +88,7 @@ public class MedicationController : ControllerBase
     public async Task<ApiResponse<object>> DeletePlan(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        await _medicationService.DeletePlanAsync(id, userId);
+        await _medicationService.DeletePlanAsync(id, userId, cancellationToken);
         return ApiResponse<object>.Ok(null!, SuccessMessages.Medication.DeleteSuccess);
     }
 
@@ -100,7 +100,7 @@ public class MedicationController : ControllerBase
     public async Task<ApiResponse<MedicationLogResponse>> RecordLog([FromBody] RecordMedicationLogRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _medicationService.RecordLogAsync(userId, request);
+        var result = await _medicationService.RecordLogAsync(userId, request, cancellationToken);
         return ApiResponse<MedicationLogResponse>.Ok(result, SuccessMessages.Medication.LogSuccess);
     }
 
@@ -119,7 +119,7 @@ public class MedicationController : ControllerBase
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
-        var result = await _medicationService.GetLogsAsync(elderId, date, skip, limit, userId);
+        var result = await _medicationService.GetLogsAsync(elderId, date, skip, limit, userId, cancellationToken);
         return ApiResponse<List<MedicationLogResponse>>.Ok(result);
     }
 
@@ -137,7 +137,7 @@ public class MedicationController : ControllerBase
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
-        var result = await _medicationService.GetLogsAsync(userId, date, skip, limit);
+        var result = await _medicationService.GetLogsAsync(userId, date, skip, limit, cancellationToken: cancellationToken);
         return ApiResponse<List<MedicationLogResponse>>.Ok(result);
     }
 
@@ -150,7 +150,7 @@ public class MedicationController : ControllerBase
     public async Task<ApiResponse<List<MedicationLogResponse>>> GetTodayPending(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _medicationService.GetTodayPendingAsync(userId);
+        var result = await _medicationService.GetTodayPendingAsync(userId, cancellationToken);
         return ApiResponse<List<MedicationLogResponse>>.Ok(result);
     }
 }

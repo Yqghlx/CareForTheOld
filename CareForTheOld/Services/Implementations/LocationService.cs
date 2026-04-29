@@ -41,9 +41,9 @@ public class LocationService : ILocationService
     /// <summary>
     /// 上报位置
     /// </summary>
-    public async Task<LocationRecordResponse> ReportLocationAsync(Guid userId, double latitude, double longitude, double? accuracy = null)
+    public async Task<LocationRecordResponse> ReportLocationAsync(Guid userId, double latitude, double longitude, double? accuracy = null, CancellationToken cancellationToken = default)
     {
-        var user = await _context.Users.FindAsync(userId)
+        var user = await _context.Users.FindAsync(new object[] { userId }, cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
         var record = new LocationRecord
@@ -56,7 +56,7 @@ public class LocationService : ILocationService
         };
 
         _context.LocationRecords.Add(record);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         // GPS 精度过滤：精度超过阈值时跳过围栏检查，防止室内飘移误报
         var shouldCheckFence = accuracy == null || accuracy.Value <= _accuracyThreshold;
@@ -70,7 +70,7 @@ public class LocationService : ILocationService
         // 检查是否超出电子围栏
         if (shouldCheckFence)
         {
-            var outsideResult = await _geoFenceService.CheckOutsideFenceAsync(userId, latitude, longitude);
+            var outsideResult = await _geoFenceService.CheckOutsideFenceAsync(userId, latitude, longitude, cancellationToken);
             if (outsideResult != null)
             {
                 var (fence, distance) = outsideResult.Value;
@@ -94,13 +94,13 @@ public class LocationService : ILocationService
     /// <summary>
     /// 获取用户最新位置
     /// </summary>
-    public async Task<LocationRecordResponse?> GetLatestLocationAsync(Guid userId)
+    public async Task<LocationRecordResponse?> GetLatestLocationAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         var record = await _context.LocationRecords
             .Include(r => r.User)
             .Where(r => r.UserId == userId)
             .OrderByDescending(r => r.RecordedAt)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(cancellationToken);
 
         if (record == null) return null;
 
@@ -110,7 +110,7 @@ public class LocationService : ILocationService
     /// <summary>
     /// 获取用户位置历史
     /// </summary>
-    public async Task<List<LocationRecordResponse>> GetLocationHistoryAsync(Guid userId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize)
+    public async Task<List<LocationRecordResponse>> GetLocationHistoryAsync(Guid userId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize, CancellationToken cancellationToken = default)
     {
         var records = await _context.LocationRecords
             .Include(r => r.User)
@@ -118,7 +118,7 @@ public class LocationService : ILocationService
             .OrderByDescending(r => r.RecordedAt)
             .Skip(skip)
             .Take(limit)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return records.Select(MapToResponse).ToList();
     }
@@ -126,29 +126,29 @@ public class LocationService : ILocationService
     /// <summary>
     /// 获取家庭成员最新位置（子女查看老人）
     /// </summary>
-    public async Task<LocationRecordResponse?> GetFamilyMemberLatestLocationAsync(Guid familyId, Guid memberId)
+    public async Task<LocationRecordResponse?> GetFamilyMemberLatestLocationAsync(Guid familyId, Guid memberId, CancellationToken cancellationToken = default)
     {
         // 验证 memberId 是否在该家庭中
         var isMember = await _context.FamilyMembers
-            .AnyAsync(fm => fm.FamilyId == familyId && fm.UserId == memberId);
+            .AnyAsync(fm => fm.FamilyId == familyId && fm.UserId == memberId, cancellationToken);
 
         if (!isMember) return null;
 
-        return await GetLatestLocationAsync(memberId);
+        return await GetLatestLocationAsync(memberId, cancellationToken);
     }
 
     /// <summary>
     /// 获取家庭成员位置历史（子女查看老人）
     /// </summary>
-    public async Task<List<LocationRecordResponse>> GetFamilyMemberLocationHistoryAsync(Guid familyId, Guid memberId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize)
+    public async Task<List<LocationRecordResponse>> GetFamilyMemberLocationHistoryAsync(Guid familyId, Guid memberId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize, CancellationToken cancellationToken = default)
     {
         // 验证 memberId 是否在该家庭中
         var isMember = await _context.FamilyMembers
-            .AnyAsync(fm => fm.FamilyId == familyId && fm.UserId == memberId);
+            .AnyAsync(fm => fm.FamilyId == familyId && fm.UserId == memberId, cancellationToken);
 
         if (!isMember) return [];
 
-        return await GetLocationHistoryAsync(memberId, skip, limit);
+        return await GetLocationHistoryAsync(memberId, skip, limit, cancellationToken);
     }
 
     /// <summary>
@@ -170,12 +170,12 @@ public class LocationService : ILocationService
     /// <summary>
     /// 发送电子围栏超出预警通知给子女
     /// </summary>
-    private async Task SendGeoFenceAlertAsync(Guid elderId, Guid fenceId, int fenceRadius, double distance)
+    private async Task SendGeoFenceAlertAsync(Guid elderId, Guid fenceId, int fenceRadius, double distance, CancellationToken cancellationToken = default)
     {
         // 获取老人所在的家庭（含用户信息，避免额外查询）
         var familyMember = await _context.FamilyMembers
             .Include(fm => fm.User)
-            .FirstOrDefaultAsync(fm => fm.UserId == elderId);
+            .FirstOrDefaultAsync(fm => fm.UserId == elderId, cancellationToken);
 
         if (familyMember == null) return; // 老人没有加入家庭，无法通知
 
@@ -186,7 +186,7 @@ public class LocationService : ILocationService
         var children = await _context.FamilyMembers
             .Include(fm => fm.User)
             .Where(fm => fm.FamilyId == familyMember.FamilyId && fm.Role == UserRole.Child)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         if (!children.Any()) return; // 没有子女成员
 
@@ -208,12 +208,13 @@ public class LocationService : ILocationService
                 FenceRadius = fenceRadius,
                 Distance = distance,
                 AlertLevel = distance > fenceRadius * 2 ? AppConstants.AlertLevels.Critical : AppConstants.AlertLevels.Warning
-            }
+            },
+            cancellationToken
         );
 
         // 检查老人是否在邻里圈中，若在则启动自动救援计时器
         var circleMembership = await _context.NeighborCircleMembers
-            .FirstOrDefaultAsync(m => m.UserId == elderId);
+            .FirstOrDefaultAsync(m => m.UserId == elderId, cancellationToken);
         if (circleMembership != null)
         {
             try

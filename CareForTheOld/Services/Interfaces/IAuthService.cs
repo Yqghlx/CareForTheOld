@@ -9,11 +9,11 @@ namespace CareForTheOld.Services.Interfaces;
 public interface IAuthService
 {
     /// <summary>用户注册</summary>
-    Task<AuthResponse> RegisterAsync(RegisterRequest request);
+    Task<AuthResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default);
 
     /// <summary>用户登录</summary>
-    Task<AuthResponse> LoginAsync(LoginRequest request);
+    Task<AuthResponse> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default);
 
     /// <summary>刷新令牌</summary>
-    Task<AuthResponse> RefreshTokenAsync(string refreshToken);
+    Task<AuthResponse> RefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default);
 }

@@ -40,7 +40,7 @@ public class LocationController : ControllerBase
     public async Task<ApiResponse<LocationRecordResponse>> ReportLocation([FromBody] ReportLocationRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var record = await _locationService.ReportLocationAsync(userId, request.Latitude, request.Longitude, request.Accuracy);
+        var record = await _locationService.ReportLocationAsync(userId, request.Latitude, request.Longitude, request.Accuracy, cancellationToken);
         return ApiResponse<LocationRecordResponse>.Ok(record, SuccessMessages.Location.ReportSuccess);
     }
 
@@ -52,7 +52,7 @@ public class LocationController : ControllerBase
     public async Task<ApiResponse<LocationRecordResponse?>> GetMyLatestLocation(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var record = await _locationService.GetLatestLocationAsync(userId);
+        var record = await _locationService.GetLatestLocationAsync(userId, cancellationToken);
         return ApiResponse<LocationRecordResponse?>.Ok(record);
     }
 
@@ -65,7 +65,7 @@ public class LocationController : ControllerBase
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
-        var records = await _locationService.GetLocationHistoryAsync(userId, skip, limit);
+        var records = await _locationService.GetLocationHistoryAsync(userId, skip, limit, cancellationToken);
         return ApiResponse<List<LocationRecordResponse>>.Ok(records);
     }
 
@@ -84,7 +84,7 @@ public class LocationController : ControllerBase
         if (!await this.IsFamilyMemberAsync(_familyService, familyId, memberId))
             return ApiResponse<LocationRecordResponse?>.Fail(ErrorMessages.Family.MemberNotInFamily);
 
-        var record = await _locationService.GetFamilyMemberLatestLocationAsync(familyId, memberId);
+        var record = await _locationService.GetFamilyMemberLatestLocationAsync(familyId, memberId, cancellationToken);
         return ApiResponse<LocationRecordResponse?>.Ok(record);
     }
 
@@ -105,7 +105,7 @@ public class LocationController : ControllerBase
         if (!await this.IsFamilyMemberAsync(_familyService, familyId, memberId))
             return ApiResponse<List<LocationRecordResponse>>.Fail(ErrorMessages.Family.MemberNotInFamily);
 
-        var records = await _locationService.GetFamilyMemberLocationHistoryAsync(familyId, memberId, skip, limit);
+        var records = await _locationService.GetFamilyMemberLocationHistoryAsync(familyId, memberId, skip, limit, cancellationToken);
         return ApiResponse<List<LocationRecordResponse>>.Ok(records);
     }
 }

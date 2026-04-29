@@ -29,7 +29,7 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<ApiResponse<AuthResponse>> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken = default)
     {
-        var result = await _authService.RegisterAsync(request);
+        var result = await _authService.RegisterAsync(request, cancellationToken);
         return ApiResponse<AuthResponse>.Ok(result, SuccessMessages.Auth.RegisterSuccess);
     }
 
@@ -37,7 +37,7 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<ApiResponse<AuthResponse>> Login([FromBody] LoginRequest request, CancellationToken cancellationToken = default)
     {
-        var result = await _authService.LoginAsync(request);
+        var result = await _authService.LoginAsync(request, cancellationToken);
         return ApiResponse<AuthResponse>.Ok(result, SuccessMessages.Auth.LoginSuccess);
     }
 
@@ -45,7 +45,7 @@ public class AuthController : ControllerBase
     [HttpPost("refresh")]
     public async Task<ApiResponse<AuthResponse>> Refresh([FromBody] RefreshTokenRequest request, CancellationToken cancellationToken = default)
     {
-        var result = await _authService.RefreshTokenAsync(request.RefreshToken);
+        var result = await _authService.RefreshTokenAsync(request.RefreshToken, cancellationToken);
         return ApiResponse<AuthResponse>.Ok(result, SuccessMessages.Auth.RefreshSuccess);
     }
 }

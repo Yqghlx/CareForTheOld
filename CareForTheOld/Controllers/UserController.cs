@@ -40,7 +40,7 @@ public class UserController : ControllerBase
     public async Task<ApiResponse<UserResponse>> GetCurrentUser(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _userService.GetCurrentUserAsync(userId);
+        var result = await _userService.GetCurrentUserAsync(userId, cancellationToken);
         return ApiResponse<UserResponse>.Ok(result);
     }
 
@@ -51,7 +51,7 @@ public class UserController : ControllerBase
     public async Task<ApiResponse<UserResponse>> UpdateUser([FromBody] UpdateUserRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        var result = await _userService.UpdateUserAsync(userId, request);
+        var result = await _userService.UpdateUserAsync(userId, request, cancellationToken);
         return ApiResponse<UserResponse>.Ok(result, SuccessMessages.User.UpdateSuccess);
     }
 
@@ -62,7 +62,7 @@ public class UserController : ControllerBase
     public async Task<ApiResponse<object>> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        await _userService.ChangePasswordAsync(userId, request);
+        await _userService.ChangePasswordAsync(userId, request, cancellationToken);
         return ApiResponse<object>.Ok(null!, SuccessMessages.User.PasswordChanged);
     }
 
@@ -109,7 +109,7 @@ public class UserController : ControllerBase
         var avatarUrl = await _fileStorageService.UploadAsync(AppConstants.FileDirectories.Avatars, fileName, stream, file.ContentType);
 
         // 更新用户头像 URL
-        await _userService.UpdateAvatarUrlAsync(userId, avatarUrl);
+        await _userService.UpdateAvatarUrlAsync(userId, avatarUrl, cancellationToken);
 
         return ApiResponse<object>.Ok(new { avatarUrl }, SuccessMessages.User.AvatarUploaded);
     }
@@ -123,9 +123,9 @@ public class UserController : ControllerBase
         if (id != currentUserId)
         {
             // 非本人查询：由服务层校验家庭成员关系
-            await _userService.EnsureFamilyMemberAsync(currentUserId, id);
+            await _userService.EnsureFamilyMemberAsync(currentUserId, id, cancellationToken);
         }
-        var result = await _userService.GetUserByIdAsync(id);
+        var result = await _userService.GetUserByIdAsync(id, cancellationToken);
         return ApiResponse<UserResponse>.Ok(result);
     }
 }

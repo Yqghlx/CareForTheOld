@@ -33,7 +33,7 @@ public class AutoRescueService : IAutoRescueService
     }
 
     /// <inheritdoc />
-    public async Task StartRescueTimerAsync(Guid elderId, Guid familyId, Guid circleId, RescueTriggerType triggerType)
+    public async Task StartRescueTimerAsync(Guid elderId, Guid familyId, Guid circleId, RescueTriggerType triggerType, CancellationToken cancellationToken = default)
     {
         if (!_enabled)
         {
@@ -47,7 +47,7 @@ public class AutoRescueService : IAutoRescueService
         // 防重复：如果该老人已有待处理的救援记录，不重复创建
         var existing = await context.AutoRescueRecords
             .AnyAsync(a => a.ElderId == elderId &&
-                           a.Status == AutoRescueStatus.WaitingChildResponse);
+                           a.Status == AutoRescueStatus.WaitingChildResponse, cancellationToken);
         if (existing)
         {
             _logger.LogDebug("老人 {ElderId} 已有待处理的自动救援记录，跳过", elderId);
@@ -66,18 +66,18 @@ public class AutoRescueService : IAutoRescueService
         };
 
         context.AutoRescueRecords.Add(record);
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(cancellationToken);
 
         // 通知子女
         var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
-        var elder = await context.Users.FindAsync(elderId);
+        var elder = await context.Users.FindAsync([elderId], cancellationToken);
         var elderName = elder?.RealName ?? AppConstants.HealthTypeLabels.DefaultElderName;
 
         var triggerText = triggerType == RescueTriggerType.GeoFenceBreach
             ? NotificationMessages.AutoRescue.GeoFenceBreachText
             : NotificationMessages.AutoRescue.HeartbeatTimeoutText;
 
-        var childIds = await GetChildUserIdsAsync(context, familyId);
+        var childIds = await GetChildUserIdsAsync(context, familyId, cancellationToken);
 
         if (childIds.Any())
         {
@@ -98,7 +98,7 @@ public class AutoRescueService : IAutoRescueService
 
             // 更新通知时间
             record.ChildNotifiedAt = DateTime.UtcNow;
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(cancellationToken);
         }
 
         _logger.LogInformation(
@@ -108,7 +108,7 @@ public class AutoRescueService : IAutoRescueService
 
     /// <inheritdoc />
     [AutomaticRetry(Attempts = 3, DelaysInSeconds = new[] { 10, 30 })]
-    public async Task CheckPendingRescuesAsync()
+    public async Task CheckPendingRescuesAsync(CancellationToken cancellationToken = default)
     {
         if (!_enabled) return;
 
@@ -123,7 +123,7 @@ public class AutoRescueService : IAutoRescueService
             .AsTracking()
             .Include(a => a.Elder)
             .Where(a => a.Status == AutoRescueStatus.WaitingChildResponse && a.TriggeredAt < cutoff)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         if (!pendingRecords.Any()) return;
 
@@ -132,7 +132,7 @@ public class AutoRescueService : IAutoRescueService
         var childIdsByFamily = await context.FamilyMembers
             .Where(fm => familyIds.Contains(fm.FamilyId) && fm.Role == UserRole.Child)
             .GroupBy(fm => fm.FamilyId)
-            .ToDictionaryAsync(g => g.Key, g => g.Select(fm => fm.UserId).ToList());
+            .ToDictionaryAsync(g => g.Key, g => g.Select(fm => fm.UserId).ToList(), cancellationToken);
 
         // 批量预加载所有涉及的通知记录（避免循环内逐条查询）
         var allChildIds = childIdsByFamily.Values.SelectMany(ids => ids).Distinct().ToList();
@@ -144,7 +144,7 @@ public class AutoRescueService : IAutoRescueService
                         n.IsRead)
             .Select(n => n.UserId)
             .Distinct()
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         foreach (var record in pendingRecords)
         {
@@ -187,18 +187,18 @@ public class AutoRescueService : IAutoRescueService
             }
         }
 
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     /// <inheritdoc />
-    public async Task ChildRespondAsync(Guid recordId, Guid childId)
+    public async Task ChildRespondAsync(Guid recordId, Guid childId, CancellationToken cancellationToken = default)
     {
         using var scope = _scopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
         var record = await context.AutoRescueRecords
             .AsTracking()
-            .FirstOrDefaultAsync(a => a.Id == recordId)
+            .FirstOrDefaultAsync(a => a.Id == recordId, cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.AutoRescue.RecordNotFound);
 
         if (record.Status != AutoRescueStatus.WaitingChildResponse)
@@ -208,19 +208,19 @@ public class AutoRescueService : IAutoRescueService
         var isChild = await context.FamilyMembers
             .AnyAsync(fm => fm.FamilyId == record.FamilyId &&
                             fm.UserId == childId &&
-                            fm.Role == UserRole.Child);
+                            fm.Role == UserRole.Child, cancellationToken);
         if (!isChild)
             throw new UnauthorizedAccessException(ErrorMessages.AutoRescue.OnlyChildCanRespond);
 
         record.Status = AutoRescueStatus.ChildResponded;
         record.ChildRespondedAt = DateTime.UtcNow;
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("自动救援记录 {RecordId}：子女 {ChildId} 已主动响应", recordId, childId);
     }
 
     /// <inheritdoc />
-    public async Task<List<AutoRescueRecord>> GetHistoryAsync(Guid familyId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultHistoryPageSize)
+    public async Task<List<AutoRescueRecord>> GetHistoryAsync(Guid familyId, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultHistoryPageSize, CancellationToken cancellationToken = default)
     {
         using var scope = _scopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -231,17 +231,17 @@ public class AutoRescueService : IAutoRescueService
             .OrderByDescending(a => a.TriggeredAt)
             .Skip(skip)
             .Take(limit)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
     /// <summary>
     /// 获取指定家庭中所有子女的用户 ID
     /// </summary>
-    private static async Task<List<Guid>> GetChildUserIdsAsync(AppDbContext context, Guid familyId)
+    private static async Task<List<Guid>> GetChildUserIdsAsync(AppDbContext context, Guid familyId, CancellationToken cancellationToken = default)
     {
         return await context.FamilyMembers
             .Where(fm => fm.FamilyId == familyId && fm.Role == UserRole.Child)
             .Select(fm => fm.UserId)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 }

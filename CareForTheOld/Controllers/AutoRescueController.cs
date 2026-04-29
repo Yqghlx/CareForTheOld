@@ -44,7 +44,7 @@ public class AutoRescueController : ControllerBase
     public async Task<ApiResponse<object>> ChildRespond(Guid recordId, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
-        await _autoRescueService.ChildRespondAsync(recordId, userId);
+        await _autoRescueService.ChildRespondAsync(recordId, userId, cancellationToken);
         return ApiResponse<object>.Ok(null!, SuccessMessages.AutoRescue.RespondConfirmed);
     }
 
@@ -58,11 +58,11 @@ public class AutoRescueController : ControllerBase
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
         var familyMember = await _context.FamilyMembers
-            .FirstOrDefaultAsync(fm => fm.UserId == userId);
+            .FirstOrDefaultAsync(fm => fm.UserId == userId, cancellationToken);
         if (familyMember == null)
             return ApiResponse<object>.Fail(ErrorMessages.Family.NotJoinedFamily);
 
-        var records = await _autoRescueService.GetHistoryAsync(familyMember.FamilyId, skip, limit);
+        var records = await _autoRescueService.GetHistoryAsync(familyMember.FamilyId, skip, limit, cancellationToken);
         var result = records.Select(r => new
         {
             r.Id,

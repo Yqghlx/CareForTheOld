@@ -30,14 +30,14 @@ public class MedicationService : IMedicationService
     /// <summary>
     /// 创建用药计划
     /// </summary>
-    public async Task<MedicationPlanResponse> CreatePlanAsync(Guid operatorId, CreateMedicationPlanRequest request)
+    public async Task<MedicationPlanResponse> CreatePlanAsync(Guid operatorId, CreateMedicationPlanRequest request, CancellationToken cancellationToken = default)
     {
         // 验证老人是否存在
-        var elder = await _context.Users.FindAsync(request.ElderId)
+        var elder = await _context.Users.FindAsync([request.ElderId], cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.Medication.ElderNotFound);
 
         // 验证操作者权限（必须是老人的家庭成员）
-        await _familyService.EnsureFamilyMemberAsync(request.ElderId, operatorId);
+        await _familyService.EnsureFamilyMemberAsync(request.ElderId, operatorId, cancellationToken);
 
         // 验证时间格式
         ValidateReminderTimes(request.ReminderTimes);
@@ -57,7 +57,7 @@ public class MedicationService : IMedicationService
         plan.CreatedAt = plan.UpdatedAt = DateTime.UtcNow;
 
         _context.MedicationPlans.Add(plan);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("用药计划已创建：老人 {ElderId}，药品 {MedicineName}，计划 {PlanId}", request.ElderId, request.MedicineName, plan.Id);
 
@@ -67,12 +67,12 @@ public class MedicationService : IMedicationService
     /// <summary>
     /// 获取老人的用药计划列表
     /// </summary>
-    public async Task<List<MedicationPlanResponse>> GetPlansByElderAsync(Guid elderId, Guid? operatorId = null)
+    public async Task<List<MedicationPlanResponse>> GetPlansByElderAsync(Guid elderId, Guid? operatorId = null, CancellationToken cancellationToken = default)
     {
         // 如果提供了 operatorId，验证是否为家庭成员
         if (operatorId.HasValue)
         {
-            await _familyService.EnsureFamilyMemberAsync(elderId, operatorId.Value);
+            await _familyService.EnsureFamilyMemberAsync(elderId, operatorId.Value, cancellationToken);
         }
 
         return await _context.MedicationPlans
@@ -80,22 +80,22 @@ public class MedicationService : IMedicationService
             .Where(p => p.ElderId == elderId && !p.IsDeleted)
             .OrderByDescending(p => p.CreatedAt)
             .Select(p => MapToPlanResponseProjection(p))
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
     /// <summary>
     /// 更新用药计划
     /// </summary>
-    public async Task<MedicationPlanResponse> UpdatePlanAsync(Guid planId, Guid operatorId, UpdateMedicationPlanRequest request)
+    public async Task<MedicationPlanResponse> UpdatePlanAsync(Guid planId, Guid operatorId, UpdateMedicationPlanRequest request, CancellationToken cancellationToken = default)
     {
         var plan = await _context.MedicationPlans
             .AsTracking()
             .Include(p => p.Elder)
-            .FirstOrDefaultAsync(p => p.Id == planId)
+            .FirstOrDefaultAsync(p => p.Id == planId, cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.Medication.PlanNotFound);
 
         // 验证操作者权限
-        await _familyService.EnsureFamilyMemberAsync(plan.ElderId, operatorId);
+        await _familyService.EnsureFamilyMemberAsync(plan.ElderId, operatorId, cancellationToken);
 
         if (request.MedicineName is not null) plan.MedicineName = request.MedicineName;
         if (request.Dosage is not null) plan.Dosage = request.Dosage;
@@ -109,24 +109,24 @@ public class MedicationService : IMedicationService
         if (request.IsActive is not null) plan.IsActive = request.IsActive.Value;
         plan.UpdatedAt = DateTime.UtcNow;
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
         return MapToPlanResponse(plan, plan.Elder.RealName);
     }
 
     /// <summary>
     /// 软删除用药计划
     /// </summary>
-    public async Task DeletePlanAsync(Guid planId, Guid operatorId)
+    public async Task DeletePlanAsync(Guid planId, Guid operatorId, CancellationToken cancellationToken = default)
     {
-        var plan = await _context.MedicationPlans.AsTracking().FirstOrDefaultAsync(p => p.Id == planId)
+        var plan = await _context.MedicationPlans.AsTracking().FirstOrDefaultAsync(p => p.Id == planId, cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.Medication.PlanNotFound);
 
-        await _familyService.EnsureFamilyMemberAsync(plan.ElderId, operatorId);
+        await _familyService.EnsureFamilyMemberAsync(plan.ElderId, operatorId, cancellationToken);
 
         // 软删除：标记为已删除，保留数据
         plan.IsDeleted = true;
         plan.DeletedAt = DateTime.UtcNow;
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("用药计划已删除：计划 {PlanId}，操作者 {OperatorId}", planId, operatorId);
     }
@@ -134,27 +134,27 @@ public class MedicationService : IMedicationService
     /// <summary>
     /// 记录用药日志（含并发冲突处理：计划 ID + 时间唯一约束）
     /// </summary>
-    public async Task<MedicationLogResponse> RecordLogAsync(Guid operatorId, RecordMedicationLogRequest request)
+    public async Task<MedicationLogResponse> RecordLogAsync(Guid operatorId, RecordMedicationLogRequest request, CancellationToken cancellationToken = default)
     {
         var plan = await _context.MedicationPlans
             .AsTracking()
             .Include(p => p.Elder)
-            .FirstOrDefaultAsync(p => p.Id == request.PlanId)
+            .FirstOrDefaultAsync(p => p.Id == request.PlanId, cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.Medication.PlanNotFound);
 
-        await _familyService.EnsureFamilyMemberAsync(plan.ElderId, operatorId);
+        await _familyService.EnsureFamilyMemberAsync(plan.ElderId, operatorId, cancellationToken);
 
         // 检查是否已有该时间点的日志
         var existingLog = await _context.MedicationLogs
             .AsTracking()
-            .FirstOrDefaultAsync(l => l.PlanId == request.PlanId && l.ScheduledAt == request.ScheduledAt);
+            .FirstOrDefaultAsync(l => l.PlanId == request.PlanId && l.ScheduledAt == request.ScheduledAt, cancellationToken);
 
         if (existingLog is not null)
         {
             existingLog.Status = request.Status;
             existingLog.TakenAt = request.TakenAt ?? DateTime.UtcNow;
             existingLog.Note = request.Note;
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return MapToLogResponse(existingLog, plan.MedicineName, plan.Elder.RealName);
         }
 
@@ -173,7 +173,7 @@ public class MedicationService : IMedicationService
 
         try
         {
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
         catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex))
         {
@@ -181,11 +181,11 @@ public class MedicationService : IMedicationService
             _context.MedicationLogs.Remove(log);
             var concurrentLog = await _context.MedicationLogs
                 .AsTracking()
-                .FirstAsync(l => l.PlanId == request.PlanId && l.ScheduledAt == request.ScheduledAt);
+                .FirstAsync(l => l.PlanId == request.PlanId && l.ScheduledAt == request.ScheduledAt, cancellationToken);
             concurrentLog.Status = request.Status;
             concurrentLog.TakenAt = request.TakenAt ?? DateTime.UtcNow;
             concurrentLog.Note = request.Note;
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return MapToLogResponse(concurrentLog, plan.MedicineName, plan.Elder.RealName);
         }
 
@@ -195,12 +195,12 @@ public class MedicationService : IMedicationService
     /// <summary>
     /// 获取用药日志列表
     /// </summary>
-    public async Task<List<MedicationLogResponse>> GetLogsAsync(Guid elderId, DateOnly? date, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize, Guid? operatorId = null)
+    public async Task<List<MedicationLogResponse>> GetLogsAsync(Guid elderId, DateOnly? date, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize, Guid? operatorId = null, CancellationToken cancellationToken = default)
     {
         // 如果提供了 operatorId，验证是否为家庭成员
         if (operatorId.HasValue)
         {
-            await _familyService.EnsureFamilyMemberAsync(elderId, operatorId.Value);
+            await _familyService.EnsureFamilyMemberAsync(elderId, operatorId.Value, cancellationToken);
         }
 
         var query = _context.MedicationLogs
@@ -220,13 +220,13 @@ public class MedicationService : IMedicationService
             .Skip(skip)
             .Take(limit)
             .Select(l => MapToLogResponseProjection(l))
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
     /// <summary>
     /// 获取今日待服药列表
     /// </summary>
-    public async Task<List<MedicationLogResponse>> GetTodayPendingAsync(Guid elderId)
+    public async Task<List<MedicationLogResponse>> GetTodayPendingAsync(Guid elderId, CancellationToken cancellationToken = default)
     {
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
         // PostgreSQL timestamp with time zone 要求 DateTime.Kind 必须是 UTC
@@ -237,13 +237,13 @@ public class MedicationService : IMedicationService
         var activePlans = await _context.MedicationPlans
             .Include(p => p.Elder)
             .Where(p => p.ElderId == elderId && p.IsActive && p.StartDate <= today)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         // 批量查询所有相关计划的今日用药记录，避免 N+1 查询
         var planIds = activePlans.Select(p => p.Id).ToList();
         var allExistingLogs = await _context.MedicationLogs
             .Where(l => planIds.Contains(l.PlanId) && l.ScheduledAt >= start && l.ScheduledAt < end)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         var pendingLogs = new List<MedicationLogResponse>();
 
