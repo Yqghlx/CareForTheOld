@@ -16,6 +16,9 @@ class NotificationPage extends ConsumerStatefulWidget {
 
 class _NotificationPageState extends ConsumerState<NotificationPage> {
   String? _expandedNotificationId;
+  bool _isSearching = false;
+  String _searchQuery = '';
+
   @override
   void initState() {
     super.initState();
@@ -24,15 +27,46 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
     });
   }
 
+  List<NotificationRecord> _filterNotifications(List<NotificationRecord> notifications) {
+    if (_searchQuery.isEmpty) return notifications;
+    final query = _searchQuery.toLowerCase();
+    return notifications.where((n) =>
+      n.title.toLowerCase().contains(query) ||
+      n.content.toLowerCase().contains(query)
+    ).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(notificationListProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppTheme.titleNotification),
+        title: _isSearching
+            ? TextField(
+                autofocus: true,
+                decoration: const InputDecoration(
+                  hintText: '搜索通知...',
+                  border: InputBorder.none,
+                  hintStyle: TextStyle(color: AppTheme.grey400),
+                ),
+                style: AppTheme.textBody16,
+                onChanged: (value) => setState(() => _searchQuery = value),
+              )
+            : const Text(AppTheme.titleNotification),
         actions: [
-          if (state.unreadCount > 0)
+          // 搜索按钮
+          IconButton(
+            icon: Icon(_isSearching ? Icons.close : Icons.search),
+            onPressed: () {
+              setState(() {
+                _isSearching = !_isSearching;
+                if (!_isSearching) _searchQuery = '';
+              });
+            },
+            tooltip: _isSearching ? '取消搜索' : '搜索通知',
+          ),
+          if (!_isSearching && state.unreadCount > 0)
             TextButton(
               onPressed: () => ref.read(notificationListProvider.notifier).markAllAsRead(),
               child: const Text('全部已读'),
@@ -63,6 +97,8 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
       );
     }
 
+    final filtered = _filterNotifications(state.notifications);
+
     if (state.notifications.isEmpty) {
       return ListView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -76,22 +112,26 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
       );
     }
 
+    if (filtered.isEmpty) {
+      return ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        children: [
+          SizedBox(height: MediaQuery.of(context).size.height * 0.3),
+          EmptyStateWidget(
+            icon: Icons.search_off,
+            title: '未找到相关通知',
+            subtitle: '尝试其他关键词搜索',
+          ),
+        ],
+      );
+    }
+
     return ListView.builder(
       cacheExtent: 800,
       padding: AppTheme.paddingAll16,
-      itemCount: state.notifications.length + (state.hasMore ? 1 : 0),
+      itemCount: filtered.length,
       itemBuilder: (context, index) {
-        if (index == state.notifications.length) {
-          // 滚动到底部，触发加载更多
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            ref.read(notificationListProvider.notifier).loadMore();
-          });
-          return const Padding(
-            padding: AppTheme.paddingAll16,
-            child: Center(child: CircularProgressIndicator()),
-          );
-        }
-        final notification = state.notifications[index];
+        final notification = filtered[index];
         return _buildNotificationCard(notification);
       },
     );

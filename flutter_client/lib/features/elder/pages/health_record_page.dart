@@ -541,6 +541,39 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       ),
                     ),
                     AppTheme.spacer12,
+                    // 使用上次数据快捷按钮
+                    Builder(builder: (context) {
+                      final lastRecord = ref.read(healthRecordsProvider).records
+                          .where((r) => r.type == type)
+                          .firstOrNull;
+                      if (lastRecord == null) return const SizedBox.shrink();
+                      return Padding(
+                        padding: AppTheme.marginBottom12,
+                        child: InkWell(
+                          onTap: () {
+                            _fillFromLastRecord(type, lastRecord, valueController, valueController2);
+                            setDialogState(() {});
+                          },
+                          borderRadius: AppTheme.radiusS,
+                          child: Container(
+                            padding: AppTheme.paddingH12V8,
+                            decoration: BoxDecoration(
+                              color: AppTheme.primaryColor.withValues(alpha: 0.06),
+                              borderRadius: AppTheme.radiusS,
+                              border: Border.all(color: AppTheme.primaryColor.withValues(alpha: 0.15)),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.history, size: AppTheme.iconSizeSm, color: AppTheme.primaryColor),
+                                AppTheme.hSpacer8,
+                                Text('使用上次数据', style: AppTheme.textCaption.copyWith(color: AppTheme.primaryColor)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
                     // 快捷输入区域：语音 + 拍照并列
                     Container(
                       padding: AppTheme.paddingAll16,
@@ -946,6 +979,29 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
   }
 
   /// 将语音识别文本解析后填入对应的输入框
+  /// 从上次记录填充表单
+  void _fillFromLastRecord(
+    HealthType type,
+    HealthRecord lastRecord,
+    TextEditingController valueController,
+    TextEditingController valueController2,
+  ) {
+    switch (type) {
+      case HealthType.bloodPressure:
+        if (lastRecord.systolic != null) valueController.text = lastRecord.systolic.toString();
+        if (lastRecord.diastolic != null) valueController2.text = lastRecord.diastolic.toString();
+      case HealthType.bloodSugar:
+        final bs = lastRecord.bloodSugar;
+        if (bs != null) valueController.text = bs.toStringAsFixed(1);
+      case HealthType.heartRate:
+        final hr = lastRecord.heartRate;
+        if (hr != null) valueController.text = hr.toString();
+      case HealthType.temperature:
+        final t = lastRecord.temperature;
+        if (t != null) valueController.text = t.toStringAsFixed(1);
+    }
+  }
+
   void _fillFromVoice(
     HealthType type,
     String text,
