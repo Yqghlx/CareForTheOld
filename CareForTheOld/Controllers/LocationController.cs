@@ -7,6 +7,7 @@ using CareForTheOld.Models.DTOs.Requests.Location;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using System.ComponentModel.DataAnnotations;
@@ -37,6 +38,8 @@ public class LocationController : ControllerBase
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Elder")]
+    [ProducesResponseType(typeof(ApiResponse<LocationRecordResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     public async Task<ApiResponse<LocationRecordResponse>> ReportLocation([FromBody] ReportLocationRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -49,6 +52,7 @@ public class LocationController : ControllerBase
     /// </summary>
     [HttpGet("me/latest")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
+    [ProducesResponseType(typeof(ApiResponse<LocationRecordResponse?>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<LocationRecordResponse?>> GetMyLatestLocation(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -61,6 +65,7 @@ public class LocationController : ControllerBase
     /// </summary>
     [HttpGet("me/history")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
+    [ProducesResponseType(typeof(ApiResponse<List<LocationRecordResponse>>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<List<LocationRecordResponse>>> GetMyHistory([FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize, CancellationToken cancellationToken = default)
     {
         limit = this.ClampLimit(limit);
@@ -75,6 +80,7 @@ public class LocationController : ControllerBase
     [HttpGet("family/{familyId:guid}/member/{memberId:guid}/latest")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
     [Authorize(Roles = "Child")]
+    [ProducesResponseType(typeof(ApiResponse<LocationRecordResponse?>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<LocationRecordResponse?>> GetFamilyMemberLatestLocation(Guid familyId, Guid memberId, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -94,6 +100,7 @@ public class LocationController : ControllerBase
     [HttpGet("family/{familyId:guid}/member/{memberId:guid}/history")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [Authorize(Roles = "Child")]
+    [ProducesResponseType(typeof(ApiResponse<List<LocationRecordResponse>>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<List<LocationRecordResponse>>> GetFamilyMemberHistory(
         Guid familyId, Guid memberId, [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize, CancellationToken cancellationToken = default)
     {

@@ -8,6 +8,7 @@ using CareForTheOld.Models.DTOs.Requests.Neighbor;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
@@ -34,6 +35,7 @@ public class NeighborCircleController : ControllerBase
     /// </summary>
     [HttpGet("me")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
+    [ProducesResponseType(typeof(ApiResponse<NeighborCircleResponse?>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<NeighborCircleResponse?>> GetMyCircle(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -45,6 +47,8 @@ public class NeighborCircleController : ControllerBase
     /// 创建邻里圈
     /// </summary>
     [HttpPost]
+    [ProducesResponseType(typeof(ApiResponse<NeighborCircleResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     public async Task<ApiResponse<NeighborCircleResponse>> Create([FromBody] CreateNeighborCircleRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -57,6 +61,7 @@ public class NeighborCircleController : ControllerBase
     /// </summary>
     [HttpGet("{id:guid}")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
+    [ProducesResponseType(typeof(ApiResponse<NeighborCircleResponse>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<NeighborCircleResponse>> GetCircle(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -71,6 +76,7 @@ public class NeighborCircleController : ControllerBase
     /// </summary>
     [HttpGet("{id:guid}/members")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
+    [ProducesResponseType(typeof(ApiResponse<List<NeighborMemberResponse>>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<List<NeighborMemberResponse>>> GetMembers(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -85,6 +91,7 @@ public class NeighborCircleController : ControllerBase
     /// </summary>
     [HttpGet("{id:guid}/nearby-members")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
+    [ProducesResponseType(typeof(ApiResponse<List<NeighborMemberResponse>>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<List<NeighborMemberResponse>>> GetNearbyMembers(
         Guid id, [FromQuery, Range(-90.0, 90.0)] double latitude, [FromQuery, Range(-180.0, 180.0)] double longitude, [FromQuery] double radius = AppConstants.NeighborCircle.DefaultMemberRadiusMeters, CancellationToken cancellationToken = default)
     {
@@ -100,6 +107,8 @@ public class NeighborCircleController : ControllerBase
     /// </summary>
     [HttpPost("join")]
     [EnableRateLimiting("JoinCirclePolicy")]
+    [ProducesResponseType(typeof(ApiResponse<NeighborCircleResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     public async Task<ApiResponse<NeighborCircleResponse>> Join([FromBody] JoinNeighborCircleRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -111,6 +120,7 @@ public class NeighborCircleController : ControllerBase
     /// 退出邻里圈（创建者退出则解散）
     /// </summary>
     [HttpPost("{id:guid}/leave")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<object>> Leave(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -122,6 +132,7 @@ public class NeighborCircleController : ControllerBase
     /// 刷新邀请码（仅圈主可操作）
     /// </summary>
     [HttpPost("{id:guid}/refresh-code")]
+    [ProducesResponseType(typeof(ApiResponse<NeighborCircleResponse>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<NeighborCircleResponse>> RefreshInviteCode(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -134,6 +145,7 @@ public class NeighborCircleController : ControllerBase
     /// </summary>
     [HttpGet("nearby")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
+    [ProducesResponseType(typeof(ApiResponse<List<NeighborCircleResponse>>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<List<NeighborCircleResponse>>> SearchNearby(
         [FromQuery, Range(-90.0, 90.0)] double latitude, [FromQuery, Range(-180.0, 180.0)] double longitude, [FromQuery] double radius = AppConstants.NeighborCircle.SearchRadiusMeters, CancellationToken cancellationToken = default)
     {

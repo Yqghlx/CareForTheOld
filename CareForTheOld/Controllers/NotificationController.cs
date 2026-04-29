@@ -5,6 +5,7 @@ using CareForTheOld.Common.Helpers;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using static CareForTheOld.Common.Extensions.ControllerExtensions;
@@ -36,6 +37,7 @@ public class NotificationController : ControllerBase
     /// </summary>
     [HttpGet("me")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
+    [ProducesResponseType(typeof(ApiResponse<List<NotificationResponse>>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<List<NotificationResponse>>> GetMyNotifications(
         [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip,
         [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultPageSize, CancellationToken cancellationToken = default)
@@ -50,6 +52,7 @@ public class NotificationController : ControllerBase
     /// </summary>
     [HttpGet("me/unread-count")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<object>> GetUnreadCount(CancellationToken cancellationToken = default)
     {
         var count = await _notificationService.GetUnreadCountAsync(this.GetUserId(), cancellationToken);
@@ -60,6 +63,7 @@ public class NotificationController : ControllerBase
     /// 标记单条通知已读
     /// </summary>
     [HttpPut("{id:guid}/read")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<object>> MarkAsRead(Guid id, CancellationToken cancellationToken = default)
     {
         var success = await _notificationService.MarkAsReadAsync(id, this.GetUserId(), cancellationToken);
@@ -74,6 +78,7 @@ public class NotificationController : ControllerBase
     /// 全部标记已读
     /// </summary>
     [HttpPut("me/read-all")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<object>> MarkAllAsRead(CancellationToken cancellationToken = default)
     {
         await _notificationService.MarkAllAsReadAsync(this.GetUserId(), cancellationToken);

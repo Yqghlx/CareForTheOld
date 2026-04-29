@@ -4,6 +4,7 @@ using CareForTheOld.Common.Helpers;
 using CareForTheOld.Models.DTOs.Requests.Auth;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
@@ -27,6 +28,8 @@ public class AuthController : ControllerBase
 
     /// <summary>用户注册</summary>
     [HttpPost("register")]
+    [ProducesResponseType(typeof(ApiResponse<AuthResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     public async Task<ApiResponse<AuthResponse>> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken = default)
     {
         var result = await _authService.RegisterAsync(request, cancellationToken);
@@ -35,6 +38,8 @@ public class AuthController : ControllerBase
 
     /// <summary>用户登录</summary>
     [HttpPost("login")]
+    [ProducesResponseType(typeof(ApiResponse<AuthResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     public async Task<ApiResponse<AuthResponse>> Login([FromBody] LoginRequest request, CancellationToken cancellationToken = default)
     {
         var result = await _authService.LoginAsync(request, cancellationToken);
@@ -43,6 +48,8 @@ public class AuthController : ControllerBase
 
     /// <summary>刷新令牌</summary>
     [HttpPost("refresh")]
+    [ProducesResponseType(typeof(ApiResponse<AuthResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     public async Task<ApiResponse<AuthResponse>> Refresh([FromBody] RefreshTokenRequest request, CancellationToken cancellationToken = default)
     {
         var result = await _authService.RefreshTokenAsync(request.RefreshToken, cancellationToken);

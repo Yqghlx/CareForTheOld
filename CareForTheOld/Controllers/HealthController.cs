@@ -10,6 +10,7 @@ using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Interfaces;
 using CareForTheOld.Services.Implementations;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
@@ -51,6 +52,8 @@ public class HealthController : ControllerBase
     [HttpPost]
     [Authorize(Roles = "Elder")]
     [EnableRateLimiting("HealthWritePolicy")]
+    [ProducesResponseType(typeof(ApiResponse<HealthRecordResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     public async Task<ApiResponse<HealthRecordResponse>> CreateRecord([FromBody] CreateHealthRecordRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -63,6 +66,7 @@ public class HealthController : ControllerBase
     /// </summary>
     [HttpGet("me")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
+    [ProducesResponseType(typeof(ApiResponse<List<HealthRecordResponse>>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<List<HealthRecordResponse>>> GetMyRecords(
         [FromQuery] HealthType? type,
         [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip,
@@ -81,6 +85,7 @@ public class HealthController : ControllerBase
     [HttpGet("family/{familyId:guid}/member/{memberId:guid}")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [Authorize(Roles = "Child")]
+    [ProducesResponseType(typeof(ApiResponse<List<HealthRecordResponse>>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<List<HealthRecordResponse>>> GetFamilyMemberRecords(
         Guid familyId,
         Guid memberId,
@@ -104,6 +109,7 @@ public class HealthController : ControllerBase
     /// </summary>
     [HttpGet("me/stats")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheLongSeconds)]
+    [ProducesResponseType(typeof(ApiResponse<List<HealthStatsResponse>>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<List<HealthStatsResponse>>> GetMyStats(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -117,6 +123,7 @@ public class HealthController : ControllerBase
     [HttpGet("family/{familyId:guid}/member/{memberId:guid}/stats")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheLongSeconds)]
     [Authorize(Roles = "Child")]
+    [ProducesResponseType(typeof(ApiResponse<List<HealthStatsResponse>>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<List<HealthStatsResponse>>> GetFamilyMemberStats(
         Guid familyId,
         Guid memberId,
@@ -136,6 +143,7 @@ public class HealthController : ControllerBase
     /// </summary>
     [HttpDelete("{id:guid}")]
     [Authorize(Roles = "Elder")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<object>> DeleteRecord(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -148,6 +156,7 @@ public class HealthController : ControllerBase
     /// </summary>
     [HttpGet("me/report")]
     [Authorize(Roles = "Elder")]
+    [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
     public async Task<IActionResult> ExportMyReport([FromQuery][Range(1, 365)] int days = 7, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -160,6 +169,7 @@ public class HealthController : ControllerBase
     /// </summary>
     [HttpGet("family/{familyId:guid}/member/{memberId:guid}/report")]
     [Authorize(Roles = "Child")]
+    [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
     public async Task<IActionResult> ExportFamilyMemberReport(
         Guid familyId,
         Guid memberId,
@@ -181,6 +191,7 @@ public class HealthController : ControllerBase
     [HttpGet("me/anomaly-detection")]
     [Authorize(Roles = "Elder")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheLongSeconds)]
+    [ProducesResponseType(typeof(ApiResponse<TrendAnomalyDetectionResponse>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<TrendAnomalyDetectionResponse>> GetMyAnomalyDetection(
         [FromQuery] HealthType? type,
         CancellationToken cancellationToken = default)
@@ -220,6 +231,7 @@ public class HealthController : ControllerBase
     [HttpGet("family/{familyId:guid}/member/{memberId:guid}/anomaly-detection")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheLongSeconds)]
     [Authorize(Roles = "Child")]
+    [ProducesResponseType(typeof(ApiResponse<TrendAnomalyDetectionResponse>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<TrendAnomalyDetectionResponse>> GetFamilyMemberAnomalyDetection(
         Guid familyId,
         Guid memberId,

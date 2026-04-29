@@ -7,6 +7,7 @@ using CareForTheOld.Models.DTOs.Requests.Neighbor;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using System.ComponentModel.DataAnnotations;
@@ -34,6 +35,7 @@ public class NeighborHelpController : ControllerBase
     /// </summary>
     [HttpGet("pending")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
+    [ProducesResponseType(typeof(ApiResponse<List<NeighborHelpRequestResponse>>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<List<NeighborHelpRequestResponse>>> GetPending(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -46,6 +48,7 @@ public class NeighborHelpController : ControllerBase
     /// </summary>
     [HttpGet("history")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
+    [ProducesResponseType(typeof(ApiResponse<List<NeighborHelpRequestResponse>>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<List<NeighborHelpRequestResponse>>> GetHistory(
         [FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultHistoryPageSize, CancellationToken cancellationToken = default)
     {
@@ -60,6 +63,7 @@ public class NeighborHelpController : ControllerBase
     /// </summary>
     [HttpGet("{id:guid}")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
+    [ProducesResponseType(typeof(ApiResponse<NeighborHelpRequestResponse>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<NeighborHelpRequestResponse>> GetRequest(Guid id, CancellationToken cancellationToken = default)
     {
         var result = await _helpService.GetRequestAsync(id, cancellationToken);
@@ -70,6 +74,7 @@ public class NeighborHelpController : ControllerBase
     /// 接受求助请求（第一个接受者生效）
     /// </summary>
     [HttpPut("{id:guid}/accept")]
+    [ProducesResponseType(typeof(ApiResponse<NeighborHelpRequestResponse>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<NeighborHelpRequestResponse>> Accept(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -81,6 +86,7 @@ public class NeighborHelpController : ControllerBase
     /// 取消求助请求（仅求助者或其子女）
     /// </summary>
     [HttpPut("{id:guid}/cancel")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<object>> Cancel(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -92,6 +98,8 @@ public class NeighborHelpController : ControllerBase
     /// 评价互助（1-5 星）
     /// </summary>
     [HttpPost("{id:guid}/rate")]
+    [ProducesResponseType(typeof(ApiResponse<NeighborHelpRatingResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     public async Task<ApiResponse<NeighborHelpRatingResponse>> Rate(
         Guid id, [FromBody] RateHelpRequest request, CancellationToken cancellationToken = default)
     {

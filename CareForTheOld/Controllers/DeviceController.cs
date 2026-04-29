@@ -6,6 +6,7 @@ using CareForTheOld.Data;
 using CareForTheOld.Common.Helpers;
 using CareForTheOld.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
@@ -41,6 +42,8 @@ public class DeviceController : ControllerBase
     /// 若 token 已存在（同一设备换用户登录），则更新关联用户和活跃时间。
     /// </summary>
     [HttpPost("token")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     public async Task<ApiResponse<object>> RegisterToken([FromBody] RegisterTokenRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -100,6 +103,7 @@ public class DeviceController : ControllerBase
     /// 清除当前用户的所有设备令牌（登出时调用）
     /// </summary>
     [HttpDelete("token")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<object>> DeleteToken(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();

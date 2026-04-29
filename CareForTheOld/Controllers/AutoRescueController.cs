@@ -6,6 +6,7 @@ using CareForTheOld.Common.Helpers;
 using CareForTheOld.Data;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using CareForTheOld.Models.Enums;
@@ -41,6 +42,7 @@ public class AutoRescueController : ControllerBase
     /// 子女主动响应自动救援告警
     /// </summary>
     [HttpPost("{recordId:guid}/respond")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<object>> ChildRespond(Guid recordId, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -53,6 +55,7 @@ public class AutoRescueController : ControllerBase
     /// </summary>
     [HttpGet("history")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<object>> GetHistory([FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultHistoryPageSize, CancellationToken cancellationToken = default)
     {
         limit = this.ClampLimit(limit);

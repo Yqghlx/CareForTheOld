@@ -7,6 +7,7 @@ using CareForTheOld.Models.DTOs.Requests.Users;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
@@ -37,6 +38,7 @@ public class UserController : ControllerBase
     /// </summary>
     [HttpGet("me")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
+    [ProducesResponseType(typeof(ApiResponse<UserResponse>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<UserResponse>> GetCurrentUser(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -48,6 +50,8 @@ public class UserController : ControllerBase
     /// 更新当前用户信息（昵称、头像URL）
     /// </summary>
     [HttpPut("me")]
+    [ProducesResponseType(typeof(ApiResponse<UserResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     public async Task<ApiResponse<UserResponse>> UpdateUser([FromBody] UpdateUserRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -59,6 +63,8 @@ public class UserController : ControllerBase
     /// 修改当前用户密码
     /// </summary>
     [HttpPost("me/password")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     public async Task<ApiResponse<object>> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -75,6 +81,7 @@ public class UserController : ControllerBase
     /// </remarks>
     [HttpPost("me/avatar")]
     [RequestSizeLimit(AppConstants.FileUpload.MaxAvatarSizeBytes)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<object>> UploadAvatar(IFormFile file, CancellationToken cancellationToken = default)
     {
         if (file == null || file.Length == 0)
@@ -116,6 +123,7 @@ public class UserController : ControllerBase
 
     [HttpGet("{id:guid}")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
+    [ProducesResponseType(typeof(ApiResponse<UserResponse>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<UserResponse>> GetUserById(Guid id, CancellationToken cancellationToken = default)
     {
         // 仅允许查看本人或同一家庭成员的信息，防止越权访问

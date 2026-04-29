@@ -7,6 +7,7 @@ using CareForTheOld.Models.DTOs.Requests.Emergency;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using System.ComponentModel.DataAnnotations;
@@ -36,6 +37,8 @@ public class EmergencyController : ControllerBase
     [HttpPost]
     [Authorize(Roles = "Elder")]
     [EnableRateLimiting("EmergencyPolicy")]
+    [ProducesResponseType(typeof(ApiResponse<EmergencyCallResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     public async Task<ApiResponse<EmergencyCallResponse>> CreateCall([FromBody] CreateEmergencyCallRequest? request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -54,6 +57,7 @@ public class EmergencyController : ControllerBase
     [HttpGet("unread")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
     [Authorize(Roles = "Child")]
+    [ProducesResponseType(typeof(ApiResponse<List<EmergencyCallResponse>>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<List<EmergencyCallResponse>>> GetUnreadCalls(CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -66,6 +70,7 @@ public class EmergencyController : ControllerBase
     /// </summary>
     [HttpGet("history")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
+    [ProducesResponseType(typeof(ApiResponse<List<EmergencyCallResponse>>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<List<EmergencyCallResponse>>> GetHistory([FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultHistoryPageSize, CancellationToken cancellationToken = default)
     {
         limit = this.ClampLimit(limit);
@@ -79,6 +84,7 @@ public class EmergencyController : ControllerBase
     /// </summary>
     [HttpPut("{id}/respond")]
     [Authorize(Roles = "Child")]
+    [ProducesResponseType(typeof(ApiResponse<EmergencyCallResponse>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<EmergencyCallResponse>> RespondCall(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();

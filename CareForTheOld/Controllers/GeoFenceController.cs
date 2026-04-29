@@ -7,6 +7,7 @@ using CareForTheOld.Models.DTOs.Requests.GeoFences;
 using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
@@ -35,6 +36,8 @@ public class GeoFenceController : ControllerBase
     /// 创建电子围栏
     /// </summary>
     [HttpPost]
+    [ProducesResponseType(typeof(ApiResponse<GeoFenceResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     public async Task<ApiResponse<GeoFenceResponse>> CreateFence([FromBody] CreateGeoFenceRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -47,6 +50,7 @@ public class GeoFenceController : ControllerBase
     /// </summary>
     [HttpGet("elder/{elderId}")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
+    [ProducesResponseType(typeof(ApiResponse<GeoFenceResponse?>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<GeoFenceResponse?>> GetElderFence(Guid elderId, CancellationToken cancellationToken = default)
     {
         // 验证请求的子女与目标老人属于同一家庭
@@ -64,6 +68,8 @@ public class GeoFenceController : ControllerBase
     /// 更新电子围栏
     /// </summary>
     [HttpPut("{id}")]
+    [ProducesResponseType(typeof(ApiResponse<GeoFenceResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     public async Task<ApiResponse<GeoFenceResponse>> UpdateFence(Guid id, [FromBody] CreateGeoFenceRequest request, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
@@ -75,6 +81,7 @@ public class GeoFenceController : ControllerBase
     /// 删除电子围栏
     /// </summary>
     [HttpDelete("{id}")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<object>> DeleteFence(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
