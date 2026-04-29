@@ -163,6 +163,9 @@ public static class ServiceCollectionExtensions
             healthChecksBuilder.AddRedis(redisConnection, name: "redis");
         }
 
+        // Hangfire 后台任务健康检查
+        healthChecksBuilder.AddCheck<HealthChecks.HangfireHealthCheck>("hangfire", tags: ["ready"]);
+
         return services;
     }
 
