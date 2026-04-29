@@ -44,20 +44,20 @@ public class HealthAlertService : IHealthAlertService
     /// </summary>
     public async Task SendAlertToChildrenAsync(Guid elderId, HealthRecord record, string alertMessage, CancellationToken cancellationToken = default)
     {
-        // 获取老人所在的家庭（含用户信息，避免额外查询）
-        var familyMember = await _context.FamilyMembers
+        // 一次查询获取老人所在家庭的所有成员（含子女），减少数据库往返
+        var familyMembers = await _context.FamilyMembers
             .Include(fm => fm.User)
-            .FirstOrDefaultAsync(fm => fm.UserId == elderId, cancellationToken);
-
-        if (familyMember == null) return; // 老人没有加入家庭，无法通知
-
-        // 获取家庭中的子女成员
-        var children = await _context.FamilyMembers
-            .Include(fm => fm.User)
-            .Where(fm => fm.FamilyId == familyMember.FamilyId && fm.Role == UserRole.Child)
+            .Where(fm => fm.FamilyId == _context.FamilyMembers
+                .Where(efm => efm.UserId == elderId)
+                .Select(efm => efm.FamilyId)
+                .First())
             .ToListAsync(cancellationToken);
 
-        if (!children.Any()) return; // 没有子女成员
+        var familyMember = familyMembers.FirstOrDefault(fm => fm.UserId == elderId);
+        if (familyMember == null) return;
+
+        var children = familyMembers.Where(fm => fm.Role == UserRole.Child).ToList();
+        if (!children.Any()) return;
 
         // 直接从 familyMember 获取老人姓名，无需额外查询
         var elderName = familyMember.User?.RealName ?? AppConstants.HealthTypeLabels.DefaultElderName;

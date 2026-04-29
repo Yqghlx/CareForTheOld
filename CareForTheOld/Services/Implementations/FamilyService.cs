@@ -416,17 +416,14 @@ public class FamilyService : IFamilyService
         // 老人本人可以操作
         if (elderId == operatorId) return;
 
-        // 先查操作者所在家庭，再验证老人是否同家庭
-        var operatorFamilyId = await _context.FamilyMembers
-            .Where(fm => fm.UserId == operatorId && fm.Status == FamilyMemberStatus.Approved)
-            .Select(fm => fm.FamilyId)
-            .FirstOrDefaultAsync(cancellationToken);
-
-        if (operatorFamilyId == Guid.Empty)
-            throw new UnauthorizedAccessException(ErrorMessages.Family.NotElderFamilyMember);
-
-        var isInSameFamily = await _context.FamilyMembers
-            .AnyAsync(fm => fm.UserId == elderId && fm.FamilyId == operatorFamilyId && fm.Status == FamilyMemberStatus.Approved, cancellationToken);
+        // 单次 JOIN 查询验证操作者和老人是否在同一已审批家庭中
+        var isInSameFamily = await (
+            from fm1 in _context.FamilyMembers
+            where fm1.UserId == operatorId && fm1.Status == FamilyMemberStatus.Approved
+            join fm2 in _context.FamilyMembers on fm1.FamilyId equals fm2.FamilyId
+            where fm2.UserId == elderId && fm2.Status == FamilyMemberStatus.Approved
+            select fm1.FamilyId
+        ).AnyAsync(cancellationToken);
 
         if (!isInSameFamily)
             throw new UnauthorizedAccessException(ErrorMessages.Family.NotElderFamilyMember);
