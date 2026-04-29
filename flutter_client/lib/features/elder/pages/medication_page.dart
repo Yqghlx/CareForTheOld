@@ -68,7 +68,8 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
       ),
       body: RefreshIndicator(
         onRefresh: _refresh,
-        child: Padding(
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
           padding: AppTheme.paddingAll20,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

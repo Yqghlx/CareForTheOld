@@ -150,7 +150,7 @@ public class NeighborCircleController : ControllerBase
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
     [ProducesResponseType(typeof(ApiResponse<List<NeighborCircleResponse>>), StatusCodes.Status200OK)]
     public async Task<ApiResponse<List<NeighborCircleResponse>>> SearchNearby(
-        [FromQuery, Range(-90.0, 90.0)] double latitude, [FromQuery, Range(-180.0, 180.0)] double longitude, [FromQuery] double radius = AppConstants.NeighborCircle.SearchRadiusMeters, CancellationToken cancellationToken = default)
+        [FromQuery, Range(-90.0, 90.0)] double latitude, [FromQuery, Range(-180.0, 180.0)] double longitude, [FromQuery, Range(100.0, 10000.0)] double radius = AppConstants.NeighborCircle.SearchRadiusMeters, CancellationToken cancellationToken = default)
     {
         var result = await _circleService.SearchNearbyCirclesAsync(latitude, longitude, radius, cancellationToken: cancellationToken);
         return ApiResponse<List<NeighborCircleResponse>>.Ok(result);
