@@ -19,7 +19,8 @@ public class UpdateMedicationPlanRequest
     /// <summary>用药频率</summary>
     public Frequency? Frequency { get; set; }
 
-    /// <summary>提醒时间点列表</summary>
+    /// <summary>提醒时间点列表（最多10个时间点，Service 层验证格式）</summary>
+    [MaxLength(10)]
     public List<string>? ReminderTimes { get; set; }
 
     /// <summary>结束日期</summary>
