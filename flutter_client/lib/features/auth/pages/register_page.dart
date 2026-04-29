@@ -105,6 +105,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 // 手机号
                 TextFormField(
                   controller: _phoneController,
+                  enabled: !_isLoading,
                   decoration: const InputDecoration(
                     labelText: AppTheme.labelPhone,
                     prefixIcon: Icon(Icons.phone),
@@ -117,6 +118,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 // 密码
                 TextFormField(
                   controller: _passwordController,
+                  enabled: !_isLoading,
                   decoration: InputDecoration(
                     labelText: AppTheme.labelPassword,
                     prefixIcon: const Icon(Icons.lock),
@@ -138,6 +140,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 // 姓名
                 TextFormField(
                   controller: _nameController,
+                  enabled: !_isLoading,
                   decoration: const InputDecoration(
                     labelText: AppTheme.labelRealName,
                     prefixIcon: Icon(Icons.person),

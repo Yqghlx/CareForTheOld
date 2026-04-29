@@ -45,7 +45,8 @@ class VoiceInputService {
           partialResults: true,
         ),
       );
-      _isListening = false;
+      // listen() 返回后不代表识别结束，通过 statusListener 跟踪状态
+      // _isListening 在 stopListening() 或识别自然结束时重置
       return true;
     } catch (_) {
       _isListening = false;

@@ -170,6 +170,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                     ),
                     child: TextFormField(
                       controller: phoneController,
+                      enabled: !isLoading,
                       decoration: const InputDecoration(
                         labelText: AppTheme.labelPhone,
                         prefixIcon: Icon(Icons.phone, color: AppTheme.primaryColor),
@@ -198,6 +199,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                     ),
                     child: TextFormField(
                       controller: passwordController,
+                      enabled: !isLoading,
                       decoration: InputDecoration(
                         labelText: AppTheme.labelPassword,
                         prefixIcon: const Icon(Icons.lock, color: AppTheme.primaryColor),

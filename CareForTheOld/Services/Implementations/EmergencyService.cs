@@ -49,6 +49,16 @@ public class EmergencyService : IEmergencyService
     /// </summary>
     public async Task<EmergencyCallResponse> CreateCallAsync(Guid elderId, double? latitude = null, double? longitude = null, int? batteryLevel = null)
     {
+        // 防重复提交：同一老人 30 秒内的重复请求视为同一呼叫，返回已有记录
+        var recentCall = await _context.EmergencyCalls
+            .Include(c => c.Elder)
+            .Where(c => c.ElderId == elderId && c.CalledAt > DateTime.UtcNow.AddSeconds(-30))
+            .OrderByDescending(c => c.CalledAt)
+            .FirstOrDefaultAsync();
+
+        if (recentCall != null)
+            return MapToResponse(recentCall);
+
         // 获取老人的家庭信息
         var familyMember = await _context.FamilyMembers
             .Include(fm => fm.User)
