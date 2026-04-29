@@ -164,6 +164,8 @@ public class NotificationService : INotificationService
 
         notification.IsRead = true;
         await _context.SaveChangesAsync(cancellationToken);
+
+        _logger.LogDebug("通知已标记已读：{NotificationId}，用户 {UserId}", notificationId, userId);
         return true;
     }
 
@@ -175,12 +177,15 @@ public class NotificationService : INotificationService
             .Where(n => n.UserId == userId && !n.IsRead)
             .ToListAsync(cancellationToken);
 
+        if (!unreadNotifications.Any()) return;
+
         foreach (var notification in unreadNotifications)
         {
             notification.IsRead = true;
         }
 
         await _context.SaveChangesAsync(cancellationToken);
+        _logger.LogInformation("批量标记已读：用户 {UserId}，标记数量 {Count}", userId, unreadNotifications.Count);
     }
 
     /// <summary>
