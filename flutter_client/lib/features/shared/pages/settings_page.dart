@@ -580,7 +580,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       border: OutlineInputBorder(
                         borderRadius: AppTheme.radiusS,
                       ),
-                      helperText: '至少8位，需包含字母和数字',
+                      helperText: AppTheme.helperPasswordRule,
                     ),
                     textCapitalization: TextCapitalization.none,
                     obscureText: true,
@@ -614,7 +614,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             child: const Text(AppTheme.msgCancel),
           ),
           PrimaryButton(
-            text: '修改',
+            text: AppTheme.labelModify,
             onPressed: _isSubmitting ? null : () async {
               if (_isSubmitting) return;
               final oldPassword = oldPasswordController.text.trim();

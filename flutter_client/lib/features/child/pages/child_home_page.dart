@@ -241,7 +241,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
         icon: Icons.people_outline,
         title: AppTheme.msgNoElderConcern,
         action: PrimaryButton(
-          text: '添加家庭成员',
+          text: AppTheme.labelAddFamilyMember,
           onPressed: () => context.push(RoutePaths.childFamily),
         ),
       );
@@ -546,7 +546,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                             if (timeControllers.length > 1)
                               IconButton(
                                 icon: const Icon(Icons.remove_circle, color: AppTheme.errorColor),
-                                tooltip: '移除时间点',
+                                tooltip: AppTheme.tooltipRemoveTimeSlot,
                                 onPressed: () => setDialogState(
                                     () => timeControllers.removeAt(entry.key)),
                               ),

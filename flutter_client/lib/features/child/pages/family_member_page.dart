@@ -370,7 +370,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                   Clipboard.setData(ClipboardData(text: family.inviteCode));
                   context.showSuccessSnackBar(AppTheme.msgInviteCodeCopied);
                 },
-                tooltip: '复制邀请码',
+                tooltip: AppTheme.tooltipCopyInviteCode,
               ),
               // 刷新按钮
               IconButton(
@@ -591,7 +591,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               IconButton(
                 icon: const Icon(Icons.remove_circle_outline, color: AppTheme.errorMedium),
                 onPressed: _isProcessing ? null : () => _confirmRemove(member),
-                tooltip: '移除成员',
+                tooltip: AppTheme.tooltipRemoveMember,
               ),
           ],
         ),
@@ -871,7 +871,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                   child: const Text(AppTheme.msgCancel),
                 ),
                 PrimaryButton(
-                  text: '添加',
+                  text: AppTheme.labelAddMemberShort,
                   onPressed: () async {
                     final phone = phoneController.text.trim();
                     if (phone.isEmpty || selectedRelation == null) return;
@@ -914,7 +914,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
       context,
       title: AppTheme.titleRemoveMember,
       message: '确定要将 ${member.realName} 移出家庭组吗？',
-      confirmText: '移除',
+      confirmText: AppTheme.labelRemoveShort,
     );
     if (!confirmed) return;
 

@@ -719,6 +719,27 @@ class AppTheme {
   static const String a11yEmergencyCalling = '正在呼叫中，松手取消';
   static const String a11yViewHealthDetail = '查看健康趋势分析详情';
 
+  // Tooltip 常量
+  static const String tooltipCopyInviteCode = '复制邀请码';
+  static const String tooltipRemoveMember = '移除成员';
+  static const String tooltipClearDateFilter = '清除日期筛选';
+  static const String tooltipRemoveTimeSlot = '移除时间点';
+
+  // Tab 标签
+  static const String tabPendingResponse = '待响应';
+  static const String tabHistory = '历史记录';
+
+  // 通用按钮/操作文字
+  static const String labelSkip = '跳过';
+  static const String labelModify = '修改';
+  static const String labelAddMemberShort = '添加';
+  static const String labelConfirmShort = '确认';
+  static const String labelRemoveShort = '移除';
+  static const String labelAddFamilyMember = '添加家庭成员';
+
+  // 确认消息
+  static const String msgConfirmDeleteGeoFence = '确定删除安全围栏吗？删除后将不再收到越界提醒。';
+
   // 关于/帮助页面常量
   static const String msgAboutDescription = '一款专为老年人及其子女设计的健康管理应用，帮助子女实时关注老人的健康状况。';
   static const String titleUsageHelp = '使用帮助';

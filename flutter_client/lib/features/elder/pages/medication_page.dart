@@ -572,7 +572,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
                         label: AppTheme.msgSkipMedication,
                         button: true,
                         child: SecondaryButton(
-                          text: '跳过',
+                          text: AppTheme.labelSkip,
                           onPressed: widget.isSubmitting ? null : widget.onSkipped,
                         ),
                       ),

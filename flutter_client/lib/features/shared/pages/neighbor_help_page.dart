@@ -43,8 +43,8 @@ class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
           title: const Text(AppTheme.titleNeighborHelp),
           bottom: const TabBar(
             tabs: [
-              Tab(text: '待响应'),
-              Tab(text: '历史记录'),
+              Tab(text: AppTheme.tabPendingResponse),
+              Tab(text: AppTheme.tabHistory),
             ],
           ),
         ),

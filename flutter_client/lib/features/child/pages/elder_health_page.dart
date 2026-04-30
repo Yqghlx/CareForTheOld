@@ -259,7 +259,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                     IconButton(
                       icon: const Icon(Icons.close, size: AppTheme.iconSizeSm),
                       onPressed: () => setState(() => _selectedLogDate = null),
-                      tooltip: '清除日期筛选',
+                      tooltip: AppTheme.tooltipClearDateFilter,
                     ),
                 ],
               ),

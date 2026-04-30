@@ -384,7 +384,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
       context,
       title: AppTheme.titleConfirmHandle,
       message: '确定要标记 ${call.elderName} 的紧急呼叫为已处理吗？',
-      confirmText: '确认',
+      confirmText: AppTheme.labelConfirmShort,
     );
 
     if (confirmed) {
