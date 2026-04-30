@@ -841,7 +841,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                           controller: valueController,
                           decoration: AppTheme.inputDecorationPlain(
                             AppTheme.labelSystolic,
-                            hintText: '60-250',
+                            hintText: AppTheme.hintSystolicRange,
                           ),
                           keyboardType: TextInputType.number,
                           inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(3)],
@@ -855,7 +855,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                           controller: valueController2,
                           decoration: AppTheme.inputDecorationPlain(
                             AppTheme.labelDiastolic,
-                            hintText: '40-150',
+                            hintText: AppTheme.hintDiastolicRange,
                           ),
                           keyboardType: TextInputType.number,
                           inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(3)],
@@ -870,7 +870,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                           controller: valueController,
                           decoration: AppTheme.inputDecorationPlain(
                             AppTheme.labelBloodSugarValue,
-                            hintText: '1.0-35.0',
+                            hintText: AppTheme.hintBloodSugarRange,
                           ),
                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
                           inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')), LengthLimitingTextInputFormatter(5)],
@@ -884,7 +884,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                           controller: valueController,
                           decoration: AppTheme.inputDecorationPlain(
                             AppTheme.labelHeartRateValue,
-                            hintText: '30-200',
+                            hintText: AppTheme.hintHeartRateRange,
                           ),
                           keyboardType: TextInputType.number,
                           inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(3)],
@@ -898,7 +898,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                           controller: valueController,
                           decoration: AppTheme.inputDecorationPlain(
                             AppTheme.labelTemperatureValue,
-                            hintText: '35.0-42.0',
+                            hintText: AppTheme.hintTemperatureRange,
                           ),
                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
                           inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')), LengthLimitingTextInputFormatter(5)],

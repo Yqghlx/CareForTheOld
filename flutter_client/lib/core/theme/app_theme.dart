@@ -640,6 +640,13 @@ class AppTheme {
   static const String titleNotFound = '未找到相关通知';
   static const String labelNotSet = '未设置';
 
+  // 健康输入范围提示
+  static const String hintSystolicRange = '60-250';
+  static const String hintDiastolicRange = '40-150';
+  static const String hintBloodSugarRange = '1.0-35.0';
+  static const String hintHeartRateRange = '30-200';
+  static const String hintTemperatureRange = '35.0-42.0';
+
   /// 业务常量
   /// 邻里圈搜索默认半径（米）
   static const double defaultNeighborSearchRadius = 2000.0;
