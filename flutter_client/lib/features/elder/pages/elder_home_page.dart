@@ -96,15 +96,15 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              label: '首页',
+              label: AppTheme.labelTabHome,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.favorite),
-              label: '健康',
+              label: AppTheme.labelTabHealth,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.medication),
-              label: '用药',
+              label: AppTheme.labelTabMedication,
             ),
           ],
           selectedFontSize: 18,
@@ -244,7 +244,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                       ),
                       AppTheme.spacer6,
                       Text(
-                        '今天感觉怎么样？',
+                        AppTheme.msgGreetingToday,
                         style: TextStyle(
                           fontSize: 18,
                           color: AppTheme.cardColor.withValues(alpha: 0.9),
@@ -268,7 +268,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
 
           // 快捷操作
           const Text(
-            '快捷操作',
+            AppTheme.titleQuickActions,
             style: AppTheme.textSectionTitle,
           ),
           AppTheme.spacer20,
@@ -651,7 +651,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                     ),
                     AppTheme.hSpacer12,
                     Text(
-                      _isLongPressing ? '正在呼叫...' : '长按紧急呼叫',
+                      _isLongPressing ? AppTheme.labelEmergencyCalling : AppTheme.labelLongPressEmergency,
                       style: const TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
@@ -665,7 +665,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                   Padding(
                     padding: AppTheme.marginTop4,
                     child: Text(
-                      '松手取消',
+                      AppTheme.labelReleaseToCancel,
                       style: AppTheme.textBody16.copyWith(
                         color: AppTheme.cardColor.withValues(alpha: 0.9),
                       ),

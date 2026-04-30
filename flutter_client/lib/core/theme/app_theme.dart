@@ -701,6 +701,17 @@ class AppTheme {
   static const String titleEmergencyPending = '有紧急呼叫待处理！';
   static const String msgEmergencyPendingAction = '条待处理，点击查看';
   static const String labelManageFamily = '管理家庭成员';
+
+  // 老人端首页常量
+  static const String labelTabHome = '首页';
+  static const String labelTabHealth = '健康';
+  static const String labelTabMedication = '用药';
+  static const String msgGreetingToday = '今天感觉怎么样？';
+  static const String titleQuickActions = '快捷操作';
+  static const String msgAllMedCompleted = '项已全部完成';
+  static const String labelEmergencyCalling = '正在呼叫...';
+  static const String labelLongPressEmergency = '长按紧急呼叫';
+  static const String labelReleaseToCancel = '松手取消';
   static const String titleElderHealthData = '%s - 健康数据';
   static const String titleElderLocation = '%s - 位置';
   static const String titleRateNeighbor = '为响应邻居评分';
