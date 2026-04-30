@@ -53,39 +53,39 @@ public class NotificationController : ControllerBase
     /// </summary>
     [HttpGet("me/unread-count")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheShortSeconds)]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<UnreadCountResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ApiResponse<object>> GetUnreadCount(CancellationToken cancellationToken = default)
+    public async Task<ApiResponse<UnreadCountResponse>> GetUnreadCount(CancellationToken cancellationToken = default)
     {
         var count = await _notificationService.GetUnreadCountAsync(this.GetUserId(), cancellationToken);
-        return ApiResponse<object>.Ok(new { count });
+        return ApiResponse<UnreadCountResponse>.Ok(new UnreadCountResponse { Count = count });
     }
 
     /// <summary>
     /// 标记单条通知已读
     /// </summary>
     [HttpPut("{id:guid}/read")]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<OperationResultResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ApiResponse<object>> MarkAsRead(Guid id, CancellationToken cancellationToken = default)
+    public async Task<ApiResponse<OperationResultResponse>> MarkAsRead(Guid id, CancellationToken cancellationToken = default)
     {
         var success = await _notificationService.MarkAsReadAsync(id, this.GetUserId(), cancellationToken);
 
         if (!success)
-            return ApiResponse<object>.Ok(new { success = false }, SuccessMessages.Notification.NotFound);
+            return ApiResponse<OperationResultResponse>.Ok(new OperationResultResponse { Success = false }, SuccessMessages.Notification.NotFound);
 
-        return ApiResponse<object>.Ok(new { success = true }, SuccessMessages.Notification.MarkedRead);
+        return ApiResponse<OperationResultResponse>.Ok(new OperationResultResponse { Success = true }, SuccessMessages.Notification.MarkedRead);
     }
 
     /// <summary>
     /// 全部标记已读
     /// </summary>
     [HttpPut("me/read-all")]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<OperationResultResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ApiResponse<object>> MarkAllAsRead(CancellationToken cancellationToken = default)
+    public async Task<ApiResponse<OperationResultResponse>> MarkAllAsRead(CancellationToken cancellationToken = default)
     {
         await _notificationService.MarkAllAsReadAsync(this.GetUserId(), cancellationToken);
-        return ApiResponse<object>.Ok(new { success = true }, SuccessMessages.Notification.AllMarkedRead);
+        return ApiResponse<OperationResultResponse>.Ok(new OperationResultResponse { Success = true }, SuccessMessages.Notification.AllMarkedRead);
     }
 }
