@@ -527,6 +527,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                         memCacheHeight: 256,
                         maxWidthDiskCache: 512,
                         maxHeightDiskCache: 512,
+                        placeholder: (_, __) => const Center(child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2))),
                         errorWidget: (_, __, ___) => Icon(
                           member.role.isElder ? Icons.elderly : Icons.person,
                           color: member.role.isElder ? AppTheme.warningColor : AppTheme.infoBlue,

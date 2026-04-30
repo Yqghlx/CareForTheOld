@@ -180,6 +180,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                                     memCacheHeight: 256,
                                     maxWidthDiskCache: 512,
                                     maxHeightDiskCache: 512,
+                                    placeholder: (_, __) => const Center(child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.cardColor))),
                                     errorWidget: (_, __, ___) => const Icon(Icons.person, size: 40, color: AppTheme.cardColor),
                                   )
                                 : const Icon(Icons.person, size: 40, color: AppTheme.cardColor),

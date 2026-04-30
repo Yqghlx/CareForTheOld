@@ -62,6 +62,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         memCacheHeight: 256,
         maxWidthDiskCache: 512,
         maxHeightDiskCache: 512,
+        placeholder: (_, __) => Center(child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.cardColor))),
         errorWidget: (_, __, ___) => Icon(Icons.person, size: iconSize, color: AppTheme.cardColor),
       );
     }
