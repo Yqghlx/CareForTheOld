@@ -101,12 +101,12 @@ class _NeighborHelpRatingPageState
 
   String get _ratingLabel {
     return switch (_rating) {
-      1 => '非常不满意',
-      2 => '不太满意',
-      3 => '一般',
-      4 => '满意',
-      5 => '非常满意',
-      _ => '请选择评分',
+      1 => AppTheme.ratingVeryDissatisfied,
+      2 => AppTheme.ratingDissatisfied,
+      3 => AppTheme.ratingNeutral,
+      4 => AppTheme.ratingSatisfied,
+      5 => AppTheme.ratingVerySatisfied,
+      _ => AppTheme.ratingPrompt,
     };
   }
 

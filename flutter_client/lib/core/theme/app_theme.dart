@@ -368,6 +368,12 @@ class AppTheme {
   static const String titleRegister = '注册账号';
   static const String titleNeighborHelp = '邻里互助';
   static const String titleHelpRating = '评价互助';
+  static const String ratingVeryDissatisfied = '非常不满意';
+  static const String ratingDissatisfied = '不太满意';
+  static const String ratingNeutral = '一般';
+  static const String ratingSatisfied = '满意';
+  static const String ratingVerySatisfied = '非常满意';
+  static const String ratingPrompt = '请选择评分';
   static const String titleTrustRanking = '信任排行榜';
   static const String titleNotification = '通知中心';
   static const String titleNeighborCircle = '邻里圈';
