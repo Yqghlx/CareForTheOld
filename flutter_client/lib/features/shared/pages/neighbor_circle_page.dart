@@ -146,7 +146,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
               Expanded(
                 child: OutlinedButton.icon(
                   icon: const Icon(Icons.people),
-                  label: const Text('查看成员'),
+                  label: const Text(AppTheme.labelViewMembers),
                   onPressed: () =>
                       ref.read(neighborCircleProvider.notifier).loadMembers(),
                 ),
@@ -155,7 +155,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
               Expanded(
                 child: OutlinedButton.icon(
                   icon: const Icon(Icons.exit_to_app),
-                  label: const Text('退出圈子'),
+                  label: const Text(AppTheme.labelLeaveCircle),
                   style: AppTheme.outlinedColorStyle(AppTheme.errorColor),
                   onPressed: _isSubmitting ? null : () => _leaveCircle(),
                 ),
@@ -169,7 +169,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
             width: double.infinity,
             child: OutlinedButton.icon(
               icon: const Icon(Icons.emoji_events),
-              label: const Text('信任排行榜'),
+              label: const Text(AppTheme.labelTrustRanking),
               onPressed: () {
                 context.push(RoutePaths.trustRanking(circle.id));
               },
@@ -211,7 +211,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                   AppTheme.spacer8,
                   ElevatedButton(
                     onPressed: () => _joinCircle(),
-                    child: const Text('加入'),
+                    child: const Text(AppTheme.labelJoin),
                   ),
                 ],
               ),
@@ -258,7 +258,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
           // 搜索附近
           OutlinedButton.icon(
             icon: const Icon(Icons.search),
-            label: const Text('搜索附近的邻里圈'),
+            label: const Text(AppTheme.labelSearchNearby),
             onPressed: _isGettingLocation ? null : () => _searchNearby(),
           ),
           if (_isSearching)

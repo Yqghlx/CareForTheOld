@@ -654,6 +654,13 @@ class AppTheme {
   static const String msgConfirmRefreshCode = '刷新后旧邀请码将失效，确定要刷新吗？';
   static const String subtitleTrendEmpty = '记录健康数据后，这里会显示趋势概览';
 
+  // 邻里圈页面常量
+  static const String labelViewMembers = '查看成员';
+  static const String labelLeaveCircle = '退出圈子';
+  static const String labelTrustRanking = '信任排行榜';
+  static const String labelJoin = '加入';
+  static const String labelSearchNearby = '搜索附近的邻里圈';
+
   /// 业务常量
   /// 邻里圈搜索默认半径（米）
   static const double defaultNeighborSearchRadius = 2000.0;
