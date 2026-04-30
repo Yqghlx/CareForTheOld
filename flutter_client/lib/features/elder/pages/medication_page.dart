@@ -217,7 +217,8 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
         child: Row(
           children: [
             // 已服用时添加打勾弹出动画
-            TweenAnimationBuilder<double>(
+            RepaintBoundary(
+            child: TweenAnimationBuilder<double>(
               tween: Tween(begin: 0, end: 1),
               duration: AppTheme.duration400ms,
               curve: Curves.elasticOut,
@@ -257,6 +258,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
                   ),
                 );
               },
+            ),
             ),
             AppTheme.hSpacer16,
             Expanded(
