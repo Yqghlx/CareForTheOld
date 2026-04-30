@@ -425,10 +425,11 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
 
   /// 用药提醒卡片：显示今日待服用药物
   Widget _buildMedicationReminder() {
-    final todayPending = ref.watch(medicationProvider.select((s) => s.todayPending));
-    final isLoading = ref.watch(medicationProvider.select((s) => s.isLoading));
-    final pendingCount = ref.watch(medicationProvider.select((s) => s.pendingCount));
-    final takenCount = ref.watch(medicationProvider.select((s) => s.takenCount));
+    final medState = ref.watch(medicationProvider);
+    final todayPending = medState.todayPending;
+    final isLoading = medState.isLoading;
+    final pendingCount = medState.pendingCount;
+    final takenCount = medState.takenCount;
     final pendingList = todayPending.where((l) => l.isPending).toList()
       ..sort((a, b) => a.scheduledAt.compareTo(b.scheduledAt));
 
