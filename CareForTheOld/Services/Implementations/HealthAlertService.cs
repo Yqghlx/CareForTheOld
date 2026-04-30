@@ -44,13 +44,17 @@ public class HealthAlertService : IHealthAlertService
     /// </summary>
     public async Task SendAlertToChildrenAsync(Guid elderId, HealthRecord record, string alertMessage, CancellationToken cancellationToken = default)
     {
-        // 一次查询获取老人所在家庭的所有成员（含子女），减少数据库往返
+        // 获取老人所在家庭 ID，再查询所有家庭成员
+        var familyId = await _context.FamilyMembers
+            .Where(fm => fm.UserId == elderId)
+            .Select(fm => fm.FamilyId)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (familyId == Guid.Empty) return;
+
         var familyMembers = await _context.FamilyMembers
             .Include(fm => fm.User)
-            .Where(fm => fm.FamilyId == _context.FamilyMembers
-                .Where(efm => efm.UserId == elderId)
-                .Select(efm => efm.FamilyId)
-                .First())
+            .Where(fm => fm.FamilyId == familyId)
             .ToListAsync(cancellationToken);
 
         var familyMember = familyMembers.FirstOrDefault(fm => fm.UserId == elderId);

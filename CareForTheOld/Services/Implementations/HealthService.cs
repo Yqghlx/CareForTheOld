@@ -97,7 +97,6 @@ public class HealthService : IHealthService
     public async Task<List<HealthRecordResponse>> GetUserRecordsAsync(Guid userId, HealthType? type, int skip = AppConstants.Pagination.DefaultSkip, int limit = AppConstants.Pagination.DefaultPageSize, CancellationToken cancellationToken = default)
     {
         var query = _context.HealthRecords
-            .Include(r => r.User)
             .Where(r => r.UserId == userId && !r.IsDeleted);
 
         if (type.HasValue)
@@ -188,7 +187,6 @@ public class HealthService : IHealthService
     private async Task<HealthRecordResponse?> MapToResponse(Guid recordId, CancellationToken cancellationToken = default)
     {
         return await _context.HealthRecords
-            .Include(r => r.User)
             .Where(r => r.Id == recordId)
             .Select(r => MapToResponseProjection(r))
             .FirstOrDefaultAsync(cancellationToken);
