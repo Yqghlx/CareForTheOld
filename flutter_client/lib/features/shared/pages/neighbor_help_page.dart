@@ -223,7 +223,7 @@ class _HelpRequestCard extends StatelessWidget {
                     button: true,
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.volunteer_activism),
-                      label: const Text('我来帮忙'),
+                      label: const Text(AppTheme.labelIWillHelp),
                       onPressed: onAccept,
                     ),
                   ),
