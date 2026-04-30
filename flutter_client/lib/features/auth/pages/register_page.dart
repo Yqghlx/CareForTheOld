@@ -181,12 +181,12 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                   child: AbsorbPointer(
                     child: TextFormField(
                       decoration: InputDecoration(
-                        labelText: '出生日期（选填）',
+                        labelText: AppTheme.labelBirthDateOptional,
                         prefixIcon: const Icon(Icons.cake),
                         suffixIcon: _selectedBirthDate != null
                             ? const Icon(Icons.check_circle, color: AppTheme.successColor)
                             : null,
-                        hintText: '点击选择出生日期',
+                        hintText: AppTheme.hintSelectBirthDate,
                       ),
                       controller: _birthDateController,
                     ),
@@ -202,7 +202,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                     Expanded(
                       child: RadioListTile<UserRole>(
                         title: const Text(AppTheme.labelElder),
-                        subtitle: const Text('记录健康、查看用药提醒'),
+                        subtitle: const Text(AppTheme.labelElderRoleDesc),
                         value: UserRole.elder,
                         // ignore: deprecated_member_use - Flutter 3.32+ 推荐使用 RadioGroup，但 RadioListTile 仍可工作
                         groupValue: _selectedRole,
@@ -215,7 +215,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                     Expanded(
                       child: RadioListTile<UserRole>(
                         title: const Text(AppTheme.labelChild),
-                        subtitle: const Text('查看老人健康、管理用药计划'),
+                        subtitle: const Text(AppTheme.labelChildRoleDesc),
                         value: UserRole.child,
                         // ignore: deprecated_member_use
                         groupValue: _selectedRole,
@@ -237,7 +237,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                     onPressed: _isLoading ? null : _register,
                     child: _isLoading
                         ? const CircularProgressIndicator()
-                        : const Text('注册', style: AppTheme.textBody18),
+                        : const Text(AppTheme.msgCreate, style: AppTheme.textBody18),
                   ),
                 ),
                 AppTheme.spacer16,
@@ -245,7 +245,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 // 返回登录
                 TextButton(
                   onPressed: () => context.go(RoutePaths.login),
-                  child: const Text('已有账号？点击登录'),
+                  child: const Text(AppTheme.labelHasAccountLogin),
                 ),
               ],
             ),

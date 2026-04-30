@@ -153,8 +153,8 @@ class _LoginPageState extends ConsumerState<LoginPage>
                     style: AppTheme.textLogoTitle,
                   ),
                   AppTheme.spacer8,
-                  Text(
-                    '健康监测 · 用药提醒',
+                  const Text(
+                    AppTheme.msgAppTagline,
                     style: AppTheme.textSecondary16,
                   ),
                   AppTheme.spacer48,
@@ -228,7 +228,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                       style: AppTheme.textBody18,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return '请输入密码';
+                          return AppTheme.msgPasswordRequired;
                         }
                         return null;
                       },
@@ -267,7 +267,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: Text(
-                                '去注册',
+                                AppTheme.labelGoRegister,
                                 style: AppTheme.textLink14,
                               ),
                             ),
@@ -286,9 +286,9 @@ class _LoginPageState extends ConsumerState<LoginPage>
                   // 注册链接
                   TextButton(
                     onPressed: () => context.go(RoutePaths.register),
-                    child: Text(
-                      '没有账号？点击注册',
-                      style: AppTheme.textSecondary16.copyWith(color: AppTheme.primaryColor),
+                    child: const Text(
+                      AppTheme.labelNoAccountRegister,
+                      style: AppTheme.textSecondary16,
                     ),
                   ),
                 ],

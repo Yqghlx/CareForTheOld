@@ -534,6 +534,19 @@ class AppTheme {
   static const String labelRelationOther = '其他';
   static const String labelSelectRole = '请选择您的身份:';
 
+  // 登录/注册页面常量
+  static const String msgAppTagline = '健康监测 · 用药提醒';
+  static const String msgPasswordRequired = '请输入密码';
+  static const String labelGoRegister = '去注册';
+  static const String labelNoAccountRegister = '没有账号？点击注册';
+  static const String labelHasAccountLogin = '已有账号？点击登录';
+  static const String labelBirthDateOptional = '出生日期（选填）';
+  static const String hintSelectBirthDate = '点击选择出生日期';
+  static const String labelElderRoleDesc = '记录健康、查看用药提醒';
+  static const String labelChildRoleDesc = '查看老人健康、管理用药计划';
+  static const String labelRecentRecords = '最近记录';
+  static const String hintStartRecording = '点击上方卡片开始记录';
+
   // 亲属称谓
   static const String labelGrandpaP = '爷爷';
   static const String labelGrandmaP = '奶奶';

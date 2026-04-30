@@ -133,7 +133,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
 
               // 记录列表标题
               const Text(
-                '最近记录',
+                AppTheme.labelRecentRecords,
                 style: AppTheme.textLargeTitle,
               ),
               AppTheme.spacer12,
@@ -301,7 +301,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
       return const EmptyStateWidget(
         icon: Icons.note_add_outlined,
         title: AppTheme.msgNoHealthRecord,
-        subtitle: '点击上方卡片开始记录',
+        subtitle: AppTheme.hintStartRecording,
       );
     }
 
