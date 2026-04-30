@@ -122,27 +122,14 @@ public class MedicationService : IMedicationService
     /// </summary>
     public async Task DeletePlanAsync(Guid planId, Guid operatorId, CancellationToken cancellationToken = default)
     {
-        var elderId = await _context.MedicationPlans
-            .Where(p => p.Id == planId)
-            .Select(p => p.ElderId)
-            .FirstOrDefaultAsync(cancellationToken);
+        var plan = await _context.MedicationPlans.AsTracking().FirstOrDefaultAsync(p => p.Id == planId, cancellationToken)
+            ?? throw new KeyNotFoundException(ErrorMessages.Medication.PlanNotFound);
 
-        if (elderId == Guid.Empty)
-            throw new KeyNotFoundException(ErrorMessages.Medication.PlanNotFound);
+        await _familyService.EnsureFamilyMemberAsync(plan.ElderId, operatorId, cancellationToken);
 
-        await _familyService.EnsureFamilyMemberAsync(elderId, operatorId, cancellationToken);
-
-        // 软删除：直接更新，无需加载实体
-        var deletedAt = DateTime.UtcNow;
-        var count = await _context.MedicationPlans
-            .Where(p => p.Id == planId)
-            .ExecuteUpdateAsync(setters => setters
-                .SetProperty(p => p.IsDeleted, true)
-                .SetProperty(p => p.DeletedAt, deletedAt),
-                cancellationToken);
-
-        if (count == 0)
-            throw new KeyNotFoundException(ErrorMessages.Medication.PlanNotFound);
+        plan.IsDeleted = true;
+        plan.DeletedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("用药计划已删除：计划 {PlanId}，操作者 {OperatorId}", planId, operatorId);
     }

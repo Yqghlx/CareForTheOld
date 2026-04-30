@@ -172,14 +172,20 @@ public class NotificationService : INotificationService
     /// <inheritdoc />
     public async Task MarkAllAsReadAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        var count = await _context.NotificationRecords
+        var unreadNotifications = await _context.NotificationRecords
+            .AsTracking()
             .Where(n => n.UserId == userId && !n.IsRead)
-            .ExecuteUpdateAsync(setters => setters.SetProperty(n => n.IsRead, true), cancellationToken);
+            .ToListAsync(cancellationToken);
 
-        if (count > 0)
+        if (!unreadNotifications.Any()) return;
+
+        foreach (var notification in unreadNotifications)
         {
-            _logger.LogInformation("批量标记已读：用户 {UserId}，标记数量 {Count}", userId, count);
+            notification.IsRead = true;
         }
+
+        await _context.SaveChangesAsync(cancellationToken);
+        _logger.LogInformation("批量标记已读：用户 {UserId}，标记数量 {Count}", userId, unreadNotifications.Count);
     }
 
     /// <summary>
