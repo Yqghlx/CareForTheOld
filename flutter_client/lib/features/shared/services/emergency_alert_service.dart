@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:vibration/vibration.dart';
 
 import '../../../core/config/app_config.dart';
@@ -78,6 +78,11 @@ class EmergencyAlertService {
     AppLogger.debug('紧急警报已停止');
   }
 
+  /// 释放资源（应用退出时调用）
+  void dispose() {
+    _audioPlayer.dispose();
+  }
+
   /// 启动循环震动
   Future<void> _startVibration() async {
     try {
@@ -100,21 +105,29 @@ class EmergencyAlertService {
     }
   }
 
-  /// 启动警报铃声（循环播放系统默认警报声）
+  /// 启动警报铃声（优先在线资源，失败后使用系统警报音）
   Future<void> _startAlarm() async {
     try {
       await _audioPlayer.setReleaseMode(ReleaseMode.loop);
+      await _audioPlayer.setVolume(1.0);
       await _audioPlayer.play(UrlSource(
         AppConfig.emergencyAlarmSoundUrl,
       ));
     } catch (e) {
-      // 网络不可用时使用系统默认通知音
-      AppLogger.error('在线铃声加载失败，使用系统默认音: $e');
-      try {
-        await _audioPlayer.play(DeviceFileSource(''));
-      } catch (e) {
-        AppLogger.error('系统默认音播放失败: $e');
-      }
+      // 在线铃声不可用，使用系统默认警报音
+      AppLogger.warning('在线铃声加载失败，使用系统警报音: $e');
+      _playSystemAlertSound();
+    }
+  }
+
+  /// 播放系统默认警报音（无需网络）
+  void _playSystemAlertSound() {
+    try {
+      // 系统级警报音，无需任何外部资源
+      HapticFeedback.heavyImpact();
+      SystemSound.play(SystemSoundType.alert);
+    } catch (e) {
+      AppLogger.error('系统警报音播放失败: $e');
     }
   }
 
