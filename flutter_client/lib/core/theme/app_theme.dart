@@ -607,6 +607,13 @@ class AppTheme {
   static const String tooltipCancelSearch = '取消搜索';
   static const String tooltipSearch = '搜索通知';
 
+  // 健康记录页面常量
+  static const String labelUseLastData = '使用上次数据';
+  static const String hintNormalRangeBloodPressure = '正常范围: 收缩压 90-140 / 舒张压 60-90 mmHg';
+  static const String hintNormalRangeBloodSugar = '正常范围: 空腹 3.9-6.1 mmol/L';
+  static const String hintNormalRangeHeartRate = '正常范围: 60-100 次/分';
+  static const String hintNormalRangeTemperature = '正常范围: 36.1-37.2 °C';
+
   /// 业务常量
   /// 邻里圈搜索默认半径（米）
   static const double defaultNeighborSearchRadius = 2000.0;

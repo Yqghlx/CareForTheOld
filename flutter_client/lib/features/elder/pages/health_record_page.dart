@@ -567,7 +567,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                               children: [
                                 Icon(Icons.history, size: AppTheme.iconSizeSm, color: AppTheme.primaryColor),
                                 AppTheme.hSpacer8,
-                                Text('使用上次数据', style: AppTheme.textCaption.copyWith(color: AppTheme.primaryColor)),
+                                Text(AppTheme.labelUseLastData, style: AppTheme.textCaption.copyWith(color: AppTheme.primaryColor)),
                               ],
                             ),
                           ),
@@ -968,13 +968,13 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
   String _getNormalRangeHint(HealthType type) {
     switch (type) {
       case HealthType.bloodPressure:
-        return '正常范围: 收缩压 90-140 / 舒张压 60-90 mmHg';
+        return AppTheme.hintNormalRangeBloodPressure;
       case HealthType.bloodSugar:
-        return '正常范围: 空腹 3.9-6.1 mmol/L';
+        return AppTheme.hintNormalRangeBloodSugar;
       case HealthType.heartRate:
-        return '正常范围: 60-100 次/分';
+        return AppTheme.hintNormalRangeHeartRate;
       case HealthType.temperature:
-        return '正常范围: 36.1-37.2 °C';
+        return AppTheme.hintNormalRangeTemperature;
     }
   }
 
