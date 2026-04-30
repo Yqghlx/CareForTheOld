@@ -382,6 +382,11 @@ class AppTheme {
   static const String titleConfirmHandle = '确认处理';
   static const String titleCallHistory = '历史呼叫记录';
   static const String titleLocationView = '位置查看';
+  static const String titleCurrentLocation = '当前位置';
+  static const String titleHistoryTrack = '历史轨迹';
+  static const String labelFenceCenter = '围栏中心';
+  static const String labelSafeRadius = '安全半径';
+  static const String subtitleLocationNotEnabled = '老人尚未开启定位上报';
   static const String titleFamilyMember = '家庭成员';
   static const String titleApproveConfirm = '审批确认';
   static const String titleRejectApply = '拒绝申请';

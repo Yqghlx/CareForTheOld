@@ -93,7 +93,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
 
               // 当前位置
               const Text(
-                '当前位置',
+                AppTheme.titleCurrentLocation,
                 style: AppTheme.textTitle,
               ),
               AppTheme.spacer12,
@@ -109,7 +109,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
 
               // 历史轨迹
               const Text(
-                '历史轨迹',
+                AppTheme.titleHistoryTrack,
                 style: AppTheme.textTitle,
               ),
               AppTheme.spacer12,
@@ -265,7 +265,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('围栏中心', style: AppTheme.textBold),
+                          const Text(AppTheme.labelFenceCenter, style: AppTheme.textBold),
                           AppTheme.spacer8,
                           if (centerLat != 0)
                             Text(
@@ -306,7 +306,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                     AppTheme.spacer12,
 
                     // 半径设置
-                    const Text('安全半径', style: AppTheme.textBold),
+                    const Text(AppTheme.labelSafeRadius, style: AppTheme.textBold),
                     AppTheme.spacer8,
                     Row(
                       children: [
@@ -403,7 +403,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
               const Icon(Icons.location_off, size: AppTheme.iconSizeXxl, color: AppTheme.grey400),
               AppTheme.spacer12,
               const Text(AppTheme.msgNoLocationRecord, style: AppTheme.textGrey),
-              const Text('老人尚未开启定位上报', style: AppTheme.textCaptionDark),
+              const Text(AppTheme.subtitleLocationNotEnabled, style: AppTheme.textCaptionDark),
             ],
           ),
         ),
