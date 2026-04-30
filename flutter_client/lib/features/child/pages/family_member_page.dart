@@ -621,6 +621,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               hintText: '如：张家',
               border: OutlineInputBorder(borderRadius: AppTheme.radiusS),
             ),
+            textCapitalization: TextCapitalization.words,
             keyboardType: TextInputType.name,
           ),
         ),

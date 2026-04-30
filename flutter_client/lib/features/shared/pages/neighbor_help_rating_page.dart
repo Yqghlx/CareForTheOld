@@ -73,6 +73,7 @@ class _NeighborHelpRatingPageState
                 hintText: '分享您的互助体验...',
                 border: OutlineInputBorder(),
               ),
+              textCapitalization: TextCapitalization.sentences,
               maxLines: 4,
               maxLength: 500,
             ),

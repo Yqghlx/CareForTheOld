@@ -236,6 +236,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                       border: OutlineInputBorder(),
                       counterText: '',
                     ),
+                    textCapitalization: TextCapitalization.words,
                     maxLength: 20,
                   ),
                   AppTheme.spacer8,

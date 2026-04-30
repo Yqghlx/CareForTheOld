@@ -222,6 +222,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                           tooltip: _obscurePassword ? AppTheme.tooltipShowPassword : AppTheme.tooltipHidePassword,
                         ),
                       ),
+                      textCapitalization: TextCapitalization.none,
                       obscureText: _obscurePassword,
                       textInputAction: TextInputAction.done,
                       style: AppTheme.textBody18,
