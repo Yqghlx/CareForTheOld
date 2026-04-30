@@ -547,6 +547,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               children: [
                 TextField(
                   controller: nameController,
+                  textCapitalization: TextCapitalization.words,
                   decoration: const InputDecoration(
                     labelText: AppTheme.labelMedicineName,
                     border: OutlineInputBorder(),
@@ -559,6 +560,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 AppTheme.spacer12,
                 TextField(
                   controller: dosageController,
+                  textCapitalization: TextCapitalization.sentences,
                   decoration: const InputDecoration(
                     labelText: AppTheme.labelDosage,
                     border: OutlineInputBorder(),

@@ -571,6 +571,7 @@ class AppTheme {
   static const String labelRole = '角色';
   static const String labelNickname = '称呼';
   static const String labelDosage = '剂量（如：1片、10ml）';
+  static const String hintDosageExample = '剂量（如：100mg）';
 
   // 用药/设置/通知页面常量
   static const String titleTodayPlan = '今日用药计划';

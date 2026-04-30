@@ -45,6 +45,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
         title: _isSearching
             ? TextField(
                 autofocus: true,
+                textCapitalization: TextCapitalization.sentences,
                 decoration: const InputDecoration(
                   hintText: AppTheme.hintSearchNotification,
                   border: InputBorder.none,

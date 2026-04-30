@@ -911,6 +911,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
                       child: TextField(
                         controller: noteController,
                         decoration: AppTheme.inputDecorationPlain(AppTheme.labelNoteOptional),
+                        textCapitalization: TextCapitalization.sentences,
                         maxLines: 2,
                         maxLength: 200,
                         style: AppTheme.textBody16,

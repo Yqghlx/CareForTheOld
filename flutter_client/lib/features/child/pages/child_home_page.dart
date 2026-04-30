@@ -438,6 +438,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                       child: TextField(
                         controller: nameCtl,
                         decoration: AppTheme.inputDecorationPlain(AppTheme.labelMedicineName),
+                        textCapitalization: TextCapitalization.words,
                         style: AppTheme.textBody16,
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9\s一-龥·]')),
@@ -450,7 +451,8 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                       decoration: AppTheme.decorationInput,
                       child: TextField(
                         controller: dosageCtl,
-                        decoration: AppTheme.inputDecorationPlain('剂量（如：100mg）'),
+                        decoration: AppTheme.inputDecorationPlain(AppTheme.hintDosageExample),
+                        textCapitalization: TextCapitalization.sentences,
                         style: AppTheme.textBody16,
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9\s一-龥.]')),
