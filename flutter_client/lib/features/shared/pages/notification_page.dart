@@ -69,7 +69,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
           if (!_isSearching && state.unreadCount > 0)
             TextButton(
               onPressed: () => ref.read(notificationListProvider.notifier).markAllAsRead(),
-              child: const Text('全部已读'),
+              child: const Text(AppTheme.labelMarkAllRead),
             ),
         ],
       ),

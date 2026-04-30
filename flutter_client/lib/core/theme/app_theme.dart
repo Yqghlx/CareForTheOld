@@ -661,6 +661,25 @@ class AppTheme {
   static const String labelJoin = '加入';
   static const String labelSearchNearby = '搜索附近的邻里圈';
 
+  // 按钮和标签常量（第二批）
+  static const String labelSubmitRating = '提交评价';
+  static const String labelMarkAllRead = '全部已读';
+  static const String msgConfirmLogout = '确定要退出登录吗？';
+  static const String labelMakeCall = '拨打电话';
+  static const String labelUseCurrentLocation = '使用当前位置';
+  static const String labelCreateFamily = '创建家庭组';
+  static const String labelJoinFamily = '加入家庭';
+  static const String labelViewLocation = '查看位置';
+  static const String labelViewHealth = '查看健康';
+  static const String labelAddMedPlan = '添加用药计划';
+  static const String labelAddTimePoint = '添加时间点';
+  static const String labelEditMedPlan = '编辑用药计划';
+  static const String labelAddTime = '+ 添加时间';
+  static const String labelExportReport = '导出健康报告';
+  static const String labelSelectTimeRange = '选择报告时间范围：';
+  static const String labelPendingApproval = '待审批';
+  static const String labelHealthTrendDetail = '健康趋势详情';
+
   /// 业务常量
   /// 邻里圈搜索默认半径（米）
   static const double defaultNeighborSearchRadius = 2000.0;

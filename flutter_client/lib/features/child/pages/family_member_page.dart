@@ -62,7 +62,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('家庭成员',
+                    const Text(AppTheme.titleFamilyMember,
                         style: AppTheme.textTitle),
                     if (!isElder)
                       TextButton.icon(
@@ -92,7 +92,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
       children: [
         Row(
           children: [
-            const Text('待审批',
+            const Text(AppTheme.labelPendingApproval,
                 style: AppTheme.textTitle),
             AppTheme.hSpacer8,
             Container(
@@ -610,7 +610,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               child: const Icon(Icons.home, color: AppTheme.primaryColor),
             ),
             AppTheme.hSpacer12,
-            const Text('创建家庭组'),
+            const Text(AppTheme.labelCreateFamily),
           ],
         ),
         content: SingleChildScrollView(
@@ -679,7 +679,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     child: const Icon(Icons.vpn_key, color: AppTheme.warningColor),
                   ),
                   AppTheme.hSpacer12,
-                  const Text('加入家庭'),
+                  const Text(AppTheme.labelJoinFamily),
                 ],
               ),
               content: SingleChildScrollView(

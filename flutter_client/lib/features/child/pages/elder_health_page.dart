@@ -538,7 +538,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
             children: [
               const Icon(Icons.edit, color: AppTheme.primaryColor),
               AppTheme.hSpacer12,
-              const Text('编辑用药计划'),
+              const Text(AppTheme.labelEditMedPlan),
             ],
           ),
           content: SingleChildScrollView(
@@ -592,7 +592,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                       onDeleted: () => setDialogState(() => reminderTimes.removeAt(entry.key)),
                     )),
                     ActionChip(
-                      label: const Text('+ 添加时间'),
+                      label: const Text(AppTheme.labelAddTime),
                       onPressed: () async {
                         final time = await showTimePicker(
                           context: ctx,
@@ -907,7 +907,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
               child: const Icon(Icons.picture_as_pdf, color: AppTheme.infoBlue),
             ),
             AppTheme.hSpacer12,
-            const Text('导出健康报告'),
+            const Text(AppTheme.labelExportReport),
           ],
         ),
         content: Column(
@@ -915,7 +915,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
           children: [
             Text('为 $elderName 导出健康报告'),
             AppTheme.spacer16,
-            const Text('选择报告时间范围：'),
+            const Text(AppTheme.labelSelectTimeRange),
             AppTheme.spacer16,
             Row(
               children: [

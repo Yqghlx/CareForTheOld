@@ -257,7 +257,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                         child: OutlinedButton.icon(
                           onPressed: () => _callElder(call.elderPhoneNumber!),
                           icon: const Icon(Icons.phone, size: AppTheme.iconSizeMd),
-                          label: const Text('拨打电话'),
+                          label: const Text(AppTheme.labelMakeCall),
                           style: AppTheme.outlinedColorStyle(AppTheme.infoBlue).copyWith(
                             padding: WidgetStatePropertyAll(AppTheme.paddingV14),
                             shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: AppTheme.radiusS)),

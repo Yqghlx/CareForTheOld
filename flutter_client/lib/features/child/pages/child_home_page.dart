@@ -340,7 +340,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                           child: OutlinedButton.icon(
                             onPressed: () => context.push(RoutePaths.childElderLocation(elder.userId)),
                             icon: const Icon(Icons.location_on, size: AppTheme.iconSizeSm),
-                            label: const Text('查看位置'),
+                            label: const Text(AppTheme.labelViewLocation),
                             style: AppTheme.outlinedColorStyle(AppTheme.successColor),
                           ),
                         ),
@@ -356,7 +356,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                           child: OutlinedButton.icon(
                             onPressed: () => context.push(RoutePaths.childElderHealth(elder.userId)),
                             icon: const Icon(Icons.favorite, size: AppTheme.iconSizeSm),
-                            label: const Text('查看健康'),
+                            label: const Text(AppTheme.labelViewHealth),
                             style: AppTheme.outlinedColorStyle(AppTheme.errorColor),
                           ),
                         ),
@@ -409,7 +409,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     child: const Icon(Icons.medication, color: AppTheme.infoBlue),
                   ),
                   AppTheme.hSpacer12,
-                  const Text('添加用药计划'),
+                  const Text(AppTheme.labelAddMedPlan),
                 ],
               ),
               content: SingleChildScrollView(
@@ -552,7 +552,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                       onPressed: () => setDialogState(
                           () => timeControllers.add(TextEditingController())),
                       icon: const Icon(Icons.add),
-                      label: const Text('添加时间点'),
+                      label: const Text(AppTheme.labelAddTimePoint),
                     ),
                   ],
                 ),

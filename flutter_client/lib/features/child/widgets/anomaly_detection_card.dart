@@ -309,7 +309,7 @@ class AnomalyDetectionCard extends ConsumerWidget {
               child: const Icon(Icons.analytics, color: AppTheme.primaryColor),
             ),
             AppTheme.hSpacer12,
-            const Text('健康趋势详情'),
+            const Text(AppTheme.labelHealthTrendDetail),
           ],
         ),
         content: SingleChildScrollView(

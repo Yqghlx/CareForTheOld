@@ -802,7 +802,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             const Text(AppTheme.labelLogout),
           ],
         ),
-        content: const Text('确定要退出登录吗？'),
+        content: const Text(AppTheme.msgConfirmLogout),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),

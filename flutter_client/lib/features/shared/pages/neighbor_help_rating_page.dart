@@ -90,7 +90,7 @@ class _NeighborHelpRatingPageState
                         height: 20,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : const Text('提交评价'),
+                    : const Text(AppTheme.labelSubmitRating),
               ),
             ),
           ],

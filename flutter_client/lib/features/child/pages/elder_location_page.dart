@@ -296,7 +296,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                               });
                             },
                             icon: const Icon(Icons.my_location),
-                            label: const Text('使用当前位置'),
+                            label: const Text(AppTheme.labelUseCurrentLocation),
                           );
                         }
                         return const SizedBox.shrink();
