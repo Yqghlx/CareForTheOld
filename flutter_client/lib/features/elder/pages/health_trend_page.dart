@@ -90,7 +90,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                   AppTheme.hSpacer12,
                   Flexible(
                     child: Text(
-                      '${_selectedType.label}趋势',
+                      AppTheme.labelHealthTrend(_selectedType.label),
                       style: AppTheme.textSectionTitle,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -111,12 +111,12 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                             Icon(_selectedType.icon, size: AppTheme.iconSizeHuge, color: AppTheme.grey400),
                             AppTheme.spacer16,
                             Text(
-                              '暂无${_selectedType.label}记录',
+                              AppTheme.msgNoHealthRecord(_selectedType.label),
                               style: AppTheme.textSecondary16,
                             ),
                             AppTheme.spacer8,
                             Text(
-                              '请先在健康页面记录${_selectedType.label}数据',
+                              AppTheme.msgRecordHealthFirst(_selectedType.label),
                               style: AppTheme.textGreyLight,
                             ),
                           ],
@@ -207,7 +207,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
     return Row(
       children: [
         const Text(
-          '时间范围：',
+          AppTheme.labelTimeRange,
           style: AppTheme.textBody16,
         ),
         AppTheme.hSpacer12,

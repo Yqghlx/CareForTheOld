@@ -349,7 +349,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                       children: [
                         const Icon(Icons.favorite_border, size: 40, color: AppTheme.grey400),
                         AppTheme.spacer8,
-                        const Text(AppTheme.msgNoHealthRecord, style: AppTheme.textSecondary16),
+                        const Text(AppTheme.msgNoHealthRecordGeneral, style: AppTheme.textSecondary16),
                         AppTheme.spacer8,
                         PrimaryButton(
                           text: AppTheme.labelGoRecord,

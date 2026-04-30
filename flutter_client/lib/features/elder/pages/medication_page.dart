@@ -281,7 +281,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
                   ),
                   AppTheme.spacer4,
                   Text(
-                    '计划时间: $timeStr',
+                    AppTheme.labelScheduledTime(timeStr),
                     style: AppTheme.textSecondary16,
                   ),
                 ],
@@ -535,7 +535,7 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
                       ),
                       AppTheme.spacer4,
                       Text(
-                        '计划时间: $timeStr',
+                        AppTheme.labelScheduledTime(timeStr),
                         style: AppTheme.textSecondary16,
                       ),
                     ],

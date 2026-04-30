@@ -300,7 +300,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
     if (state.records.isEmpty) {
       return const EmptyStateWidget(
         icon: Icons.note_add_outlined,
-        title: AppTheme.msgNoHealthRecord,
+        title: AppTheme.msgNoHealthRecordGeneral,
         subtitle: AppTheme.hintStartRecording,
       );
     }

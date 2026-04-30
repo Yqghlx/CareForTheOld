@@ -423,11 +423,18 @@ class AppTheme {
   static const String msgReminderTimeRequired = '请至少添加一个提醒时间';
   static const String msgConfirmSkipMedicine = '确定跳过本次用药吗？';
   static String msgConfirmSkipWithName(String name) => '确定跳过 $name 本次用药吗？';
+  static String labelScheduledTime(String time) => '计划时间: $time';
 
   // 定位消息
   static const String msgLocationServiceDisabled = '定位服务未开启，将使用默认位置';
   static const String msgLocationPermissionDenied = '定位权限被拒绝，将使用默认位置';
   static const String msgLocationPermissionPermanentlyDenied = '定位权限被永久拒绝，将使用默认位置';
+
+  // 健康趋势
+  static String labelHealthTrend(String type) => '$type趋势';
+  static String msgNoHealthRecord(String type) => '暂无$type记录';
+  static String msgRecordHealthFirst(String type) => '请先在健康页面记录$type数据';
+  static const String labelTimeRange = '时间范围：';
   static const String msgLocationFailed = '获取位置失败，将使用默认位置';
 
   // 时间范围标签
@@ -435,7 +442,7 @@ class AppTheme {
   static const String labelRecent30Days = '最近30天';
 
   // 空状态提示文案
-  static const String msgNoHealthRecord = '暂无健康记录';
+  static const String msgNoHealthRecordGeneral = '暂无健康记录';
   static const String msgNoHistoryRecord = '暂无历史记录';
   static const String msgNoStats = '暂无统计数据';
   static const String msgNoNotification = '暂无通知';

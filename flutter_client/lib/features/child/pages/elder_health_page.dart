@@ -377,7 +377,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     if (plans.isEmpty) {
       return const EmptyStateWidget(
         icon: Icons.medication_outlined,
-        title: AppTheme.msgNoHealthRecord,
+        title: AppTheme.msgNoHealthRecordGeneral,
         subtitle: AppTheme.subtitleMedPlanEmpty,
       );
     }
@@ -717,7 +717,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     if (records.isEmpty) {
       return const EmptyStateWidget(
         icon: Icons.note_add_outlined,
-        title: AppTheme.msgNoHealthRecord,
+        title: AppTheme.msgNoHealthRecordGeneral,
         subtitle: AppTheme.subtitleHealthRecordsEmpty,
       );
     }
