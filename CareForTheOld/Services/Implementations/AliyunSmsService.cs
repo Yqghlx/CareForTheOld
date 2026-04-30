@@ -1,4 +1,5 @@
 using CareForTheOld.Common.Constants;
+using CareForTheOld.Common.Extensions;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -53,14 +54,14 @@ public class AliyunSmsService : ISmsService
             // return response.Code == "OK" ? (true, null) : (false, response.Message);
 
             // 开发环境模拟发送（实际接入 SDK 后替换）
-            _logger.LogInformation("[阿里云短信] 模拟发送: 手机号={Phone}, 内容={Content}", phoneNumber, content);
+            _logger.LogInformation("[阿里云短信] 模拟发送: 手机号={Phone}, 内容={Content}", phoneNumber.MaskPhoneNumber(), content);
 
             // 模拟成功发送
             return (true, null);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "[阿里云短信] 发送失败: 手机号={Phone}", phoneNumber);
+            _logger.LogError(ex, "[阿里云短信] 发送失败: 手机号={Phone}", phoneNumber.MaskPhoneNumber());
             return (false, ErrorMessages.Sms.SendFailed);
         }
     }
