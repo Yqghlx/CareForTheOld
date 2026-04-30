@@ -428,8 +428,9 @@ public class EmergencyService : IEmergencyService
         var user = await _context.Users.FindAsync([userId], cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
-        // 获取呼叫记录（无需 AsTracking，使用原子更新）
+        // 获取呼叫记录（含老人信息，用于后续通知和响应映射）
         var call = await _context.EmergencyCalls
+            .Include(c => c.Elder)
             .FirstOrDefaultAsync(c => c.Id == callId, cancellationToken);
 
         if (call == null)
@@ -476,12 +477,14 @@ public class EmergencyService : IEmergencyService
                 },
                 CancellationToken.None));
 
-        // 重新查询完整记录返回响应
-        var respondedCall = await _context.EmergencyCalls
-            .Include(c => c.Elder)
-            .FirstAsync(c => c.Id == callId, cancellationToken);
+        // 直接映射已加载的 call 对象（含 Elder 导航属性），避免冗余重查询
+        // 同步 callToUpdate 的最新状态到 call 用于映射
+        call.Status = callToUpdate.Status;
+        call.RespondedBy = callToUpdate.RespondedBy;
+        call.RespondedByRealName = callToUpdate.RespondedByRealName;
+        call.RespondedAt = callToUpdate.RespondedAt;
 
-        return MapToResponse(respondedCall);
+        return MapToResponse(call);
     }
 
     /// <summary>
@@ -517,18 +520,17 @@ public class EmergencyService : IEmergencyService
     }
 
     /// <summary>
-    /// 查询指定老人所在家庭的子女成员列表（含用户信息）
+    /// 查询指定老人所在家庭的子女成员列表（含用户信息），使用 JOIN 单次查询
     /// </summary>
     private async Task<List<FamilyMember>> GetChildrenAsync(Guid elderId)
     {
-        var familyMember = await _context.FamilyMembers
-            .FirstOrDefaultAsync(fm => fm.UserId == elderId);
-
-        if (familyMember == null) return [];
-
-        return await _context.FamilyMembers
-            .Include(fm => fm.User)
-            .Where(fm => fm.FamilyId == familyMember.FamilyId && fm.Role == UserRole.Child)
-            .ToListAsync();
+        return await (
+            from fm1 in _context.FamilyMembers
+            where fm1.UserId == elderId
+            join fm2 in _context.FamilyMembers.Include(fm => fm.User)
+                on fm1.FamilyId equals fm2.FamilyId
+            where fm2.Role == UserRole.Child
+            select fm2
+        ).ToListAsync();
     }
 }
