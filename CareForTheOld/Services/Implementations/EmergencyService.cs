@@ -192,7 +192,7 @@ public class EmergencyService : IEmergencyService
             return;
 
         call.Reminded = true;
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(); // Hangfire Job 无法传递 CancellationToken
 
         // 发送二次提醒通知
         await SendEmergencyNotificationAsync(call.ElderId, call.Elder.RealName, call.Id, isReminder: true);
@@ -309,7 +309,7 @@ public class EmergencyService : IEmergencyService
         if (smsRecords.Any())
         {
             _context.SmsRecords.AddRange(smsRecords);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(); // Hangfire Job 无法传递 CancellationToken
             _logger.LogInformation("紧急呼叫 SMS 记录已保存：呼叫 {CallId}，记录数 {Count}", callId, smsRecords.Length);
         }
     }

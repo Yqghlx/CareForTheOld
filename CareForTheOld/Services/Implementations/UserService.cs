@@ -93,17 +93,16 @@ public class UserService : IUserService
         user.UpdatedAt = DateTime.UtcNow;
 
         // 清除所有设备的 FCM token，强制重新登录
-        var tokensToRemove = await _context.DeviceTokens
+        var removedTokenCount = await _context.DeviceTokens
             .Where(dt => dt.UserId == userId)
-            .ToListAsync(cancellationToken);
-        _context.DeviceTokens.RemoveRange(tokensToRemove);
+            .ExecuteDeleteAsync(cancellationToken);
 
         await _context.SaveChangesAsync(cancellationToken);
 
         // 密码修改后吊销所有刷新令牌，强制重新登录
         await _authService.RevokeAllUserTokensAsync(userId, cancellationToken);
 
-        _logger.LogInformation("用户 {UserId} 修改密码成功，已清除 {Count} 个设备令牌并吊销所有刷新令牌", userId, tokensToRemove.Count);
+        _logger.LogInformation("用户 {UserId} 修改密码成功，已清除 {Count} 个设备令牌并吊销所有刷新令牌", userId, removedTokenCount);
         return true;
     }
 
