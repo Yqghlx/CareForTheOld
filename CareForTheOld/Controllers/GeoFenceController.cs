@@ -58,10 +58,13 @@ public class GeoFenceController : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ApiResponse<GeoFenceResponse?>> GetElderFence(Guid elderId, CancellationToken cancellationToken = default)
     {
-        // 验证请求的子女与目标老人属于同一家庭
+        // 验证请求的子女与目标老人属于同一家庭（两个独立查询并行执行）
         var userId = this.GetUserId();
-        var userFamilyId = await _familyService.GetMyFamilyAsync(userId, cancellationToken);
-        var elderFamilyId = await _familyService.GetMyFamilyAsync(elderId, cancellationToken);
+        var families = await Task.WhenAll(
+            _familyService.GetMyFamilyAsync(userId, cancellationToken),
+            _familyService.GetMyFamilyAsync(elderId, cancellationToken));
+        var userFamilyId = families[0];
+        var elderFamilyId = families[1];
         if (userFamilyId == null || elderFamilyId == null || userFamilyId.Id != elderFamilyId.Id)
             return ApiResponse<GeoFenceResponse?>.Fail(ErrorMessages.GeoFence.NoPermissionToView);
 

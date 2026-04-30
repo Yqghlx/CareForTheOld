@@ -38,6 +38,7 @@ public class NeighborCircleService : INeighborCircleService
         var creator = await _context.Users.FindAsync([creatorId], cancellationToken)
             ?? throw new KeyNotFoundException(ErrorMessages.Common.UserNotFound);
 
+        var now = DateTime.UtcNow;
         var circle = new NeighborCircle
         {
             Id = Guid.NewGuid(),
@@ -47,9 +48,9 @@ public class NeighborCircleService : INeighborCircleService
             RadiusMeters = request.RadiusMeters,
             CreatorId = creatorId,
             InviteCode = GenerateInviteCode(),
-            InviteCodeExpiresAt = DateTime.UtcNow.Add(_inviteCodeExpiration),
+            InviteCodeExpiresAt = now.Add(_inviteCodeExpiration),
             IsActive = true,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = now,
         };
 
         // 创建者自动加入圈子
