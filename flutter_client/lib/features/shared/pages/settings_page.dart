@@ -719,7 +719,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             AppTheme.spacer8,
             Text('版本: 1.0.0'),
             AppTheme.spacer12,
-            Text('一款专为老年人及其子女设计的健康管理应用，帮助子女实时关注老人的健康状况。'),
+            Text(AppTheme.msgAboutDescription),
           ],
         ),
         actions: [
@@ -759,13 +759,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('使用帮助', style: AppTheme.textHeading),
+            Text(AppTheme.titleUsageHelp, style: AppTheme.textHeading),
             AppTheme.spacer8,
-            Text('• 老人端：可记录健康数据、查看用药提醒、发起紧急呼叫'),
+            Text(AppTheme.msgHelpElderFeatures),
             AppTheme.spacer4,
-            Text('• 子女端：可查看老人健康数据、位置信息、处理紧急呼叫'),
+            Text(AppTheme.msgHelpChildFeatures),
             AppTheme.spacer12,
-            Text('如有问题或建议，请联系客服。'),
+            Text(AppTheme.msgContactSupport),
           ],
         ),
         actions: [

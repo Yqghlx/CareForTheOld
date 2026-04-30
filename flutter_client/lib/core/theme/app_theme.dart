@@ -712,6 +712,13 @@ class AppTheme {
   static const String labelEmergencyCalling = '正在呼叫...';
   static const String labelLongPressEmergency = '长按紧急呼叫';
   static const String labelReleaseToCancel = '松手取消';
+
+  // 关于/帮助页面常量
+  static const String msgAboutDescription = '一款专为老年人及其子女设计的健康管理应用，帮助子女实时关注老人的健康状况。';
+  static const String titleUsageHelp = '使用帮助';
+  static const String msgHelpElderFeatures = '• 老人端：可记录健康数据、查看用药提醒、发起紧急呼叫';
+  static const String msgHelpChildFeatures = '• 子女端：可查看老人健康数据、位置信息、处理紧急呼叫';
+  static const String msgContactSupport = '如有问题或建议，请联系客服。';
   static const String titleElderHealthData = '%s - 健康数据';
   static const String titleElderLocation = '%s - 位置';
   static const String titleRateNeighbor = '为响应邻居评分';
