@@ -65,17 +65,21 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
         title: Text('$elderName - 位置'),
         actions: [
           // 设置安全区域按钮
-          IconButton(
-            icon: Icon(
-              geoFenceState.fence?.isEnabled ?? false
-                  ? Icons.security
-                  : Icons.security_outlined,
-              color: geoFenceState.fence?.isEnabled ?? false
-                  ? AppTheme.successColor
-                  : AppTheme.grey500,
+          Semantics(
+            label: AppTheme.titleSetGeoFence,
+            button: true,
+            child: IconButton(
+              icon: Icon(
+                geoFenceState.fence?.isEnabled ?? false
+                    ? Icons.security
+                    : Icons.security_outlined,
+                color: geoFenceState.fence?.isEnabled ?? false
+                    ? AppTheme.successColor
+                    : AppTheme.grey500,
+              ),
+              onPressed: () => _showGeoFenceDialog(context, elderName, latestLocationAsync),
+              tooltip: AppTheme.titleSetGeoFence,
             ),
-            onPressed: () => _showGeoFenceDialog(context, elderName, latestLocationAsync),
-            tooltip: AppTheme.titleSetGeoFence,
           ),
         ],
       ),
@@ -184,19 +188,23 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
             ),
           ),
           // 快速开关
-          Switch(
-            value: isEnabled,
-            onChanged: (value) async {
-              final centerLat = fence.centerLatitude as double;
-              final centerLon = fence.centerLongitude as double;
-              await ref.read(elderGeoFenceProvider.notifier).toggleEnabled(
-                elderId: widget.elderId,
-                centerLatitude: centerLat,
-                centerLongitude: centerLon,
-                radius: radius,
-              );
-            },
-            activeThumbColor: AppTheme.successColor,
+          Semantics(
+            label: isEnabled ? '电子围栏已开启，点击关闭' : '电子围栏已关闭，点击开启',
+            toggled: isEnabled,
+            child: Switch(
+              value: isEnabled,
+              onChanged: (value) async {
+                final centerLat = fence.centerLatitude as double;
+                final centerLon = fence.centerLongitude as double;
+                await ref.read(elderGeoFenceProvider.notifier).toggleEnabled(
+                  elderId: widget.elderId,
+                  centerLatitude: centerLat,
+                  centerLongitude: centerLon,
+                  radius: radius,
+                );
+              },
+              activeThumbColor: AppTheme.successColor,
+            ),
           ),
         ],
       ),

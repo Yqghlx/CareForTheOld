@@ -375,43 +375,47 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     Widget? trailing,
     VoidCallback? onTap,
   }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: AppTheme.radiusL,
-      child: Padding(
-        padding: AppTheme.paddingAll16,
-        child: Row(
-          children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: AppTheme.primaryColor.withValues(alpha: 0.1),
-                borderRadius: AppTheme.radiusS,
+    return Semantics(
+      label: '$title，$subtitle',
+      button: onTap != null,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: AppTheme.radiusL,
+        child: Padding(
+          padding: AppTheme.paddingAll16,
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryColor.withValues(alpha: 0.1),
+                  borderRadius: AppTheme.radiusS,
+                ),
+                child: Icon(icon, color: AppTheme.primaryColor, size: AppTheme.iconSizeLg),
               ),
-              child: Icon(icon, color: AppTheme.primaryColor, size: AppTheme.iconSizeLg),
-            ),
-            AppTheme.hSpacer16,
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: AppTheme.textHeading,
-                  ),
-                  AppTheme.spacer2,
-                  Text(
-                    subtitle,
-                    style: AppTheme.textSubtitle,
-                  ),
-                ],
+              AppTheme.hSpacer16,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: AppTheme.textHeading,
+                    ),
+                    AppTheme.spacer2,
+                    Text(
+                      subtitle,
+                      style: AppTheme.textSubtitle,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            if (trailing != null) trailing,
-            if (trailing == null && onTap != null)
-              const Icon(Icons.chevron_right, color: AppTheme.grey400),
-          ],
+              if (trailing != null) trailing,
+              if (trailing == null && onTap != null)
+                const Icon(Icons.chevron_right, color: AppTheme.grey400),
+            ],
+          ),
         ),
       ),
     );
