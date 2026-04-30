@@ -160,7 +160,11 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
         children: HealthType.values.map((type) {
           final isSelected = type == _selectedType;
           return Expanded(
-            child: GestureDetector(
+            child: Semantics(
+              label: type.label,
+              button: true,
+              selected: isSelected,
+              child: GestureDetector(
               onTap: () {
                 if (type != _selectedType) {
                   setState(() => _selectedType = type);
@@ -195,6 +199,7 @@ class _HealthTrendPageState extends ConsumerState<HealthTrendPage> {
                   ],
                 ),
               ),
+            ),
             ),
           );
         }).toList(),
