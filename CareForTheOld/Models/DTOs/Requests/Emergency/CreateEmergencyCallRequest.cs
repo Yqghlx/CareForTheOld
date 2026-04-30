@@ -10,11 +10,13 @@ public class CreateEmergencyCallRequest
     /// <summary>
     /// 纬度（可选，前端获取 GPS 后上报）
     /// </summary>
+    [Range(-90, 90, ErrorMessage = "纬度必须在 -90 到 90 之间")]
     public double? Latitude { get; set; }
 
     /// <summary>
     /// 经度（可选，前端获取 GPS 后上报）
     /// </summary>
+    [Range(-180, 180, ErrorMessage = "经度必须在 -180 到 180 之间")]
     public double? Longitude { get; set; }
 
     /// <summary>

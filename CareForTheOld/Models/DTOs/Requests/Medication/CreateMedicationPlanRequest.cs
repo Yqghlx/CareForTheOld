@@ -28,6 +28,7 @@ public class CreateMedicationPlanRequest
 
     /// <summary>提醒时间点列表，格式如 ["08:00","14:00"]</summary>
     [Required]
+    [MinLength(1, ErrorMessage = "至少需要一个提醒时间")]
     [MaxLength(10)]
     public List<string> ReminderTimes { get; set; } = new();
 
