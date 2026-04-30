@@ -27,6 +27,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
   bool _isSearching = false;
   bool _isGettingLocation = false;
   bool _isSubmitting = false;
+  bool _isJoining = false;
 
   @override
   void initState() {
@@ -121,9 +122,10 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
           Text('圈内成员', style: AppTheme.textHeading),
           AppTheme.spacer8,
           if (state.members.isEmpty)
-            const Padding(
-              padding: AppTheme.paddingAll16,
-              child: Text(AppTheme.msgNoMemberInfo),
+            EmptyStateWidget(
+              icon: Icons.people_outline,
+              title: AppTheme.msgNoMemberInfo,
+              subtitle: AppTheme.msgInviteNeighborHint,
             )
           else
             ...state.members.map((m) => ListTile(
@@ -210,8 +212,10 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                   ),
                   AppTheme.spacer8,
                   ElevatedButton(
-                    onPressed: () => _joinCircle(),
-                    child: const Text(AppTheme.labelJoin),
+                    onPressed: _isJoining ? null : () => _joinCircle(),
+                    child: _isJoining
+                        ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                        : const Text(AppTheme.labelJoin),
                   ),
                 ],
               ),
@@ -277,10 +281,15 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
       _showSnackBar(AppTheme.msgInviteCodeHint);
       return;
     }
-    final success =
-        await ref.read(neighborCircleProvider.notifier).joinCircle(code);
-    if (mounted) {
-      _showSnackBar(success ? AppTheme.msgJoinSuccess : ref.read(neighborCircleProvider).error ?? AppTheme.msgOperationFailed);
+    setState(() => _isJoining = true);
+    try {
+      final success =
+          await ref.read(neighborCircleProvider.notifier).joinCircle(code);
+      if (mounted) {
+        _showSnackBar(success ? AppTheme.msgJoinSuccess : ref.read(neighborCircleProvider).error ?? AppTheme.msgOperationFailed);
+      }
+    } finally {
+      if (mounted) setState(() => _isJoining = false);
     }
   }
 

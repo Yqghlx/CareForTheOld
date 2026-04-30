@@ -461,10 +461,12 @@ class AppTheme {
   static const String msgNoStats = '暂无统计数据';
   static const String msgNoNotification = '暂无通知';
   static const String msgNoPendingHelp = '暂无待响应的求助';
+  static const String msgHelpWillNotifyHint = '附近老人求助时将通知您';
   static const String msgNoHelpRecord = '暂无互助记录';
   static const String msgNoTrustData = '暂无信任评分数据';
   static const String subtitleNoTrustData = '邻居完成互助后将自动积累评分';
   static const String msgNoMemberInfo = '暂无成员信息';
+  static const String msgInviteNeighborHint = '邀请附近邻居加入，互助关爱老人';
   static const String msgNoLocationData = '暂无位置数据，请等待老人上报位置';
   static const String msgNoLocationRecord = '暂无位置记录';
   static const String msgNoFamilyMember = '暂无家庭成员';
