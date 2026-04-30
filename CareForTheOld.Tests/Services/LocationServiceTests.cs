@@ -41,6 +41,7 @@ public class LocationServiceTests
             _mockGeoFenceService.Object,
             _mockNotificationService.Object,
             _mockAutoRescueService.Object,
+            new Mock<IFamilyService>().Object,
             new Mock<ILogger<LocationService>>().Object);
     }
 

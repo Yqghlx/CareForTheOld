@@ -346,7 +346,7 @@ public class NeighborCircleService : INeighborCircleService
                 await _context.SaveChangesAsync(cancellationToken);
                 break;
             }
-            catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex) && attempt < 2)
+            catch (DbUpdateException ex) when (DbHelper.IsUniqueConstraintViolation(ex) && attempt < AppConstants.HangfireRetry.DefaultAttempts - 1)
             {
                 circle.InviteCode = GenerateInviteCode();
             }

@@ -27,7 +27,7 @@ public class AliyunSmsService : ISmsService
     }
 
     /// <inheritdoc />
-    public async Task<(bool Success, string? ErrorMessage)> SendAsync(string phoneNumber, string content)
+    public async Task<(bool Success, string? ErrorMessage)> SendAsync(string phoneNumber, string content, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(phoneNumber, nameof(phoneNumber));
         ArgumentException.ThrowIfNullOrWhiteSpace(content, nameof(content));

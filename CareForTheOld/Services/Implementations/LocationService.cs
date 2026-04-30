@@ -19,6 +19,7 @@ public class LocationService : ILocationService
     private readonly IGeoFenceService _geoFenceService;
     private readonly INotificationService _notificationService;
     private readonly IAutoRescueService _autoRescueService;
+    private readonly IFamilyService _familyService;
     private readonly ILogger<LocationService> _logger;
     private readonly double _accuracyThreshold;
 
@@ -27,6 +28,7 @@ public class LocationService : ILocationService
         IGeoFenceService geoFenceService,
         INotificationService notificationService,
         IAutoRescueService autoRescueService,
+        IFamilyService familyService,
         ILogger<LocationService> logger,
         IConfiguration? configuration = null)
     {
@@ -35,6 +37,7 @@ public class LocationService : ILocationService
         _geoFenceService = geoFenceService;
         _notificationService = notificationService;
         _autoRescueService = autoRescueService;
+        _familyService = familyService;
         _logger = logger;
     }
 
@@ -175,25 +178,18 @@ public class LocationService : ILocationService
     /// </summary>
     private async Task SendGeoFenceAlertAsync(Guid elderId, Guid fenceId, int fenceRadius, double distance, CancellationToken cancellationToken = default)
     {
-        // 获取老人所在家庭 ID，再查询所有家庭成员（两步查询更清晰）
-        var familyId = await _context.FamilyMembers
+        // 获取老人家庭成员记录（含姓名和家庭 ID）
+        var elderInfo = await _context.FamilyMembers
+            .Include(fm => fm.User)
             .Where(fm => fm.UserId == elderId)
-            .Select(fm => fm.FamilyId)
+            .Select(fm => new { fm.FamilyId, ElderName = fm.User != null ? fm.User.RealName : string.Empty })
             .FirstOrDefaultAsync(cancellationToken);
 
-        if (familyId == Guid.Empty) return;
+        if (elderInfo == null || string.IsNullOrEmpty(elderInfo.ElderName)) return;
 
-        var familyMembers = await _context.FamilyMembers
-            .Include(fm => fm.User)
-            .Where(fm => fm.FamilyId == familyId)
-            .ToListAsync(cancellationToken);
-
-        var familyMember = familyMembers.FirstOrDefault(fm => fm.UserId == elderId);
-        if (familyMember == null) return;
-
-        var elderName = familyMember.User?.RealName ?? AppConstants.HealthTypeLabels.DefaultElderName;
-        var children = familyMembers.Where(fm => fm.Role == UserRole.Child).ToList();
-        if (!children.Any()) return;
+        // 使用统一方法获取子女 ID
+        var childIds = await _familyService.GetChildUserIdsAsync(elderInfo.FamilyId, cancellationToken);
+        if (!childIds.Any()) return;
 
         // 构建通知内容
         var distanceText = distance > AppConstants.Location.DistanceDisplayThresholdMeters
@@ -201,14 +197,14 @@ public class LocationService : ILocationService
             : $"{(int)distance}{AppConstants.Location.MeterUnit}";
 
         await _notificationService.SendToUsersAsync(
-            children.Select(c => c.UserId),
+            childIds,
             AppConstants.NotificationTypes.GeoFenceAlert,
             new
             {
                 Title = NotificationMessages.Location.GeoFenceAlertTitle,
-                Content = string.Format(NotificationMessages.Location.GeoFenceAlertContentTemplate, elderName, distanceText),
+                Content = string.Format(NotificationMessages.Location.GeoFenceAlertContentTemplate, elderInfo.ElderName, distanceText),
                 ElderId = elderId,
-                ElderName = elderName,
+                ElderName = elderInfo.ElderName,
                 FenceId = fenceId,
                 FenceRadius = fenceRadius,
                 Distance = distance,
@@ -225,7 +221,7 @@ public class LocationService : ILocationService
             try
             {
                 await _autoRescueService.StartRescueTimerAsync(
-                    elderId, familyMember.FamilyId, circleMembership.CircleId,
+                    elderId, elderInfo.FamilyId, circleMembership.CircleId,
                     RescueTriggerType.GeoFenceBreach);
             }
             catch (Exception ex)

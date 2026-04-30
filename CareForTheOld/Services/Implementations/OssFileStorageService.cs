@@ -45,7 +45,7 @@ public class OssFileStorageService : IFileStorageService
     }
 
     /// <inheritdoc />
-    public async Task<string> UploadAsync(string directory, string fileName, Stream stream, string contentType)
+    public async Task<string> UploadAsync(string directory, string fileName, Stream stream, string contentType, CancellationToken cancellationToken = default)
     {
         // 清理文件名，防止路径遍历和非法字符
         fileName = SanitizeFileName(fileName);
@@ -76,7 +76,7 @@ public class OssFileStorageService : IFileStorageService
     }
 
     /// <inheritdoc />
-    public async Task<string?> GetUrlAsync(string directory, string fileName)
+    public async Task<string?> GetUrlAsync(string directory, string fileName, CancellationToken cancellationToken = default)
     {
         fileName = SanitizeFileName(fileName);
         directory = SanitizePathSegment(directory);
@@ -102,7 +102,7 @@ public class OssFileStorageService : IFileStorageService
     }
 
     /// <inheritdoc />
-    public async Task DeleteAsync(string fileUrl)
+    public async Task DeleteAsync(string fileUrl, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(fileUrl))
             return;

@@ -27,7 +27,7 @@ public class LocalFileStorageService : IFileStorageService
     }
 
     /// <inheritdoc />
-    public async Task<string> UploadAsync(string directory, string fileName, Stream stream, string contentType)
+    public async Task<string> UploadAsync(string directory, string fileName, Stream stream, string contentType, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(directory, nameof(directory));
         ArgumentException.ThrowIfNullOrWhiteSpace(fileName, nameof(fileName));
@@ -55,7 +55,7 @@ public class LocalFileStorageService : IFileStorageService
     }
 
     /// <inheritdoc />
-    public Task<string?> GetUrlAsync(string directory, string fileName)
+    public Task<string?> GetUrlAsync(string directory, string fileName, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(directory, nameof(directory));
         ArgumentException.ThrowIfNullOrWhiteSpace(fileName, nameof(fileName));
@@ -75,7 +75,7 @@ public class LocalFileStorageService : IFileStorageService
     }
 
     /// <inheritdoc />
-    public Task DeleteAsync(string fileUrl)
+    public Task DeleteAsync(string fileUrl, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(fileUrl, nameof(fileUrl));
 
