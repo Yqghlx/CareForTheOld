@@ -4,6 +4,7 @@ using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
 using CareForTheOld.Common.Filters;
 using CareForTheOld.Common.Helpers;
+using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -40,25 +41,25 @@ public class TrustScoreController : ControllerBase
     /// </summary>
     [HttpGet("ranking")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<List<TrustRankingResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ApiResponse<object>> GetRanking(Guid circleId, [FromQuery, Range(1, 100)] int top = AppConstants.Pagination.DefaultHistoryPageSize, CancellationToken cancellationToken = default)
+    public async Task<ApiResponse<List<TrustRankingResponse>>> GetRanking(Guid circleId, [FromQuery, Range(1, 100)] int top = AppConstants.Pagination.DefaultHistoryPageSize, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         await _circleService.EnsureCircleMemberAsync(circleId, userId, cancellationToken);
 
         var rankings = await _trustScoreService.GetCircleRankingAsync(circleId, top, cancellationToken);
-        var result = rankings.Select((r, index) => new
+        var result = rankings.Select((r, index) => new TrustRankingResponse
         {
             Rank = index + 1,
-            r.UserId,
+            UserId = r.UserId,
             UserName = r.User?.RealName ?? string.Empty,
-            r.TotalHelps,
-            AvgRating = Math.Round(r.AvgRating, AppConstants.TrustScore.DisplayDecimalPlaces),
-            ResponseRate = Math.Round(r.ResponseRate * 100, AppConstants.TrustScore.DisplayDecimalPlaces),
-            Score = Math.Round(r.Score, AppConstants.TrustScore.DisplayDecimalPlaces),
-        });
-        return ApiResponse<object>.Ok(result);
+            TotalHelps = r.TotalHelps,
+            AvgRating = (double)Math.Round((decimal)r.AvgRating, AppConstants.TrustScore.DisplayDecimalPlaces),
+            ResponseRate = (double)Math.Round((decimal)(r.ResponseRate * 100), AppConstants.TrustScore.DisplayDecimalPlaces),
+            Score = (double)Math.Round((decimal)r.Score, AppConstants.TrustScore.DisplayDecimalPlaces),
+        }).ToList();
+        return ApiResponse<List<TrustRankingResponse>>.Ok(result);
     }
 
     /// <summary>
@@ -66,14 +67,14 @@ public class TrustScoreController : ControllerBase
     /// </summary>
     [HttpGet("me")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<MyTrustScoreResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ApiResponse<object>> GetMyScore(Guid circleId, CancellationToken cancellationToken = default)
+    public async Task<ApiResponse<MyTrustScoreResponse>> GetMyScore(Guid circleId, CancellationToken cancellationToken = default)
     {
         var userId = this.GetUserId();
         await _circleService.EnsureCircleMemberAsync(circleId, userId, cancellationToken);
 
         var score = await _trustScoreService.GetUserScoreAsync(userId, circleId, cancellationToken);
-        return ApiResponse<object>.Ok(new { Score = Math.Round(score, AppConstants.TrustScore.DisplayDecimalPlaces) });
+        return ApiResponse<MyTrustScoreResponse>.Ok(new MyTrustScoreResponse { Score = (double)Math.Round((decimal)score, AppConstants.TrustScore.DisplayDecimalPlaces) });
     }
 }

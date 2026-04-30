@@ -3,6 +3,7 @@ using CareForTheOld.Common.Constants;
 using CareForTheOld.Common.Extensions;
 using CareForTheOld.Common.Filters;
 using CareForTheOld.Common.Helpers;
+using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -56,32 +57,32 @@ public class AutoRescueController : ControllerBase
     /// </summary>
     [HttpGet("history")]
     [CacheControl(MaxAgeSeconds = AppConstants.Cache.HttpCacheMediumSeconds)]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<List<AutoRescueHistoryResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ApiResponse<object>> GetHistory([FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultHistoryPageSize, CancellationToken cancellationToken = default)
+    public async Task<ApiResponse<List<AutoRescueHistoryResponse>>> GetHistory([FromQuery][Range(0, int.MaxValue)] int skip = AppConstants.Pagination.DefaultSkip, [FromQuery][Range(1, int.MaxValue)] int limit = AppConstants.Pagination.DefaultHistoryPageSize, CancellationToken cancellationToken = default)
     {
         limit = this.ClampLimit(limit);
         var userId = this.GetUserId();
 
         var family = await _familyService.GetMyFamilyAsync(userId, cancellationToken);
         if (family == null)
-            return ApiResponse<object>.Fail(ErrorMessages.Family.NotJoinedFamily);
+            return ApiResponse<List<AutoRescueHistoryResponse>>.Fail(ErrorMessages.Family.NotJoinedFamily);
 
         var records = await _autoRescueService.GetHistoryAsync(family.Id, skip, limit, cancellationToken);
-        var result = records.Select(r => new
+        var result = records.Select(r => new AutoRescueHistoryResponse
         {
-            r.Id,
-            r.ElderId,
+            Id = r.Id,
+            ElderId = r.ElderId,
             ElderName = r.Elder?.RealName ?? string.Empty,
             TriggerType = r.TriggerType.GetLabel(),
             Status = r.Status.GetLabel(),
-            r.TriggeredAt,
-            r.ChildNotifiedAt,
-            r.ChildRespondedAt,
-            r.BroadcastAt,
-            r.ResolvedAt,
-        });
-        return ApiResponse<object>.Ok(result);
+            TriggeredAt = r.TriggeredAt,
+            ChildNotifiedAt = r.ChildNotifiedAt,
+            ChildRespondedAt = r.ChildRespondedAt,
+            BroadcastAt = r.BroadcastAt,
+            ResolvedAt = r.ResolvedAt,
+        }).ToList();
+        return ApiResponse<List<AutoRescueHistoryResponse>>.Ok(result);
     }
 }
