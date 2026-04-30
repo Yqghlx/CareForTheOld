@@ -128,7 +128,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
 
           // 最近历史
           const Text(
-            '最近呼叫记录',
+            AppTheme.titleRecentCalls,
             style: AppTheme.textTitle,
           ),
           AppTheme.spacer12,
@@ -199,7 +199,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                   ),
                 ),
                 StatusChip(
-                  label: '待处理',
+                  label: AppTheme.labelPending,
                   color: AppTheme.errorColor,
                 ),
               ],
@@ -250,9 +250,9 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                 if (call.elderPhoneNumber != null && call.elderPhoneNumber!.isNotEmpty)
                   Expanded(
                     child: Tooltip(
-                      message: '拨打老人电话',
+                      message: AppTheme.labelCallElder,
                       child: Semantics(
-                        label: '拨打老人电话',
+                        label: AppTheme.labelCallElder,
                         button: true,
                         child: OutlinedButton.icon(
                           onPressed: () => _callElder(call.elderPhoneNumber!),
@@ -270,12 +270,12 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
                   AppTheme.hSpacer12,
                 Expanded(
                   child: Tooltip(
-                    message: '标记紧急呼叫已处理',
+                    message: AppTheme.labelMarkHandled,
                     child: Semantics(
-                      label: '标记紧急呼叫已处理',
+                      label: AppTheme.labelMarkHandled,
                       button: true,
                       child: PrimaryIconButton(
-                        text: '已处理',
+                        text: AppTheme.labelHandled,
                         icon: Icons.check,
                         onPressed: _isResponding ? null : () => _respondCall(call),
                         gradient: const LinearGradient(
