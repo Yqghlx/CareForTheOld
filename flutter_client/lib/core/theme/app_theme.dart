@@ -591,6 +591,15 @@ class AppTheme {
   static const String titleMedReminderNotification = '用药提醒通知';
   static const String titleNeighborNotification = '邻里动态通知';
 
+  // 老人首页快速链接常量
+  static const String titleRecordHealth = '记录健康';
+  static const String subtitleRecordHealth = '血压、血糖、心率';
+  static const String subtitleViewTodayMed = '查看今日用药';
+  static const String subtitleFamilyMembers = '查看家人信息';
+  static const String subtitleNeighborCircle = '附近邻居互助';
+  static const String subtitleNeighborHelp = '求助与帮助邻居';
+  static const String subtitlePersonalSettings = '个人信息设置';
+
   /// 业务常量
   /// 邻里圈搜索默认半径（米）
   static const double defaultNeighborSearchRadius = 2000.0;
