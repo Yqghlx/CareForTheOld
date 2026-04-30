@@ -9,6 +9,7 @@ import '../../../shared/widgets/notification_badge.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import 'package:battery_plus/battery_plus.dart';
 
 import '../../../shared/models/emergency_call.dart';
@@ -745,6 +746,13 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
       );
 
       if (image == null) return;
+
+      // 校验文件大小，防止上传超大图片
+      final fileSize = await File(image.path).length();
+      if (fileSize > AppTheme.maxAvatarSizeBytes) {
+        if (mounted) context.showErrorSnackBar(AppTheme.msgAvatarTooLarge);
+        return;
+      }
 
       setState(() => _isUploadingAvatar = true);
 

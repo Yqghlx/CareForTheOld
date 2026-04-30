@@ -796,6 +796,8 @@ class AppTheme {
   static const int ocrImageQuality = 85;
   static const double avatarMaxSize = 512.0;
   static const int avatarImageQuality = 80;
+  static const int maxAvatarSizeBytes = 5 * 1024 * 1024; // 5MB
+  static const String msgAvatarTooLarge = '图片文件过大，请选择小于 5MB 的图片';
 
   /// 老人端特殊配置 - 大字体、大按钮、更大圆角
   static ThemeData get elderTheme => ThemeData(
