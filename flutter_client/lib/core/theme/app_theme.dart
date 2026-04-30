@@ -600,6 +600,13 @@ class AppTheme {
   static const String subtitleNeighborHelp = '求助与帮助邻居';
   static const String subtitlePersonalSettings = '个人信息设置';
 
+  // 操作确认常量
+  static const String titleConfirmRespond = '确认响应';
+  static const String titleConfirmLeave = '确认退出';
+  static const String msgAcceptHelp = '接受求助，前往帮忙';
+  static const String tooltipCancelSearch = '取消搜索';
+  static const String tooltipSearch = '搜索通知';
+
   /// 业务常量
   /// 邻里圈搜索默认半径（米）
   static const double defaultNeighborSearchRadius = 2000.0;

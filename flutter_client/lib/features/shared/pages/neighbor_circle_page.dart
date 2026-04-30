@@ -306,7 +306,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
     if (_isSubmitting) return;
     final confirmed = await showConfirmDialog(
       context,
-      title: '确认退出',
+      title: AppTheme.titleConfirmLeave,
       message: '确定要退出邻里圈吗？如果您是圈主，退出后圈子将解散。',
       confirmText: '退出',
     );

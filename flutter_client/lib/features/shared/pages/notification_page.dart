@@ -64,7 +64,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
                 if (!_isSearching) _searchQuery = '';
               });
             },
-            tooltip: _isSearching ? '取消搜索' : '搜索通知',
+            tooltip: _isSearching ? AppTheme.tooltipCancelSearch : AppTheme.tooltipSearch,
           ),
           if (!_isSearching && state.unreadCount > 0)
             TextButton(

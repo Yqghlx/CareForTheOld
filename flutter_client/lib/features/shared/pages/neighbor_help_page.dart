@@ -116,7 +116,7 @@ class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
     if (_isAccepting) return;
     final confirmed = await showConfirmDialog(
       context,
-      title: '确认响应',
+      title: AppTheme.titleConfirmRespond,
       message: '确定要响应此求助吗？您将是第一个响应的邻居。',
       confirmText: '我来帮忙',
     );
@@ -205,7 +205,7 @@ class _HelpRequestCard extends StatelessWidget {
                     button: true,
                     child: TextButton.icon(
                       icon: const Icon(Icons.star, size: 16),
-                      label: const Text('评价'),
+                      label: const Text(AppTheme.msgCreate),
                       onPressed: onRate,
                     ),
                   ),
@@ -217,9 +217,9 @@ class _HelpRequestCard extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: Tooltip(
-                  message: '接受求助，前往帮忙',
+                  message: AppTheme.msgAcceptHelp,
                   child: Semantics(
-                    label: '接受求助，前往帮忙',
+                    label: AppTheme.msgAcceptHelp,
                     button: true,
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.volunteer_activism),
