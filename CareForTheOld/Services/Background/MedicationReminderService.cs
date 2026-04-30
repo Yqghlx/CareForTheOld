@@ -89,35 +89,43 @@ public class MedicationReminderService : BackgroundService
 
         foreach (var plan in activePlans)
         {
-            // 检查是否已过期
-            if (plan.EndDate.HasValue && plan.EndDate.Value < today) continue;
-
-            var reminderTimes = JsonSerializer.Deserialize<List<string>>(plan.ReminderTimes) ?? new();
-
-            foreach (var timeStr in reminderTimes)
+            try
             {
-                if (!TimeOnly.TryParse(timeStr, out var reminderTime)) continue;
+                // 检查是否已过期
+                if (plan.EndDate.HasValue && plan.EndDate.Value < today) continue;
 
-                // 计算提醒时间（提前配置的分钟数提醒）
-                var reminderTimeWithBuffer = reminderTime.AddMinutes(-_advanceMinutes);
+                var reminderTimes = JsonSerializer.Deserialize<List<string>>(plan.ReminderTimes) ?? new();
 
-                // 检查是否在当前时间的1分钟窗口内
-                if (currentTime >= reminderTimeWithBuffer && currentTime < reminderTimeWithBuffer.AddMinutes(AppConstants.Medication.ReminderWindowMinutes))
+                foreach (var timeStr in reminderTimes)
                 {
-                    var scheduledAt = DateTime.SpecifyKind(today.ToDateTime(reminderTime), DateTimeKind.Utc);
+                    if (!TimeOnly.TryParse(timeStr, out var reminderTime)) continue;
 
-                    // 检查是否已发送过提醒（通过检查日志是否存在）
-                    var existingLog = await context.MedicationLogs
-                        .AnyAsync(l => l.PlanId == plan.Id && l.ScheduledAt == scheduledAt, stoppingToken);
+                    // 计算提醒时间（提前配置的分钟数提醒）
+                    var reminderTimeWithBuffer = reminderTime.AddMinutes(-_advanceMinutes);
 
-                    if (!existingLog)
+                    // 检查是否在当前时间的1分钟窗口内
+                    if (currentTime >= reminderTimeWithBuffer && currentTime < reminderTimeWithBuffer.AddMinutes(AppConstants.Medication.ReminderWindowMinutes))
                     {
-                        await SendReminderAsync(notificationService, context, plan, scheduledAt, stoppingToken);
+                        var scheduledAt = DateTime.SpecifyKind(today.ToDateTime(reminderTime), DateTimeKind.Utc);
 
-                        // 调度延迟检查任务：10分钟后二次提醒，30分钟后通知子女
-                        ScheduleFollowUpChecks(plan, scheduledAt);
+                        // 检查是否已发送过提醒（通过检查日志是否存在）
+                        var existingLog = await context.MedicationLogs
+                            .AnyAsync(l => l.PlanId == plan.Id && l.ScheduledAt == scheduledAt, stoppingToken);
+
+                        if (!existingLog)
+                        {
+                            await SendReminderAsync(notificationService, context, plan, scheduledAt, stoppingToken);
+
+                            // 调度延迟检查任务：10分钟后二次提醒，30分钟后通知子女
+                            ScheduleFollowUpChecks(plan, scheduledAt);
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                // 单个计划提醒失败不中断整批，继续处理后续计划
+                _logger.LogError(ex, "用药提醒发送失败，老人 {ElderId}，计划 {PlanId}", plan.ElderId, plan.Id);
             }
         }
     }

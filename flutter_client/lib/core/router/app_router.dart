@@ -91,7 +91,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       // 老人端路由
       GoRoute(
         path: RoutePaths.elderHome,
-        builder: (context, state) => const ElderHomePage(),
+        pageBuilder: (context, state) => FadePageTransition(child: const ElderHomePage()),
       ),
       GoRoute(
         path: RoutePaths.elderHealth,
@@ -113,7 +113,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       // 子女端路由
       GoRoute(
         path: RoutePaths.childHome,
-        builder: (context, state) => const ChildHomePage(),
+        pageBuilder: (context, state) => FadePageTransition(child: const ChildHomePage()),
       ),
       GoRoute(
         path: RoutePaths.childFamily,
