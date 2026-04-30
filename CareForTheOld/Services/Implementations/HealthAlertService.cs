@@ -15,12 +15,14 @@ public class HealthAlertService : IHealthAlertService
 {
     private readonly AppDbContext _context;
     private readonly INotificationService _notificationService;
+    private readonly IFamilyService _familyService;
     private readonly ILogger<HealthAlertService> _logger;
 
-    public HealthAlertService(AppDbContext context, INotificationService notificationService, ILogger<HealthAlertService> logger)
+    public HealthAlertService(AppDbContext context, INotificationService notificationService, IFamilyService familyService, ILogger<HealthAlertService> logger)
     {
         _context = context;
         _notificationService = notificationService;
+        _familyService = familyService;
         _logger = logger;
     }
 
@@ -44,34 +46,27 @@ public class HealthAlertService : IHealthAlertService
     /// </summary>
     public async Task SendAlertToChildrenAsync(Guid elderId, HealthRecord record, string alertMessage, CancellationToken cancellationToken = default)
     {
-        // 获取老人所在家庭 ID，再查询所有家庭成员
-        var familyId = await _context.FamilyMembers
+        // 单次投影查询获取老人姓名和家庭 ID
+        var elderInfo = await _context.FamilyMembers
+            .Include(fm => fm.User)
             .Where(fm => fm.UserId == elderId)
-            .Select(fm => fm.FamilyId)
+            .Select(fm => new { fm.FamilyId, ElderName = fm.User != null ? fm.User.RealName : string.Empty })
             .FirstOrDefaultAsync(cancellationToken);
 
-        if (familyId == Guid.Empty) return;
+        if (elderInfo == null || string.IsNullOrEmpty(elderInfo.ElderName)) return;
 
-        var familyMembers = await _context.FamilyMembers
-            .Include(fm => fm.User)
-            .Where(fm => fm.FamilyId == familyId)
-            .ToListAsync(cancellationToken);
+        // 使用统一方法获取子女 ID
+        var childIds = await _familyService.GetChildUserIdsAsync(elderInfo.FamilyId, cancellationToken);
+        if (!childIds.Any()) return;
 
-        var familyMember = familyMembers.FirstOrDefault(fm => fm.UserId == elderId);
-        if (familyMember == null) return;
-
-        var children = familyMembers.Where(fm => fm.Role == UserRole.Child).ToList();
-        if (!children.Any()) return;
-
-        // 直接从 familyMember 获取老人姓名，无需额外查询
-        var elderName = familyMember.User?.RealName ?? AppConstants.HealthTypeLabels.DefaultElderName;
+        var elderName = elderInfo.ElderName;
 
         // 构建通知内容
         var typeLabel = record.Type.GetLabel();
         var valueDisplay = GetDisplayValue(record);
 
         await _notificationService.SendToUsersAsync(
-            children.Select(c => c.UserId),
+            childIds,
             AppConstants.NotificationTypes.HealthAlert,
             new
             {
@@ -88,7 +83,7 @@ public class HealthAlertService : IHealthAlertService
         );
 
         _logger.LogInformation("已向 {Count} 位子女发送健康异常预警：老人 {ElderId}，类型 {HealthType}，预警 {Alert}",
-            children.Count, elderId, record.Type, alertMessage);
+            childIds.Count, elderId, record.Type, alertMessage);
     }
 
     /// <summary>

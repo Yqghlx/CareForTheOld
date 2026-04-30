@@ -27,7 +27,7 @@ public class HealthAlertServiceTests
             .Options;
         _context = new AppDbContext(options);
         _mockNotificationService = new Mock<INotificationService>();
-        _service = new HealthAlertService(_context, _mockNotificationService.Object, NullLogger<HealthAlertService>.Instance);
+        _service = new HealthAlertService(_context, _mockNotificationService.Object, new Mock<IFamilyService>().Object, NullLogger<HealthAlertService>.Instance);
     }
 
     private async Task<Guid> CreateTestUserAsync(string realName = "测试老人", UserRole role = UserRole.Elder)
