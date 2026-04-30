@@ -436,6 +436,7 @@ class AppTheme {
   static const String msgNoPendingHelp = '暂无待响应的求助';
   static const String msgNoHelpRecord = '暂无互助记录';
   static const String msgNoTrustData = '暂无信任评分数据';
+  static const String subtitleNoTrustData = '邻居完成互助后将自动积累评分';
   static const String msgNoMemberInfo = '暂无成员信息';
   static const String msgNoLocationData = '暂无位置数据，请等待老人上报位置';
   static const String msgNoLocationRecord = '暂无位置记录';
@@ -736,6 +737,8 @@ class AppTheme {
   static const String labelConfirmShort = '确认';
   static const String labelRemoveShort = '移除';
   static const String labelAddFamilyMember = '添加家庭成员';
+  static const String labelCollapse = '收起';
+  static const String labelExpandFull = '展开全文';
 
   // 确认消息
   static const String msgConfirmDeleteGeoFence = '确定删除安全围栏吗？删除后将不再收到越界提醒。';

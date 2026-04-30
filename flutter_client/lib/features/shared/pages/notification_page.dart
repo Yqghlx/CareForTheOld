@@ -149,7 +149,10 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
             ? BorderSide.none
             : BorderSide(color: notification.color.withValues(alpha: 0.3), width: 1),
       ),
-      child: InkWell(
+      child: Semantics(
+        label: '${notification.title} ${notification.content}',
+        button: true,
+        child: InkWell(
         onTap: () {
           if (!notification.isRead) {
             ref.read(notificationListProvider.notifier).markAsRead(notification.id);
@@ -224,7 +227,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
                         // 展开/收起提示
                         if (notification.content.length > 60)
                           Text(
-                            _expandedNotificationId == notification.id ? '收起' : '展开全文',
+                            _expandedNotificationId == notification.id ? AppTheme.labelCollapse : AppTheme.labelExpandFull,
                             style: AppTheme.textCaption.copyWith(color: AppTheme.primaryColor),
                           ),
                       ],
@@ -235,6 +238,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

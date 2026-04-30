@@ -31,6 +31,7 @@ class ChildHomePage extends ConsumerStatefulWidget {
 }
 
 class _ChildHomePageState extends ConsumerState<ChildHomePage> {
+  bool _isCreatingPlan = false;
 
   @override
   void initState() {
@@ -570,7 +571,8 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                 ),
                 PrimaryButton(
                   text: AppTheme.msgCreate,
-                  onPressed: () async {
+                  isLoading: _isCreatingPlan,
+                  onPressed: _isCreatingPlan ? null : () async {
                     final name = nameCtl.text.trim();
                     final dosage = dosageCtl.text.trim();
                     if (name.isEmpty || name.length > 50) {
@@ -587,6 +589,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                       return;
                     }
                     Navigator.pop(ctx);
+                    setState(() => _isCreatingPlan = true);
                     try {
                       final service =
                           MedicationService(ref.read(apiClientProvider).dio);
@@ -612,6 +615,8 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                       if (mounted && context.mounted) {
                         context.showErrorSnackBar(AppTheme.msgPlanCreateFailed);
                       }
+                    } finally {
+                      if (mounted) setState(() => _isCreatingPlan = false);
                     }
                   },
                 ),

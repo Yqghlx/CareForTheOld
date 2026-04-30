@@ -130,7 +130,10 @@ class _NeighborHelpRatingPageState
         }
       }
     } catch (e) {
-      if (mounted) setState(() => _isSubmitting = false);
+      if (mounted) {
+        setState(() => _isSubmitting = false);
+        context.showErrorSnackBar(AppTheme.msgOperationFailed);
+      }
     }
   }
 }
