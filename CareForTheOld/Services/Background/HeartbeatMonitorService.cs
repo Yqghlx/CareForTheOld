@@ -66,7 +66,7 @@ public class HeartbeatMonitorService
     /// </summary>
     // 重试策略参考 AppConstants.HangfireRetry
     [AutomaticRetry(Attempts = 3, DelaysInSeconds = new[] { 10, 30 })]
-    public async Task CheckHeartbeatsAsync()
+    public async Task CheckHeartbeatsAsync(CancellationToken cancellationToken = default)
     {
         var heartbeats = NotificationHub.LastHeartbeats;
         if (!heartbeats.Any()) return;
@@ -98,12 +98,12 @@ public class HeartbeatMonitorService
         var userIds = timeoutUserIds.Select(t => t.userId).ToHashSet();
         var users = await context.Users
             .Where(u => userIds.Contains(u.Id) && u.Role == UserRole.Elder)
-            .ToDictionaryAsync(u => u.Id, u => u);
+            .ToDictionaryAsync(u => u.Id, u => u, cancellationToken);
 
         // 批量预加载家庭成员关系
         var elderFamilyMembers = await context.FamilyMembers
             .Where(fm => userIds.Contains(fm.UserId))
-            .ToDictionaryAsync(fm => fm.UserId, fm => fm);
+            .ToDictionaryAsync(fm => fm.UserId, fm => fm, cancellationToken);
 
         // 批量预加载子女信息
         var familyIds = elderFamilyMembers.Values.Select(fm => fm.FamilyId).Distinct().ToHashSet();
@@ -111,12 +111,12 @@ public class HeartbeatMonitorService
             .Include(fm => fm.User)
             .Where(fm => familyIds.Contains(fm.FamilyId) && fm.Role == UserRole.Child)
             .GroupBy(fm => fm.FamilyId)
-            .ToDictionaryAsync(g => g.Key, g => g.ToList());
+            .ToDictionaryAsync(g => g.Key, g => g.ToList(), cancellationToken);
 
         // 批量预加载邻里圈成员关系（自动救援用）
         var circleMemberships = await context.NeighborCircleMembers
             .Where(m => userIds.Contains(m.UserId))
-            .ToDictionaryAsync(m => m.UserId, m => m);
+            .ToDictionaryAsync(m => m.UserId, m => m, cancellationToken);
 
         foreach (var (userIdStr, userId, elapsed) in timeoutUserIds)
         {

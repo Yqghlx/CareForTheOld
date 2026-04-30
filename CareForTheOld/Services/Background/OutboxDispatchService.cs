@@ -35,7 +35,7 @@ public class OutboxDispatchService
     /// </summary>
     // 重试策略参考 AppConstants.HangfireRetry
     [AutomaticRetry(Attempts = 3, DelaysInSeconds = new[] { 10, 30 })]
-    public async Task DispatchOutboxMessagesAsync()
+    public async Task DispatchOutboxMessagesAsync(CancellationToken cancellationToken = default)
     {
         using var scope = _scopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -47,7 +47,7 @@ public class OutboxDispatchService
             .OrderBy(o => o.CreatedAt)
             .Take(AppConstants.Outbox.BatchSize)
             .AsTracking()
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         if (!pendingMessages.Any()) return;
 
@@ -67,7 +67,7 @@ public class OutboxDispatchService
 
                 // 通过 SignalR 推送
                 await hubContext.Clients.Group(AppConstants.SignalRGroups.UserGroupName(message.UserId))
-                    .SendAsync(AppConstants.SignalRMethods.ReceiveNotification, message.Type, data);
+                    .SendAsync(AppConstants.SignalRMethods.ReceiveNotification, message.Type, data, cancellationToken);
 
                 // 标记为已投递
                 message.Status = OutboxStatus.Sent;
@@ -91,7 +91,7 @@ public class OutboxDispatchService
             }
         }
 
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(cancellationToken);
 
         if (successCount > 0 || failCount > 0)
         {

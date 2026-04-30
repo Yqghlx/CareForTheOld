@@ -160,7 +160,7 @@ public class MedicationReminderService : BackgroundService
     /// isEscalation=false → 二次提醒（发送给老人）
     /// isEscalation=true  → 子女介入（发送给子女）
     /// </summary>
-    public async Task CheckAndSendFollowUpAsync(Guid elderId, Guid planId, DateTime scheduledAt, bool isEscalation)
+    public async Task CheckAndSendFollowUpAsync(Guid elderId, Guid planId, DateTime scheduledAt, bool isEscalation, CancellationToken cancellationToken = default)
     {
         using var scope = _serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -169,7 +169,7 @@ public class MedicationReminderService : BackgroundService
         // 检查老人是否已服药
         var hasTaken = await context.MedicationLogs
             .AnyAsync(l => l.PlanId == planId && l.ScheduledAt == scheduledAt
-                         && (l.Status == MedicationStatus.Taken));
+                         && (l.Status == MedicationStatus.Taken), cancellationToken);
 
         if (hasTaken)
         {
@@ -180,7 +180,7 @@ public class MedicationReminderService : BackgroundService
         // 查询用药计划信息
         var plan = await context.MedicationPlans
             .Include(p => p.Elder)
-            .FirstOrDefaultAsync(p => p.Id == planId);
+            .FirstOrDefaultAsync(p => p.Id == planId, cancellationToken);
 
         if (plan == null) return;
 
@@ -210,11 +210,11 @@ public class MedicationReminderService : BackgroundService
             var familyIds = await context.FamilyMembers
                 .Where(fm => fm.UserId == elderId)
                 .Select(fm => fm.FamilyId)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             var children = await context.FamilyMembers
                 .Where(fm => familyIds.Contains(fm.FamilyId) && fm.UserId != elderId)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             // 批量发送通知给所有子女，减少数据库往返
             var childUserIds = children.Select(c => c.UserId);
