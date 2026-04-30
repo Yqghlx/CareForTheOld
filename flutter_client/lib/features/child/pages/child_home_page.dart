@@ -333,9 +333,9 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                   children: [
                     Expanded(
                       child: Tooltip(
-                        message: '查看老人实时位置',
+                        message: AppTheme.msgViewLocation,
                         child: Semantics(
-                          label: '查看老人实时位置',
+                          label: AppTheme.msgViewLocation,
                           button: true,
                           child: OutlinedButton.icon(
                             onPressed: () => context.push(RoutePaths.childElderLocation(elder.userId)),
@@ -349,9 +349,9 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                     AppTheme.hSpacer12,
                     Expanded(
                       child: Tooltip(
-                        message: '查看老人健康数据',
+                        message: AppTheme.msgViewHealth,
                         child: Semantics(
-                          label: '查看老人健康数据',
+                          label: AppTheme.msgViewHealth,
                           button: true,
                           child: OutlinedButton.icon(
                             onPressed: () => context.push(RoutePaths.childElderHealth(elder.userId)),

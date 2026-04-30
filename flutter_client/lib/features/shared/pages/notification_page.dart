@@ -119,7 +119,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
           SizedBox(height: MediaQuery.of(context).size.height * 0.3),
           const EmptyStateWidget(
             icon: Icons.search_off,
-            title: '未找到相关通知',
+            title: AppTheme.titleNotFound,
             subtitle: AppTheme.hintSearchEmpty,
           ),
         ],

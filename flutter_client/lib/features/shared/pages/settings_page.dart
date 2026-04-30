@@ -199,7 +199,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   _buildSettingItem(
                     icon: Icons.person_outline,
                     title: AppTheme.titleChangeName,
-                    subtitle: user?.realName ?? ref.watch(authProvider.select((s) => s.user?.realName)) ?? '未设置',
+                    subtitle: user?.realName ?? ref.watch(authProvider.select((s) => s.user?.realName)) ?? AppTheme.labelNotSet,
                     onTap: () => _showEditNameDialog(),
                   ),
                   const Divider(height: 1),
@@ -345,7 +345,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   _buildSettingItem(
                     icon: Icons.help_outline,
                     title: AppTheme.titleHelpFeedback,
-                    subtitle: '使用帮助、问题反馈',
+                    subtitle: AppTheme.subtitleHelpFeedback,
                     onTap: () => _showHelpDialog(),
                   ),
                 ],

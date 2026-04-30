@@ -311,14 +311,14 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
               ),
               AnimatedQuickCard(
                 icon: Icons.volunteer_activism,
-                title: '邻里互助',
+                title: AppTheme.titleNeighborHelp,
                 subtitle: AppTheme.subtitleNeighborHelp,
                 color: AppTheme.warningColor,
                 onTap: () => context.push(RoutePaths.neighborHelp),
               ),
               AnimatedQuickCard(
                 icon: Icons.settings,
-                title: '设置',
+                title: AppTheme.titleSettings,
                 subtitle: AppTheme.subtitlePersonalSettings,
                 color: AppTheme.grey500,
                 onTap: () => context.push(RoutePaths.settings),

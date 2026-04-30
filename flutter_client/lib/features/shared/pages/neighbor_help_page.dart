@@ -199,9 +199,9 @@ class _HelpRequestCard extends StatelessWidget {
               Align(
                 alignment: Alignment.centerRight,
                 child: Tooltip(
-                  message: '评价此次互助',
+                  message: AppTheme.msgRatingHelp,
                   child: Semantics(
-                    label: '评价此次互助',
+                    label: AppTheme.msgRatingHelp,
                     button: true,
                     child: TextButton.icon(
                       icon: const Icon(Icons.star, size: 16),

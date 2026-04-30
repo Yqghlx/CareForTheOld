@@ -318,7 +318,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
       context,
       title: AppTheme.msgConfirmSkip,
       message: AppTheme.msgConfirmSkipWithName(log.medicineName),
-      confirmText: '确认跳过',
+      confirmText: AppTheme.labelConfirmSkip,
     );
     if (!confirmed) return;
 
@@ -550,9 +550,9 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
                 children: [
                   Expanded(
                     child: Tooltip(
-                      message: '确认已服用此药物',
+                      message: AppTheme.msgConfirmTaken,
                       child: Semantics(
-                        label: '确认已服用此药物',
+                        label: AppTheme.msgConfirmTaken,
                         button: true,
                         child: PrimaryIconButton(
                           text: AppTheme.labelMedTaken,
@@ -567,9 +567,9 @@ class _PendingMedicationCardState extends State<_PendingMedicationCard>
                   AppTheme.hSpacer12,
                   Expanded(
                     child: Tooltip(
-                      message: '跳过此次用药',
+                      message: AppTheme.msgSkipMedication,
                       child: Semantics(
-                        label: '跳过此次用药',
+                        label: AppTheme.msgSkipMedication,
                         button: true,
                         child: SecondaryButton(
                           text: '跳过',

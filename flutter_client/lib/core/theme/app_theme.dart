@@ -629,6 +629,17 @@ class AppTheme {
   static const String labelCallElder = '拨打老人电话';
   static const String labelMarkHandled = '标记紧急呼叫已处理';
 
+  // 更多页面常量
+  static const String labelConfirmSkip = '确认跳过';
+  static const String msgConfirmTaken = '确认已服用此药物';
+  static const String msgSkipMedication = '跳过此次用药';
+  static const String msgRatingHelp = '评价此次互助';
+  static const String msgViewLocation = '查看老人实时位置';
+  static const String msgViewHealth = '查看老人健康数据';
+  static const String subtitleHelpFeedback = '使用帮助、问题反馈';
+  static const String titleNotFound = '未找到相关通知';
+  static const String labelNotSet = '未设置';
+
   /// 业务常量
   /// 邻里圈搜索默认半径（米）
   static const double defaultNeighborSearchRadius = 2000.0;
