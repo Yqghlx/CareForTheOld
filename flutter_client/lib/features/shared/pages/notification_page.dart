@@ -46,7 +46,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
             ? TextField(
                 autofocus: true,
                 decoration: const InputDecoration(
-                  hintText: '搜索通知...',
+                  hintText: AppTheme.hintSearchNotification,
                   border: InputBorder.none,
                   hintStyle: TextStyle(color: AppTheme.grey400),
                 ),

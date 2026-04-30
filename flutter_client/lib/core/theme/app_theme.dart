@@ -557,6 +557,21 @@ class AppTheme {
   static const String labelSon = '儿子';
   static const String labelDaughter = '女儿';
 
+  // 邻里圈/互助/家庭/通知页面常量
+  static const String labelCircleName = '圈子名称';
+  static const String hintCircleName = '例如：阳光小区互助群';
+  static const String labelCommentOptional = '评语（可选）';
+  static const String hintComment = '分享您的互助体验...';
+  static const String hintSearchNotification = '搜索通知...';
+  static const String hintInviteCode6 = '输入 6 位数字邀请码';
+  static const String labelFamilyGroupName = '家庭组名称';
+  static const String hintFamilyGroupName = '如：张家';
+  static const String labelInviteCode6 = '邀请码（6位数字）';
+  static const String labelRelation = '您与创建者的关系';
+  static const String labelRole = '角色';
+  static const String labelNickname = '称呼';
+  static const String labelDosage = '剂量（如：1片、10ml）';
+
   /// 业务常量
   /// 邻里圈搜索默认半径（米）
   static const double defaultNeighborSearchRadius = 2000.0;

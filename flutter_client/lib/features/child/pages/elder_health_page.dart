@@ -560,7 +560,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 TextField(
                   controller: dosageController,
                   decoration: const InputDecoration(
-                    labelText: '剂量（如：1片、10ml）',
+                    labelText: AppTheme.labelDosage,
                     border: OutlineInputBorder(),
                   ),
                   inputFormatters: [

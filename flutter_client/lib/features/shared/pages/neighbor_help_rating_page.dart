@@ -69,8 +69,8 @@ class _NeighborHelpRatingPageState
             TextField(
               controller: _commentController,
               decoration: const InputDecoration(
-                labelText: '评语（可选）',
-                hintText: '分享您的互助体验...',
+                labelText: AppTheme.labelCommentOptional,
+                hintText: AppTheme.hintComment,
                 border: OutlineInputBorder(),
               ),
               textCapitalization: TextCapitalization.sentences,

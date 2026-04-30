@@ -201,7 +201,7 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                     controller: _inviteCodeController,
                     decoration: const InputDecoration(
                       labelText: AppTheme.labelInviteCode,
-                      hintText: '输入 6 位数字邀请码',
+                      hintText: AppTheme.hintInviteCode6,
                       border: OutlineInputBorder(),
                     ),
                     keyboardType: TextInputType.number,
@@ -231,8 +231,8 @@ class _NeighborCirclePageState extends ConsumerState<NeighborCirclePage> {
                   TextField(
                     controller: _circleNameController,
                     decoration: const InputDecoration(
-                      labelText: '圈子名称',
-                      hintText: '例如：阳光小区互助群',
+                      labelText: AppTheme.labelCircleName,
+                      hintText: AppTheme.hintCircleName,
                       border: OutlineInputBorder(),
                       counterText: '',
                     ),

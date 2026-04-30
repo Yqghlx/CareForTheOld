@@ -617,8 +617,8 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
           child: TextField(
             controller: nameController,
             decoration: InputDecoration(
-              labelText: '家庭组名称',
-              hintText: '如：张家',
+              labelText: AppTheme.labelFamilyGroupName,
+              hintText: AppTheme.hintFamilyGroupName,
               border: OutlineInputBorder(borderRadius: AppTheme.radiusS),
             ),
             textCapitalization: TextCapitalization.words,
@@ -689,7 +689,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                   TextField(
                     controller: codeController,
                     decoration: InputDecoration(
-                      labelText: '邀请码（6位数字）',
+                      labelText: AppTheme.labelInviteCode6,
                       prefixIcon: const Icon(Icons.vpn_key),
                       border: OutlineInputBorder(borderRadius: AppTheme.radiusS),
                     ),
@@ -701,7 +701,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     // ignore: deprecated_member_use - StatefulBuilder 中动态更新需要 value
                     value: selectedRelation,
                     decoration: InputDecoration(
-                      labelText: '您与创建者的关系',
+                      labelText: AppTheme.labelRelation,
                       prefixIcon: const Icon(Icons.people),
                       border: OutlineInputBorder(borderRadius: AppTheme.radiusS),
                     ),
@@ -830,7 +830,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     // ignore: deprecated_member_use - StatefulBuilder 中动态更新需要 value
                     value: selectedRole,
                     decoration: InputDecoration(
-                      labelText: '角色',
+                      labelText: AppTheme.labelRole,
                       border: OutlineInputBorder(borderRadius: AppTheme.radiusS),
                     ),
                     items: const [
@@ -847,7 +847,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                     // ignore: deprecated_member_use - StatefulBuilder 中动态更新需要 value
                     value: selectedRelation,
                     decoration: InputDecoration(
-                      labelText: '称呼',
+                      labelText: AppTheme.labelNickname,
                       prefixIcon: const Icon(Icons.people),
                       border: OutlineInputBorder(borderRadius: AppTheme.radiusS),
                     ),
