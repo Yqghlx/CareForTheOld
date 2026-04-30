@@ -1,6 +1,5 @@
 using CareForTheOld.Common.Constants;
 using CareForTheOld.Data;
-using CareForTheOld.Models.DTOs.Responses;
 using CareForTheOld.Models.Entities;
 using CareForTheOld.Models.Enums;
 using CareForTheOld.Services.Interfaces;
@@ -241,23 +240,19 @@ public class MedicationReminderService : BackgroundService
         DateTime scheduledAt,
         CancellationToken stoppingToken)
     {
-        var message = new NotificationMessage
+        var message = new
         {
-            Type = AppConstants.NotificationTypes.MedicationReminderUrgent,
             Title = NotificationMessages.Medication.ReminderTitle,
             Content = string.Format(NotificationMessages.Medication.ReminderContentTemplate, plan.MedicineName, plan.Dosage),
-            Timestamp = DateTime.UtcNow,
-            Data = new
-            {
-                PlanId = plan.Id,
-                MedicineName = plan.MedicineName,
-                Dosage = plan.Dosage,
-                ScheduledAt = scheduledAt
-            }
+            PlanId = plan.Id,
+            MedicineName = plan.MedicineName,
+            Dosage = plan.Dosage,
+            ScheduledAt = scheduledAt,
         };
 
         // 发送给老人（含重试逻辑）
-        await SendWithRetryAsync(() => notificationService.SendToUserAsync(plan.ElderId, message.Type, message),
+        await SendWithRetryAsync(() => notificationService.SendToUserAsync(
+            plan.ElderId, AppConstants.NotificationTypes.MedicationReminderUrgent, message),
             $"老人用药提醒-{plan.ElderId}");
 
         // 批量查询老人所在的所有家庭，然后一次性查出所有需要通知的子女
@@ -274,26 +269,23 @@ public class MedicationReminderService : BackgroundService
 
             var elderName = plan.Elder?.RealName ?? AppConstants.HealthTypeLabels.DefaultElderName;
 
-            foreach (var other in otherMembers)
+            // 批量发送通知给所有家庭成员，减少数据库往返
+            var familyMessage = new
             {
-                var familyMessage = new NotificationMessage
-                {
-                    Type = AppConstants.NotificationTypes.MedicationReminderFamily,
-                    Title = NotificationMessages.Medication.FamilyReminderTitle,
-                    Content = string.Format(NotificationMessages.Medication.FamilyReminderContentTemplate, elderName, plan.MedicineName),
-                    Timestamp = DateTime.UtcNow,
-                    Data = new
-                    {
-                        ElderId = plan.ElderId,
-                        ElderName = elderName,
-                        PlanId = plan.Id,
-                        MedicineName = plan.MedicineName,
-                        ScheduledAt = scheduledAt
-                    }
-                };
-                await SendWithRetryAsync(() => notificationService.SendToUserAsync(other.UserId, familyMessage.Type, familyMessage),
-                    $"家庭成员用药提醒-{other.UserId}");
-            }
+                Title = NotificationMessages.Medication.FamilyReminderTitle,
+                Content = string.Format(NotificationMessages.Medication.FamilyReminderContentTemplate, elderName, plan.MedicineName),
+                ElderId = plan.ElderId,
+                ElderName = elderName,
+                PlanId = plan.Id,
+                MedicineName = plan.MedicineName,
+                ScheduledAt = scheduledAt,
+            };
+            await SendWithRetryAsync(
+                () => notificationService.SendToUsersAsync(
+                    otherMembers.Select(m => m.UserId),
+                    AppConstants.NotificationTypes.MedicationReminderFamily,
+                    familyMessage),
+                "家庭成员批量用药提醒");
         }
 
         _logger.LogInformation("发送用药提醒: 用户 {ElderId}, 药品 {MedicineName}, 时间 {ScheduledAt}",
