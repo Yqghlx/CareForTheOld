@@ -77,7 +77,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
 
                     // 标题
                     Text(
-                      alert.isReminder ? '紧急呼叫仍未响应！' : '紧急呼叫！',
+                      alert.isReminder ? AppTheme.titleEmergencyReminder : AppTheme.titleEmergencyAlert,
                       style: const TextStyle(
                         color: AppTheme.cardColor,
                         fontSize: 32,
@@ -112,7 +112,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
                     AppTheme.spacer8,
 
                     Text(
-                      alert.isReminder ? '已超过3分钟未得到响应' : '发起了紧急呼叫，请立即响应！',
+                      alert.isReminder ? AppTheme.msgEmergencyReminderContent : AppTheme.msgEmergencyAlertContent,
                       style: TextStyle(
                         color: AppTheme.cardColor.withValues(alpha: 0.9),
                         fontSize: 18,
@@ -142,7 +142,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
   Widget _buildRespondButton(BuildContext context) {
     return Semantics(
       button: true,
-      label: _isResponding ? '正在处理紧急呼叫' : '立即响应紧急呼叫',
+      label: _isResponding ? AppTheme.labelRespondingAlert : AppTheme.labelRespondAlert,
       child: SizedBox(
       width: 240,
       height: 64,
@@ -159,7 +159,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
               )
             : const Icon(Icons.check_circle_outline, size: AppTheme.iconSize2xl),
         label: Text(
-          _isResponding ? '处理中...' : '立即响应',
+          _isResponding ? AppTheme.labelResponding : AppTheme.labelRespondNow,
           style: AppTheme.textLargeTitle.copyWith(fontWeight: FontWeight.w600),
         ),
         style: ElevatedButton.styleFrom(
@@ -183,7 +183,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
         onPressed: _callElder,
         icon: const Icon(Icons.phone, size: AppTheme.iconSize2xl, color: AppTheme.cardColor),
         label: Text(
-          '拨打电话',
+          AppTheme.labelMakeCall,
           style: AppTheme.textLargeTitle.copyWith(
             fontWeight: FontWeight.w600,
             color: AppTheme.cardColor,

@@ -629,6 +629,14 @@ class AppTheme {
   static const String labelHandled = '已处理';
   static const String labelCallElder = '拨打老人电话';
   static const String labelMarkHandled = '标记紧急呼叫已处理';
+  static const String titleEmergencyAlert = '紧急呼叫！';
+  static const String titleEmergencyReminder = '紧急呼叫仍未响应！';
+  static const String msgEmergencyAlertContent = '发起了紧急呼叫，请立即响应！';
+  static const String msgEmergencyReminderContent = '已超过3分钟未得到响应';
+  static const String labelRespondNow = '立即响应';
+  static const String labelResponding = '处理中...';
+  static const String labelRespondAlert = '立即响应紧急呼叫';
+  static const String labelRespondingAlert = '正在处理紧急呼叫';
 
   // 更多页面常量
   static const String labelConfirmSkip = '确认跳过';
