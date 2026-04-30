@@ -418,7 +418,7 @@ public class NeighborHelpService : INeighborHelpService
                         r.ExpiresAt > now &&
                         r.RequesterId != userId)
             .OrderByDescending(r => r.RequestedAt)
-            .Take(50)
+            .Take(AppConstants.NeighborHelp.MaxPendingRequests)
             .Select(r => MapToResponse(r))
             .ToListAsync(cancellationToken);
     }

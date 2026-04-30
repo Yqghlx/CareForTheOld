@@ -337,8 +337,8 @@ public class FamilyService : IFamilyService
         family.InviteCode = GenerateInviteCode();
         family.InviteCodeExpiresAt = DateTime.UtcNow.Add(_inviteCodeExpiration);
 
-        // 唯一约束冲突时自动重试生成新邀请码（6位数字碰撞概率极低，最多重试3次）
-        for (var attempt = 0; attempt < 3; attempt++)
+        // 唯一约束冲突时自动重试生成新邀请码（6位数字碰撞概率极低，最多重试 DefaultAttempts 次）
+        for (var attempt = 0; attempt < AppConstants.HangfireRetry.DefaultAttempts; attempt++)
         {
             try
             {

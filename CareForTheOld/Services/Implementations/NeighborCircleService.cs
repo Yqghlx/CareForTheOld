@@ -247,7 +247,7 @@ public class NeighborCircleService : INeighborCircleService
                 AvatarUrl = m.User != null ? m.User.AvatarUrl : null,
                 JoinedAt = m.JoinedAt
             })
-            .Take(100)
+            .Take(AppConstants.NeighborCircle.MaxNearbyMembersResults)
             .ToListAsync(cancellationToken);
 
         // 附加距离信息
@@ -274,7 +274,7 @@ public class NeighborCircleService : INeighborCircleService
                 && c.CenterLatitude <= latitude + latThreshold
                 && c.CenterLongitude >= longitude - lngThreshold
                 && c.CenterLongitude <= longitude + lngThreshold)
-            .Take(maxResults * 3)
+            .Take(maxResults * AppConstants.NeighborCircle.SearchQueryMultiplier)
             .ToListAsync(cancellationToken);
 
         var results = new List<(NeighborCircle Circle, double Distance)>();
@@ -338,8 +338,8 @@ public class NeighborCircleService : INeighborCircleService
         circle.InviteCode = GenerateInviteCode();
         circle.InviteCodeExpiresAt = DateTime.UtcNow.Add(_inviteCodeExpiration);
 
-        // 唯一约束冲突时自动重试生成新邀请码（6位数字碰撞概率极低，最多重试3次）
-        for (var attempt = 0; attempt < 3; attempt++)
+        // 唯一约束冲突时自动重试生成新邀请码（6位数字碰撞概率极低，最多重试 DefaultAttempts 次）
+        for (var attempt = 0; attempt < AppConstants.HangfireRetry.DefaultAttempts; attempt++)
         {
             try
             {

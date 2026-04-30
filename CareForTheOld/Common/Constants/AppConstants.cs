@@ -43,6 +43,9 @@ public static class AppConstants
 
         /// <summary>防重复提交窗口（秒），同一老人在此时间内的重复呼叫视为同一呼叫</summary>
         public const int DuplicateCallWindowSeconds = 30;
+
+        /// <summary>未处理呼叫查询上限，防止异常累积导致内存溢出</summary>
+        public const int MaxUnreadCalls = 50;
     }
 
     /// <summary>
@@ -76,6 +79,9 @@ public static class AppConstants
 
         /// <summary>广播距离阈值（米），只通知此范围内的邻居</summary>
         public const double BroadcastRadiusMeters = 500;
+
+        /// <summary>待处理求助请求查询上限</summary>
+        public const int MaxPendingRequests = 50;
     }
 
     /// <summary>
@@ -94,6 +100,12 @@ public static class AppConstants
 
         /// <summary>搜索返回最大结果数</summary>
         public const int SearchMaxResults = 20;
+
+        /// <summary>附近成员查询上限</summary>
+        public const int MaxNearbyMembersResults = 100;
+
+        /// <summary>圈子搜索数据库粗筛倍率（粗筛取 maxResults × 此值，内存中再精排）</summary>
+        public const int SearchQueryMultiplier = 3;
     }
 
     /// <summary>
@@ -556,6 +568,9 @@ public static class AppConstants
     {
         /// <summary>PDF 报告中显示的最大记录条数</summary>
         public const int MaxPdfRecords = 20;
+
+        /// <summary>报告查询上限，防止大数据量内存溢出</summary>
+        public const int MaxQueryRecords = 2000;
     }
 
     /// <summary>

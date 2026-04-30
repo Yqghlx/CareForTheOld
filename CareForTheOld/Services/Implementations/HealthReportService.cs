@@ -39,10 +39,10 @@ public class HealthReportService : IHealthReportService
         var records = await _context.HealthRecords
             .Where(r => r.UserId == userId && !r.IsDeleted && r.RecordedAt >= startDate)
             .OrderByDescending(r => r.RecordedAt)
-            .Take(2000)
+            .Take(AppConstants.HealthReport.MaxQueryRecords)
             .ToListAsync(cancellationToken);
 
-        if (records.Count >= 2000)
+        if (records.Count >= AppConstants.HealthReport.MaxQueryRecords)
         {
             _logger.LogWarning("用户 {UserId} 报告数据量已达上限，建议缩短时间范围", userId);
         }

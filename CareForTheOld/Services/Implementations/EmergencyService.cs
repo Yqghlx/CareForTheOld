@@ -385,12 +385,11 @@ public class EmergencyService : IEmergencyService
         if (familyMember == null)
             return [];
 
-        // 获取该家庭中未处理的紧急呼叫（限制最多 50 条，防止异常累积）
         var calls = await _context.EmergencyCalls
             .Include(c => c.Elder)
             .Where(c => c.FamilyId == familyMember.FamilyId && c.Status == EmergencyStatus.Pending)
             .OrderByDescending(c => c.CalledAt)
-            .Take(50)
+            .Take(AppConstants.Emergency.MaxUnreadCalls)
             .ToListAsync(cancellationToken);
 
         return calls.Select(MapToResponse).ToList();
