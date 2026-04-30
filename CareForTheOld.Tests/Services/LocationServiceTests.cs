@@ -22,6 +22,7 @@ public class LocationServiceTests
     private readonly Mock<IGeoFenceService> _mockGeoFenceService;
     private readonly Mock<INotificationService> _mockNotificationService;
     private readonly Mock<IAutoRescueService> _mockAutoRescueService;
+    private readonly Mock<IFamilyService> _mockFamilyService;
 
     public LocationServiceTests()
     {
@@ -35,13 +36,14 @@ public class LocationServiceTests
         _mockGeoFenceService = new Mock<IGeoFenceService>();
         _mockNotificationService = new Mock<INotificationService>();
         _mockAutoRescueService = new Mock<IAutoRescueService>();
+        _mockFamilyService = new Mock<IFamilyService>();
 
         _service = new LocationService(
             _context,
             _mockGeoFenceService.Object,
             _mockNotificationService.Object,
             _mockAutoRescueService.Object,
-            new Mock<IFamilyService>().Object,
+            _mockFamilyService.Object,
             new Mock<ILogger<LocationService>>().Object);
     }
 
@@ -151,6 +153,11 @@ public class LocationServiceTests
         _mockGeoFenceService
             .Setup(g => g.CheckOutsideFenceAsync(elder.Id, 40.0, 117.0))
             .ReturnsAsync((fenceResponse, 1500.0));
+
+        // Mock：GetChildUserIdsAsync 返回子女 ID
+        _mockFamilyService
+            .Setup(f => f.GetChildUserIdsAsync(family.Id, default))
+            .ReturnsAsync(new List<Guid> { child.Id });
 
         // 执行：上报围栏外位置
         var result = await _service.ReportLocationAsync(elder.Id, 40.0, 117.0);
@@ -312,6 +319,11 @@ public class LocationServiceTests
             .Setup(g => g.CheckOutsideFenceAsync(elder.Id, 40.0, 117.0))
             .ReturnsAsync((fenceResponse, 1500.0));
 
+        // Mock：GetChildUserIdsAsync 返回子女 ID
+        _mockFamilyService
+            .Setup(f => f.GetChildUserIdsAsync(family.Id, default))
+            .ReturnsAsync(new List<Guid> { child.Id });
+
         // 执行：上报围栏外位置
         await _service.ReportLocationAsync(elder.Id, 40.0, 117.0);
 
@@ -345,6 +357,11 @@ public class LocationServiceTests
         _mockGeoFenceService
             .Setup(g => g.CheckOutsideFenceAsync(elder.Id, 39.91, 116.41))
             .ReturnsAsync((fenceResponse, 600.0));
+
+        // Mock：GetChildUserIdsAsync 返回子女 ID
+        _mockFamilyService
+            .Setup(f => f.GetChildUserIdsAsync(family.Id, default))
+            .ReturnsAsync(new List<Guid> { child.Id });
 
         // 执行
         await _service.ReportLocationAsync(elder.Id, 39.91, 116.41);

@@ -245,7 +245,7 @@ public class NeighborHelpService : INeighborHelpService
         {
             var childIds = await _familyService.GetChildUserIdsAsync(familyMember.FamilyId, cancellationToken);
 
-            if (childIds.Any())
+            if (childIds is { Count: > 0 })
             {
                 await _notificationService.SendToUsersAsync(
                     childIds,

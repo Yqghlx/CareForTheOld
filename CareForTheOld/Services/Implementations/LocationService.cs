@@ -189,7 +189,7 @@ public class LocationService : ILocationService
 
         // 使用统一方法获取子女 ID
         var childIds = await _familyService.GetChildUserIdsAsync(elderInfo.FamilyId, cancellationToken);
-        if (!childIds.Any()) return;
+        if (childIds is not { Count: > 0 }) return;
 
         // 构建通知内容
         var distanceText = distance > AppConstants.Location.DistanceDisplayThresholdMeters

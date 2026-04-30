@@ -57,7 +57,7 @@ public class HealthAlertService : IHealthAlertService
 
         // 使用统一方法获取子女 ID
         var childIds = await _familyService.GetChildUserIdsAsync(elderInfo.FamilyId, cancellationToken);
-        if (!childIds.Any()) return;
+        if (childIds is not { Count: > 0 }) return;
 
         var elderName = elderInfo.ElderName;
 

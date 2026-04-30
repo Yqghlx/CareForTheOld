@@ -89,7 +89,7 @@ public class AutoRescueService : IAutoRescueService
 
         var childIds = await GetChildUserIdsAsync(scope, familyId, cancellationToken);
 
-        if (childIds.Any())
+        if (childIds is { Count: > 0 })
         {
             await notificationService.SendToUsersAsync(
                 childIds,
@@ -161,7 +161,7 @@ public class AutoRescueService : IAutoRescueService
         {
             var childIds = childIdsByFamily.GetValueOrDefault(record.FamilyId, []);
 
-            var anyChildRead = childIds.Any(id => readNotificationUserIds.Contains(id));
+            var anyChildRead = childIds?.Any(id => readNotificationUserIds.Contains(id)) ?? false;
 
             if (anyChildRead)
             {
@@ -182,7 +182,7 @@ public class AutoRescueService : IAutoRescueService
                 record.ElderId, _delayMinutes);
 
             // 通知子女：已自动通知邻里圈
-            if (childIds.Any())
+            if (childIds is { Count: > 0 })
             {
                 await notificationService.SendToUsersAsync(
                     childIds,

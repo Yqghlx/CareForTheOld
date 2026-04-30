@@ -42,6 +42,15 @@ public class AutoRescueServiceTests
         services.AddSingleton(_mockNotification.Object);
         services.AddSingleton(new Mock<IEmergencyService>().Object);
         services.AddSingleton(new Mock<INeighborHelpService>().Object);
+        var mockFamilyService = new Mock<IFamilyService>();
+        mockFamilyService
+            .Setup(f => f.GetChildUserIdsAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((Guid familyId, CancellationToken ct) =>
+                _context.FamilyMembers
+                    .Where(fm => fm.FamilyId == familyId && fm.Role == UserRole.Child && fm.Status == FamilyMemberStatus.Approved)
+                    .Select(fm => fm.UserId)
+                    .ToList());
+        services.AddSingleton(mockFamilyService.Object);
         var serviceProvider = services.BuildServiceProvider();
         _scopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
 
