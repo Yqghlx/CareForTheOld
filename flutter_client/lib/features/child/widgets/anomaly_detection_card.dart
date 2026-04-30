@@ -102,12 +102,12 @@ class AnomalyDetectionCard extends ConsumerWidget {
           ),
         ),
         Semantics(
-          label: '查看$elderName的健康趋势分析详情',
+          label: '${AppTheme.a11yViewHealthDetail}$elderName',
           button: true,
           child: IconButton(
             icon: const Icon(Icons.arrow_forward_ios, size: AppTheme.iconSizeSm),
             onPressed: () => _showDetailDialog(context),
-            tooltip: '查看详情',
+            tooltip: AppTheme.labelHealthTrendDetail,
           ),
         ),
       ],

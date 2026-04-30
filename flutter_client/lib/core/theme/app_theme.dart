@@ -713,6 +713,12 @@ class AppTheme {
   static const String labelLongPressEmergency = '长按紧急呼叫';
   static const String labelReleaseToCancel = '松手取消';
 
+  // 无障碍标签
+  static const String a11yChangeAvatar = '更换头像，点击上传新照片';
+  static const String a11yEmergencyButton = '紧急呼叫按钮，长按2秒发起呼叫';
+  static const String a11yEmergencyCalling = '正在呼叫中，松手取消';
+  static const String a11yViewHealthDetail = '查看健康趋势分析详情';
+
   // 关于/帮助页面常量
   static const String msgAboutDescription = '一款专为老年人及其子女设计的健康管理应用，帮助子女实时关注老人的健康状况。';
   static const String titleUsageHelp = '使用帮助';

@@ -156,7 +156,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                   // 头像区域：点击可上传新头像
                   Semantics(
                     button: true,
-                    label: '更换头像，点击上传新照片',
+                    label: AppTheme.a11yChangeAvatar,
                     child: GestureDetector(
                     onTap: _isUploadingAvatar ? null : _pickAndUploadAvatar,
                     child: Stack(
@@ -584,7 +584,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
   Widget _buildEmergencyCallButton() {
     return Semantics(
       button: true,
-      label: _isLongPressing ? '正在呼叫中，松手取消' : '紧急呼叫按钮，长按2秒发起呼叫',
+      label: _isLongPressing ? AppTheme.a11yEmergencyCalling : AppTheme.a11yEmergencyButton,
       child: GestureDetector(
       // 按下开始计时
       onPanDown: (_) => _startLongPressTimer(),
