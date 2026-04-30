@@ -109,28 +109,24 @@ public class TrustScoreService : ITrustScoreService
             .Select(g => new { g.Key.RateeId, g.Key.CircleId, Avg = g.Average(x => (decimal?)x.Rating) ?? 0m })
             .ToDictionaryAsync(x => (x.RateeId, x.CircleId), x => x.Avg, cancellationToken);
 
-        // 3. 每用户每圈子的通知总数和响应数
-        var notifiedCounts = await _context.HelpNotificationLogs
+        // 3. 每用户每圈子的通知总数和响应数（合并为一次查询）
+        var notificationStats = await _context.HelpNotificationLogs
             .Where(h => userIds.Contains(h.UserId))
             .Join(_context.NeighborHelpRequests,
                 log => log.HelpRequestId,
                 help => help.Id,
-                (log, help) => new { log.UserId, help.CircleId })
+                (log, help) => new { log.UserId, help.CircleId, log.RespondedAt })
             .Where(x => circleIds.Contains(x.CircleId))
             .GroupBy(x => new { x.UserId, x.CircleId })
-            .Select(g => new { g.Key.UserId, g.Key.CircleId, Count = g.Count() })
-            .ToDictionaryAsync(x => (x.UserId, x.CircleId), x => x.Count, cancellationToken);
-
-        var respondedCounts = await _context.HelpNotificationLogs
-            .Where(h => userIds.Contains(h.UserId) && h.RespondedAt != null)
-            .Join(_context.NeighborHelpRequests,
-                log => log.HelpRequestId,
-                help => help.Id,
-                (log, help) => new { log.UserId, help.CircleId })
-            .Where(x => circleIds.Contains(x.CircleId))
-            .GroupBy(x => new { x.UserId, x.CircleId })
-            .Select(g => new { g.Key.UserId, g.Key.CircleId, Count = g.Count() })
-            .ToDictionaryAsync(x => (x.UserId, x.CircleId), x => x.Count, cancellationToken);
+            .Select(g => new {
+                g.Key.UserId, g.Key.CircleId,
+                Total = g.Count(),
+                Responded = g.Count(x => x.RespondedAt != null)
+            })
+            .ToDictionaryAsync(
+                x => (x.UserId, x.CircleId),
+                x => new { x.Total, x.Responded },
+                cancellationToken);
 
         // 内存中计算所有评分（无需额外数据库查询）
         var now = DateTime.UtcNow;
@@ -139,8 +135,9 @@ public class TrustScoreService : ITrustScoreService
             var key = (score.UserId, score.CircleId);
             var totalHelps = helpsCounts.GetValueOrDefault(key);
             var avgRating = avgRatings.GetValueOrDefault(key);
-            var totalNotified = notifiedCounts.GetValueOrDefault(key);
-            var totalResponded = respondedCounts.GetValueOrDefault(key);
+            var stats = notificationStats.GetValueOrDefault(key);
+            var totalNotified = stats?.Total ?? 0;
+            var totalResponded = stats?.Responded ?? 0;
 
             var responseRate = totalNotified > 0
                 ? (decimal)totalResponded / totalNotified
