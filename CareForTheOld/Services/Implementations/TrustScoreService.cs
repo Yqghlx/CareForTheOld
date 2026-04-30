@@ -133,6 +133,7 @@ public class TrustScoreService : ITrustScoreService
             .ToDictionaryAsync(x => (x.UserId, x.CircleId), x => x.Count, cancellationToken);
 
         // 内存中计算所有评分（无需额外数据库查询）
+        var now = DateTime.UtcNow;
         foreach (var score in allScores)
         {
             var key = (score.UserId, score.CircleId);
@@ -154,7 +155,6 @@ public class TrustScoreService : ITrustScoreService
             score.AvgRating = Math.Round(avgRating, 2);
             score.ResponseRate = Math.Round(responseRate, 4);
             score.Score = finalScore;
-            var now = DateTime.UtcNow;
             score.LastCalculatedAt = now;
             score.UpdatedAt = now;
         }
