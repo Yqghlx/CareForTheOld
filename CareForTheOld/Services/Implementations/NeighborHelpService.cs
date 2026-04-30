@@ -577,19 +577,18 @@ public class NeighborHelpService : INeighborHelpService
     };
 
     /// <summary>
-    /// 验证操作者是否为请求者本人或其家庭成员（子女）
+    /// 验证操作者是否为请求者本人或其家庭成员（子女），使用 JOIN 单次查询
     /// </summary>
     private async Task<bool> IsRequesterOrFamilyChildAsync(Guid requesterId, Guid operatorId, CancellationToken cancellationToken = default)
     {
         if (requesterId == operatorId) return true;
 
-        var familyMember = await _context.FamilyMembers
-            .FirstOrDefaultAsync(fm => fm.UserId == requesterId, cancellationToken);
-
-        if (familyMember == null) return false;
-
-        return await _context.FamilyMembers
-            .AnyAsync(fm => fm.FamilyId == familyMember.FamilyId &&
-                            fm.UserId == operatorId && fm.Role == UserRole.Child, cancellationToken);
+        return await (
+            from fm1 in _context.FamilyMembers
+            where fm1.UserId == requesterId
+            join fm2 in _context.FamilyMembers on fm1.FamilyId equals fm2.FamilyId
+            where fm2.UserId == operatorId && fm2.Role == UserRole.Child
+            select fm2.UserId
+        ).AnyAsync(cancellationToken);
     }
 }
