@@ -150,7 +150,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                         ),
                         AppTheme.spacer4,
                         Text(
-                          '关注家人的健康状况',
+                          AppTheme.subtitleFollowFamilyHealth,
                           style: TextStyle(
                             color: AppTheme.cardColor.withValues(alpha: 0.9),
                           ),
@@ -164,7 +164,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
             AppTheme.spacer24,
 
             const Text(
-              '关注的老人',
+              AppTheme.titleEldersFollowed,
               style: AppTheme.textLargeTitle,
             ),
             AppTheme.spacer16,
@@ -179,7 +179,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
               children: [
                 Expanded(
                   child: PrimaryIconButton(
-                    text: '管理家庭成员',
+                    text: AppTheme.labelManageFamily,
                     icon: Icons.people,
                     onPressed: () => context.push(RoutePaths.childFamily),
                   ),
@@ -187,7 +187,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                 AppTheme.hSpacer16,
                 Expanded(
                   child: PrimaryIconButton(
-                    text: '邻里互助',
+                    text: AppTheme.titleNeighborHelp,
                     icon: Icons.volunteer_activism,
                     onPressed: () => context.push(RoutePaths.neighborHelp),
                     gradient: const LinearGradient(
@@ -202,7 +202,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
               children: [
                 Expanded(
                   child: PrimaryIconButton(
-                    text: '邻里圈',
+                    text: AppTheme.titleNeighborCircle,
                     icon: Icons.diversity_3,
                     onPressed: () => context.push(RoutePaths.neighborCircle),
                     gradient: const LinearGradient(
@@ -213,7 +213,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                 AppTheme.hSpacer16,
                 Expanded(
                   child: PrimaryIconButton(
-                    text: '添加用药计划',
+                    text: AppTheme.labelAddMedPlan,
                     icon: Icons.add,
                     onPressed: () => _showAddPlanDialog(context),
                     gradient: const LinearGradient(
@@ -706,7 +706,7 @@ class _EmergencyPulseBannerState extends State<_EmergencyPulseBanner>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      '有紧急呼叫待处理！',
+                      AppTheme.titleEmergencyPending,
                       style: TextStyle(
                         color: AppTheme.cardColor,
                         fontSize: 20,
@@ -714,7 +714,7 @@ class _EmergencyPulseBannerState extends State<_EmergencyPulseBanner>
                       ),
                     ),
                     Text(
-                      '${widget.unreadCount} 条待处理，点击查看',
+                      '${widget.unreadCount} ${AppTheme.msgEmergencyPendingAction}',
                       style: AppTheme.textBody16.copyWith(
                         color: AppTheme.cardColor.withValues(alpha: 0.9),
                       ),

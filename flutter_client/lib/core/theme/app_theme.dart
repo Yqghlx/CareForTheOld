@@ -696,6 +696,11 @@ class AppTheme {
   static const String msgAskChildForCode = '请让子女分享邀请码给您';
   static const String msgMemberCount = '共 %s 位成员';
   static const String msgGeneratingReport = '正在生成报告...';
+  static const String titleEldersFollowed = '关注的老人';
+  static const String subtitleFollowFamilyHealth = '关注家人的健康状况';
+  static const String titleEmergencyPending = '有紧急呼叫待处理！';
+  static const String msgEmergencyPendingAction = '条待处理，点击查看';
+  static const String labelManageFamily = '管理家庭成员';
   static const String titleElderHealthData = '%s - 健康数据';
   static const String titleElderLocation = '%s - 位置';
   static const String titleRateNeighbor = '为响应邻居评分';
