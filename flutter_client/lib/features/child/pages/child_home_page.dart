@@ -264,7 +264,10 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
             child: Column(
               children: [
                 // 老人信息行
-                InkWell(
+                Semantics(
+                  label: '查看${elder.realName}的健康数据',
+                  button: true,
+                  child: InkWell(
                   onTap: () => context.push(RoutePaths.childElderHealth(elder.userId)),
                   borderRadius: AppTheme.radiusL,
                   child: Row(
@@ -326,6 +329,7 @@ class _ChildHomePageState extends ConsumerState<ChildHomePage> {
                       ),
                     ],
                   ),
+                ),
                 ),
                 AppTheme.spacer12,
                 // 操作按钮行

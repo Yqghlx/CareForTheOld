@@ -179,15 +179,23 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                IconButton(
-                  icon: const Icon(Icons.check_circle, color: AppTheme.successColor),
-                  onPressed: _isProcessing ? null : () => _approveMember(member),
-                  tooltip: AppTheme.labelApprove,
+                Semantics(
+                  label: '${AppTheme.labelApprove}${member.realName}',
+                  button: true,
+                  child: IconButton(
+                    icon: const Icon(Icons.check_circle, color: AppTheme.successColor),
+                    onPressed: _isProcessing ? null : () => _approveMember(member),
+                    tooltip: AppTheme.labelApprove,
+                  ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.cancel, color: AppTheme.errorMedium),
-                  onPressed: _isProcessing ? null : () => _rejectMember(member),
-                  tooltip: AppTheme.labelReject,
+                Semantics(
+                  label: '${AppTheme.labelReject}${member.realName}',
+                  button: true,
+                  child: IconButton(
+                    icon: const Icon(Icons.cancel, color: AppTheme.errorMedium),
+                    onPressed: _isProcessing ? null : () => _rejectMember(member),
+                    tooltip: AppTheme.labelReject,
+                  ),
                 ),
               ],
             ),
