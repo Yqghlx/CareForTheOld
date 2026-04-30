@@ -87,12 +87,17 @@ class AppTheme {
   static const TextStyle textCaption13Grey600 = TextStyle(fontSize: 13, color: grey600);
   static const TextStyle textCaption13Grey700 = TextStyle(fontSize: 13, color: grey700);
   static const TextStyle textGrey = TextStyle(color: grey600);
+  static const TextStyle textStatValue = TextStyle(fontSize: 24, fontWeight: FontWeight.bold);
+  static const TextStyle textStatValueGrey = TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: grey400);
+  static const TextStyle textDisplayMedium = TextStyle(fontSize: 26, fontWeight: FontWeight.bold);
+  static const TextStyle textDisplayLarge = TextStyle(fontSize: 32, fontWeight: FontWeight.bold);
+  static const TextStyle textTitle22 = TextStyle(fontSize: 22, fontWeight: FontWeight.bold);
+  static const TextStyle textSectionTitle = TextStyle(fontSize: 16, fontWeight: FontWeight.w600);
   static const TextStyle textGreyLight = TextStyle(color: grey500);
   static const TextStyle textLogoTitle = TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: primaryColor);
   static const TextStyle textLink14 = TextStyle(fontSize: 14, color: primaryColor);
   static const TextStyle textError14 = TextStyle(fontSize: 14, color: errorColor);
   static const TextStyle textErrorAlpha12 = TextStyle(fontSize: 12, color: Color(0x99FF4D4F));
-  static const TextStyle textSectionTitle = TextStyle(fontSize: 22, fontWeight: FontWeight.bold);
 
   // 成功色系
   static const TextStyle textSuccess12 = TextStyle(fontSize: 12, color: successColor);

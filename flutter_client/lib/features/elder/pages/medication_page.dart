@@ -138,11 +138,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
           child: Center(
             child: Text(
               value,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
+              style: AppTheme.textStatValue.copyWith(color: color),
             ),
           ),
         ),

@@ -225,11 +225,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                         user?.realName ?? '用户',
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
-                        style: const TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.cardColor,
-                        ),
+                        style: AppTheme.textDisplayMedium.copyWith(color: AppTheme.cardColor),
                       ),
                       AppTheme.spacer6,
                       Text(
@@ -401,10 +397,10 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                         if (hasData)
                           Text(
                             _formatHealthValue(stat),
-                            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                            style: AppTheme.textStatValue,
                           )
                         else
-                          const Text('--', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppTheme.grey400)),
+                          const Text('--', style: AppTheme.textStatValueGrey),
                         if (hasData && stat.latestRecordedAt != null)
                           Text(
                             stat.latestRecordedAt!.toFriendlyDate(),
@@ -912,11 +908,7 @@ class _EmergencyCallButtonState extends State<_EmergencyCallButton>
                             AppTheme.hSpacer12,
                             Text(
                               pressing ? AppTheme.labelEmergencyCalling : AppTheme.labelLongPressEmergency,
-                              style: const TextStyle(
-                                fontSize: 26,
-                                fontWeight: FontWeight.bold,
-                                color: AppTheme.cardColor,
-                              ),
+                              style: AppTheme.textDisplayMedium.copyWith(color: AppTheme.cardColor),
                             ),
                           ],
                         ),

@@ -304,11 +304,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                         children: [
                           Text(
                             family.familyName,
-                            style: const TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: AppTheme.cardColor,
-                            ),
+                            style: AppTheme.textTitle22.copyWith(color: AppTheme.cardColor),
                           ),
                           Text(
                             '共 ${family.members.length} 位成员',
@@ -355,12 +351,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               Expanded(
                 child: Text(
                   family.inviteCode,
-                  style: const TextStyle(
-                    color: AppTheme.cardColor,
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 8,
-                  ),
+                  style: AppTheme.textDisplayLarge.copyWith(color: AppTheme.cardColor, letterSpacing: 8),
                 ),
               ),
               // 复制按钮

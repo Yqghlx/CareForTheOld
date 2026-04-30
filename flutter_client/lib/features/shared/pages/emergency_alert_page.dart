@@ -78,11 +78,7 @@ class _EmergencyAlertPageState extends ConsumerState<EmergencyAlertPage>
                     // 标题
                     Text(
                       alert.isReminder ? AppTheme.titleEmergencyReminder : AppTheme.titleEmergencyAlert,
-                      style: const TextStyle(
-                        color: AppTheme.cardColor,
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: AppTheme.textDisplayLarge.copyWith(color: AppTheme.cardColor),
                     ),
                     AppTheme.spacer24,
 
