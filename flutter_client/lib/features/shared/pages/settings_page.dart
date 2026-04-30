@@ -711,13 +711,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             const Text(AppTheme.titleAboutUs),
           ],
         ),
-        content: const Column(
+        content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('${AppTheme.appName} App', style: AppTheme.textTitle),
             AppTheme.spacer8,
-            Text('版本: 1.0.0'),
+            Text('版本: ${_appVersion.isNotEmpty ? _appVersion : "1.0.0"}'),
             AppTheme.spacer12,
             Text(AppTheme.msgAboutDescription),
           ],
