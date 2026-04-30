@@ -343,7 +343,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
                     onPressed: () async {
                       final confirmed = await showConfirmDialog(
                         context,
-                        title: '删除安全围栏',
+                        title: AppTheme.titleDeleteGeoFence,
                         message: '确定删除安全围栏吗？删除后将不再收到越界提醒。',
                         confirmText: AppTheme.msgDelete,
                       );

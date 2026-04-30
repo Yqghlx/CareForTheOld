@@ -614,6 +614,14 @@ class AppTheme {
   static const String hintNormalRangeHeartRate = '正常范围: 60-100 次/分';
   static const String hintNormalRangeTemperature = '正常范围: 36.1-37.2 °C';
 
+  // 子女端页面常量
+  static const String titleDeleteGeoFence = '删除安全围栏';
+  static const String subtitleHealthStatsEmpty = '老人记录健康数据后，这里会显示统计概览';
+  static const String subtitleMedPlanEmpty = '点击下方按钮为老人创建用药计划';
+  static const String subtitleHealthRecordsEmpty = '老人录入健康数据后，这里会显示记录列表';
+  static const String titleNoMedRecord = '暂无用药记录';
+  static const String subtitleNoMedRecord = '请为老人添加用药计划，以便跟踪用药情况';
+
   /// 业务常量
   /// 邻里圈搜索默认半径（米）
   static const double defaultNeighborSearchRadius = 2000.0;

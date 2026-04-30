@@ -285,7 +285,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       return const EmptyStateWidget(
         icon: Icons.analytics_outlined,
         title: AppTheme.msgNoStats,
-        subtitle: '老人记录健康数据后，这里会显示统计概览',
+        subtitle: AppTheme.subtitleHealthStatsEmpty,
       );
     }
 
@@ -378,7 +378,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       return const EmptyStateWidget(
         icon: Icons.medication_outlined,
         title: AppTheme.msgNoHealthRecord,
-        subtitle: '点击下方按钮为老人创建用药计划',
+        subtitle: AppTheme.subtitleMedPlanEmpty,
       );
     }
 
@@ -716,7 +716,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
       return const EmptyStateWidget(
         icon: Icons.note_add_outlined,
         title: AppTheme.msgNoHealthRecord,
-        subtitle: '老人录入健康数据后，这里会显示记录列表',
+        subtitle: AppTheme.subtitleHealthRecordsEmpty,
       );
     }
 
@@ -777,8 +777,8 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
     if (logs.isEmpty) {
       return EmptyStateWidget(
         icon: Icons.medication_outlined,
-        title: '暂无用药记录',
-        subtitle: '请为老人添加用药计划，以便跟踪用药情况',
+        title: AppTheme.titleNoMedRecord,
+        subtitle: AppTheme.subtitleNoMedRecord,
       );
     }
 
