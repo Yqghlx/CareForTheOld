@@ -93,6 +93,8 @@ class AppTheme {
   static const TextStyle textDisplayLarge = TextStyle(fontSize: 32, fontWeight: FontWeight.bold);
   static const TextStyle textTitle22 = TextStyle(fontSize: 22, fontWeight: FontWeight.bold);
   static const TextStyle textSectionTitle = TextStyle(fontSize: 16, fontWeight: FontWeight.w600);
+  static const TextStyle textTitle18W600 = TextStyle(fontSize: 18, fontWeight: FontWeight.w600);
+  static const TextStyle textBase16 = TextStyle(fontSize: 16);
   static const TextStyle textGreyLight = TextStyle(color: grey500);
   static const TextStyle textLogoTitle = TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: primaryColor);
   static const TextStyle textLink14 = TextStyle(fontSize: 14, color: primaryColor);
@@ -103,10 +105,12 @@ class AppTheme {
   static const TextStyle textSuccess12 = TextStyle(fontSize: 12, color: successColor);
   static const TextStyle textSuccessDark14 = TextStyle(fontSize: 14, color: successDark);
   static const TextStyle textSuccessMedium12 = TextStyle(fontSize: 12, color: successMedium);
+  static const TextStyle textSuccess16 = TextStyle(fontSize: 16, color: successColor);
 
   // 警告色系
   static const TextStyle textWarningDark16 = TextStyle(fontSize: 16, color: warningDark);
   static const TextStyle textWarning16W600 = TextStyle(fontSize: 16, color: warningColor, fontWeight: FontWeight.w600);
+  static const TextStyle textWarning14W600 = TextStyle(fontSize: 14, color: warningColor, fontWeight: FontWeight.w600);
   static const TextStyle textWarningDark11 = TextStyle(fontSize: 11, color: warningDark);
 
   // 信息色系

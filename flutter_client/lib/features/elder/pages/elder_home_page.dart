@@ -329,7 +329,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
             const Text(AppTheme.titleTodayHealth, style: AppTheme.textSectionTitle),
             TextButton(
               onPressed: () => setState(() => _selectedIndex = 1),
-              child: const Text(AppTheme.labelViewDetails, style: TextStyle(fontSize: 16)),
+              child: const Text(AppTheme.labelViewDetails, style: AppTheme.textBase16),
             ),
           ],
         ),
@@ -385,7 +385,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                             Expanded(
                               child: Text(
                                 stat.typeName,
-                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                                style: AppTheme.textCardTitle,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
@@ -448,7 +448,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                 ),
                 child: Text(
                   '$pendingCount ${AppTheme.labelPendingCount}',
-                  style: const TextStyle(fontSize: 14, color: AppTheme.warningColor, fontWeight: FontWeight.w600),
+                  style: AppTheme.textWarning14W600,
                 ),
               ),
           ],
@@ -486,7 +486,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                     AppTheme.hSpacer8,
                     Text(
                       '今日 $takenCount 项已全部完成',
-                      style: const TextStyle(fontSize: 16, color: AppTheme.successColor),
+                      style: AppTheme.textSuccess16,
                     ),
                   ],
                 ),
@@ -517,7 +517,7 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
                       children: [
                         Text(
                           log.medicineName,
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                          style: AppTheme.textTitle18W600,
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
