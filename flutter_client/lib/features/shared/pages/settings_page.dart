@@ -122,9 +122,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authProvider);
+    final isElder = ref.watch(authProvider.select((s) => s.isElder));
     final user = ref.watch(userProvider.select((s) => s.user));
-    final isElder = authState.isElder;
 
     return Scaffold(
       appBar: AppBar(
@@ -152,7 +151,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       child: ClipRRect(
                         borderRadius: AppTheme.radiusL,
                         child: _buildAvatar(
-                          user?.avatarUrl ?? authState.user?.avatarUrl,
+                          user?.avatarUrl ?? ref.watch(authProvider.select((s) => s.user?.avatarUrl)),
                           40,
                         ),
                       ),
@@ -163,14 +162,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            user?.realName ?? authState.user?.realName ?? '用户',
+                            user?.realName ?? ref.watch(authProvider.select((s) => s.user?.realName)) ?? '用户',
                             style: AppTheme.textLargeTitle.copyWith(
                               color: AppTheme.cardColor,
                             ),
                           ),
                           AppTheme.spacer4,
                           Text(
-                            user?.phoneNumber ?? authState.user?.phoneNumber ?? '',
+                            user?.phoneNumber ?? ref.watch(authProvider.select((s) => s.user?.phoneNumber)) ?? '',
                             style: AppTheme.textWhite14.copyWith(
                               color: AppTheme.cardColor.withValues(alpha: 0.9),
                             ),
@@ -200,7 +199,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   _buildSettingItem(
                     icon: Icons.person_outline,
                     title: AppTheme.titleChangeName,
-                    subtitle: user?.realName ?? authState.user?.realName ?? '未设置',
+                    subtitle: user?.realName ?? ref.watch(authProvider.select((s) => s.user?.realName)) ?? '未设置',
                     onTap: () => _showEditNameDialog(),
                   ),
                   const Divider(height: 1),
