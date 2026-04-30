@@ -206,7 +206,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   _buildSettingItem(
                     icon: Icons.lock_outline,
                     title: AppTheme.titleChangePassword,
-                    subtitle: '更改登录密码',
+                    subtitle: AppTheme.subtitleChangePassword,
                     onTap: () => _showChangePasswordDialog(),
                   ),
                 ],
@@ -217,7 +217,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             // 功能设置（老人端显示定位开关）
             if (isElder) ...[
               const Text(
-                '功能设置',
+                AppTheme.titleFunctionSettings,
                 style: AppTheme.textTitle,
               ),
               AppTheme.spacer12,
@@ -228,8 +228,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ),
                 child: _buildSettingItem(
                   icon: Icons.location_on,
-                  title: '位置上报',
-                  subtitle: '开启后子女可查看您的位置',
+                  title: AppTheme.titleLocationReport,
+                  subtitle: AppTheme.subtitleLocationShare,
                   trailing: _isLoadingLocation
                       ? const SizedBox(
                           width: 24,
@@ -249,7 +249,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
             // 通知设置
             const Text(
-              '通知设置',
+              AppTheme.titleNotificationSettings,
               style: AppTheme.textTitle,
             ),
             AppTheme.spacer12,
@@ -262,15 +262,15 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 children: [
                   _buildSettingItem(
                     icon: Icons.emergency,
-                    title: '紧急呼叫通知',
-                    subtitle: '始终开启，保障安全',
+                    title: AppTheme.titleEmergencyNotification,
+                    subtitle: AppTheme.subtitleEmergencyAlwaysOn,
                     trailing: const Icon(Icons.lock, color: AppTheme.grey400, size: AppTheme.iconSizeMd),
                   ),
                   const Divider(height: 1),
                   _buildSettingItem(
                     icon: Icons.favorite_outline,
-                    title: '健康数据通知',
-                    subtitle: '健康异常预警、趋势提醒',
+                    title: AppTheme.titleHealthNotification,
+                    subtitle: AppTheme.subtitleHealthAlert,
                     trailing: _isLoadingPrefs
                         ? AppTheme.smallLoadingIndicator
                         : Switch(
@@ -286,8 +286,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   const Divider(height: 1),
                   _buildSettingItem(
                     icon: Icons.medication_outlined,
-                    title: '用药提醒通知',
-                    subtitle: '用药时间到了提醒',
+                    title: AppTheme.titleMedReminderNotification,
+                    subtitle: AppTheme.subtitleMedReminder,
                     trailing: _isLoadingPrefs
                         ? AppTheme.smallLoadingIndicator
                         : Switch(
@@ -303,8 +303,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   const Divider(height: 1),
                   _buildSettingItem(
                     icon: Icons.diversity_3_outlined,
-                    title: '邻里动态通知',
-                    subtitle: '邻里圈、邻里互助消息',
+                    title: AppTheme.titleNeighborNotification,
+                    subtitle: AppTheme.subtitleNeighborMessage,
                     trailing: _isLoadingPrefs
                         ? AppTheme.smallLoadingIndicator
                         : Switch(

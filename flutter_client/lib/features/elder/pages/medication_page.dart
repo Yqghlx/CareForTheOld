@@ -80,7 +80,7 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
 
               // 今日待服药
               const Text(
-                '今日用药计划',
+                AppTheme.titleTodayPlan,
                 style: AppTheme.textLargeTitle,
               ),
               AppTheme.spacer16,
@@ -171,8 +171,8 @@ class _MedicationPageState extends ConsumerState<MedicationPage> {
     if (state.todayPending.isEmpty) {
       return const EmptyStateWidget(
         icon: Icons.check_circle_outline,
-        title: '今日暂无用药计划',
-        subtitle: '请让子女帮忙添加用药计划',
+        title: AppTheme.titleNoPlanToday,
+        subtitle: AppTheme.subtitleNoPlanToday,
       );
     }
 

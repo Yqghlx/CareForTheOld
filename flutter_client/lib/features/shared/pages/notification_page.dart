@@ -117,10 +117,10 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
         physics: const AlwaysScrollableScrollPhysics(),
         children: [
           SizedBox(height: MediaQuery.of(context).size.height * 0.3),
-          EmptyStateWidget(
+          const EmptyStateWidget(
             icon: Icons.search_off,
             title: '未找到相关通知',
-            subtitle: '尝试其他关键词搜索',
+            subtitle: AppTheme.hintSearchEmpty,
           ),
         ],
       );

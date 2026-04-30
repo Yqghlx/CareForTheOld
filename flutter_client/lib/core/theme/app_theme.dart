@@ -572,6 +572,25 @@ class AppTheme {
   static const String labelNickname = '称呼';
   static const String labelDosage = '剂量（如：1片、10ml）';
 
+  // 用药/设置/通知页面常量
+  static const String titleTodayPlan = '今日用药计划';
+  static const String titleNoPlanToday = '今日暂无用药计划';
+  static const String subtitleNoPlanToday = '请让子女帮忙添加用药计划';
+  static const String hintSearchEmpty = '尝试其他关键词搜索';
+  static const String subtitleChangePassword = '更改登录密码';
+  static const String subtitleLocationShare = '开启后子女可查看您的位置';
+  static const String subtitleEmergencyAlwaysOn = '始终开启，保障安全';
+  static const String subtitleHealthAlert = '健康异常预警、趋势提醒';
+  static const String subtitleMedReminder = '用药时间到了提醒';
+  static const String subtitleNeighborMessage = '邻里圈、邻里互助消息';
+  static const String titleFunctionSettings = '功能设置';
+  static const String titleNotificationSettings = '通知设置';
+  static const String titleLocationReport = '位置上报';
+  static const String titleEmergencyNotification = '紧急呼叫通知';
+  static const String titleHealthNotification = '健康数据通知';
+  static const String titleMedReminderNotification = '用药提醒通知';
+  static const String titleNeighborNotification = '邻里动态通知';
+
   /// 业务常量
   /// 邻里圈搜索默认半径（米）
   static const double defaultNeighborSearchRadius = 2000.0;
