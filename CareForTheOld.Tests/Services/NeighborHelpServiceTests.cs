@@ -37,7 +37,8 @@ public class NeighborHelpServiceTests
         var mockTrustScore = new Mock<ITrustScoreService>();
         mockTrustScore.Setup(t => t.GetUserScoreAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(0m);
-        _service = new NeighborHelpService(_context, _mockNotification.Object, mockTrustScore.Object, mockLogger.Object);
+        var mockFamilyService = new Mock<IFamilyService>();
+        _service = new NeighborHelpService(_context, _mockNotification.Object, mockTrustScore.Object, mockFamilyService.Object, mockLogger.Object);
     }
 
     /// <summary>

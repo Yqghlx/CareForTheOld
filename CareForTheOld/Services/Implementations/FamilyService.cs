@@ -186,16 +186,13 @@ public class FamilyService : IFamilyService
         _logger.LogInformation("用户申请加入家庭：家庭 {FamilyId}，申请人 {UserId}", family.Id, userId);
 
         // 通知家庭中所有子女角色成员审批
-        var childMembers = await _context.FamilyMembers
-            .Where(fm => fm.FamilyId == family.Id && fm.Role == UserRole.Child && fm.Status == FamilyMemberStatus.Approved)
-            .Select(fm => fm.UserId)
-            .ToListAsync(cancellationToken);
+        var childMemberIds = await GetChildUserIdsAsync(family.Id, cancellationToken);
 
-        if (childMembers.Any())
+        if (childMemberIds.Any())
         {
             try
             {
-                await _notificationService.SendToUsersAsync(childMembers, AppConstants.NotificationTypes.FamilyJoinRequest, new
+                await _notificationService.SendToUsersAsync(childMemberIds, AppConstants.NotificationTypes.FamilyJoinRequest, new
                 {
                     Title = NotificationMessages.Family.JoinRequestTitle,
                     Content = string.Format(NotificationMessages.Family.JoinRequestContentTemplate, user.RealName, request.Relation, family.FamilyName),
@@ -402,6 +399,15 @@ public class FamilyService : IFamilyService
 
         _logger.LogInformation("家庭成员已移除：家庭 {FamilyId}，成员 {UserId}，操作者 {OperatorId}",
             familyId, userId, operatorId);
+    }
+
+    /// <inheritdoc />
+    public async Task<List<Guid>> GetChildUserIdsAsync(Guid familyId, CancellationToken cancellationToken = default)
+    {
+        return await _context.FamilyMembers
+            .Where(fm => fm.FamilyId == familyId && fm.Role == UserRole.Child && fm.Status == FamilyMemberStatus.Approved)
+            .Select(fm => fm.UserId)
+            .ToListAsync(cancellationToken);
     }
 
     private async Task EnsureMemberAsync(Guid familyId, Guid userId, CancellationToken cancellationToken = default)

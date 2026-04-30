@@ -87,7 +87,7 @@ public class AutoRescueService : IAutoRescueService
             ? NotificationMessages.AutoRescue.GeoFenceBreachText
             : NotificationMessages.AutoRescue.HeartbeatTimeoutText;
 
-        var childIds = await GetChildUserIdsAsync(context, familyId, cancellationToken);
+        var childIds = await GetChildUserIdsAsync(scope, familyId, cancellationToken);
 
         if (childIds.Any())
         {
@@ -247,13 +247,11 @@ public class AutoRescueService : IAutoRescueService
     }
 
     /// <summary>
-    /// 获取指定家庭中所有子女的用户 ID
+    /// 通过 IFamilyService 获取指定家庭中所有已通过审批的子女用户 ID
     /// </summary>
-    private static async Task<List<Guid>> GetChildUserIdsAsync(AppDbContext context, Guid familyId, CancellationToken cancellationToken = default)
+    private static async Task<List<Guid>> GetChildUserIdsAsync(IServiceScope scope, Guid familyId, CancellationToken cancellationToken = default)
     {
-        return await context.FamilyMembers
-            .Where(fm => fm.FamilyId == familyId && fm.Role == UserRole.Child)
-            .Select(fm => fm.UserId)
-            .ToListAsync(cancellationToken);
+        var familyService = scope.ServiceProvider.GetRequiredService<IFamilyService>();
+        return await familyService.GetChildUserIdsAsync(familyId, cancellationToken);
     }
 }

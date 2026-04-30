@@ -46,4 +46,9 @@ public interface IFamilyService
     /// 老人本人操作时自动通过验证
     /// </summary>
     Task EnsureFamilyMemberAsync(Guid elderId, Guid operatorId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 获取指定家庭中所有已通过审批的子女用户 ID
+    /// </summary>
+    Task<List<Guid>> GetChildUserIdsAsync(Guid familyId, CancellationToken cancellationToken = default);
 }

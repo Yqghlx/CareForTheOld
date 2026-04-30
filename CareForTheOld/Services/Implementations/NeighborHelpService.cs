@@ -19,6 +19,7 @@ public class NeighborHelpService : INeighborHelpService
     private readonly AppDbContext _context;
     private readonly INotificationService _notificationService;
     private readonly ITrustScoreService _trustScoreService;
+    private readonly IFamilyService _familyService;
     private readonly ILogger<NeighborHelpService> _logger;
 
     /// <summary>求助请求默认过期时间</summary>
@@ -31,11 +32,13 @@ public class NeighborHelpService : INeighborHelpService
         AppDbContext context,
         INotificationService notificationService,
         ITrustScoreService trustScoreService,
+        IFamilyService familyService,
         ILogger<NeighborHelpService> logger)
     {
         _context = context;
         _notificationService = notificationService;
         _trustScoreService = trustScoreService;
+        _familyService = familyService;
         _logger = logger;
     }
 
@@ -240,10 +243,7 @@ public class NeighborHelpService : INeighborHelpService
             .FirstOrDefaultAsync(fm => fm.UserId == request.RequesterId, cancellationToken);
         if (familyMember != null)
         {
-            var childIds = await _context.FamilyMembers
-                .Where(fm => fm.FamilyId == familyMember.FamilyId && fm.Role == UserRole.Child)
-                .Select(fm => fm.UserId)
-                .ToListAsync(cancellationToken);
+            var childIds = await _familyService.GetChildUserIdsAsync(familyMember.FamilyId, cancellationToken);
 
             if (childIds.Any())
             {
