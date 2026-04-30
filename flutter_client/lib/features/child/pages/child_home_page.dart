@@ -648,13 +648,14 @@ class _EmergencyPulseBanner extends StatefulWidget {
 }
 
 class _EmergencyPulseBannerState extends State<_EmergencyPulseBanner>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late AnimationController _controller;
   late Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _controller = AnimationController(
       duration: AppTheme.duration1500ms,
       vsync: this,
@@ -666,7 +667,17 @@ class _EmergencyPulseBannerState extends State<_EmergencyPulseBanner>
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+      _controller.stop();
+    } else if (state == AppLifecycleState.resumed) {
+      if (mounted) _controller.repeat(reverse: true);
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _controller.dispose();
     super.dispose();
   }
