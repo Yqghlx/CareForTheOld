@@ -41,28 +41,14 @@ class ElderHomePage extends ConsumerStatefulWidget {
 class _ElderHomePageState extends ConsumerState<ElderHomePage> {
   int _selectedIndex = 0;
   bool _isUploadingAvatar = false;
-
-  // 长按紧急呼叫相关状态
-  bool _isLongPressing = false;
-  double _longPressProgress = 0.0;
-  static const double _longPressDurationSeconds = 2.0;
-  bool _longPressCancelled = false; // 用于 dispose 时取消异步操作
   bool _isCalling = false; // 紧急呼叫防重复提交
 
   @override
   void initState() {
     super.initState();
-    _longPressCancelled = false;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(notificationListProvider.notifier).loadNotifications();
     });
-  }
-
-  @override
-  void dispose() {
-    // 取消所有进行中的长按异步操作
-    _longPressCancelled = true;
-    super.dispose();
   }
 
   @override
@@ -143,7 +129,10 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // 紧急呼叫按钮 - 醒目的红色大按钮
-          _buildEmergencyCallButton(),
+          _EmergencyCallButton(
+            onTrigger: _performEmergencyCall,
+            isCalling: _isCalling,
+          ),
           AppTheme.spacer24,
 
           // 用户信息卡片 - 渐变背景
@@ -580,156 +569,6 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
     }
   }
 
-  /// 紧急呼叫按钮 - 长按 2 秒触发，带进度指示器，松手取消
-  Widget _buildEmergencyCallButton() {
-    return Semantics(
-      button: true,
-      label: _isLongPressing ? AppTheme.a11yEmergencyCalling : AppTheme.a11yEmergencyButton,
-      child: GestureDetector(
-      // 按下开始计时
-      onPanDown: (_) => _startLongPressTimer(),
-      // 松手或取消时停止计时
-      onPanEnd: (_) => _cancelLongPressTimer(),
-      onPanCancel: () => _cancelLongPressTimer(),
-      // 短按提示
-      onTap: () {
-        if (!_isLongPressing) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          context.showSnackBar(AppTheme.msgEmergencyLongPress);
-        }
-      },
-      child: RepaintBoundary(
-        child: AnimatedContainer(
-        duration: AppTheme.duration100ms,
-        width: double.infinity,
-        height: 80,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: _isLongPressing
-                ? [AppTheme.errorAccent, AppTheme.errorColor]
-                : [AppTheme.errorColor, AppTheme.errorAccent],
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-          ),
-          borderRadius: AppTheme.radiusXL,
-          boxShadow: [
-            BoxShadow(
-              color: AppTheme.errorColor.withValues(alpha: _isLongPressing ? 0.7 : 0.4),
-              blurRadius: _isLongPressing ? 24 : 16,
-              spreadRadius: _isLongPressing ? 4 : 0,
-              offset: const Offset(0, 6),
-            ),
-          ],
-        ),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            // 进度指示器（长按时显示）
-            if (_isLongPressing)
-              Positioned.fill(
-                child: Padding(
-                  padding: AppTheme.paddingAll8,
-                  child: CircularProgressIndicator(
-                    value: _longPressProgress,
-                    strokeWidth: 6,
-                    backgroundColor: AppTheme.cardColor.withValues(alpha: 0.3),
-                    valueColor: const AlwaysStoppedAnimation(AppTheme.cardColor),
-                  ),
-                ),
-              ),
-            // 内容
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      _isLongPressing ? Icons.phone_in_talk : Icons.emergency,
-                      color: AppTheme.cardColor,
-                      size: 40,
-                    ),
-                    AppTheme.hSpacer12,
-                    Text(
-                      _isLongPressing ? AppTheme.labelEmergencyCalling : AppTheme.labelLongPressEmergency,
-                      style: const TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.cardColor,
-                      ),
-                    ),
-                  ],
-                ),
-                // 长按时显示进度提示
-                if (_isLongPressing)
-                  Padding(
-                    padding: AppTheme.marginTop4,
-                    child: Text(
-                      AppTheme.labelReleaseToCancel,
-                      style: AppTheme.textBody16.copyWith(
-                        color: AppTheme.cardColor.withValues(alpha: 0.9),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ],
-        ),
-      ),
-      ),
-      ),
-    );
-  }
-
-  /// 开始长按计时器
-  void _startLongPressTimer() {
-    HapticFeedback.mediumImpact();
-    _longPressCancelled = false;
-    setState(() {
-      _isLongPressing = true;
-      _longPressProgress = 0.0;
-    });
-
-    // 使用动画驱动进度
-    Future<void> updateProgress() async {
-      final updateInterval = AppTheme.duration50ms;
-      final totalSteps = (_longPressDurationSeconds * 1000 / updateInterval.inMilliseconds).round();
-
-      for (int i = 0; i <= totalSteps && _isLongPressing && !_longPressCancelled; i++) {
-        await Future.delayed(updateInterval);
-        // 检查是否已取消或 Widget 已销毁
-        if (!_isLongPressing || _longPressCancelled || !mounted) return;
-
-        setState(() {
-          _longPressProgress = (i / totalSteps).clamp(0.0, 1.0);
-        });
-      }
-
-      // 进度到达 100%，触发呼叫
-      if (mounted && _isLongPressing && !_longPressCancelled && _longPressProgress >= 1.0) {
-        setState(() => _isLongPressing = false);
-        _performEmergencyCall();
-      }
-    }
-
-    updateProgress();
-  }
-
-  /// 取消长按计时器
-  void _cancelLongPressTimer() {
-    _longPressCancelled = true;
-    if (_isLongPressing && _longPressProgress < 1.0) {
-      HapticFeedback.lightImpact();
-      setState(() {
-        _isLongPressing = false;
-        _longPressProgress = 0.0;
-      });
-      // 提示用户已取消
-      ScaffoldMessenger.of(context).clearSnackBars();
-      context.showSnackBar(AppTheme.msgEmergencyCancelled);
-    }
-  }
-
   /// 执行紧急呼叫（长按 2 秒后直接触发，防重复提交）
   Future<void> _performEmergencyCall() async {
     if (_isCalling) return;
@@ -940,5 +779,166 @@ class _ElderHomePageState extends ConsumerState<ElderHomePage> {
         setState(() => _isUploadingAvatar = false);
       }
     }
+  }
+}
+
+/// 紧急呼叫按钮 - 独立组件，使用 AnimationController 驱动进度条避免父页面重建
+class _EmergencyCallButton extends StatefulWidget {
+  final VoidCallback onTrigger;
+  final bool isCalling;
+
+  const _EmergencyCallButton({
+    required this.onTrigger,
+    required this.isCalling,
+  });
+
+  @override
+  State<_EmergencyCallButton> createState() => _EmergencyCallButtonState();
+}
+
+class _EmergencyCallButtonState extends State<_EmergencyCallButton>
+    with SingleTickerProviderStateMixin {
+  static const Duration _longPressDuration = Duration(seconds: 2);
+  late AnimationController _progressController;
+  bool _isPressing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _progressController = AnimationController(
+      duration: _longPressDuration,
+      vsync: this,
+    );
+    _progressController.addStatusListener((status) {
+      if (status == AnimationStatus.completed && _isPressing && mounted) {
+        setState(() => _isPressing = false);
+        _progressController.reset();
+        widget.onTrigger();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _progressController.dispose();
+    super.dispose();
+  }
+
+  void _startPress() {
+    HapticFeedback.mediumImpact();
+    setState(() => _isPressing = true);
+    _progressController.forward(from: 0.0);
+  }
+
+  void _cancelPress() {
+    if (!_isPressing) return;
+    _progressController.stop();
+    _progressController.reset();
+    HapticFeedback.lightImpact();
+    setState(() => _isPressing = false);
+    ScaffoldMessenger.of(context).clearSnackBars();
+    context.showSnackBar(AppTheme.msgEmergencyCancelled);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: _isPressing ? AppTheme.a11yEmergencyCalling : AppTheme.a11yEmergencyButton,
+      child: GestureDetector(
+        onPanDown: (_) => _startPress(),
+        onPanEnd: (_) => _cancelPress(),
+        onPanCancel: () => _cancelPress(),
+        onTap: () {
+          if (!_isPressing) {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            context.showSnackBar(AppTheme.msgEmergencyLongPress);
+          }
+        },
+        child: RepaintBoundary(
+          child: AnimatedBuilder(
+            animation: _progressController,
+            builder: (context, child) {
+              final progress = _progressController.value;
+              final pressing = _isPressing;
+              return AnimatedContainer(
+                duration: AppTheme.duration100ms,
+                width: double.infinity,
+                height: 80,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: pressing
+                        ? [AppTheme.errorAccent, AppTheme.errorColor]
+                        : [AppTheme.errorColor, AppTheme.errorAccent],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                  borderRadius: AppTheme.radiusXL,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppTheme.errorColor.withValues(alpha: pressing ? 0.7 : 0.4),
+                      blurRadius: pressing ? 24 : 16,
+                      spreadRadius: pressing ? 4 : 0,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    if (pressing)
+                      Positioned.fill(
+                        child: Padding(
+                          padding: AppTheme.paddingAll8,
+                          child: CircularProgressIndicator(
+                            value: progress,
+                            strokeWidth: 6,
+                            backgroundColor: AppTheme.cardColor.withValues(alpha: 0.3),
+                            valueColor: const AlwaysStoppedAnimation(AppTheme.cardColor),
+                          ),
+                        ),
+                      ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              pressing ? Icons.phone_in_talk : Icons.emergency,
+                              color: AppTheme.cardColor,
+                              size: 40,
+                            ),
+                            AppTheme.hSpacer12,
+                            Text(
+                              pressing ? AppTheme.labelEmergencyCalling : AppTheme.labelLongPressEmergency,
+                              style: const TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.cardColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (pressing)
+                          Padding(
+                            padding: AppTheme.marginTop4,
+                            child: Text(
+                              AppTheme.labelReleaseToCancel,
+                              style: AppTheme.textBody16.copyWith(
+                                color: AppTheme.cardColor.withValues(alpha: 0.9),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
   }
 }
