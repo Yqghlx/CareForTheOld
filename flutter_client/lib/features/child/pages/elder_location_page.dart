@@ -513,12 +513,9 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
   /// 历史轨迹列表
   Widget _buildHistoryList(List<LocationRecord> history) {
     if (history.isEmpty) {
-      return Container(
-        padding: AppTheme.paddingAll24,
-        decoration: AppTheme.decorationCardLight,
-        child: const Center(
-          child: Text(AppTheme.msgNoHistoryRecord, style: AppTheme.textGrey),
-        ),
+      return const EmptyStateWidget(
+        icon: Icons.map_outlined,
+        title: AppTheme.msgNoHistoryRecord,
       );
     }
 
