@@ -117,9 +117,19 @@ public class FcmPushNotificationService : IPushNotificationService
 
             return response.FailureCount == 0;
         }
+        catch (ArgumentException ex)
+        {
+            _logger.LogError(ex, "FCM 推送参数异常，token 数: {Count}", tokens.Count);
+            return false;
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogWarning(ex, "FCM 推送网络异常，token 数: {Count}", tokens.Count);
+            return false;
+        }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "FCM 推送发送异常，token 数: {Count}", tokens.Count);
+            _logger.LogError(ex, "FCM 推送未知异常，token 数: {Count}", tokens.Count);
             return false;
         }
     }
