@@ -120,6 +120,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
   /// 待审批成员卡片
   Widget _buildPendingCard(FamilyMember member) {
     return Card(
+      key: ValueKey(member.userId),
       elevation: AppTheme.cardElevationLow,
       margin: AppTheme.marginBottom12,
       shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusL),

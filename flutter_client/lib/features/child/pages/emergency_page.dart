@@ -103,6 +103,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
             ),
             AppTheme.spacer16,
             ...state.unreadCalls.map((call) => _buildUnreadCallCard(call)),
+
           ] else ...[
             Container(
               padding: AppTheme.paddingAll24,
@@ -151,6 +152,7 @@ class _EmergencyPageState extends ConsumerState<EmergencyPage> {
   /// 未处理呼叫卡片（高亮显示）
   Widget _buildUnreadCallCard(EmergencyCall call) {
     return Container(
+      key: ValueKey(call.id),
       margin: AppTheme.marginBottom12,
       decoration: BoxDecoration(
         color: AppTheme.errorColor.withValues(alpha: 0.05),
