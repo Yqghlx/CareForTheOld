@@ -104,7 +104,7 @@ class _TrustRankingPageState extends ConsumerState<TrustRankingPage> {
                     color: AppTheme.primaryColor,
                   ),
             ),
-            const Text('信任分', style: AppTheme.textCaption),
+            const Text(AppTheme.titleTrustScore, style: AppTheme.textCaption),
           ],
         ),
       ),

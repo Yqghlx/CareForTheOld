@@ -977,7 +977,7 @@ class _ElderHealthPageState extends ConsumerState<ElderHealthPage> {
                 children: [
                   const CircularProgressIndicator(),
                   AppTheme.spacer16,
-                  const Text('正在生成报告...', style: AppTheme.textBody16),
+                  const Text(AppTheme.msgGeneratingReport, style: AppTheme.textBody16),
                 ],
               ),
             ),

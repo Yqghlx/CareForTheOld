@@ -37,7 +37,7 @@ class _NeighborHelpRatingPageState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('为响应邻居评分', style: AppTheme.textTitle),
+            const Text(AppTheme.titleRateNeighbor, style: AppTheme.textTitle),
             AppTheme.spacer16,
 
             // 星级评分

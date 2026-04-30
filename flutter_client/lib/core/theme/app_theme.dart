@@ -680,6 +680,22 @@ class AppTheme {
   static const String labelSelectTimeRange = '选择报告时间范围：';
   static const String labelPendingApproval = '待审批';
   static const String labelHealthTrendDetail = '健康趋势详情';
+  static const String labelSubmitApplication = '提交申请';
+  static const String labelJoinByCode = '输入邀请码加入';
+  static const String msgNoFamilyCreated = '您还没有创建家庭组';
+  static const String msgCreateFamilyHint = '创建家庭组后，可以邀请家人加入';
+  static const String msgNotInFamily = '您还未加入家庭组';
+  static const String msgAskChildForCode = '请让子女分享邀请码给您';
+  static const String msgMemberCount = '共 %s 位成员';
+  static const String msgGeneratingReport = '正在生成报告...';
+  static const String titleElderHealthData = '%s - 健康数据';
+  static const String titleElderLocation = '%s - 位置';
+  static const String titleRateNeighbor = '为响应邻居评分';
+  static const String titleTrustScore = '信任分';
+  static const String titleExportReportFor = '为 %s 导出健康报告';
+  static const String msgNotInFamilyGroup = '未加入家庭组';
+  static const String msgResponderName = '响应者：%s';
+  static const String msgExpiresInMinutes = '%s 分钟后过期';
 
   /// 业务常量
   /// 邻里圈搜索默认半径（米）

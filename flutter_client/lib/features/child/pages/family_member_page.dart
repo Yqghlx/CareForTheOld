@@ -424,12 +424,12 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               child: const Icon(Icons.home, size: 40, color: AppTheme.primaryColor),
             ),
             AppTheme.spacer16,
-            const Text('您还没有创建家庭组', style: AppTheme.textTitle),
+            const Text(AppTheme.msgNoFamilyCreated, style: AppTheme.textTitle),
             AppTheme.spacer8,
-            const Text('创建家庭组后，可以邀请家人加入', style: AppTheme.textGrey),
+            const Text(AppTheme.msgCreateFamilyHint, style: AppTheme.textGrey),
             AppTheme.spacer20,
             PrimaryButton(
-              text: '创建家庭组',
+              text: AppTheme.labelCreateFamily,
               onPressed: () => _showCreateFamilyDialog(),
             ),
           ],
@@ -456,12 +456,12 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
               child: const Icon(Icons.group_add, size: 40, color: AppTheme.warningColor),
             ),
             AppTheme.spacer16,
-            const Text('您还未加入家庭组', style: AppTheme.textTitle),
+            const Text(AppTheme.msgNotInFamily, style: AppTheme.textTitle),
             AppTheme.spacer8,
-            const Text('请让子女分享邀请码给您', style: AppTheme.textGrey),
+            const Text(AppTheme.msgAskChildForCode, style: AppTheme.textGrey),
             AppTheme.spacer20,
             PrimaryButton(
-              text: '输入邀请码加入',
+              text: AppTheme.labelJoinByCode,
               onPressed: () => _showJoinFamilyDialog(),
               gradient: const LinearGradient(
                 colors: [AppTheme.warningColor, AppTheme.deepOrangeColor],
@@ -725,7 +725,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                   child: const Text(AppTheme.msgCancel),
                 ),
                 PrimaryButton(
-                  text: '提交申请',
+                  text: AppTheme.labelSubmitApplication,
                   gradient: const LinearGradient(
                     colors: [AppTheme.warningColor, AppTheme.deepOrangeColor],
                   ),

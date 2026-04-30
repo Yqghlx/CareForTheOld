@@ -49,7 +49,7 @@ class _ElderLocationPageState extends ConsumerState<ElderLocationPage> {
     if (familyId == null) {
       return Scaffold(
         appBar: AppBar(title: const Text(AppTheme.titleLocationView)),
-        body: const Center(child: Text('未加入家庭组')),
+        body: const Center(child: Text(AppTheme.msgNotInFamilyGroup)),
       );
     }
 
