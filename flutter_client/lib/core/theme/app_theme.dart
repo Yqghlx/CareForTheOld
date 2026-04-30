@@ -647,6 +647,13 @@ class AppTheme {
   static const String hintHeartRateRange = '30-200';
   static const String hintTemperatureRange = '35.0-42.0';
 
+  // 确认对话框模板
+  static const String msgConfirmLeaveCircle = '确定要退出邻里圈吗？如果您是圈主，退出后圈子将解散。';
+  static const String msgConfirmRespondHelp = '确定要响应此求助吗？您将是第一个响应的邻居。';
+  static const String labelIWillHelp = '我来帮忙';
+  static const String msgConfirmRefreshCode = '刷新后旧邀请码将失效，确定要刷新吗？';
+  static const String subtitleTrendEmpty = '记录健康数据后，这里会显示趋势概览';
+
   /// 业务常量
   /// 邻里圈搜索默认半径（米）
   static const double defaultNeighborSearchRadius = 2000.0;

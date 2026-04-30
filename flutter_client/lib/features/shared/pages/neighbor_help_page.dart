@@ -117,8 +117,8 @@ class _NeighborHelpPageState extends ConsumerState<NeighborHelpPage> {
     final confirmed = await showConfirmDialog(
       context,
       title: AppTheme.titleConfirmRespond,
-      message: '确定要响应此求助吗？您将是第一个响应的邻居。',
-      confirmText: '我来帮忙',
+      message: AppTheme.msgConfirmRespondHelp,
+      confirmText: AppTheme.labelIWillHelp,
     );
     if (!confirmed) return;
 

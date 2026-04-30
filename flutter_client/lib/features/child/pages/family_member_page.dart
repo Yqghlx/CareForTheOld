@@ -372,7 +372,7 @@ class _FamilyMemberPageState extends ConsumerState<FamilyMemberPage> {
                   final confirmed = await showConfirmDialog(
                     context,
                     title: AppTheme.titleRefreshInviteCode,
-                    message: '刷新后旧邀请码将失效，确定要刷新吗？',
+                    message: AppTheme.msgConfirmRefreshCode,
                     confirmText: AppTheme.msgConfirm,
                   );
                   if (!confirmed) return;

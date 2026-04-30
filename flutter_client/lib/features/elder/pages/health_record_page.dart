@@ -168,7 +168,7 @@ class _HealthRecordPageState extends ConsumerState<HealthRecordPage> {
         child: EmptyStateWidget(
           icon: Icons.analytics_outlined,
           title: AppTheme.msgNoStats,
-          subtitle: '记录健康数据后，这里会显示趋势概览',
+          subtitle: AppTheme.subtitleTrendEmpty,
         ),
       );
     }
